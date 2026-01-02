@@ -2,7 +2,7 @@
     {
     "name": "Chicken Alfredo ",
     "link": "https://www.tiktok.com/t/ZTHsqX1VwaJoB-sG7Ov/",
-    "tags": [],
+    "tags": ["Chicken", "Pasta", "Italian"],
     "components": [
         {
             "name": "Main Dish",
@@ -39,7 +39,7 @@
     {
     "name": "Beef tips",
     "link": "https://www.tiktok.com/t/ZThJCjTva/",
-    "tags": [],
+    "tags": ["Beef", "Slow cooker"],
     "components": [
         {
             "name": "Main Dish",
@@ -66,7 +66,7 @@
             "name": "Egg noodle",
             "type": "side",
             "ingredients": [
-                "egg noodles \nPork tenderloin (sweet and sour)"
+                "egg noodles"
             ]
         }
     ]
@@ -74,7 +74,7 @@
 {
     "name": "Pork tenderloin (sweet and sour)",
     "link": "https://www.tiktok.com/t/ZThJXn2C9/",
-    "tags": [],
+    "tags": ["Pork", "Sheet"],
     "components": [
         {
             "name": "Main Dish",
