@@ -14,21 +14,28 @@
         
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
-        .calendar-day { background: white; border: 1px solid #ddd; min-height: 100px; padding: 5px; border-radius: 4px; font-size: 0.8em; }
+        .calendar-day { background: white; border: 1px solid #ddd; min-height: 100px; padding: 5px; border-radius: 4px; font-size: 0.8em; overflow: hidden; }
         .calendar-day.today { background: #fffbe6; border: 2px solid #f1c40f; }
         
-        .calendar-meal { background: #3498db; color: white; padding: 4px; border-radius: 3px; margin-top: 3px; font-size: 0.9em; }
-        .calendar-meal a { color: white; text-decoration: none; display: block; }
+        .calendar-meal { background: #3498db; color: white; padding: 4px; border-radius: 3px; margin-top: 3px; font-size: 0.85em; }
+        .calendar-meal a { color: white; text-decoration: none; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         
         button { cursor: pointer; border: none; border-radius: 6px; font-weight: bold; }
         .btn-nav { background: #34495e; color: white; padding: 8px 15px; }
         .btn-print { background: #9b59b6; color: white; padding: 10px 20px; margin-top: 10px; }
-        .primary { background: #27ae60; color: white; padding: 12px 20px; width: 100%; font-size: 16px; }
+        .primary { background: #27ae60; color: white; padding: 12px 20px; width: 100%; font-size: 16px; margin-top: 10px; }
 
+        .ingredient-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
+        .qty { font-weight: bold; color: #d48806; background: #fff1b8; padding: 2px 8px; border-radius: 5px; }
+
+        /* Print formatting */
         @media print {
-            .nav-bar, .btn-nav, .btn-print, .shopping-controls { display: none !important; }
-            .card { box-shadow: none; border: 1px solid #eee; }
-            body { background: white; }
+            .nav-bar, .btn-nav, .btn-print, .shopping-controls, .jump-link { display: none !important; }
+            .card { box-shadow: none; border: 1px solid #000; margin: 0; padding: 10px; }
+            .calendar-day { min-height: 80px; border: 1px solid #000; }
+            body { background: white; margin: 0; padding: 0; }
+            .calendar-meal { background: #eee; color: #000; border: 1px solid #ccc; }
+            .calendar-meal a { color: #000; }
         }
     </style>
 </head>
@@ -44,25 +51,26 @@
     <div class="card">
         <div class="cal-header">
             <button class="btn-nav" onclick="changeWeek(-14)">← Prev</button>
-            <h3 id="cal-title">Syncing with GitHub...</h3>
+            <h3 id="cal-title" style="margin:0;">Syncing...</h3>
             <button class="btn-nav" onclick="changeWeek(14)">Next →</button>
         </div>
         <div class="calendar-grid" id="calendarGrid"></div>
-        <div style="text-align: center; margin-top: 15px;">
-            <button class="btn-print" onclick="window.print()">Print This View</button>
+        <div style="text-align: center; margin-top: 10px;">
+            <a href="#" class="jump-link" onclick="resetToToday()" style="font-size:0.8em; color:#3498db;">Jump to Today</a><br>
+            <button class="btn-print" onclick="window.print()">🖨️ Print Calendar & List</button>
         </div>
     </div>
 
     <div class="card shopping-controls">
         <h3>🛒 Shopping List Generator</h3>
-        <div style="display:flex; gap:10px; margin-bottom:10px; align-items: center;">
+        <div style="display:flex; gap:10px; align-items: center;">
             <input type="date" id="start"> <span>to</span> <input type="date" id="end">
         </div>
         <button class="primary" onclick="generateShoppingList()">Generate Grocery List</button>
     </div>
 
     <div class="card" id="shopping-list-box" style="display:none;">
-        <h3>Your Ingredients</h3>
+        <h3>Ingredients Needed</h3>
         <div id="list-display"></div>
     </div>
 </div>
@@ -72,28 +80,29 @@
     const TOKEN = localStorage.getItem('gh_token');
     let mealsDb = [], calendarDb = [], currentStartDate = new Date();
 
+    async function fetchData(path) {
+        // We use the GitHub API instead of raw.githubusercontent to bypass cache/CORS issues
+        const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
+            headers: { 'Authorization': `token ${TOKEN}` }
+        });
+        const data = await res.json();
+        return JSON.parse(atob(data.content));
+    }
+
     async function init() {
         if (!TOKEN) {
-            document.getElementById('cal-title').innerText = "Error: No GitHub Token Found";
+            document.getElementById('cal-title').innerText = "Missing GitHub Token";
             return;
         }
 
         try {
-            // Adding timestamps to prevent "caching" (seeing old data)
-            const [mRes, cRes] = await Promise.all([
-                fetch(`https://raw.githubusercontent.com/${REPO}/main/food/meals.json?t=${Date.now()}`),
-                fetch(`https://api.github.com/repos/${REPO}/contents/food/calendar.json`, {
-                    headers: { 'Authorization': `token ${TOKEN}` }
-                })
+            [mealsDb, calendarDb] = await Promise.all([
+                fetchData('food/meals.json'),
+                fetchData('food/calendar.json')
             ]);
-            
-            mealsDb = await mRes.json();
-            const cData = await cRes.json();
-            calendarDb = JSON.parse(atob(cData.content));
-
             renderCalendarGrid();
         } catch (e) {
-            document.getElementById('cal-title').innerText = "Connection Error. Check Repo/Token.";
+            document.getElementById('cal-title').innerText = "Connection Error";
             console.error(e);
         }
     }
@@ -101,12 +110,12 @@
     function renderCalendarGrid() {
         const grid = document.getElementById('calendarGrid');
         grid.innerHTML = '';
-        const todayStr = new Date().toISOString().split('T')[0];
+        const todayStr = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD format
         
         for(let i=0; i<14; i++) {
             const d = new Date(currentStartDate);
             d.setDate(currentStartDate.getDate() + i);
-            const dateStr = d.toISOString().split('T')[0];
+            const dateStr = d.toLocaleDateString('en-CA');
             const dayMeals = calendarDb.filter(p => p.date === dateStr);
             
             const dayBox = document.createElement('div');
@@ -114,11 +123,11 @@
             dayBox.innerHTML = `<strong>${d.getMonth()+1}/${d.getDate()}</strong>`;
             
             dayMeals.forEach(m => {
-                const mealData = mealsDb.find(db => db.name === m.meal);
+                const mealData = mealsDb.find(db => db.name.trim() === m.meal.trim());
                 const link = mealData ? mealData.link : "#";
                 const item = document.createElement('div');
                 item.className = 'calendar-meal';
-                item.innerHTML = `<a href="${link}" target="_blank">${m.meal}</a>`;
+                item.innerHTML = `<a href="${link}" target="_blank" title="${m.meal}">${m.meal}</a>`;
                 dayBox.appendChild(item);
             });
             grid.appendChild(dayBox);
@@ -134,28 +143,44 @@
         renderCalendarGrid();
     }
 
+    function resetToToday() {
+        currentStartDate = new Date();
+        renderCalendarGrid();
+    }
+
     function generateShoppingList() {
         const s = document.getElementById('start').value, e = document.getElementById('end').value;
+        if(!s || !e) return alert("Select dates first!");
+
         const planned = calendarDb.filter(p => p.date >= s && p.date <= e);
         const tally = {};
 
         planned.forEach(p => {
-            const meal = mealsDb.find(m => m.name === p.meal);
+            const meal = mealsDb.find(m => m.name.trim() === p.meal.trim());
             if (!meal) return;
             meal.components.forEach(comp => {
                 if (p.sides_included.includes(comp.name)) {
-                    comp.ingredients.forEach(ing => { tally[ing] = (tally[ing] || 0) + 1; });
+                    comp.ingredients.forEach(ing => {
+                        const clean = ing.trim();
+                        if(clean) tally[clean] = (tally[clean] || 0) + 1;
+                    });
                 }
             });
         });
 
         const listArea = document.getElementById('shopping-list-box');
         listArea.style.display = 'block';
-        document.getElementById('list-display').innerHTML = Object.keys(tally).sort().map(ing => `
-            <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #eee;">
-                <span>${ing}</span>
-                <b>${tally[ing] > 1 ? 'x'+tally[ing] : ''}</b>
-            </div>`).join('');
+        const sorted = Object.keys(tally).sort();
+        
+        document.getElementById('list-display').innerHTML = sorted.length > 0 
+            ? sorted.map(ing => `
+                <div class="ingredient-item">
+                    <span>${ing}</span>
+                    ${tally[ing] > 1 ? `<span class="qty">x${tally[ing]}</span>` : ''}
+                </div>`).join('')
+            : "No ingredients found for these dates.";
+        
+        listArea.scrollIntoView({ behavior: 'smooth' });
     }
 
     init();
