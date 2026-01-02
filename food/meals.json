@@ -54,13 +54,14 @@
             "name": "Mashed potatoes",
             "type": "side",
             "ingredients": [
-                "mashed potatoes/rice"
+                "mashed potatoes"
             ]
         },
         {
             "name": "Broccoli ",
             "type": "side",
-            "ingredients": []
+            "ingredients": ["broccoli"
+            ]
         },
         {
             "name": "Egg noodle",
@@ -100,6 +101,42 @@
                 "broccoli"
             ]
         }
+    ]
+},
+    {
+    "name": "Cocktail Meatballs",
+    "link": "https://www.youtube.com/watch?v=veaaoBi3YzM",
+    "tags": ["Slow cooker", "Meatball"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Frozen meatballs",
+                "grape jelly",
+                "BBQ sauce"
+            ]
+        },
+                {
+            "name": "Mashed potatoes",
+            "type": "side",
+            "ingredients": [
+                "mashed potatoes"
+            ]
+        },
+        {
+            "name": "Corn",
+            "type": "side",
+            "ingredients": [corn]
+        },
+        {
+            "name": "Egg noodle",
+            "type": "side",
+            "ingredients": [
+                "egg noodles"
+            ]
+        }
+
     ]
 }
     
