@@ -11,11 +11,11 @@
         .nav-bar a { color: white; text-decoration: none; font-weight: bold; font-size: 0.85em; padding: 5px 10px; border-radius: 4px; }
         .nav-bar a.active { background: #3498db; }
         label { display: block; margin-top: 15px; font-weight: 600; font-size: 0.9em; color: #7f8c8d; }
-        select, input[type="date"] { width: 100%; padding: 12px; margin-top: 5px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; font-size: 16px; }
+        select, input[type="date"], input[type="text"] { width: 100%; padding: 12px; margin-top: 5px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; font-size: 16px; }
         .components-box { margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 10px; border: 1px solid #eee; }
         button { width: 100%; background: #3498db; color: white; border: none; padding: 14px; margin-top: 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
         #status { margin-top: 15px; text-align: center; font-weight: bold; }
-        .filter-row { display: flex; gap: 10px; align-items: center; background: #eef2f3; padding: 10px; border-radius: 8px; margin-top: 5px; }
+        .search-container { background: #eef2f3; padding: 15px; border-radius: 8px; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -31,14 +31,16 @@
         <label>1. Select Date</label>
         <input type="date" id="planDate">
 
-        <label>2. Filter by Category (Optional)</label>
-        <div class="filter-row">
-            <select id="tagFilter" onchange="filterMeals()">
-                <option value="all">All Tags</option>
+        <div class="search-container">
+            <label style="margin-top:0;">2. Search or Filter</label>
+            <input type="text" id="searchInput" placeholder="Type dish name (e.g. 'Beef')..." onkeyup="filterMeals()">
+            
+            <select id="tagFilter" onchange="filterMeals()" style="margin-top:10px;">
+                <option value="all">All Categories</option>
             </select>
         </div>
 
-        <label>3. Choose a Meal</label>
+        <label>3. Select Result</label>
         <select id="mealSelect" onchange="loadComponents()">
             <option value="">-- Choose Meal --</option>
         </select>
@@ -67,14 +69,13 @@
             allMeals = await res.json();
             
             populateTags();
-            filterMeals(); // Initial load
+            filterMeals(); 
         }
 
         function populateTags() {
             const tagSelect = document.getElementById('tagFilter');
             const tags = new Set();
             allMeals.forEach(m => m.tags.forEach(t => tags.add(t.toLowerCase())));
-            
             [...tags].sort().forEach(tag => {
                 const opt = document.createElement('option');
                 opt.value = tag;
@@ -84,13 +85,17 @@
         }
 
         function filterMeals() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const selectedTag = document.getElementById('tagFilter').value;
             const mealSelect = document.getElementById('mealSelect');
+            
             mealSelect.innerHTML = '<option value="">-- Choose Meal --</option>';
 
-            const filtered = allMeals.filter(m => 
-                selectedTag === 'all' || m.tags.some(t => t.toLowerCase() === selectedTag)
-            );
+            const filtered = allMeals.filter(m => {
+                const matchesTag = selectedTag === 'all' || m.tags.some(t => t.toLowerCase() === selectedTag);
+                const matchesSearch = m.name.toLowerCase().includes(searchTerm);
+                return matchesTag && matchesSearch;
+            });
 
             filtered.forEach(m => {
                 const opt = document.createElement('option');
@@ -116,31 +121,39 @@
         }
 
         async function saveToCalendar() {
+            const statusDiv = document.getElementById('status');
             const date = document.getElementById('planDate').value;
             const mealName = document.getElementById('mealSelect').value;
             if (!date || !mealName) return alert("Select date and meal.");
 
+            statusDiv.innerHTML = "Processing...";
+
             const selected = Array.from(document.querySelectorAll('#componentList input:checked')).map(cb => cb.value);
             const url = `https://api.github.com/repos/${REPO}/contents/food/calendar.json`;
 
-            const getRes = await fetch(url, { headers: { 'Authorization': `token ${GITHUB_TOKEN}` } });
-            const fileData = await getRes.json();
-            const content = JSON.parse(atob(fileData.content));
-            content.push({ date, meal: mealName, sides_included: selected });
+            try {
+                const getRes = await fetch(url, { headers: { 'Authorization': `token ${GITHUB_TOKEN}` } });
+                const fileData = await getRes.json();
+                const content = JSON.parse(atob(fileData.content));
+                
+                content.push({ date, meal: mealName, sides_included: selected });
 
-            const putRes = await fetch(url, {
-                method: 'PUT',
-                headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    message: `Plan ${date}`, 
-                    content: btoa(JSON.stringify(content, null, 2)), 
-                    sha: fileData.sha 
-                })
-            });
+                const putRes = await fetch(url, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        message: `Plan ${date}`, 
+                        content: btoa(JSON.stringify(content, null, 2)), 
+                        sha: fileData.sha 
+                    })
+                });
 
-            if (putRes.ok) {
-                document.getElementById('status').innerHTML = '<span style="color:green">Saved!</span>';
-                setTimeout(() => location.reload(), 1000);
+                if (putRes.ok) {
+                    statusDiv.innerHTML = '<span style="color:green">Success! Meal Added.</span>';
+                    setTimeout(() => location.reload(), 1500);
+                }
+            } catch (err) {
+                statusDiv.innerHTML = '<span style="color:red">Error saving to GitHub.</span>';
             }
         }
         init();
