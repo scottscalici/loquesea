@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Planner</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background: #f4f7f6; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .nav-bar { display: flex; justify-content: center; background: #2c3e50; padding: 10px; margin-bottom: 20px; border-radius: 8px; gap: 15px; }
+        .nav-bar a { color: white; text-decoration: none; font-weight: bold; font-size: 0.9em; padding: 5px 10px; border-radius: 4px; }
+        .nav-bar a.active { background: #3498db; }
+        select, input[type="date"] { width: 100%; padding: 12px; margin-top: 5px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
+        .components-box { margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 10px; border: 1px solid #eee; }
+        button { width: 100%; background: #3498db; color: white; border: none; padding: 14px; margin-top: 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        #status { margin-top: 15px; text-align: center; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="nav-bar">
+            <a href="convert.html">1. Add New Meals</a>
+            <a href="planner.html" class="active">2. Plan Week</a>
+            <a href="view.html">3. Shopping List</a>
+        </nav>
+        <h2>Plan a Meal</h2>
+        <input type="date" id="planDate">
+        <select id="mealSelect" onchange="loadComponents()"><option>Loading...</option></select>
+        <div id="componentsArea" class="components-box" style="display:none;"><div id="componentList"></div></div>
+        <button onclick="saveToCalendar()">Save to GitHub</button>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        const REPO = 'scottscalici/loquesea';
+        let GITHUB_TOKEN = localStorage.getItem('gh_token');
+        let allMeals = [];
+
+        async function init() {
+            if (!GITHUB_TOKEN) {
+                const token = prompt("Enter GitHub Token:");
+                if (token) { localStorage.setItem('gh_token', token); GITHUB_TOKEN = token; }
+            }
+            const res = await fetch(`https://raw.githubusercontent.com/${REPO}/main/food/meals.json`);
+            allMeals = await res.json();
+            const select = document.getElementById('mealSelect');
+            select.innerHTML = '<option value="">-- Choose Meal --</option>' + allMeals.map(m => `<option value="${m.name}">${m.name}</option>`).join('');
+        }
+
+        function loadComponents() {
+            const meal = allMeals.find(m => m.name === document.getElementById('mealSelect').value);
+            const list = document.getElementById('componentList');
+            document.getElementById('componentsArea').style.display = meal ? 'block' : 'none';
+            if (!meal) return;
+            list.innerHTML = meal.components.map((c, i) => `
+                <div style="display:flex; align-items:center; margin-bottom:10px;">
+                    <input type="checkbox" id="c-${i}" value="${c.name}" ${c.type === 'main' ? 'checked disabled' : ''}>
+                    <label for="c-${i}" style="margin-left:10px;">${c.name}</label>
+                </div>`).join('');
+        }
+
+        async function saveToCalendar() {
+            const date = document.getElementById('planDate').value;
+            const mealName = document.getElementById('mealSelect').value;
+            if (!date || !mealName) return alert("Fill all fields");
+
+            const selected = Array.from(document.querySelectorAll('#componentList input:checked')).map(cb => cb.value);
+            const url = `https://api.github.com/repos/${REPO}/contents/food/calendar.json`;
+
+            const getRes = await fetch(url, { headers: { 'Authorization': `token ${GITHUB_TOKEN}` } });
+            const fileData = await getRes.json();
+            const content = JSON.parse(atob(fileData.content));
+            content.push({ date, meal: mealName, sides_included: selected });
+
+            const putRes = await fetch(url, {
+                method: 'PUT',
+                headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: `Plan ${date}`, content: btoa(JSON.stringify(content, null, 2)), sha: fileData.sha })
+            });
+            if (putRes.ok) document.getElementById('status').innerHTML = "Saved!";
+        }
+        init();
+    </script>
+</body>
+</html>
