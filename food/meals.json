@@ -1,143 +1,157 @@
 [
     {
-    "name": "Chicken Alfredo",
-    "link": "https://www.tiktok.com/t/ZTHsqX1VwaJoB-sG7Ov/",
-    "tags": ["Chicken", "Pasta", "Italian"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Chicken",
-                "Fettuccini",
-                "alfredo jars (or heavy cream)"
-            ]
-        },
-        {
-            "name": "Bread",
-            "type": "side",
-            "ingredients": [
-                "garlic bread"
-            ]
-        },
-        {
-            "name": "Salad",
-            "type": "side",
-            "ingredients": [
-                "salad kit"
-            ]
-        },
-        {
-            "name": "Asparagus",
-            "type": "side",
-            "ingredients": [
-                "asparagus"
-            ]
-        }
-    ]
-},
+        "name": "Chicken Alfredo",
+        "link": "https://www.tiktok.com/t/ZTHsqX1VwaJoB-sG7Ov/",
+        "tags": [
+            "Chicken",
+            "Pasta",
+            "Italian"
+        ],
+        "components": [
+            {
+                "name": "Main Dish",
+                "type": "main",
+                "ingredients": [
+                    "Chicken",
+                    "Fettuccini",
+                    "alfredo jars (or heavy cream)"
+                ]
+            },
+            {
+                "name": "Bread",
+                "type": "side",
+                "ingredients": [
+                    "garlic bread"
+                ]
+            },
+            {
+                "name": "Salad",
+                "type": "side",
+                "ingredients": [
+                    "salad kit"
+                ]
+            },
+            {
+                "name": "Asparagus",
+                "type": "side",
+                "ingredients": [
+                    "asparagus"
+                ]
+            }
+        ]
+    },
     {
-    "name": "Beef tips",
-    "link": "https://www.tiktok.com/t/ZThJCjTva/",
-    "tags": ["Beef", "Slow cooker"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Beef tips (chuck roast/stew beef)",
-                "onion soup mix",
-                "broccoli"
-            ]
-        },
-        {
-            "name": "Mashed potatoes",
-            "type": "side",
-            "ingredients": [
-                "mashed potatoes"
-            ]
-        },
-        {
-            "name": "Broccoli ",
-            "type": "side",
-            "ingredients": ["broccoli"
-            ]
-        },
-        {
-            "name": "Egg noodle",
-            "type": "side",
-            "ingredients": [
-                "egg noodles"
-            ]
-        }
-    ]
-},
-{
-    "name": "Pork tenderloin (sweet and sour)",
-    "link": "https://www.tiktok.com/t/ZThJXn2C9/",
-    "tags": ["Pork", "Sheet"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Pork tenderloins",
-                "sweet and sour (BW)",
-                "pineapple chunks",
-                "pepper and onion chopped"
-            ]
-        },
-        {
-            "name": "Rice",
-            "type": "side",
-            "ingredients": [
-                "rice"
-            ]
-        },
-        {
-            "name": "Broccoli",
-            "type": "side",
-            "ingredients": [
-                "broccoli"
-            ]
-        }
-    ]
-},
+        "name": "Beef tips",
+        "link": "https://www.tiktok.com/t/ZThJCjTva/",
+        "tags": [
+            "Beef",
+            "Slow cooker"
+        ],
+        "components": [
+            {
+                "name": "Main Dish",
+                "type": "main",
+                "ingredients": [
+                    "Beef tips (chuck roast/stew beef)",
+                    "onion soup mix",
+                    "broccoli"
+                ]
+            },
+            {
+                "name": "Mashed potatoes",
+                "type": "side",
+                "ingredients": [
+                    "mashed potatoes"
+                ]
+            },
+            {
+                "name": "Broccoli ",
+                "type": "side",
+                "ingredients": [
+                    "broccoli"
+                ]
+            },
+            {
+                "name": "Egg noodle",
+                "type": "side",
+                "ingredients": [
+                    "egg noodles"
+                ]
+            }
+        ]
+    },
     {
-    "name": "Cocktail Meatballs",
-    "link": "https://www.youtube.com/watch?v=veaaoBi3YzM",
-    "tags": ["Slow cooker", "Meatball"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Frozen meatballs",
-                "grape jelly",
-                "BBQ sauce"
-            ]
-        },
-                {
-            "name": "Mashed potatoes",
-            "type": "side",
-            "ingredients": [
-                "mashed potatoes"
-            ]
-        },
-        {
-            "name": "Corn",
-            "type": "side",
-            "ingredients": [corn]
-        },
-        {
-            "name": "Egg noodle",
-            "type": "side",
-            "ingredients": [
-                "egg noodles"
-            ]
-        }
-
-    ]
-}
-    
+        "name": "Pork tenderloin (sweet and sour)",
+        "link": "https://www.tiktok.com/t/ZThJXn2C9/",
+        "tags": [
+            "Pork",
+            "Sheet"
+        ],
+        "components": [
+            {
+                "name": "Main Dish",
+                "type": "main",
+                "ingredients": [
+                    "Pork tenderloins",
+                    "sweet and sour (BW)",
+                    "pineapple chunks",
+                    "pepper and onion chopped"
+                ]
+            },
+            {
+                "name": "Rice",
+                "type": "side",
+                "ingredients": [
+                    "rice"
+                ]
+            },
+            {
+                "name": "Broccoli",
+                "type": "side",
+                "ingredients": [
+                    "broccoli"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Cocktail Meatballs",
+        "link": "https://www.youtube.com/watch?v=veaaoBi3YzM",
+        "tags": [
+            "Slow cooker",
+            "Meatball"
+        ],
+        "components": [
+            {
+                "name": "Main Dish",
+                "type": "main",
+                "ingredients": [
+                    "Frozen meatballs",
+                    "grape jelly",
+                    "BBQ sauce"
+                ]
+            },
+            {
+                "name": "Mashed potatoes",
+                "type": "side",
+                "ingredients": [
+                    "mashed potatoes"
+                ]
+            },
+            {
+                "name": "Corn",
+                "type": "side",
+                "ingredients": [
+                    "corn"
+                ]
+            },
+            {
+                "name": "Egg noodle",
+                "type": "side",
+                "ingredients": [
+                    "egg noodles"
+                ]
+            }
+        ]
+    }
 ]
