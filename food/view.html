@@ -12,30 +12,40 @@
         .nav-bar a.active { background: #3498db; }
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
         
+        /* Calendar Grid */
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
-        .calendar-day { background: white; border: 1px solid #ddd; min-height: 110px; padding: 5px; border-radius: 4px; font-size: 0.8em; position: relative; }
+        .calendar-day { background: white; border: 1px solid #ddd; min-height: 110px; padding: 5px; border-radius: 4px; font-size: 0.8em; }
         .calendar-day.today { background: #fffbe6; border: 2px solid #f1c40f; }
         
-        .calendar-meal { background: #3498db; color: white; padding: 4px; border-radius: 3px; margin-top: 3px; font-size: 0.85em; position: relative; }
-        .calendar-meal a { color: white; text-decoration: none; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 15px; }
+        /* Meal Items & Links */
+        .calendar-meal { background: #3498db; color: white; padding: 4px; border-radius: 3px; margin-top: 3px; font-size: 0.85em; }
+        .calendar-meal a { color: white; text-decoration: none; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         
         /* Action Buttons */
-        .meal-actions { display: flex; gap: 2px; margin-top: 2px; }
-        .act-btn { border: none; padding: 2px 5px; border-radius: 3px; cursor: pointer; font-size: 0.75em; color: white; font-weight: bold; }
+        .meal-actions { display: flex; gap: 2px; margin-top: 4px; }
+        .act-btn { border: none; padding: 2px 4px; border-radius: 3px; cursor: pointer; font-size: 0.7em; color: white; font-weight: bold; flex: 1; text-align: center; }
+        .btn-swap { background: #2980b9; }
         .btn-move { background: #f39c12; }
         .btn-del { background: #e74c3c; }
 
+        /* General Buttons */
         button { cursor: pointer; border: none; border-radius: 6px; font-weight: bold; }
         .btn-nav { background: #34495e; color: white; padding: 8px 15px; }
         .primary { background: #27ae60; color: white; padding: 12px 20px; width: 100%; font-size: 16px; margin-top: 10px; }
 
+        /* Modal / Overlay */
+        #swap-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .swap-modal { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; color: #333; }
+
+        /* Shopping List */
         .ingredient-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
         .qty { font-weight: bold; color: #d48806; background: #fff1b8; padding: 2px 8px; border-radius: 5px; }
 
         @media print {
-            .nav-bar, .btn-nav, .meal-actions, .shopping-controls, .jump-link, .btn-print { display: none !important; }
+            .nav-bar, .btn-nav, .meal-actions, .shopping-controls, .jump-link, .btn-print, #swap-overlay { display: none !important; }
             .calendar-day { min-height: 80px; border: 1px solid #000; }
+            .card { box-shadow: none; border: 1px solid #000; }
         }
     </style>
 </head>
@@ -57,7 +67,7 @@
         <div class="calendar-grid" id="calendarGrid"></div>
         <div style="text-align: center; margin-top: 15px;">
             <a href="#" class="jump-link" onclick="resetToToday()" style="font-size:0.8em; color:#3498db;">Jump to Today</a><br>
-            <button onclick="window.print()" style="margin-top:10px; background:#9b59b6; color:white; padding:8px 15px; border-radius:5px;">🖨️ Print View</button>
+            <button class="btn-print" onclick="window.print()" style="margin-top:10px; background:#9b59b6; color:white; padding:8px 15px; border-radius:5px;">🖨️ Print View</button>
         </div>
     </div>
 
@@ -70,7 +80,23 @@
     </div>
 
     <div class="card" id="shopping-list-box" style="display:none;">
+        <h3>Ingredients Needed</h3>
         <div id="list-display"></div>
+    </div>
+</div>
+
+<div id="swap-overlay">
+    <div class="swap-modal">
+        <h3>Swap Sides</h3>
+        <p id="swap-meal-name" style="font-weight: bold; color:#3498db;"></p>
+        <p id="current-sides-list" style="font-size: 0.9em; font-style: italic;"></p>
+        <hr>
+        <label>Pick replacement side:</label>
+        <select id="all-sides-picker" style="width:100%; padding:10px; margin-top:10px; border-radius: 5px;"></select>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button onclick="confirmSwap()" class="primary" style="margin:0;">Confirm Swap</button>
+            <button onclick="closeSwap()" style="background:#95a5a6; color:white; padding:10px; border-radius:6px; flex:1;">Cancel</button>
+        </div>
     </div>
 </div>
 
@@ -78,24 +104,29 @@
     const REPO = 'scottscalici/loquesea';
     const TOKEN = localStorage.getItem('gh_token');
     let mealsDb = [], calendarDb = [], calendarSha = '', currentStartDate = new Date();
+    let activeSwapIndex = null;
+
+    // Helper to fetch from GitHub API with Authorization
+    async function fetchData(path) {
+        const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
+            headers: { 'Authorization': `token ${TOKEN}` }
+        });
+        if(!res.ok) throw new Error("GitHub Error");
+        const data = await res.json();
+        if(path === 'food/calendar.json') calendarSha = data.sha; 
+        return JSON.parse(atob(data.content));
+    }
 
     async function init() {
-        if (!TOKEN) { alert("Please set your GitHub Token in the Planner first."); return; }
+        if (!TOKEN) { alert("Token missing. Please set it in the Planner."); return; }
         try {
-            // Fetch calendar via API to get the SHA for updating
-            const mRes = await fetch(`https://api.github.com/repos/${REPO}/contents/food/meals.json`, { headers: {'Authorization': `token ${TOKEN}`} });
-            const cRes = await fetch(`https://api.github.com/repos/${REPO}/contents/food/calendar.json`, { headers: {'Authorization': `token ${TOKEN}`} });
-            
-            const mData = await mRes.json();
-            const cData = await cRes.json();
-            
-            mealsDb = JSON.parse(atob(mData.content));
-            calendarDb = JSON.parse(atob(cData.content));
-            calendarSha = cData.sha; // Necessary for GitHub PUT requests
-
+            [mealsDb, calendarDb] = await Promise.all([
+                fetchData('food/meals.json'),
+                fetchData('food/calendar.json')
+            ]);
             renderCalendarGrid();
         } catch (e) {
-            document.getElementById('cal-title').innerText = "Connection Error";
+            document.getElementById('cal-title').innerText = "Sync Failed";
         }
     }
 
@@ -124,15 +155,18 @@
                 item.innerHTML = `
                     <a href="${link}" target="_blank">${m.meal}</a>
                     <div class="meal-actions">
-                        <button class="act-btn btn-move" onclick="moveMeal(${dbIndex})">M</button>
-                        <button class="act-btn btn-del" onclick="deleteMeal(${dbIndex})">X</button>
+                        <button class="act-btn btn-swap" onclick="openSwap(${dbIndex})">Swap</button>
+                        <button class="act-btn btn-move" onclick="moveMeal(${dbIndex})">Move</button>
+                        <button class="act-btn btn-del" onclick="deleteMeal(${dbIndex})">Del</button>
                     </div>
                 `;
                 dayBox.appendChild(item);
             });
             grid.appendChild(dayBox);
         }
-        document.getElementById('cal-title').innerText = `${currentStartDate.toLocaleDateString()} - Range`;
+        const rangeEnd = new Date(currentStartDate);
+        rangeEnd.setDate(currentStartDate.getDate() + 13);
+        document.getElementById('cal-title').innerText = `${currentStartDate.getMonth()+1}/${currentStartDate.getDate()} - ${rangeEnd.getMonth()+1}/${rangeEnd.getDate()}`;
     }
 
     async function updateGitHub() {
@@ -140,15 +174,16 @@
             method: 'PUT',
             headers: { 'Authorization': `token ${TOKEN}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                message: "Update calendar from View",
+                message: "Calendar Update",
                 content: btoa(JSON.stringify(calendarDb, null, 2)),
                 sha: calendarSha
             })
         });
         if(res.ok) location.reload();
-        else alert("Failed to save to GitHub.");
+        else alert("GitHub Save Failed.");
     }
 
+    // --- Action Functions ---
     function deleteMeal(index) {
         if(confirm("Remove this meal?")) {
             calendarDb.splice(index, 1);
@@ -157,16 +192,39 @@
     }
 
     function moveMeal(index) {
-        const newDate = prompt("New Date (YYYY-MM-DD):", calendarDb[index].date);
+        const newDate = prompt("Enter new date (YYYY-MM-DD):", calendarDb[index].date);
         if(newDate) {
             calendarDb[index].date = newDate;
             updateGitHub();
         }
     }
 
+    function openSwap(index) {
+        activeSwapIndex = index;
+        const entry = calendarDb[index];
+        document.getElementById('swap-meal-name').innerText = entry.meal;
+        document.getElementById('current-sides-list').innerText = "Current Sides: " + entry.sides_included.filter(s => s !== "Main Dish").join(", ");
+
+        const sidePicker = document.getElementById('all-sides-picker');
+        const allPossibleSides = new Set();
+        mealsDb.forEach(m => m.components.forEach(c => { if(c.type === 'side') allPossibleSides.add(c.name); }));
+
+        sidePicker.innerHTML = [...allPossibleSides].sort().map(s => `<option value="${s}">${s}</option>`).join('');
+        document.getElementById('swap-overlay').style.display = 'flex';
+    }
+
+    async function confirmSwap() {
+        const newSide = document.getElementById('all-sides-picker').value;
+        calendarDb[activeSwapIndex].sides_included = ["Main Dish", newSide];
+        closeSwap();
+        await updateGitHub();
+    }
+
+    function closeSwap() { document.getElementById('swap-overlay').style.display = 'none'; }
     function changeWeek(days) { currentStartDate.setDate(currentStartDate.getDate() + days); renderCalendarGrid(); }
     function resetToToday() { currentStartDate = new Date(); renderCalendarGrid(); }
 
+    // --- Shopping List Logic ---
     function generateShoppingList() {
         const s = document.getElementById('start').value, e = document.getElementById('end').value;
         if(!s || !e) return alert("Select dates.");
@@ -181,8 +239,10 @@
             });
         });
         document.getElementById('shopping-list-box').style.display = 'block';
-        document.getElementById('list-display').innerHTML = Object.keys(tally).sort().map(ing => `
-            <div class="ingredient-item"><span>${ing}</span>${tally[ing]>1?`<span class="qty">x${tally[ing]}</span>`:''}</div>`).join('');
+        const sorted = Object.keys(tally).sort();
+        document.getElementById('list-display').innerHTML = sorted.length > 0 
+            ? sorted.map(ing => `<div class="ingredient-item"><span>${ing}</span>${tally[ing]>1?`<span class="qty">x${tally[ing]}</span>`:''}</div>`).join('')
+            : "No meals found for this range.";
     }
 
     init();
