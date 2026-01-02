@@ -1,53 +1,106 @@
 [
     {
-        "name": "Beef tips",
-        "link": "https://www.tiktok.com/t/ZThJCjTva/",
-        "sides": [
-            "Mashed potatoes",
-            "Broccoli ",
-            "Egg noodle"
-        ],
-        "ingredients": [
-            "Beef tips (chuck roast/stew beef)",
-            "onion soup mix",
-            "mashed potatoes",
-            "broccoli",
-            "egg noodles"
-        ],
-        "tags": ["beef"]
-    },
+    "name": "Chicken Alfredo ",
+    "link": "https://www.tiktok.com/t/ZTHsqX1VwaJoB-sG7Ov/",
+    "tags": [],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Chicken",
+                "Fettuccini",
+                "alfredo jars (or heavy cream)"
+            ]
+        },
+        {
+            "name": "Bread",
+            "type": "side",
+            "ingredients": [
+                "garlic bread"
+            ]
+        },
+        {
+            "name": "Salad",
+            "type": "side",
+            "ingredients": [
+                "salad kit"
+            ]
+        },
+        {
+            "name": "Asparagus",
+            "type": "side",
+            "ingredients": [
+                "asparagus"
+            ]
+        }
+    ]
+},
     {
-        "name": "Pork tenderloin (sweet and sour)",
-        "link": "https://www.tiktok.com/t/ZThJXn2C9/",
-        "sides": [
-            "Rice"
-        ],
-        "ingredients": [
-            "Pork tenderloins",
-            "sweet and sour (BW)",
-            "pineapple chunks",
-            "rice",
-            "pepper and onion chopped",
-            "broccoli"
-        ],
-        "tags": ["pork"]
-    },
-    {
-        "name": "Chicken Alfredo ",
-        "link": "https://www.tiktok.com/t/ZTHsqX1VwaJoB-sG7Ov/",
-        "sides": [
-            "Bread",
-            "Salad",
-            "Asparagus"
-        ],
-        "ingredients": [
-            "Chicken",
-            "Fettuccini",
-            "alfredo jars (or heavy cream)",
-            "garlic bread",
-            "salad kit",
-            "asparagus"
-        ],
-        "tags": ["chicken", "italian", "pasta"]
-    }
+    "name": "Beef tips",
+    "link": "https://www.tiktok.com/t/ZThJCjTva/",
+    "tags": [],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Beef tips (chuck roast/stew beef)",
+                "onion soup mix",
+                "broccoli"
+            ]
+        },
+        {
+            "name": "Mashed potatoes",
+            "type": "side",
+            "ingredients": [
+                "mashed potatoes/rice"
+            ]
+        },
+        {
+            "name": "Broccoli ",
+            "type": "side",
+            "ingredients": []
+        },
+        {
+            "name": "Egg noodle",
+            "type": "side",
+            "ingredients": [
+                "egg noodles \nPork tenderloin (sweet and sour)"
+            ]
+        }
+    ]
+},
+{
+    "name": "Pork tenderloin (sweet and sour)",
+    "link": "https://www.tiktok.com/t/ZThJXn2C9/",
+    "tags": [],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Pork tenderloins",
+                "sweet and sour (BW)",
+                "pineapple chunks",
+                "pepper and onion chopped"
+            ]
+        },
+        {
+            "name": "Rice",
+            "type": "side",
+            "ingredients": [
+                "rice"
+            ]
+        },
+        {
+            "name": "Broccoli",
+            "type": "side",
+            "ingredients": [
+                "broccoli"
+            ]
+        }
+    ]
+}
+    
 ]
