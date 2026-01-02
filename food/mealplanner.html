@@ -1,73 +1,117 @@
-<div id="filter-controls">
-  <select id="tagFilter" onchange="displayMeals()">
-    <option value="all">All Styles</option>
-    <option value="Italian">Italian</option>
-    <option value="Taco Tuesday">Taco Tuesday</option>
-    <option value="Meatless">Meatless</option>
-  </select>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Planner</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background: #f4f7f6; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; text-align: center; }
+        label { display: block; margin-top: 15px; font-weight: bold; color: #34495e; }
+        select, input[type="date"] { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; }
+        
+        .components-box { margin-top: 20px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 8px; background: #fafafa; }
+        .component-item { display: flex; align-items: center; margin-bottom: 10px; }
+        .component-item input { margin-right: 10px; width: 18px; height: 18px; }
+        
+        button { width: 100%; background: #3498db; color: white; border: none; padding: 12px; margin-top: 20px; border-radius: 6px; font-size: 16px; cursor: pointer; transition: background 0.3s; }
+        button:hover { background: #2980b9; }
+        #status { margin-top: 15px; text-align: center; font-size: 0.9em; color: #27ae60; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Plan a Meal</h2>
+
+    <label>Pick a Date</label>
+    <input type="date" id="planDate">
+
+    <label>Select Meal</label>
+    <select id="mealSelect" onchange="loadComponents()">
+        <option value="">-- Choose a Meal --</option>
+    </select>
+
+    <div id="componentsArea" class="components-box" style="display:none;">
+        <strong>What's on the menu?</strong>
+        <div id="componentList"></div>
+    </div>
+
+    <button onclick="saveToCalendar()">Add to Planner</button>
+    <div id="status"></div>
 </div>
 
-<div id="meal-container" style="display: flex; flex-wrap: wrap; gap: 20px;">
-  </div>
-
 <script>
-async function displayMeals() {
-  const response = await fetch('https://raw.githubusercontent.com/scottscalici/loquesea/main/food/meals.json');
-  const meals = await response.json();
-  const filter = document.getElementById('tagFilter').value;
-  const container = document.getElementById('meal-container');
-  
-  container.innerHTML = ''; // Clear current view
+    let allMeals = [];
 
-  meals.forEach(meal => {
-    // Check if meal matches the selected tag
-    if (filter === 'all' || meal.tags.includes(filter)) {
-      const card = document.createElement('div');
-      card.className = 'recipe-card';
-      card.innerHTML = `
-        <h3>${meal.name}</h3>
-        <p><strong>Tags:</strong> ${meal.tags.join(', ')}</p>
-        <a href="${meal.source.url}" target="_blank">View Video/Link</a>
-        <ul>
-          ${meal.ingredients.map(ing => `<li>${ing}</li>`).join('')}
-        </ul>
-        <button onclick="addToCalendar('${meal.id}')">Add to Planner</button>
-      `;
-      container.appendChild(card);
-    }
-  });
-}
-  // This function takes the filtered list of meals you've planned
-function generateShoppingList(plannedMeals) {
-    const tally = {};
-
-    plannedMeals.forEach(meal => {
-        meal.ingredients.forEach(item => {
-            // Standardize to lowercase so "Onion" and "onion" match
-            const cleanItem = item.trim().toLowerCase();
-            
-            if (tally[cleanItem]) {
-                tally[cleanItem] += 1;
-            } else {
-                tally[cleanItem] = 1;
-            }
+    // 1. Fetch meals from your GitHub
+    async function init() {
+        const response = await fetch('https://raw.githubusercontent.com/scottscalici/loquesea/main/food/meals.json');
+        allMeals = await response.json();
+        
+        const select = document.getElementById('mealSelect');
+        allMeals.forEach(meal => {
+            let opt = document.createElement('option');
+            opt.value = meal.name;
+            opt.textContent = meal.name;
+            select.appendChild(opt);
         });
-    });
-
-    displayList(tally);
-}
-
-function displayList(tally) {
-    const listContainer = document.getElementById('shopping-list-display');
-    listContainer.innerHTML = "<h2>Shopping List</h2>";
-    
-    const ul = document.createElement('ul');
-    for (const [name, qty] of Object.entries(tally)) {
-        const li = document.createElement('li');
-        // If qty is 1, just show the name. If more, show "x2"
-        li.textContent = qty > 1 ? `${name} (x${qty})` : name;
-        ul.appendChild(li);
     }
-    listContainer.appendChild(ul);
-}
+
+    // 2. Show Main + Optional Sides
+    function loadComponents() {
+        const mealName = document.getElementById('mealSelect').value;
+        const meal = allMeals.find(m => m.name === mealName);
+        const area = document.getElementById('componentsArea');
+        const list = document.getElementById('componentList');
+        
+        list.innerHTML = '';
+        if (!meal) { area.style.display = 'none'; return; }
+        
+        area.style.display = 'block';
+        meal.components.forEach((comp, index) => {
+            const item = document.createElement('div');
+            item.className = 'component-item';
+            // Main dish is checked by default, sides are optional
+            const checked = comp.type === 'main' ? 'checked' : '';
+            item.innerHTML = `
+                <input type="checkbox" id="comp-${index}" value="${comp.name}" ${checked}>
+                <label for="comp-${index}" style="margin:0; font-weight:normal;">${comp.name}</label>
+            `;
+            list.appendChild(item);
+        });
+    }
+
+    // 3. Logic to save (placeholder for GitHub API)
+    async function saveToCalendar() {
+        const date = document.getElementById('planDate').value;
+        const mealName = document.getElementById('mealSelect').value;
+        
+        if (!date || !mealName) {
+            alert("Please pick a date and a meal!");
+            return;
+        }
+
+        const selectedComponents = [];
+        document.querySelectorAll('#componentList input:checked').forEach(cb => {
+            selectedComponents.push(cb.value);
+        });
+
+        const newEntry = {
+            date: date,
+            meal: mealName,
+            sides_included: selectedComponents
+        };
+
+        console.log("Saving to Calendar:", newEntry);
+        document.getElementById('status').innerText = "Saved to " + date + "! (Check console for data)";
+        
+        // NEXT STEP: Integrate GitHub API to push 'newEntry' to calendar.json
+    }
+
+    init();
 </script>
+
+</body>
+</html>
