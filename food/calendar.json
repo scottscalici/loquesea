@@ -5,7 +5,7 @@
     "sides_included": [
       "Main Dish",
       "Mashed potatoes",
-      "BroccoliÂ ",
+      "BroccoliÃ‚Â ",
       "Egg noodle"
     ]
   },
@@ -20,12 +20,10 @@
   },
   {
     "date": "2026-01-05",
-    "meal": "Chicken Alfredo�",
+    "meal": "Chicken Alfredo ",
     "sides_included": [
       "Main Dish",
-      "Bread",
-      "Salad",
-      "Asparagus"
+      "Broccoli"
     ]
   }
 ]
