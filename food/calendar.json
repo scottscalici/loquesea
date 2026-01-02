@@ -17,5 +17,15 @@
       "Rice",
       "Broccoli"
     ]
+  },
+  {
+    "date": "2026-01-05",
+    "meal": "Chicken Alfredo ",
+    "sides_included": [
+      "Main Dish",
+      "Bread",
+      "Salad",
+      "Asparagus"
+    ]
   }
 ]
