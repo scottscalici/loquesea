@@ -15,7 +15,7 @@
         .components-box { margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 10px; border: 1px solid #eee; }
         button { width: 100%; background: #3498db; color: white; border: none; padding: 14px; margin-top: 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
         #status { margin-top: 15px; text-align: center; font-weight: bold; }
-        .search-container { background: #eef2f3; padding: 15px; border-radius: 8px; margin-top: 5px; }
+        .side-row { display: flex; align-items: center; margin-bottom: 10px; background: white; padding: 8px; border-radius: 6px; border: 1px solid #eee; }
     </style>
 </head>
 <body>
@@ -31,14 +31,11 @@
         <label>1. Select Date</label>
         <input type="date" id="planDate">
 
-        <div class="search-container">
-            <label style="margin-top:0;">2. Search or Filter</label>
-            <input type="text" id="searchInput" placeholder="Type dish name (e.g. 'Beef')..." onkeyup="filterMeals()">
-            
-            <select id="tagFilter" onchange="filterMeals()" style="margin-top:10px;">
-                <option value="all">All Categories</option>
-            </select>
-        </div>
+        <label>2. Search & Filter</label>
+        <input type="text" id="searchInput" placeholder="Search dish..." onkeyup="filterMeals()">
+        <select id="tagFilter" onchange="filterMeals()" style="margin-top:10px;">
+            <option value="all">All Categories</option>
+        </select>
 
         <label>3. Select Result</label>
         <select id="mealSelect" onchange="loadComponents()">
@@ -48,6 +45,11 @@
         <div id="componentsArea" class="components-box" style="display:none;">
             <label style="margin-top:0;">4. Confirm Sides</label>
             <div id="componentList"></div>
+            
+            <label style="margin-top:15px; color:#3498db;">+ Add/Swap a Different Side</label>
+            <select id="globalSidePicker" onchange="addGlobalSide()">
+                <option value="">-- Select from all sides --</option>
+            </select>
         </div>
 
         <button onclick="saveToCalendar()">Save to GitHub</button>
@@ -69,6 +71,7 @@
             allMeals = await res.json();
             
             populateTags();
+            populateGlobalSides();
             filterMeals(); 
         }
 
@@ -84,11 +87,24 @@
             });
         }
 
+        function populateGlobalSides() {
+            const picker = document.getElementById('globalSidePicker');
+            const sides = new Set();
+            allMeals.forEach(m => m.components.forEach(c => {
+                if(c.type === 'side') sides.add(c.name);
+            }));
+            [...sides].sort().forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s;
+                opt.textContent = s;
+                picker.appendChild(opt);
+            });
+        }
+
         function filterMeals() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const selectedTag = document.getElementById('tagFilter').value;
             const mealSelect = document.getElementById('mealSelect');
-            
             mealSelect.innerHTML = '<option value="">-- Choose Meal --</option>';
 
             const filtered = allMeals.filter(m => {
@@ -103,7 +119,6 @@
                 opt.textContent = m.name;
                 mealSelect.appendChild(opt);
             });
-            loadComponents();
         }
 
         function loadComponents() {
@@ -113,11 +128,28 @@
             document.getElementById('componentsArea').style.display = meal ? 'block' : 'none';
             
             if (!meal) return;
+            // Filter out "Main Dish" from being uncheckable, but keep it in the list
             list.innerHTML = meal.components.map((c, i) => `
-                <div style="display:flex; align-items:center; margin-bottom:10px;">
-                    <input type="checkbox" id="c-${i}" value="${c.name}" ${c.type === 'main' ? 'checked disabled' : ''}>
-                    <label for="c-${i}" style="margin-left:10px; font-weight:normal;">${c.name}</label>
+                <div class="side-row">
+                    <input type="checkbox" class="comp-cb" id="c-${i}" value="${c.name}" ${c.type === 'main' ? 'checked disabled' : 'checked'}>
+                    <label for="c-${i}" style="margin-left:10px; font-weight:normal; margin-top:0;">${c.name} ${c.type === 'main' ? '(Main)' : ''}</label>
                 </div>`).join('');
+        }
+
+        function addGlobalSide() {
+            const picker = document.getElementById('globalSidePicker');
+            const sideName = picker.value;
+            if (!sideName) return;
+
+            const list = document.getElementById('componentList');
+            const id = Date.now();
+            const newSideHtml = `
+                <div class="side-row" style="border-color: #3498db;">
+                    <input type="checkbox" class="comp-cb" id="new-${id}" value="${sideName}" checked>
+                    <label for="new-${id}" style="margin-left:10px; font-weight:normal; margin-top:0;">${sideName} <small>(Added)</small></label>
+                </div>`;
+            list.insertAdjacentHTML('beforeend', newSideHtml);
+            picker.value = ""; // Reset picker
         }
 
         async function saveToCalendar() {
@@ -127,8 +159,7 @@
             if (!date || !mealName) return alert("Select date and meal.");
 
             statusDiv.innerHTML = "Processing...";
-
-            const selected = Array.from(document.querySelectorAll('#componentList input:checked')).map(cb => cb.value);
+            const selected = Array.from(document.querySelectorAll('.comp-cb:checked')).map(cb => cb.value);
             const url = `https://api.github.com/repos/${REPO}/contents/food/calendar.json`;
 
             try {
@@ -153,7 +184,7 @@
                     setTimeout(() => location.reload(), 1500);
                 }
             } catch (err) {
-                statusDiv.innerHTML = '<span style="color:red">Error saving to GitHub.</span>';
+                statusDiv.innerHTML = '<span style="color:red">Error saving.</span>';
             }
         }
         init();
