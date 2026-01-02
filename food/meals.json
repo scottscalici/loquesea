@@ -10,11 +10,11 @@
         "ingredients": [
             "Beef tips (chuck roast/stew beef)",
             "onion soup mix",
-            "mashed potatoes/rice",
+            "mashed potatoes",
             "broccoli",
             "egg noodles"
         ],
-        "tags": []
+        "tags": ["beef"]
     },
     {
         "name": "Pork tenderloin (sweet and sour)",
@@ -30,7 +30,7 @@
             "pepper and onion chopped",
             "broccoli"
         ],
-        "tags": []
+        "tags": ["pork"]
     },
     {
         "name": "Chicken Alfredo ",
@@ -48,6 +48,6 @@
             "salad kit",
             "asparagus"
         ],
-        "tags": []
+        "tags": ["chicken", "italian", "pasta"]
     }
 ]
