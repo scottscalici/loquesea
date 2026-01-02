@@ -1,3 +1,12 @@
 [
-
+  {
+    "date": "2026-01-03",
+    "meal": "Beef tips",
+    "sides_included": [
+      "Main Dish",
+      "Mashed potatoes",
+      "Broccoli ",
+      "Egg noodle"
+    ]
+  }
 ]
