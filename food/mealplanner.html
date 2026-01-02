@@ -37,5 +37,37 @@ async function displayMeals() {
     }
   });
 }
-displayMeals();
+  // This function takes the filtered list of meals you've planned
+function generateShoppingList(plannedMeals) {
+    const tally = {};
+
+    plannedMeals.forEach(meal => {
+        meal.ingredients.forEach(item => {
+            // Standardize to lowercase so "Onion" and "onion" match
+            const cleanItem = item.trim().toLowerCase();
+            
+            if (tally[cleanItem]) {
+                tally[cleanItem] += 1;
+            } else {
+                tally[cleanItem] = 1;
+            }
+        });
+    });
+
+    displayList(tally);
+}
+
+function displayList(tally) {
+    const listContainer = document.getElementById('shopping-list-display');
+    listContainer.innerHTML = "<h2>Shopping List</h2>";
+    
+    const ul = document.createElement('ul');
+    for (const [name, qty] of Object.entries(tally)) {
+        const li = document.createElement('li');
+        // If qty is 1, just show the name. If more, show "x2"
+        li.textContent = qty > 1 ? `${name} (x${qty})` : name;
+        ul.appendChild(li);
+    }
+    listContainer.appendChild(ul);
+}
 </script>
