@@ -5,61 +5,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meal Planner</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background: #f4f7f6; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { color: #2c3e50; text-align: center; }
-        label { display: block; margin-top: 15px; font-weight: bold; color: #34495e; }
-        select, input[type="date"] { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background: #f4f7f6; color: #333; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 25px; }
+        label { display: block; margin-top: 15px; font-weight: 600; font-size: 0.9em; color: #7f8c8d; }
+        select, input[type="date"] { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #dfe6e9; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
         
-        .components-box { margin-top: 20px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 8px; background: #fafafa; }
-        .component-item { display: flex; align-items: center; margin-bottom: 10px; }
-        .component-item input { margin-right: 10px; width: 18px; height: 18px; }
+        .components-box { margin-top: 20px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 10px; background: #f9f9f9; }
+        .component-item { display: flex; align-items: center; margin-bottom: 12px; }
+        .component-item input { width: 20px; height: 20px; margin-right: 12px; cursor: pointer; }
         
-        button { width: 100%; background: #3498db; color: white; border: none; padding: 12px; margin-top: 20px; border-radius: 6px; font-size: 16px; cursor: pointer; transition: background 0.3s; }
+        button { width: 100%; background: #3498db; color: white; border: none; padding: 14px; margin-top: 20px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         button:hover { background: #2980b9; }
-        #status { margin-top: 15px; text-align: center; font-size: 0.9em; color: #27ae60; }
+        .btn-secondary { background: #95a5a6; margin-top: 10px; font-size: 12px; padding: 8px; }
+        
+        #status { margin-top: 20px; text-align: center; font-weight: bold; }
+        .success { color: #27ae60; }
+        .error { color: #e74c3c; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Plan a Meal</h2>
+    <h2>Weekly Planner</h2>
 
-    <label>Pick a Date</label>
+    <label>1. Select Date</label>
     <input type="date" id="planDate">
 
-    <label>Select Meal</label>
+    <label>2. Choose a Meal</label>
     <select id="mealSelect" onchange="loadComponents()">
-        <option value="">-- Choose a Meal --</option>
+        <option value="">-- Loading Meals... --</option>
     </select>
 
     <div id="componentsArea" class="components-box" style="display:none;">
-        <strong>What's on the menu?</strong>
+        <label style="margin-top:0; margin-bottom:10px;">3. What sides are we having?</label>
         <div id="componentList"></div>
     </div>
 
-    <button onclick="saveToCalendar()">Add to Planner</button>
+    <button onclick="saveToCalendar()">Save to Calendar</button>
+    
     <div id="status"></div>
+
+    <button class="btn-secondary" onclick="clearToken()">Update GitHub Token</button>
 </div>
 
 <script>
+    // --- CONFIGURATION ---
+    const REPO_OWNER = 'scottscalici';
+    const REPO_NAME = 'loquesea';
+    const MEALS_FILE = 'food/meals.json';
+    const CALENDAR_FILE = 'food/calendar.json';
+
+    let GITHUB_TOKEN = localStorage.getItem('gh_token');
     let allMeals = [];
 
-    // 1. Fetch meals from your GitHub
+    // --- INITIALIZATION ---
     async function init() {
-        const response = await fetch('https://raw.githubusercontent.com/scottscalici/loquesea/main/food/meals.json');
-        allMeals = await response.json();
-        
-        const select = document.getElementById('mealSelect');
-        allMeals.forEach(meal => {
-            let opt = document.createElement('option');
-            opt.value = meal.name;
-            opt.textContent = meal.name;
-            select.appendChild(opt);
-        });
+        // Prompt for token if missing
+        if (!GITHUB_TOKEN) {
+            const token = prompt("Please enter your GitHub Personal Access Token:");
+            if (token) {
+                localStorage.setItem('gh_token', token);
+                GITHUB_TOKEN = token;
+            } else {
+                alert("Token required to save plans.");
+                return;
+            }
+        }
+
+        try {
+            const response = await fetch(`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${MEALS_FILE}`);
+            allMeals = await response.json();
+            
+            const select = document.getElementById('mealSelect');
+            select.innerHTML = '<option value="">-- Select a Meal --</option>';
+            allMeals.forEach(meal => {
+                let opt = document.createElement('option');
+                opt.value = meal.name;
+                opt.textContent = meal.name;
+                select.appendChild(opt);
+            });
+        } catch (err) {
+            console.error("Failed to load meals:", err);
+            document.getElementById('status').innerHTML = '<span class="error">Error loading meals.json</span>';
+        }
     }
 
-    // 2. Show Main + Optional Sides
+    // --- UI LOGIC ---
     function loadComponents() {
         const mealName = document.getElementById('mealSelect').value;
         const meal = allMeals.find(m => m.name === mealName);
@@ -73,41 +105,90 @@
         meal.components.forEach((comp, index) => {
             const item = document.createElement('div');
             item.className = 'component-item';
-            // Main dish is checked by default, sides are optional
-            const checked = comp.type === 'main' ? 'checked' : '';
+            const isMain = comp.type === 'main';
             item.innerHTML = `
-                <input type="checkbox" id="comp-${index}" value="${comp.name}" ${checked}>
-                <label for="comp-${index}" style="margin:0; font-weight:normal;">${comp.name}</label>
+                <input type="checkbox" id="comp-${index}" value="${comp.name}" ${isMain ? 'checked disabled' : ''}>
+                <label for="comp-${index}" style="margin:0; font-weight:normal; color:#333;">${comp.name}</label>
             `;
             list.appendChild(item);
         });
     }
 
-    // 3. Logic to save (placeholder for GitHub API)
+    // --- GITHUB SAVE LOGIC ---
     async function saveToCalendar() {
         const date = document.getElementById('planDate').value;
         const mealName = document.getElementById('mealSelect').value;
-        
+        const statusDiv = document.getElementById('status');
+
         if (!date || !mealName) {
             alert("Please pick a date and a meal!");
             return;
         }
 
-        const selectedComponents = [];
+        statusDiv.innerHTML = "Saving to GitHub...";
+
+        // Collect checked components
+        const selectedSides = [];
         document.querySelectorAll('#componentList input:checked').forEach(cb => {
-            selectedComponents.push(cb.value);
+            selectedSides.push(cb.value);
         });
 
         const newEntry = {
             date: date,
             meal: mealName,
-            sides_included: selectedComponents
+            sides_included: selectedSides
         };
 
-        console.log("Saving to Calendar:", newEntry);
-        document.getElementById('status').innerText = "Saved to " + date + "! (Check console for data)";
-        
-        // NEXT STEP: Integrate GitHub API to push 'newEntry' to calendar.json
+        const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${CALENDAR_FILE}`;
+
+        try {
+            // 1. Get current calendar content and SHA
+            const getRes = await fetch(url, {
+                headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
+            });
+            
+            if (getRes.status === 401) {
+                alert("Invalid Token. Clearing memory.");
+                localStorage.removeItem('gh_token');
+                location.reload();
+                return;
+            }
+
+            const fileData = await getRes.json();
+            const currentContent = JSON.parse(atob(fileData.content)); // Decode
+            const sha = fileData.sha;
+
+            // 2. Add entry
+            currentContent.push(newEntry);
+
+            // 3. Put back to GitHub
+            const putRes = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: `Planned ${mealName} for ${date}`,
+                    content: btoa(JSON.stringify(currentContent, null, 2)), // Encode
+                    sha: sha
+                })
+            });
+
+            if (putRes.ok) {
+                statusDiv.innerHTML = `<span class="success">Successfully saved to ${date}!</span>`;
+            } else {
+                throw new Error(putRes.statusText);
+            }
+        } catch (error) {
+            console.error(error);
+            statusDiv.innerHTML = `<span class="error">Failed to save: ${error.message}</span>`;
+        }
+    }
+
+    function clearToken() {
+        localStorage.removeItem('gh_token');
+        location.reload();
     }
 
     init();
