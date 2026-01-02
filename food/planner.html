@@ -5,28 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meal Planner</title>
     <style>
-        body { font-family: sans-serif; margin: 20px; background: #f4f7f6; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 20px; background: #f4f7f6; color: #333; }
         .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
         .nav-bar { display: flex; justify-content: center; background: #2c3e50; padding: 10px; margin-bottom: 20px; border-radius: 8px; gap: 15px; }
-        .nav-bar a { color: white; text-decoration: none; font-weight: bold; font-size: 0.9em; padding: 5px 10px; border-radius: 4px; }
+        .nav-bar a { color: white; text-decoration: none; font-weight: bold; font-size: 0.85em; padding: 5px 10px; border-radius: 4px; }
         .nav-bar a.active { background: #3498db; }
-        select, input[type="date"] { width: 100%; padding: 12px; margin-top: 5px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
+        label { display: block; margin-top: 15px; font-weight: 600; font-size: 0.9em; color: #7f8c8d; }
+        select, input[type="date"] { width: 100%; padding: 12px; margin-top: 5px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; font-size: 16px; }
         .components-box { margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 10px; border: 1px solid #eee; }
         button { width: 100%; background: #3498db; color: white; border: none; padding: 14px; margin-top: 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
         #status { margin-top: 15px; text-align: center; font-weight: bold; }
+        .filter-row { display: flex; gap: 10px; align-items: center; background: #eef2f3; padding: 10px; border-radius: 8px; margin-top: 5px; }
     </style>
 </head>
 <body>
     <div class="container">
         <nav class="nav-bar">
-            <a href="convert.html">1. Add New Meals</a>
-            <a href="planner.html" class="active">2. Plan Week</a>
-            <a href="view.html">3. Shopping List</a>
+            <a href="convert.html">1. Add</a>
+            <a href="planner.html" class="active">2. Plan</a>
+            <a href="view.html">3. View/Shop</a>
         </nav>
+
         <h2>Plan a Meal</h2>
+
+        <label>1. Select Date</label>
         <input type="date" id="planDate">
-        <select id="mealSelect" onchange="loadComponents()"><option>Loading...</option></select>
-        <div id="componentsArea" class="components-box" style="display:none;"><div id="componentList"></div></div>
+
+        <label>2. Filter by Category (Optional)</label>
+        <div class="filter-row">
+            <select id="tagFilter" onchange="filterMeals()">
+                <option value="all">All Tags</option>
+            </select>
+        </div>
+
+        <label>3. Choose a Meal</label>
+        <select id="mealSelect" onchange="loadComponents()">
+            <option value="">-- Choose Meal --</option>
+        </select>
+
+        <div id="componentsArea" class="components-box" style="display:none;">
+            <label style="margin-top:0;">4. Confirm Sides</label>
+            <div id="componentList"></div>
+        </div>
+
         <button onclick="saveToCalendar()">Save to GitHub</button>
         <div id="status"></div>
     </div>
@@ -41,28 +62,63 @@
                 const token = prompt("Enter GitHub Token:");
                 if (token) { localStorage.setItem('gh_token', token); GITHUB_TOKEN = token; }
             }
-            const res = await fetch(`https://raw.githubusercontent.com/${REPO}/main/food/meals.json`);
+
+            const res = await fetch(`https://raw.githubusercontent.com/${REPO}/main/food/meals.json?t=${Date.now()}`);
             allMeals = await res.json();
-            const select = document.getElementById('mealSelect');
-            select.innerHTML = '<option value="">-- Choose Meal --</option>' + allMeals.map(m => `<option value="${m.name}">${m.name}</option>`).join('');
+            
+            populateTags();
+            filterMeals(); // Initial load
+        }
+
+        function populateTags() {
+            const tagSelect = document.getElementById('tagFilter');
+            const tags = new Set();
+            allMeals.forEach(m => m.tags.forEach(t => tags.add(t.toLowerCase())));
+            
+            [...tags].sort().forEach(tag => {
+                const opt = document.createElement('option');
+                opt.value = tag;
+                opt.textContent = tag.charAt(0).toUpperCase() + tag.slice(1);
+                tagSelect.appendChild(opt);
+            });
+        }
+
+        function filterMeals() {
+            const selectedTag = document.getElementById('tagFilter').value;
+            const mealSelect = document.getElementById('mealSelect');
+            mealSelect.innerHTML = '<option value="">-- Choose Meal --</option>';
+
+            const filtered = allMeals.filter(m => 
+                selectedTag === 'all' || m.tags.some(t => t.toLowerCase() === selectedTag)
+            );
+
+            filtered.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.name;
+                opt.textContent = m.name;
+                mealSelect.appendChild(opt);
+            });
+            loadComponents();
         }
 
         function loadComponents() {
-            const meal = allMeals.find(m => m.name === document.getElementById('mealSelect').value);
+            const mealName = document.getElementById('mealSelect').value;
+            const meal = allMeals.find(m => m.name === mealName);
             const list = document.getElementById('componentList');
             document.getElementById('componentsArea').style.display = meal ? 'block' : 'none';
+            
             if (!meal) return;
             list.innerHTML = meal.components.map((c, i) => `
                 <div style="display:flex; align-items:center; margin-bottom:10px;">
                     <input type="checkbox" id="c-${i}" value="${c.name}" ${c.type === 'main' ? 'checked disabled' : ''}>
-                    <label for="c-${i}" style="margin-left:10px;">${c.name}</label>
+                    <label for="c-${i}" style="margin-left:10px; font-weight:normal;">${c.name}</label>
                 </div>`).join('');
         }
 
         async function saveToCalendar() {
             const date = document.getElementById('planDate').value;
             const mealName = document.getElementById('mealSelect').value;
-            if (!date || !mealName) return alert("Fill all fields");
+            if (!date || !mealName) return alert("Select date and meal.");
 
             const selected = Array.from(document.querySelectorAll('#componentList input:checked')).map(cb => cb.value);
             const url = `https://api.github.com/repos/${REPO}/contents/food/calendar.json`;
@@ -75,9 +131,17 @@
             const putRes = await fetch(url, {
                 method: 'PUT',
                 headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: `Plan ${date}`, content: btoa(JSON.stringify(content, null, 2)), sha: fileData.sha })
+                body: JSON.stringify({ 
+                    message: `Plan ${date}`, 
+                    content: btoa(JSON.stringify(content, null, 2)), 
+                    sha: fileData.sha 
+                })
             });
-            if (putRes.ok) document.getElementById('status').innerHTML = "Saved!";
+
+            if (putRes.ok) {
+                document.getElementById('status').innerHTML = '<span style="color:green">Saved!</span>';
+                setTimeout(() => location.reload(), 1000);
+            }
         }
         init();
     </script>
