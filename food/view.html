@@ -12,17 +12,24 @@
         .nav-bar a.active { background: #3498db; }
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
         
-        /* Calendar Header & Grid */
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .cal-nav-btn { background: #34495e; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
         .calendar-day { background: white; border: 1px solid #ddd; min-height: 100px; padding: 5px; border-radius: 4px; font-size: 0.8em; }
         .calendar-day.today { background: #fffbe6; border: 2px solid #f1c40f; }
-        .calendar-meal { background: #3498db; color: white; padding: 2px 4px; border-radius: 3px; margin-top: 3px; font-size: 0.9em; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
         
-        .meal-card { border-left: 5px solid #3498db; padding: 12px; margin: 10px 0; background: #fff; border: 1px solid #eee; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-del { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
-        button.primary { background: #27ae60; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
+        .calendar-meal { background: #3498db; color: white; padding: 4px; border-radius: 3px; margin-top: 3px; font-size: 0.9em; }
+        .calendar-meal a { color: white; text-decoration: none; display: block; }
+        
+        button { cursor: pointer; border: none; border-radius: 6px; font-weight: bold; }
+        .btn-nav { background: #34495e; color: white; padding: 8px 15px; }
+        .btn-print { background: #9b59b6; color: white; padding: 10px 20px; margin-top: 10px; }
+        .primary { background: #27ae60; color: white; padding: 12px 20px; width: 100%; font-size: 16px; }
+
+        @media print {
+            .nav-bar, .btn-nav, .btn-print, .shopping-controls { display: none !important; }
+            .card { box-shadow: none; border: 1px solid #eee; }
+            body { background: white; }
+        }
     </style>
 </head>
 <body>
@@ -36,47 +43,64 @@
 
     <div class="card">
         <div class="cal-header">
-            <button class="cal-nav-btn" onclick="changeWeek(-14)">← Prev</button>
-            <h3 id="cal-title" style="margin:0;">Loading Calendar...</h3>
-            <button class="cal-nav-btn" onclick="changeWeek(14)">Next →</button>
+            <button class="btn-nav" onclick="changeWeek(-14)">← Prev</button>
+            <h3 id="cal-title">Syncing with GitHub...</h3>
+            <button class="btn-nav" onclick="changeWeek(14)">Next →</button>
         </div>
         <div class="calendar-grid" id="calendarGrid"></div>
-        <center><a href="#" onclick="resetToToday()" style="font-size:0.8em; color:#3498db; margin-top:10px; display:block;">Jump to Today</a></center>
+        <div style="text-align: center; margin-top: 15px;">
+            <button class="btn-print" onclick="window.print()">Print This View</button>
+        </div>
     </div>
 
-    <div class="card">
+    <div class="card shopping-controls">
         <h3>🛒 Shopping List Generator</h3>
-        <div style="display:flex; gap:10px; margin-bottom:10px;">
+        <div style="display:flex; gap:10px; margin-bottom:10px; align-items: center;">
             <input type="date" id="start"> <span>to</span> <input type="date" id="end">
         </div>
         <button class="primary" onclick="generateShoppingList()">Generate Grocery List</button>
     </div>
 
     <div class="card" id="shopping-list-box" style="display:none;">
+        <h3>Your Ingredients</h3>
         <div id="list-display"></div>
     </div>
 </div>
 
-<style>
-    /* Add this to your existing styles to make the links look good */
-    .calendar-meal a {
-        color: white;
-        text-decoration: none;
-        display: block;
-        width: 100%;
-        height: 100%;
-    }
-    .calendar-meal:hover {
-        background: #2980b9;
-        text-decoration: underline;
-    }
-</style>
-
 <script>
+    const REPO = 'scottscalici/loquesea';
+    const TOKEN = localStorage.getItem('gh_token');
+    let mealsDb = [], calendarDb = [], currentStartDate = new Date();
+
+    async function init() {
+        if (!TOKEN) {
+            document.getElementById('cal-title').innerText = "Error: No GitHub Token Found";
+            return;
+        }
+
+        try {
+            // Adding timestamps to prevent "caching" (seeing old data)
+            const [mRes, cRes] = await Promise.all([
+                fetch(`https://raw.githubusercontent.com/${REPO}/main/food/meals.json?t=${Date.now()}`),
+                fetch(`https://api.github.com/repos/${REPO}/contents/food/calendar.json`, {
+                    headers: { 'Authorization': `token ${TOKEN}` }
+                })
+            ]);
+            
+            mealsDb = await mRes.json();
+            const cData = await cRes.json();
+            calendarDb = JSON.parse(atob(cData.content));
+
+            renderCalendarGrid();
+        } catch (e) {
+            document.getElementById('cal-title').innerText = "Connection Error. Check Repo/Token.";
+            console.error(e);
+        }
+    }
+
     function renderCalendarGrid() {
         const grid = document.getElementById('calendarGrid');
         grid.innerHTML = '';
-        
         const todayStr = new Date().toISOString().split('T')[0];
         
         for(let i=0; i<14; i++) {
@@ -90,26 +114,51 @@
             dayBox.innerHTML = `<strong>${d.getMonth()+1}/${d.getDate()}</strong>`;
             
             dayMeals.forEach(m => {
-                // Find the link from the meals database
                 const mealData = mealsDb.find(db => db.name === m.meal);
                 const link = mealData ? mealData.link : "#";
-
                 const item = document.createElement('div');
                 item.className = 'calendar-meal';
-                
-                // Create the clickable link
-                item.innerHTML = `<a href="${link}" target="_blank" title="View Recipe">${m.meal}</a>`;
-                
+                item.innerHTML = `<a href="${link}" target="_blank">${m.meal}</a>`;
                 dayBox.appendChild(item);
             });
             grid.appendChild(dayBox);
         }
 
-        // Update Header Title
         const endDate = new Date(currentStartDate);
         endDate.setDate(currentStartDate.getDate() + 13);
-        document.getElementById('cal-title').innerText = `${currentStartDate.getMonth()+1}/${currentStartDate.getDate()} - ${endDate.getMonth()+1}/${endDate.getDate()}`;
+        document.getElementById('cal-title').innerText = `${currentStartDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
     }
+
+    function changeWeek(days) {
+        currentStartDate.setDate(currentStartDate.getDate() + days);
+        renderCalendarGrid();
+    }
+
+    function generateShoppingList() {
+        const s = document.getElementById('start').value, e = document.getElementById('end').value;
+        const planned = calendarDb.filter(p => p.date >= s && p.date <= e);
+        const tally = {};
+
+        planned.forEach(p => {
+            const meal = mealsDb.find(m => m.name === p.meal);
+            if (!meal) return;
+            meal.components.forEach(comp => {
+                if (p.sides_included.includes(comp.name)) {
+                    comp.ingredients.forEach(ing => { tally[ing] = (tally[ing] || 0) + 1; });
+                }
+            });
+        });
+
+        const listArea = document.getElementById('shopping-list-box');
+        listArea.style.display = 'block';
+        document.getElementById('list-display').innerHTML = Object.keys(tally).sort().map(ing => `
+            <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #eee;">
+                <span>${ing}</span>
+                <b>${tally[ing] > 1 ? 'x'+tally[ing] : ''}</b>
+            </div>`).join('');
+    }
+
+    init();
 </script>
 </body>
 </html>
