@@ -3,70 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping List</title>
+    <title>Meal Manager & Calendar</title>
     <style>
-        body { font-family: sans-serif; margin: 20px; background: #f4f7f6; }
-        .container { max-width: 600px; margin: auto; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 20px; background: #f4f7f6; color: #333; }
+        .container { max-width: 900px; margin: auto; }
         .nav-bar { display: flex; justify-content: center; background: #2c3e50; padding: 10px; margin-bottom: 20px; border-radius: 8px; gap: 15px; }
         .nav-bar a { color: white; text-decoration: none; font-weight: bold; font-size: 0.9em; padding: 5px 10px; border-radius: 4px; }
         .nav-bar a.active { background: #3498db; }
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .ingredient-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
-        .qty { font-weight: bold; color: #d48806; background: #fff1b8; padding: 2px 8px; border-radius: 5px; }
-        button { background: #27ae60; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; width: 100%; }
+        
+        /* Calendar Grid Styles */
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 20px; }
+        .calendar-day { background: white; border: 1px solid #ddd; min-height: 100px; padding: 5px; border-radius: 4px; font-size: 0.8em; }
+        .calendar-day.today { background: #fffbe6; border: 2px solid #f1c40f; }
+        .calendar-meal { background: #3498db; color: white; padding: 2px 4px; border-radius: 3px; margin-top: 3px; cursor: pointer; font-size: 0.9em; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        
+        /* List View Styles */
+        .meal-card { border-left: 5px solid #3498db; padding: 12px; margin: 10px 0; background: #fff; border: 1px solid #eee; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .side-tag { background: #e1e8ed; color: #607d8b; padding: 2px 8px; border-radius: 12px; font-size: 0.75em; margin-right: 5px; }
+        
+        .btn-del { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-left: 5px; }
+        .btn-move { background: #f39c12; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+        
+        #shopping-list-box { background: #fffbe6; border: 1px solid #ffe58f; display: none; }
+        .ingredient-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dotted #ccc; }
+        button.primary { background: #27ae60; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <nav class="nav-bar">
-            <a href="convert.html">1. Add New Meals</a>
-            <a href="planner.html">2. Plan Week</a>
-            <a href="view.html" class="active">3. Shopping List</a>
-        </nav>
-        <div class="card">
-            <h3>Date Range</h3>
-            <input type="date" id="start"> to <input type="date" id="end">
-            <button onclick="generate()" style="margin-top:10px;">Generate Shopping List</button>
-        </div>
-        <div class="card" id="list-card" style="display:none;">
-            <h3>🛒 Grocery List</h3>
-            <div id="list-display"></div>
-        </div>
+
+<div class="container">
+    <nav class="nav-bar">
+        <a href="convert.html">1. Add New Meals</a>
+        <a href="planner.html">2. Plan Week</a>
+        <a href="view.html" class="active">3. Shopping List & Calendar</a>
+    </nav>
+
+    <div class="card">
+        <h3>📅 Calendar View</h3>
+        <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 
-    <script>
-        const REPO = 'scottscalici/loquesea';
-        let mealsDb = [], calendarDb = [];
+    <div class="card">
+        <h3>🛒 Shopping List Generator</h3>
+        <div style="display:flex; gap:10px; margin-bottom:10px;">
+            <input type="date" id="start"> <span>to</span> <input type="date" id="end">
+        </div>
+        <button class="primary" onclick="generateShoppingList()">Generate Grocery List</button>
+    </div>
 
-        async function init() {
-            const [m, c] = await Promise.all([
-                fetch(`https://raw.githubusercontent.com/${REPO}/main/food/meals.json?t=${Date.now()}`),
-                fetch(`https://raw.githubusercontent.com/${REPO}/main/food/calendar.json?t=${Date.now()}`)
-            ]);
-            mealsDb = await m.json(); calendarDb = await c.json();
-        }
+    <div class="card" id="shopping-list-box">
+        <h3>Ingredients Needed</h3>
+        <div id="list-display"></div>
+    </div>
 
-        function generate() {
-            const s = document.getElementById('start').value, e = document.getElementById('end').value;
-            const planned = calendarDb.filter(p => p.date >= s && p.date <= e);
-            const tally = {};
+    <div class="card">
+        <h3>📋 Planned Meals (Edit/Delete)</h3>
+        <div id="meal-list">Loading...</div>
+    </div>
+</div>
 
-            planned.forEach(p => {
-                const meal = mealsDb.find(m => m.name === p.meal);
-                if (!meal) return;
-                meal.components.forEach(comp => {
-                    if (p.sides_included.includes(comp.name)) {
-                        comp.ingredients.forEach(ing => { tally[ing] = (tally[ing] || 0) + 1; });
-                    }
-                });
+<script>
+    const REPO = 'scottscalici/loquesea';
+    const TOKEN = localStorage.getItem('gh_token');
+    let mealsDb = [], calendarDb = [], calendarSha = '';
+
+    async function init() {
+        const [mRes, cRes] = await Promise.all([
+            fetch(`https://raw.githubusercontent.com/${REPO}/main/food/meals.json?t=${Date.now()}`),
+            fetch(`https://api.github.com/repos/${REPO}/contents/food/calendar.json`, {
+                headers: { 'Authorization': `token ${TOKEN}` }
+            })
+        ]);
+        
+        mealsDb = await mRes.json();
+        const cData = await cRes.json();
+        calendarDb = JSON.parse(atob(cData.content));
+        calendarSha = cData.sha;
+
+        renderCalendarGrid();
+        renderMealList();
+    }
+
+    function renderCalendarGrid() {
+        const grid = document.getElementById('calendarGrid');
+        grid.innerHTML = '';
+        const now = new Date();
+        
+        // Render 14 days starting from today
+        for(let i=0; i<14; i++) {
+            const d = new Date(); d.setDate(now.getDate() + i);
+            const dateStr = d.toISOString().split('T')[0];
+            const dayMeals = calendarDb.filter(p => p.date === dateStr);
+            
+            const dayBox = document.createElement('div');
+            dayBox.className = `calendar-day ${i === 0 ? 'today' : ''}`;
+            dayBox.innerHTML = `<strong>${d.getMonth()+1}/${d.getDate()}</strong>`;
+            
+            dayMeals.forEach(m => {
+                const item = document.createElement('div');
+                item.className = 'calendar-meal';
+                item.innerText = m.meal;
+                dayBox.appendChild(item);
             });
-
-            const display = document.getElementById('list-display');
-            document.getElementById('list-card').style.display = 'block';
-            display.innerHTML = Object.keys(tally).sort().map(ing => `
-                <div class="ingredient-item"><span>${ing}</span>${tally[ing] > 1 ? `<span class="qty">x${tally[ing]}</span>` : ''}</div>`).join('');
+            grid.appendChild(dayBox);
         }
-        init();
-    </script>
+    }
+
+    function renderMealList() {
+        const list = document.getElementById('meal-list');
+        calendarDb.sort((a,b) => new Date(a.date) - new Date(b.date));
+        
+        list.innerHTML = calendarDb.map((entry, index) => `
+            <div class="meal-card">
+                <div>
+                    <strong>${entry.date}</strong>: ${entry.meal}<br>
+                    ${entry.sides_included.map(s => `<span class="side-tag">${s}</span>`).join('')}
+                </div>
+                <div>
+                    <button class="btn-move" onclick="moveMeal(${index})">Move</button>
+                    <button class="btn-del" onclick="deleteMeal(${index})">Delete</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function deleteMeal(index) {
+        if(!confirm("Delete this meal?")) return;
+        calendarDb.splice(index, 1);
+        await updateGitHub();
+    }
+
+    async function moveMeal(index) {
+        const newDate = prompt("Enter new date (YYYY-MM-DD):", calendarDb[index].date);
+        if(newDate) {
+            calendarDb[index].date = newDate;
+            await updateGitHub();
+        }
+    }
+
+    async function updateGitHub() {
+        const res = await fetch(`https://api.github.com/repos/${REPO}/contents/food/calendar.json`, {
+            method: 'PUT',
+            headers: { 'Authorization': `token ${TOKEN}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: "Updated calendar",
+                content: btoa(JSON.stringify(calendarDb, null, 2)),
+                sha: calendarSha
+            })
+        });
+        if(putRes.ok) location.reload();
+    }
+
+    function generateShoppingList() {
+        const s = document.getElementById('start').value, e = document.getElementById('end').value;
+        const planned = calendarDb.filter(p => p.date >= s && p.date <= e);
+        const tally = {};
+
+        planned.forEach(p => {
+            const meal = mealsDb.find(m => m.name === p.meal);
+            if (!meal) return;
+            meal.components.forEach(comp => {
+                if (p.sides_included.includes(comp.name)) {
+                    comp.ingredients.forEach(ing => { tally[ing] = (tally[ing] || 0) + 1; });
+                }
+            });
+        });
+
+        document.getElementById('shopping-list-box').style.display = 'block';
+        document.getElementById('list-display').innerHTML = Object.keys(tally).sort().map(ing => `
+            <div class="ingredient-item"><span>${ing}</span>${tally[ing] > 1 ? `<span class="qty">x${tally[ing]}</span>` : ''}</div>`).join('');
+    }
+
+    init();
+</script>
 </body>
 </html>
