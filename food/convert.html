@@ -3,114 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meal to JSON Converter</title>
+    <title>Meal Converter</title>
     <style>
         body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: 20px auto; padding: 0 20px; color: #333; }
-        h2 { color: #2c3e50; }
-        #excelInput { 
-            width: 100%; min-height: 100px; border: 2px dashed #bbb; 
-            padding: 15px; margin-bottom: 10px; border-radius: 8px;
-            background: #fff; overflow-y: auto;
-        }
-        #excelInput:focus { border-color: #3498db; outline: none; background: #f9f9f9; }
-        button { 
-            background: #27ae60; color: white; border: none; padding: 10px 20px; 
-            border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold;
-        }
-        button:hover { background: #219150; }
-        pre { 
-            background: #2c3e50; color: #ecf0f1; padding: 15px; 
-            border-radius: 8px; overflow-x: auto; font-size: 13px;
-            position: relative;
-        }
-        .copy-btn { position: absolute; right: 10px; top: 10px; background: #95a5a6; font-size: 12px; }
-        .instructions { font-size: 0.9em; color: #666; margin-bottom: 15px; }
+        .nav-bar { display: flex; justify-content: center; background: #2c3e50; padding: 10px; margin-bottom: 20px; border-radius: 8px; gap: 15px; }
+        .nav-bar a { color: white; text-decoration: none; font-weight: bold; font-size: 0.9em; padding: 5px 10px; border-radius: 4px; }
+        .nav-bar a:hover { background: #34495e; }
+        .nav-bar a.active { background: #3498db; }
+        #excelInput { width: 100%; min-height: 100px; border: 2px dashed #bbb; padding: 15px; margin-bottom: 10px; border-radius: 8px; background: #fff; }
+        button { background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 13px; position: relative; }
     </style>
 </head>
 <body>
+    <nav class="nav-bar">
+        <a href="convert.html" class="active">1. Add New Meals</a>
+        <a href="planner.html">2. Plan Week</a>
+        <a href="view.html">3. Shopping List</a>
+    </nav>
 
-    <h2>Excel to Meal JSON Converter</h2>
-    <p class="instructions">
-        1. Copy a row from Excel (Main | Side1 | Side2 | Side3 | Ingredients).<br>
-        2. Paste it into the box below.<br>
-        3. Click Convert to generate your <code>meals.json</code> entry.
-    </p>
-
+    <h2>Excel to Meal JSON</h2>
     <div id="excelInput" contenteditable="true">Paste Excel row here...</div>
-    
     <button onclick="convert()">Convert to JSON</button>
-
-    <div style="position: relative; margin-top: 20px;">
-        <pre id="jsonOutput">JSON will appear here...</pre>
-        <button class="copy-btn" onclick="copyJSON()">Copy JSON</button>
-    </div>
+    <pre id="jsonOutput">JSON will appear here...</pre>
 
     <script>
         function convert() {
-            const inputContainer = document.getElementById('excelInput');
-            
-            // 1. Grab the Link (looks for the first hyperlink in the paste)
-            const firstLink = inputContainer.querySelector('a');
-            const linkUrl = firstLink ? firstLink.href : "PASTE_LINK_HERE";
+            const input = document.getElementById('excelInput');
+            const linkUrl = input.querySelector('a') ? input.querySelector('a').href : "PASTE_LINK_HERE";
+            const cols = input.innerText.trim().split('\t');
+            if (cols.length < 2) return alert("Paste a valid Excel row.");
 
-            // 2. Grab the Text and split by Tabs (Excel default)
-            const text = inputContainer.innerText.trim();
-            const cols = text.split('\t'); 
-            
-            if (cols.length < 2) {
-                alert("Please paste a valid Excel row with tabs between columns.");
-                return;
-            }
-
-            // Map columns based on your description
-            const mainName = cols[0] || "Unnamed Meal";
             const sides = [cols[1], cols[2], cols[3]].filter(s => s && s.trim() !== "");
-            const rawIngredients = cols[4] ? cols[4].split(',').map(i => i.trim()) : [];
+            const allIng = cols[4] ? cols[4].split(',').map(i => i.trim()) : [];
 
-            // 3. Smart Logic: Filter ingredients into Main or Sides
-            const mealEntry = {
-                "name": mainName,
+            const entry = {
+                "name": cols[0],
                 "link": linkUrl,
                 "tags": [],
-                "components": [
-                    {
-                        "name": "Main Dish",
-                        "type": "main",
-                        "ingredients": rawIngredients.filter(ing => 
-                            // If the ingredient doesn't mention any of the side names, it belongs to the main dish
-                            !sides.some(side => ing.toLowerCase().includes(side.toLowerCase()))
-                        )
-                    }
-                ]
+                "components": [{
+                    "name": "Main Dish", "type": "main",
+                    "ingredients": allIng.filter(ing => !sides.some(s => ing.toLowerCase().includes(s.toLowerCase())))
+                }]
             };
 
-            // Add each side as its own component
-            sides.forEach(side => {
-                mealEntry.components.push({
-                    "name": side,
-                    "type": "side",
-                    "ingredients": rawIngredients.filter(ing => 
-                        ing.toLowerCase().includes(side.toLowerCase())
-                    )
-                });
+            sides.forEach(s => {
+                entry.components.push({ "name": s, "type": "side", "ingredients": allIng.filter(ing => ing.toLowerCase().includes(s.toLowerCase())) });
             });
 
-            document.getElementById('jsonOutput').textContent = JSON.stringify(mealEntry, null, 4);
+            document.getElementById('jsonOutput').textContent = JSON.stringify(entry, null, 4);
         }
-
-        function copyJSON() {
-            const text = document.getElementById('jsonOutput').textContent;
-            navigator.clipboard.writeText(text);
-            alert("JSON copied to clipboard!");
-        }
-
-        // Clear placeholder on click
-        document.getElementById('excelInput').addEventListener('focus', function() {
-            if (this.innerText === "Paste Excel row here...") {
-                this.innerText = "";
-            }
-        });
     </script>
-
 </body>
 </html>
