@@ -57,35 +57,28 @@
     </div>
 </div>
 
-<script>
-    const REPO = 'scottscalici/loquesea';
-    const TOKEN = localStorage.getItem('gh_token');
-    let mealsDb = [], calendarDb = [], calendarSha = '';
-    let currentStartDate = new Date();
-
-    async function init() {
-        const [mRes, cRes] = await Promise.all([
-            fetch(`https://raw.githubusercontent.com/${REPO}/main/food/meals.json?t=${Date.now()}`),
-            fetch(`https://api.github.com/repos/${REPO}/contents/food/calendar.json`, {
-                headers: { 'Authorization': `token ${TOKEN}` }
-            })
-        ]);
-        
-        mealsDb = await mRes.json();
-        const cData = await cRes.json();
-        calendarDb = JSON.parse(atob(cData.content));
-        calendarSha = cData.sha;
-
-        renderCalendarGrid();
+<style>
+    /* Add this to your existing styles to make the links look good */
+    .calendar-meal a {
+        color: white;
+        text-decoration: none;
+        display: block;
+        width: 100%;
+        height: 100%;
     }
+    .calendar-meal:hover {
+        background: #2980b9;
+        text-decoration: underline;
+    }
+</style>
 
+<script>
     function renderCalendarGrid() {
         const grid = document.getElementById('calendarGrid');
         grid.innerHTML = '';
         
         const todayStr = new Date().toISOString().split('T')[0];
         
-        // Show 14 days from currentStartDate
         for(let i=0; i<14; i++) {
             const d = new Date(currentStartDate);
             d.setDate(currentStartDate.getDate() + i);
@@ -97,9 +90,16 @@
             dayBox.innerHTML = `<strong>${d.getMonth()+1}/${d.getDate()}</strong>`;
             
             dayMeals.forEach(m => {
+                // Find the link from the meals database
+                const mealData = mealsDb.find(db => db.name === m.meal);
+                const link = mealData ? mealData.link : "#";
+
                 const item = document.createElement('div');
                 item.className = 'calendar-meal';
-                item.innerText = m.meal;
+                
+                // Create the clickable link
+                item.innerHTML = `<a href="${link}" target="_blank" title="View Recipe">${m.meal}</a>`;
+                
                 dayBox.appendChild(item);
             });
             grid.appendChild(dayBox);
@@ -110,19 +110,6 @@
         endDate.setDate(currentStartDate.getDate() + 13);
         document.getElementById('cal-title').innerText = `${currentStartDate.getMonth()+1}/${currentStartDate.getDate()} - ${endDate.getMonth()+1}/${endDate.getDate()}`;
     }
-
-    function changeWeek(days) {
-        currentStartDate.setDate(currentStartDate.getDate() + days);
-        renderCalendarGrid();
-    }
-
-    function resetToToday() {
-        currentStartDate = new Date();
-        renderCalendarGrid();
-    }
-
-    // [GenerateShoppingList function remains the same as previous version]
-    init();
 </script>
 </body>
 </html>
