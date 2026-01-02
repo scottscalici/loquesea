@@ -8,5 +8,14 @@
       "BroccoliÂ ",
       "Egg noodle"
     ]
+  },
+  {
+    "date": "2026-01-04",
+    "meal": "Pork tenderloin (sweet and sour)",
+    "sides_included": [
+      "Main Dish",
+      "Rice",
+      "Broccoli"
+    ]
   }
 ]
