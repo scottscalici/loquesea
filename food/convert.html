@@ -1,0 +1,21 @@
+<textarea id="excelInput" placeholder="Paste Excel row here..." style="width:100%; height:100px;"></textarea>
+<button onclick="convert()">Convert to JSON</button>
+<pre id="jsonOutput" style="background:#f4f4f4; padding:10px;"></pre>
+
+<script>
+function convert() {
+    const input = document.getElementById('excelInput').value;
+    // Assuming your Excel columns are: Name (with link), Side1, Side2, Side3, Ingredients
+    const cols = input.split('\t'); 
+    
+    const mealEntry = {
+        "name": cols[0] || "New Meal",
+        "link": "PASTE_LINK_HERE", // Since Excel usually loses the hyperlink on paste
+        "sides": [cols[1], cols[2], cols[3]].filter(s => s), // Grabs non-empty sides
+        "ingredients": cols[4] ? cols[4].split(',').map(i => i.trim()) : [],
+        "tags": []
+    };
+
+    document.getElementById('jsonOutput').textContent = JSON.stringify(mealEntry, null, 2);
+}
+</script>
