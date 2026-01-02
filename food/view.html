@@ -3,150 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping List & Calendar</title>
+    <title>Shopping List</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; margin: 20px; background: #f4f7f6; color: #333; }
-        .container { max-width: 800px; margin: auto; }
+        body { font-family: sans-serif; margin: 20px; background: #f4f7f6; }
+        .container { max-width: 600px; margin: auto; }
+        .nav-bar { display: flex; justify-content: center; background: #2c3e50; padding: 10px; margin-bottom: 20px; border-radius: 8px; gap: 15px; }
+        .nav-bar a { color: white; text-decoration: none; font-weight: bold; font-size: 0.9em; padding: 5px 10px; border-radius: 4px; }
+        .nav-bar a.active { background: #3498db; }
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        h2, h3 { color: #2c3e50; }
-        
-        .date-controls { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 20px; flex-wrap: wrap; }
-        input[type="date"], select { padding: 8px; border: 1px solid #ddd; border-radius: 6px; }
-        
-        .meal-card { border-left: 5px solid #3498db; padding: 10px; margin: 10px 0; background: #f9f9f9; display: flex; justify-content: space-between; align-items: center; }
-        .side-tag { background: #e1e8ed; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin-right: 5px; }
-        
-        #shopping-list { background: #fffbe6; border: 1px solid #ffe58f; }
-        .ingredient-item { padding: 5px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
-        .qty { font-weight: bold; color: #d48806; }
-        
-        button { background: #27ae60; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; }
-        button:hover { background: #219150; }
+        .ingredient-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
+        .qty { font-weight: bold; color: #d48806; background: #fff1b8; padding: 2px 8px; border-radius: 5px; }
+        button { background: #27ae60; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; width: 100%; }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <h2>My Meal Calendar</h2>
-
-    <div class="card">
-        <h3>1. Select Shopping Range</h3>
-        <div class="date-controls">
-            <div>
-                <label>Start Date</label><br>
-                <input type="date" id="startDate">
-            </div>
-            <div>
-                <label>End Date</label><br>
-                <input type="date" id="endDate">
-            </div>
-            <button onclick="generateView()">Generate List</button>
+    <div class="container">
+        <nav class="nav-bar">
+            <a href="convert.html">1. Add New Meals</a>
+            <a href="planner.html">2. Plan Week</a>
+            <a href="view.html" class="active">3. Shopping List</a>
+        </nav>
+        <div class="card">
+            <h3>Date Range</h3>
+            <input type="date" id="start"> to <input type="date" id="end">
+            <button onclick="generate()" style="margin-top:10px;">Generate Shopping List</button>
         </div>
-        <small>Quick Select: 
-            <a href="#" onclick="quickSet(0)">Today</a> | 
-            <a href="#" onclick="quickSet(6)">Next 7 Days</a>
-        </small>
+        <div class="card" id="list-card" style="display:none;">
+            <h3>🛒 Grocery List</h3>
+            <div id="list-display"></div>
+        </div>
     </div>
 
-    <div class="card" id="calendar-view">
-        <h3>Planned Meals</h3>
-        <div id="meal-display">Select a range to see meals...</div>
-    </div>
+    <script>
+        const REPO = 'scottscalici/loquesea';
+        let mealsDb = [], calendarDb = [];
 
-    <div class="card" id="shopping-list" style="display:none;">
-        <h3>Groceries (Onion x2 Logic)</h3>
-        <div id="list-display"></div>
-    </div>
-</div>
-
-<script>
-    const REPO = 'scottscalici/loquesea';
-    let mealsDb = [];
-    let calendarDb = [];
-
-    async function init() {
-        // Fetch both files from GitHub
-        const [mRes, cRes] = await Promise.all([
-            fetch(`https://raw.githubusercontent.com/${REPO}/main/food/meals.json`),
-            fetch(`https://raw.githubusercontent.com/${REPO}/main/food/calendar.json`)
-        ]);
-        mealsDb = await mRes.json();
-        calendarDb = await cRes.json();
-    }
-
-    function quickSet(days) {
-        const start = new Date();
-        const end = new Date();
-        end.setDate(start.getDate() + days);
-        document.getElementById('startDate').valueAsDate = start;
-        document.getElementById('endDate').valueAsDate = end;
-        generateView();
-    }
-
-    function generateView() {
-        const start = document.getElementById('startDate').value;
-        const end = document.getElementById('endDate').value;
-        
-        if(!start || !end) return alert("Select dates!");
-
-        // 1. Filter calendar for dates in range
-        const planned = calendarDb.filter(entry => entry.date >= start && entry.date <= end);
-        
-        displayMeals(planned);
-        calculateIngredients(planned);
-    }
-
-    function displayMeals(planned) {
-        const display = document.getElementById('meal-display');
-        if(planned.length === 0) { display.innerHTML = "No meals planned for these dates."; return; }
-
-        display.innerHTML = planned.map(entry => `
-            <div class="meal-card">
-                <div>
-                    <strong>${entry.date}</strong>: ${entry.meal}<br>
-                    ${entry.sides_included.map(s => `<span class="side-tag">${s}</span>`).join('')}
-                </div>
-            </div>
-        `).join('');
-    }
-
-    function calculateIngredients(planned) {
-        const tally = {};
-
-        planned.forEach(plan => {
-            const mealInfo = mealsDb.find(m => m.name === plan.meal);
-            if (!mealInfo) return;
-
-            // Only add ingredients from SELECTED components
-            mealInfo.components.forEach(comp => {
-                if (plan.sides_included.includes(comp.name)) {
-                    comp.ingredients.forEach(ing => {
-                        const cleanIng = ing.toLowerCase().trim();
-                        tally[cleanIng] = (tally[cleanIng] || 0) + 1;
-                    });
-                }
-            });
-        });
-
-        // Display results
-        const listDisplay = document.getElementById('list-display');
-        const listArea = document.getElementById('shopping-list');
-        
-        const sorted = Object.keys(tally).sort();
-        if(sorted.length > 0) {
-            listArea.style.display = 'block';
-            listDisplay.innerHTML = sorted.map(ing => `
-                <div class="ingredient-item">
-                    <span>${ing}</span>
-                    <span class="qty">${tally[ing] > 1 ? 'x' + tally[ing] : ''}</span>
-                </div>
-            `).join('');
-        } else {
-            listArea.style.display = 'none';
+        async function init() {
+            const [m, c] = await Promise.all([
+                fetch(`https://raw.githubusercontent.com/${REPO}/main/food/meals.json?t=${Date.now()}`),
+                fetch(`https://raw.githubusercontent.com/${REPO}/main/food/calendar.json?t=${Date.now()}`)
+            ]);
+            mealsDb = await m.json(); calendarDb = await c.json();
         }
-    }
 
-    init();
-</script>
+        function generate() {
+            const s = document.getElementById('start').value, e = document.getElementById('end').value;
+            const planned = calendarDb.filter(p => p.date >= s && p.date <= e);
+            const tally = {};
+
+            planned.forEach(p => {
+                const meal = mealsDb.find(m => m.name === p.meal);
+                if (!meal) return;
+                meal.components.forEach(comp => {
+                    if (p.sides_included.includes(comp.name)) {
+                        comp.ingredients.forEach(ing => { tally[ing] = (tally[ing] || 0) + 1; });
+                    }
+                });
+            });
+
+            const display = document.getElementById('list-display');
+            document.getElementById('list-card').style.display = 'block';
+            display.innerHTML = Object.keys(tally).sort().map(ing => `
+                <div class="ingredient-item"><span>${ing}</span>${tally[ing] > 1 ? `<span class="qty">x${tally[ing]}</span>` : ''}</div>`).join('');
+        }
+        init();
+    </script>
 </body>
 </html>
