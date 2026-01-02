@@ -14,28 +14,28 @@
         
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
-        .calendar-day { background: white; border: 1px solid #ddd; min-height: 100px; padding: 5px; border-radius: 4px; font-size: 0.8em; overflow: hidden; }
+        .calendar-day { background: white; border: 1px solid #ddd; min-height: 110px; padding: 5px; border-radius: 4px; font-size: 0.8em; position: relative; }
         .calendar-day.today { background: #fffbe6; border: 2px solid #f1c40f; }
         
-        .calendar-meal { background: #3498db; color: white; padding: 4px; border-radius: 3px; margin-top: 3px; font-size: 0.85em; }
-        .calendar-meal a { color: white; text-decoration: none; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .calendar-meal { background: #3498db; color: white; padding: 4px; border-radius: 3px; margin-top: 3px; font-size: 0.85em; position: relative; }
+        .calendar-meal a { color: white; text-decoration: none; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 15px; }
         
+        /* Action Buttons */
+        .meal-actions { display: flex; gap: 2px; margin-top: 2px; }
+        .act-btn { border: none; padding: 2px 5px; border-radius: 3px; cursor: pointer; font-size: 0.75em; color: white; font-weight: bold; }
+        .btn-move { background: #f39c12; }
+        .btn-del { background: #e74c3c; }
+
         button { cursor: pointer; border: none; border-radius: 6px; font-weight: bold; }
         .btn-nav { background: #34495e; color: white; padding: 8px 15px; }
-        .btn-print { background: #9b59b6; color: white; padding: 10px 20px; margin-top: 10px; }
         .primary { background: #27ae60; color: white; padding: 12px 20px; width: 100%; font-size: 16px; margin-top: 10px; }
 
         .ingredient-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
         .qty { font-weight: bold; color: #d48806; background: #fff1b8; padding: 2px 8px; border-radius: 5px; }
 
-        /* Print formatting */
         @media print {
-            .nav-bar, .btn-nav, .btn-print, .shopping-controls, .jump-link { display: none !important; }
-            .card { box-shadow: none; border: 1px solid #000; margin: 0; padding: 10px; }
+            .nav-bar, .btn-nav, .meal-actions, .shopping-controls, .jump-link, .btn-print { display: none !important; }
             .calendar-day { min-height: 80px; border: 1px solid #000; }
-            body { background: white; margin: 0; padding: 0; }
-            .calendar-meal { background: #eee; color: #000; border: 1px solid #ccc; }
-            .calendar-meal a { color: #000; }
         }
     </style>
 </head>
@@ -55,9 +55,9 @@
             <button class="btn-nav" onclick="changeWeek(14)">Next →</button>
         </div>
         <div class="calendar-grid" id="calendarGrid"></div>
-        <div style="text-align: center; margin-top: 10px;">
+        <div style="text-align: center; margin-top: 15px;">
             <a href="#" class="jump-link" onclick="resetToToday()" style="font-size:0.8em; color:#3498db;">Jump to Today</a><br>
-            <button class="btn-print" onclick="window.print()">🖨️ Print Calendar & List</button>
+            <button onclick="window.print()" style="margin-top:10px; background:#9b59b6; color:white; padding:8px 15px; border-radius:5px;">🖨️ Print View</button>
         </div>
     </div>
 
@@ -70,7 +70,6 @@
     </div>
 
     <div class="card" id="shopping-list-box" style="display:none;">
-        <h3>Ingredients Needed</h3>
         <div id="list-display"></div>
     </div>
 </div>
@@ -78,39 +77,32 @@
 <script>
     const REPO = 'scottscalici/loquesea';
     const TOKEN = localStorage.getItem('gh_token');
-    let mealsDb = [], calendarDb = [], currentStartDate = new Date();
-
-    async function fetchData(path) {
-        // We use the GitHub API instead of raw.githubusercontent to bypass cache/CORS issues
-        const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
-            headers: { 'Authorization': `token ${TOKEN}` }
-        });
-        const data = await res.json();
-        return JSON.parse(atob(data.content));
-    }
+    let mealsDb = [], calendarDb = [], calendarSha = '', currentStartDate = new Date();
 
     async function init() {
-        if (!TOKEN) {
-            document.getElementById('cal-title').innerText = "Missing GitHub Token";
-            return;
-        }
-
+        if (!TOKEN) { alert("Please set your GitHub Token in the Planner first."); return; }
         try {
-            [mealsDb, calendarDb] = await Promise.all([
-                fetchData('food/meals.json'),
-                fetchData('food/calendar.json')
-            ]);
+            // Fetch calendar via API to get the SHA for updating
+            const mRes = await fetch(`https://api.github.com/repos/${REPO}/contents/food/meals.json`, { headers: {'Authorization': `token ${TOKEN}`} });
+            const cRes = await fetch(`https://api.github.com/repos/${REPO}/contents/food/calendar.json`, { headers: {'Authorization': `token ${TOKEN}`} });
+            
+            const mData = await mRes.json();
+            const cData = await cRes.json();
+            
+            mealsDb = JSON.parse(atob(mData.content));
+            calendarDb = JSON.parse(atob(cData.content));
+            calendarSha = cData.sha; // Necessary for GitHub PUT requests
+
             renderCalendarGrid();
         } catch (e) {
             document.getElementById('cal-title').innerText = "Connection Error";
-            console.error(e);
         }
     }
 
     function renderCalendarGrid() {
         const grid = document.getElementById('calendarGrid');
         grid.innerHTML = '';
-        const todayStr = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD format
+        const todayStr = new Date().toLocaleDateString('en-CA');
         
         for(let i=0; i<14; i++) {
             const d = new Date(currentStartDate);
@@ -125,62 +117,72 @@
             dayMeals.forEach(m => {
                 const mealData = mealsDb.find(db => db.name.trim() === m.meal.trim());
                 const link = mealData ? mealData.link : "#";
+                const dbIndex = calendarDb.indexOf(m);
+
                 const item = document.createElement('div');
                 item.className = 'calendar-meal';
-                item.innerHTML = `<a href="${link}" target="_blank" title="${m.meal}">${m.meal}</a>`;
+                item.innerHTML = `
+                    <a href="${link}" target="_blank">${m.meal}</a>
+                    <div class="meal-actions">
+                        <button class="act-btn btn-move" onclick="moveMeal(${dbIndex})">M</button>
+                        <button class="act-btn btn-del" onclick="deleteMeal(${dbIndex})">X</button>
+                    </div>
+                `;
                 dayBox.appendChild(item);
             });
             grid.appendChild(dayBox);
         }
-
-        const endDate = new Date(currentStartDate);
-        endDate.setDate(currentStartDate.getDate() + 13);
-        document.getElementById('cal-title').innerText = `${currentStartDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
+        document.getElementById('cal-title').innerText = `${currentStartDate.toLocaleDateString()} - Range`;
     }
 
-    function changeWeek(days) {
-        currentStartDate.setDate(currentStartDate.getDate() + days);
-        renderCalendarGrid();
+    async function updateGitHub() {
+        const res = await fetch(`https://api.github.com/repos/${REPO}/contents/food/calendar.json`, {
+            method: 'PUT',
+            headers: { 'Authorization': `token ${TOKEN}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: "Update calendar from View",
+                content: btoa(JSON.stringify(calendarDb, null, 2)),
+                sha: calendarSha
+            })
+        });
+        if(res.ok) location.reload();
+        else alert("Failed to save to GitHub.");
     }
 
-    function resetToToday() {
-        currentStartDate = new Date();
-        renderCalendarGrid();
+    function deleteMeal(index) {
+        if(confirm("Remove this meal?")) {
+            calendarDb.splice(index, 1);
+            updateGitHub();
+        }
     }
+
+    function moveMeal(index) {
+        const newDate = prompt("New Date (YYYY-MM-DD):", calendarDb[index].date);
+        if(newDate) {
+            calendarDb[index].date = newDate;
+            updateGitHub();
+        }
+    }
+
+    function changeWeek(days) { currentStartDate.setDate(currentStartDate.getDate() + days); renderCalendarGrid(); }
+    function resetToToday() { currentStartDate = new Date(); renderCalendarGrid(); }
 
     function generateShoppingList() {
         const s = document.getElementById('start').value, e = document.getElementById('end').value;
-        if(!s || !e) return alert("Select dates first!");
-
+        if(!s || !e) return alert("Select dates.");
         const planned = calendarDb.filter(p => p.date >= s && p.date <= e);
         const tally = {};
-
         planned.forEach(p => {
             const meal = mealsDb.find(m => m.name.trim() === p.meal.trim());
-            if (!meal) return;
-            meal.components.forEach(comp => {
-                if (p.sides_included.includes(comp.name)) {
-                    comp.ingredients.forEach(ing => {
-                        const clean = ing.trim();
-                        if(clean) tally[clean] = (tally[clean] || 0) + 1;
-                    });
-                }
+            if (meal) meal.components.forEach(comp => {
+                if (p.sides_included.includes(comp.name)) comp.ingredients.forEach(ing => {
+                    tally[ing.trim()] = (tally[ing.trim()] || 0) + 1;
+                });
             });
         });
-
-        const listArea = document.getElementById('shopping-list-box');
-        listArea.style.display = 'block';
-        const sorted = Object.keys(tally).sort();
-        
-        document.getElementById('list-display').innerHTML = sorted.length > 0 
-            ? sorted.map(ing => `
-                <div class="ingredient-item">
-                    <span>${ing}</span>
-                    ${tally[ing] > 1 ? `<span class="qty">x${tally[ing]}</span>` : ''}
-                </div>`).join('')
-            : "No ingredients found for these dates.";
-        
-        listArea.scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('shopping-list-box').style.display = 'block';
+        document.getElementById('list-display').innerHTML = Object.keys(tally).sort().map(ing => `
+            <div class="ingredient-item"><span>${ing}</span>${tally[ing]>1?`<span class="qty">x${tally[ing]}</span>`:''}</div>`).join('');
     }
 
     init();
