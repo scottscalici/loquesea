@@ -1,1 +1,53 @@
-
+[
+    {
+        "name": "Beef tips",
+        "link": "https://www.tiktok.com/t/ZThJCjTva/",
+        "sides": [
+            "Mashed potatoes",
+            "Broccoli ",
+            "Egg noodle"
+        ],
+        "ingredients": [
+            "Beef tips (chuck roast/stew beef)",
+            "onion soup mix",
+            "mashed potatoes/rice",
+            "broccoli",
+            "egg noodles"
+        ],
+        "tags": []
+    },
+    {
+        "name": "Pork tenderloin (sweet and sour)",
+        "link": "https://www.tiktok.com/t/ZThJXn2C9/",
+        "sides": [
+            "Rice"
+        ],
+        "ingredients": [
+            "Pork tenderloins",
+            "sweet and sour (BW)",
+            "pineapple chunks",
+            "rice",
+            "pepper and onion chopped",
+            "broccoli"
+        ],
+        "tags": []
+    },
+    {
+        "name": "Chicken Alfredo ",
+        "link": "https://www.tiktok.com/t/ZTHsqX1VwaJoB-sG7Ov/",
+        "sides": [
+            "Bread",
+            "Salad",
+            "Asparagus"
+        ],
+        "ingredients": [
+            "Chicken",
+            "Fettuccini",
+            "alfredo jars (or heavy cream)",
+            "garlic bread",
+            "salad kit",
+            "asparagus"
+        ],
+        "tags": []
+    }
+]
