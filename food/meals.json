@@ -81,6 +81,78 @@
         ]
     },
     {
+    "name": "Grilled Cheese ",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["Vegetarian"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "sandwich bread",
+                "cheese"
+            ]
+        },
+        {
+            "name": "Tomato Soup",
+            "type": "side",
+            "ingredients": [
+                "canned tomato soup"
+            ]
+        },
+        {
+            "name": "Apple Slices",
+            "type": "side",
+            "ingredients": [
+                "apple slices"
+            ]
+        },
+        {
+            "name": "Crackers",
+            "type": "side",
+            "ingredients": [
+                "crackers"
+            ]
+        }
+    ]
+},
+    {
+    "name": "Ramen bake",
+    "link": "https://www.tiktok.com/t/ZT6KHdwQr/",
+    "tags": ["Asian", "Noodles"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "red curry paste",
+                "peanut butter",
+                "sesame oil",
+                "coconut milk",
+                "soy sauce",
+                "chicken stock",
+                "ramen",
+                "bok choy",
+                "eggs"
+            ]
+        },
+        {
+            "name": "Dumplings",
+            "type": "side",
+            "ingredients": [
+                "dumplings"
+            ]
+        },
+        {
+            "name": "Edamame",
+            "type": "side",
+            "ingredients": [
+                "edamame"
+            ]
+        }
+    ]
+},
+    {
         "name": "Pork tenderloin (sweet and sour)",
         "link": "https://www.tiktok.com/t/ZThJXn2C9/",
         "tags": [
@@ -114,6 +186,27 @@
             }
         ]
     },
+    {
+    "name": "Chicken Bacon Ranch Mac N Cheese",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["Frozen Meal" "One-Pot"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Birds Eye Voila 42oz Chicken Bacon Ranch"
+            ]
+        },
+        {
+            "name": "Salad",
+            "type": "side",
+            "ingredients": [
+                "Salad"
+            ]
+        }
+    ]
+},
     {
         "name": "Cocktail Meatballs",
         "link": "https://www.youtube.com/watch?v=veaaoBi3YzM",
