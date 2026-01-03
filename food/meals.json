@@ -270,12 +270,61 @@
         {
             "name": "Main Dish",
             "type": "main",
-            "ingredients": []
+            "ingredients": ["Petite Potatoes",
+                "Chicken Breasts",
+                "Parmesan Garlic Sauce (BW)", 
+                "Shredde Mozzarella", 
+                "Grated Parmesan"]
+        },
+            ]
+},
+    {
+    "name": "Pastalaya",
+    "link": "https://www.tiktok.com/t/ZTrAHxf2N/",
+    "tags": ["Pasta", "Cajun", "One Pot"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "bow tie pasta",
+                "smoked sausage",
+                "green pepper",
+                "onion",
+                "celery",
+                "tomato paste",
+                "chicken broth",
+                "cream of celery"
+            ]
+        }
+    ]
+},
+    {
+    "name": "Cheesy Taco Rice",
+    "link": "https://www.tiktok.com/t/ZTrAHXDWc/",
+    "tags": ["Mexican", "One Pot"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Ground Turkey",
+                "Onion",
+                "Taco Seasoning",
+                "Rotel Tomatoes",
+                "Tomato Sauce",
+                "Beef Broth",
+                "Long Grain White Rice",
+                "Shredded Cheddar Cheese",
+                "Burrito size tortillas",
+                "Sour Cream",
+                "Guacamole"
+            ]
         },
         {
-            "name": "Petite Potatoes, Chicken Breasts, Parmesan Garlic Sauce (BW), Shredde Mozzarella, Grated Parmesan",
+            "name": "Nacho Chips",
             "type": "side",
-            "ingredients": []
+            "ingredients": ["tortilla chips"]
         }
     ]
 }
