@@ -27,5 +27,14 @@
       "Salad",
       "Asparagus"
     ]
+  },
+  {
+    "date": "2026-02-16",
+    "meal": "Mississippi Pot Roast",
+    "sides_included": [
+      "Main Dish",
+      "Rice",
+      "Roll"
+    ]
   }
 ]
