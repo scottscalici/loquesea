@@ -602,6 +602,53 @@
     ]
 },
     {
+    "name": "Tuna Helper",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["Tuna", "One-Pot"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Tuna Helper"
+            ]
+        }
+    ]
+},
+    {
+    "name": "Beef Tips 2",
+    "link": "https://youtu.be/ds3cAvfl3jk?si=UagmZxnpJaxvMvP2&t=127",
+    "tags": ["Crockpot", "Beef"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "beef stew meat",
+                "beef broth",
+                "gravy packs"
+                ]
+        },
+        {
+            "name": "Green Beans",
+            "type": "side",
+            "ingredients": [
+                "green beans"
+            ]
+        },
+        {
+            "name": "Mac & Cheese",
+            "type": "side",
+            "ingredients": ["mac & cheese"]
+        },
+        {
+            "name": "Mashed/Baked Potatoes",
+            "type": "side",
+            "ingredients": ["potatoes"]
+        }
+    ]
+}
+    {
     "name": "Pineapple Meatballs",
     "link": "https://youtu.be/ILE2nTP-eP0?si=0FN8DVdI-Lr8IeD6&t=619",
     "tags": ["Meatballs"],
