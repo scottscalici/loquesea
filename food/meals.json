@@ -119,7 +119,7 @@
         "link": "https://www.youtube.com/watch?v=veaaoBi3YzM",
         "tags": [
             "Slow cooker",
-            "Meatball"
+            "Meatballs"
         ],
         "components": [
             {
@@ -215,7 +215,7 @@
     {
     "name": "Spaghetti & Meatballs",
     "link": "PASTE_LINK_HERE",
-    "tags": [],
+    "tags": ["Pasta", "Meatballs", "Italian"],
     "components": [
         {
             "name": "Main Dish",
@@ -244,9 +244,9 @@
     ]
 },
     {
-    "name": "Spanish chicken and rice",
+    "name": "Spanish Chicken and Rice",
     "link": "https://www.tiktok.com/t/ZTMUHav5f/",
-    "tags": [],
+    "tags": ["Chicken", "One-Pot"],
     "components": [
         {
             "name": "Main Dish",
