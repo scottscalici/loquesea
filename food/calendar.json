@@ -36,5 +36,14 @@
       "Rice",
       "Roll"
     ]
+  },
+  {
+    "date": "2026-01-07",
+    "meal": "Coconut Curry chicken",
+    "sides_included": [
+      "Main Dish",
+      "Rice",
+      "Naan"
+    ]
   }
 ]
