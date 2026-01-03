@@ -189,7 +189,7 @@
     {
     "name": "Chicken Bacon Ranch Mac N Cheese",
     "link": "PASTE_LINK_HERE",
-    "tags": ["Frozen Meal" "One-Pot"],
+    "tags": ["Frozen Meal", "One-Pot"],
     "components": [
         {
             "name": "Main Dish",
