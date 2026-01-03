@@ -248,6 +248,39 @@
         ]
     },
     {
+    "name": "Salmon",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["Seafood"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "salmon"
+            ]
+        },
+        {
+            "name": "Asparagus ",
+            "type": "side",
+            "ingredients": ["asparagus"]
+        },
+        {
+            "name": "Rice",
+            "type": "side",
+            "ingredients": [
+                "rice"
+            ]
+        },
+        {
+            "name": "Quinoa",
+            "type": "side",
+            "ingredients": [
+                "quinoa"
+            ]
+        }
+    ]
+},
+    {
     "name": "Loaded Steak Potatoes",
     "link": "https://www.tiktok.com/t/ZTHGk3kymNeK2-YiJ3v/",
     "tags": ["Steak", "Beef", "Potatoes"],
