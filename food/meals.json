@@ -261,6 +261,23 @@
             ]
         }
     ]
+},
+    {
+    "name": "Parmesan Garlic Chicken and Potatoes",
+    "link": "https://www.tiktok.com/t/ZTrAHGXrm/",
+    "tags": ["Chicken", "Slow cooker"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": []
+        },
+        {
+            "name": "Petite Potatoes, Chicken Breasts, Parmesan Garlic Sauce (BW), Shredde Mozzarella, Grated Parmesan",
+            "type": "side",
+            "ingredients": []
+        }
+    ]
 }
     
 ]
