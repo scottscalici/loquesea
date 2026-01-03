@@ -778,6 +778,37 @@
             "ingredients": ["noodles"]
         }
     ]
+},
+    {
+    "name": "Spaghetti Aglio e olio",
+    "link": "https://www.tiktok.com/t/ZThebEsKn/",
+    "tags": ["Italian", "Pasta"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Spaghetti",
+                "Olive oil",
+                "Garlic",
+                "Red pepper flakes"
+            ]
+        },
+        {
+            "name": "Garlic bread",
+            "type": "side",
+            "ingredients": [
+                "garlic bread"
+            ]
+        },
+        {
+            "name": "Salad",
+            "type": "side",
+            "ingredients": [
+                "salad"
+            ]
+        }
+    ]
 }
     
 ]
