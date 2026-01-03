@@ -53,5 +53,12 @@
       "Main Dish",
       "Caesar salad"
     ]
+  },
+  {
+    "date": "2026-03-02",
+    "meal": "Spanish Chicken and Rice",
+    "sides_included": [
+      "Main Dish"
+    ]
   }
 ]
