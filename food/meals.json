@@ -682,6 +682,77 @@
     ]
 },
     {
+    "name": "Shrimp Alfredo ",
+    "link": "PASTE_LINK_HERE",
+    "tags": [],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "shrimp",
+                "Fettuccini",
+                "alfredo sauce"
+                            ]
+        },
+        {
+            "name": "Garlic Bread",
+            "type": "side",
+            "ingredients": [
+                "garlic bread"
+            ]
+        },
+        {
+            "name": "Asparagus ",
+            "type": "side",
+            "ingredients": [
+                "asparagus"
+]
+        },
+        {
+            "name": "House Salad",
+            "type": "side",
+            "ingredients": ["salad kit"]
+        }
+    ]
+},
+    {
+    "name": "BBQ Chicken",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["Chicken", "Slow cooker"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "chicken",
+                "ketchup",
+                "worcestershire",
+                "brown sugar",
+                "chili powder",
+                "curry"
+            ]
+        },
+         {
+            "name": "Noodles",
+            "type": "side",
+            "ingredients": ["noodles"]
+        },
+        {
+            "name": "Rice",
+            "type": "side",
+            "ingredients": ["rice"]
+        },
+        {
+            "name": "Veggie",
+            "type": "side",
+            "ingredients": [
+                "veggie"
+            ]
+        }
+    ]
+},
+    {
     "name": "Pineapple Meatballs",
     "link": "https://youtu.be/ILE2nTP-eP0?si=0FN8DVdI-Lr8IeD6&t=619",
     "tags": ["Meatballs"],
