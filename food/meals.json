@@ -138,9 +138,9 @@
         },
         {
             "name": "Dumplings",
-            "type": "side",
-                "dumplings"
+            "type": "side", 
             "ingredients": [
+                 "dumplings"
             ]
         },
         {
