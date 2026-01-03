@@ -404,6 +404,39 @@
             ]
         }
     ]
+},
+    {
+    "name": "Pot Roast",
+    "link": "https://www.tiktok.com/@vrogers17/video/6996649630243048709",
+    "tags": [],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Chicken or Beef",
+                "Au Jus",
+                "Ranch Seasoning",
+                "Pepperoncini",
+                "Butter"
+            ]
+        },
+        {
+            "name": "Rice",
+            "type": "side",
+            "ingredients": [
+                "rice"
+            ]
+        },
+        {
+            "name": "Roll",
+            "type": "side",
+            "ingredients": [
+                "Hoagie Roll"
+            ]
+        }
+
+    ]
 }
     
 ]
