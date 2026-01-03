@@ -327,6 +327,83 @@
             "ingredients": ["tortilla chips"]
         }
     ]
+},
+    {
+    "name": "Vegetable Curry",
+    "link": "https://www.tiktok.com/t/ZTFh85Puq/",
+    "tags": ["Vegetarian", "One Pot", "Indian"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "chickpeas",
+                "peas",
+                "sweet potatoes",
+                "bell pepper",
+                "broccoli",
+                "spinach",
+                "coconut milk",
+                "crushed tomatoes",
+                "turmeric",
+                "coriander",
+                "garam masala"
+            ]
+        },
+        {
+            "name": "Naan",
+            "type": "side",
+            "ingredients": [
+                "naan"
+            ]
+        },
+        {
+            "name": "Rice",
+            "type": "side",
+            "ingredients": [
+                "jasmine rice"
+            ]
+        }
+    ]
+},
+    {
+    "name": "Coconut Curry chicken",
+    "link": "https://www.tiktok.com/t/ZTHGxYPLkcfxJ-AXNX3/",
+    "tags": ["Indian", "Crock Pot", "Chicken"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "onion",
+                "bell pepper",
+                "baby carrots",
+                "petite potatoes",
+                "chicken breast",
+                "soy sauce",
+                "red curry paste",
+                "curry powder",
+                "brown sugar",
+                "ground ginger",
+                "turmeric",
+                "coconut milk"
+            ]
+        },
+        {
+            "name": "Rice",
+            "type": "side",
+            "ingredients": [
+                "jasmine rice"
+            ]
+        },
+        {
+            "name": "Naan",
+            "type": "side",
+            "ingredients": [
+                "naan"
+            ]
+        }
+    ]
 }
     
 ]
