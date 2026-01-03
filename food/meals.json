@@ -153,5 +153,64 @@
                 ]
             }
         ]
-    }
+    },
+    {
+    "name": "Loaded Steak Potatoes",
+    "link": "https://www.tiktok.com/t/ZTHGk3kymNeK2-YiJ3v/",
+    "tags": ["Steak", "Beef", "Potatoes"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Large potatoes",
+                "steak (cubed)",
+                "tomato paste",
+                "heavy cream",
+                "shredded cheese",
+                "sour cream"
+            ]
+        },
+        {
+            "name": "Caesar salad",
+            "type": "side",
+            "ingredients": [
+                "Caesar salad kit"
+            ]
+        }
+    ]
+},
+    {
+    "name": "Herbed Chicken & Rice Soup",
+    "link": "https://thedomesticgeek.com/herbed-chicken-rice-soup/",
+    "tags": ["Soup", "Chicken"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "chicken",
+                "celery",
+                "carrot",
+                "long grain white rice",
+                "chicken broth"
+            ]
+        },
+        {
+            "name": "Bread",
+            "type": "side",
+            "ingredients": [
+                "bread"
+            ]
+        },
+        {
+            "name": "Salad",
+            "type": "side",
+            "ingredients": [
+                "Salad"
+            ]
+        }
+    ]
+}
+    
 ]
