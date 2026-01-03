@@ -139,8 +139,8 @@
         {
             "name": "Dumplings",
             "type": "side",
-            "ingredients": [
                 "dumplings"
+            "ingredients": [
             ]
         },
         {
@@ -529,6 +529,103 @@
             ]
         }
 
+    ]
+},
+    {
+    "name": "Chicken Marinara Subs",
+    "link": "https://youtu.be/PPG-IpXfLo0?si=WhgH0ohotvrCMsY8&t=627",
+    "tags": ["Crock Pot", "Chicken"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "chicken",
+                "marinara sauce",
+                "rolls",
+                "provolone"
+            ]
+        },
+        {
+            "name": "Noodles",
+            "type": "side",
+            "ingredients": [
+                "noodles"
+            ]
+        },
+        {
+            "name": "Green Beans",
+            "type": "side",
+            "ingredients": [
+                "green beans"
+            ]
+        }
+    ]
+},
+    {
+    "name": "Fajita Wraps",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["Frozen Meal", "Chicken"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "large tortillas",
+                "frozen voila fajita meal",
+                "sour cream",
+                "guac",
+                "salsa"
+            ]
+        },
+        {
+            "name": "Chips & Salsa",
+            "type": "side",
+            "ingredients": [
+                "chips"
+            ]
+        },
+        {
+            "name": "Rice",
+            "type": "side",
+            "ingredients": [
+                "rice"
+            ]
+        },
+        {
+            "name": "Refried Beans",
+            "type": "side",
+            "ingredients": [
+                "refried beans"
+            ]
+        }
+    ]
+},
+    {
+    "name": "Pineapple Meatballs",
+    "link": "https://youtu.be/ILE2nTP-eP0?si=0FN8DVdI-Lr8IeD6&t=619",
+    "tags": [],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "meatballs",
+                "pineapple chunks",
+                "diced peppers and onion",
+                "BBQ sauce"
+            ]
+        },
+        {
+            "name": "Mashed Potatoes",
+            "type": "side",
+            "ingredients": ["mashed potatoes"]
+        },
+        {
+            "name": "Noodles",
+            "type": "side",
+            "ingredients": ["noodles"]
+        }
     ]
 }
     
