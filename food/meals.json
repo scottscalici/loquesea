@@ -684,7 +684,7 @@
     {
     "name": "Shrimp Alfredo ",
     "link": "PASTE_LINK_HERE",
-    "tags": [],
+    "tags": ["Seafood", "Pasta", "Shrimp"],
     "components": [
         {
             "name": "Main Dish",
