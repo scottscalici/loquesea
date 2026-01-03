@@ -45,5 +45,13 @@
       "Rice",
       "Naan"
     ]
+  },
+  {
+    "date": "2026-01-12",
+    "meal": "Loaded Steak Potatoes",
+    "sides_included": [
+      "Main Dish",
+      "Caesar salad"
+    ]
   }
 ]
