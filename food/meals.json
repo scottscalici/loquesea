@@ -211,6 +211,56 @@
             ]
         }
     ]
+},
+    {
+    "name": "Spaghetti & Meatballs",
+    "link": "PASTE_LINK_HERE",
+    "tags": [],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Spaghetti",
+                "marinara",
+                "parmesan",
+                "meatballs"
+            ]
+        },
+        {
+            "name": "Salad",
+            "type": "side",
+            "ingredients": [
+                "salad"
+            ]
+        },
+        {
+            "name": "Bread",
+            "type": "side",
+            "ingredients": [
+                "bread"
+            ]
+        }
+    ]
+},
+    {
+    "name": "Spanish chicken and rice",
+    "link": "https://www.tiktok.com/t/ZTMUHav5f/",
+    "tags": [],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Chicken breasts",
+                "Rotel tomatoes",
+                "Spanish Rice-A-Roni",
+                "Corn",
+                "Velveeta Queso Blanco",
+                "Evaporated Milk"
+            ]
+        }
+    ]
 }
     
 ]
