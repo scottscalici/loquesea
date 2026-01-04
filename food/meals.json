@@ -780,6 +780,23 @@
     ]
 },
     {
+    "name": "Southwestern tortellini ",
+    "link": "https://www.tiktok.com/t/ZTNNPD7Vp/",
+    "tags": ["Chicken", "One-Pot"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Peppers and onions",
+                "cubed chicken",
+                "frozen tortellini",
+                "southwestern ranch new"
+            ]
+        }
+    ]
+},
+    {
     "name": "Spaghetti Aglio e olio",
     "link": "https://www.tiktok.com/t/ZThebEsKn/",
     "tags": ["Italian", "Pasta"],
