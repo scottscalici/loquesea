@@ -207,6 +207,27 @@
         }
     ]
 },
+     {
+    "name": "Garlic Chicken",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["Frozen Meal", "One-Pot"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Birds Eye Voila 42oz Garlic Chicken"
+            ]
+        },
+        {
+            "name": "Salad",
+            "type": "side",
+            "ingredients": [
+                "Salad"
+            ]
+        }
+    ]
+},
     {
         "name": "Cocktail Meatballs",
         "link": "https://www.youtube.com/watch?v=veaaoBi3YzM",
