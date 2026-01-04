@@ -60,5 +60,14 @@
     "sides_included": [
       "Main Dish"
     ]
+  },
+  {
+    "date": "2026-01-13",
+    "meal": "Spaghetti & Meatballs",
+    "sides_included": [
+      "Main Dish",
+      "Salad",
+      "Bread"
+    ]
   }
 ]
