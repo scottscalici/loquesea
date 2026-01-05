@@ -80,6 +80,42 @@
             }
         ]
     },
+{
+    "name": "Flounder",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["Seafood"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Fish",
+                "lemon"
+            ]
+        },
+        {
+            "name": "Quinoa",
+            "type": "side",
+            "ingredients": [
+                "quinoa"
+            ]
+        },
+        {
+            "name": "Noodles",
+            "type": "side",
+            "ingredients": [
+                "noodles"
+            ]
+        },
+        {
+            "name": "Asparagus",
+            "type": "side",
+            "ingredients": [
+                "asparagus"
+            ]
+        }
+    ]
+},
     {
     "name": "Grilled Cheese ",
     "link": "PASTE_LINK_HERE",
@@ -112,6 +148,31 @@
             "type": "side",
             "ingredients": [
                 "crackers"
+            ]
+        }
+    ]
+},
+    {
+    "name": "Lomo Saltado",
+    "link": "https://www.tiktok.com/t/ZTNcUJdKb/",
+    "tags": ["Peruvian", "One-Pot"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Sirloin steak",
+                "red onion",
+                "Roma tomatoes",
+                "ají Amarillo",
+                "frozen French fries"
+            ]
+        },
+        {
+            "name": "Rice",
+            "type": "side",
+            "ingredients": [
+                "rice"
             ]
         }
     ]
