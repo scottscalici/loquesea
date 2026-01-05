@@ -78,5 +78,14 @@
       "Cottage Cheese",
       "Garlic / Cheesy Bread"
     ]
+  },
+  {
+    "date": "2026-01-14",
+    "meal": "Stuffed Peppers",
+    "sides_included": [
+      "Main Dish",
+      "Salad",
+      "Garlic / Cheesy Bread"
+    ]
   }
 ]
