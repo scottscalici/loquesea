@@ -87,5 +87,15 @@
       "Salad",
       "Garlic / Cheesy Bread"
     ]
+  },
+  {
+    "date": "2026-01-15",
+    "meal": "BBQ Chicken",
+    "sides_included": [
+      "Main Dish",
+      "Noodles",
+      "Rice",
+      "Veggie"
+    ]
   }
 ]
