@@ -1,5 +1,81 @@
 [
+        {
+    "name": "BBQ Chicken",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["Chicken", "Slow cooker"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "chicken",
+                "ketchup",
+                "worcestershire",
+                "brown sugar",
+                "chili powder",
+                "curry"
+            ]
+        },
+         {
+            "name": "Noodles",
+            "type": "side",
+            "ingredients": ["noodles"]
+        },
+        {
+            "name": "Rice",
+            "type": "side",
+            "ingredients": ["rice"]
+        },
+        {
+            "name": "Veggie",
+            "type": "side",
+            "ingredients": [
+                "veggie"
+            ]
+        }
+    ]
+},
     {
+        "name": "Beef tips",
+        "link": "https://www.tiktok.com/t/ZThJCjTva/",
+        "tags": [
+            "Beef",
+            "Slow cooker"
+        ],
+        "components": [
+            {
+                "name": "Main Dish",
+                "type": "main",
+                "ingredients": [
+                    "Beef tips (chuck roast/stew beef)",
+                    "onion soup mix",
+                    "broccoli"
+                ]
+            },
+            {
+                "name": "Mashed potatoes",
+                "type": "side",
+                "ingredients": [
+                    "mashed potatoes"
+                ]
+            },
+            {
+                "name": "Broccoli ",
+                "type": "side",
+                "ingredients": [
+                    "broccoli"
+                ]
+            },
+            {
+                "name": "Egg noodle",
+                "type": "side",
+                "ingredients": [
+                    "egg noodles"
+                ]
+            }
+        ]
+    },
+{
         "name": "Chicken Alfredo",
         "link": "https://www.tiktok.com/t/ZTHsqX1VwaJoB-sG7Ov/",
         "tags": [
@@ -41,46 +117,6 @@
         ]
     },
     {
-        "name": "Beef tips",
-        "link": "https://www.tiktok.com/t/ZThJCjTva/",
-        "tags": [
-            "Beef",
-            "Slow cooker"
-        ],
-        "components": [
-            {
-                "name": "Main Dish",
-                "type": "main",
-                "ingredients": [
-                    "Beef tips (chuck roast/stew beef)",
-                    "onion soup mix",
-                    "broccoli"
-                ]
-            },
-            {
-                "name": "Mashed potatoes",
-                "type": "side",
-                "ingredients": [
-                    "mashed potatoes"
-                ]
-            },
-            {
-                "name": "Broccoli ",
-                "type": "side",
-                "ingredients": [
-                    "broccoli"
-                ]
-            },
-            {
-                "name": "Egg noodle",
-                "type": "side",
-                "ingredients": [
-                    "egg noodles"
-                ]
-            }
-        ]
-    },
-    {
     "name": "Cheeseburger Sliders",
     "link": "https://www.tiktok.com/t/ZTNNQ6nRX/",
     "tags": ["Sheet", "Beef", "American"],
@@ -114,6 +150,69 @@
         }
     ]
 },
+    
+    {
+    "name": "Chicken Bacon Ranch Mac N Cheese",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["Frozen Meal", "One-Pot"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Birds Eye Voila 42oz Chicken Bacon Ranch"
+            ]
+        },
+        {
+            "name": "Salad",
+            "type": "side",
+            "ingredients": [
+                "Salad"
+            ]
+        }
+    ]
+},
+      
+    {
+        "name": "Cocktail Meatballs",
+        "link": "https://www.youtube.com/watch?v=veaaoBi3YzM",
+        "tags": [
+            "Slow cooker",
+            "Meatballs"
+        ],
+        "components": [
+            {
+                "name": "Main Dish",
+                "type": "main",
+                "ingredients": [
+                    "Frozen meatballs",
+                    "grape jelly",
+                    "BBQ sauce"
+                ]
+            },
+            {
+                "name": "Mashed potatoes",
+                "type": "side",
+                "ingredients": [
+                    "mashed potatoes"
+                ]
+            },
+            {
+                "name": "Corn",
+                "type": "side",
+                "ingredients": [
+                    "corn"
+                ]
+            },
+            {
+                "name": "Egg noodle",
+                "type": "side",
+                "ingredients": [
+                    "egg noodles"
+                ]
+            }
+        ]
+    },
 {
     "name": "Flounder",
     "link": "PASTE_LINK_HERE",
@@ -146,6 +245,27 @@
             "type": "side",
             "ingredients": [
                 "asparagus"
+            ]
+        }
+    ]
+},
+     {
+    "name": "Garlic Chicken",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["Frozen Meal", "One-Pot"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Birds Eye Voila 42oz Garlic Chicken"
+            ]
+        },
+        {
+            "name": "Salad",
+            "type": "side",
+            "ingredients": [
+                "Salad"
             ]
         }
     ]
@@ -248,7 +368,7 @@
     ]
 },
     {
-        "name": "Pork tenderloin (sweet and sour)",
+        "name": "Sweet & Sour Pork tenderloin",
         "link": "https://www.tiktok.com/t/ZThJXn2C9/",
         "tags": [
             "Pork",
@@ -277,88 +397,6 @@
                 "type": "side",
                 "ingredients": [
                     "broccoli"
-                ]
-            }
-        ]
-    },
-    {
-    "name": "Chicken Bacon Ranch Mac N Cheese",
-    "link": "PASTE_LINK_HERE",
-    "tags": ["Frozen Meal", "One-Pot"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Birds Eye Voila 42oz Chicken Bacon Ranch"
-            ]
-        },
-        {
-            "name": "Salad",
-            "type": "side",
-            "ingredients": [
-                "Salad"
-            ]
-        }
-    ]
-},
-     {
-    "name": "Garlic Chicken",
-    "link": "PASTE_LINK_HERE",
-    "tags": ["Frozen Meal", "One-Pot"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Birds Eye Voila 42oz Garlic Chicken"
-            ]
-        },
-        {
-            "name": "Salad",
-            "type": "side",
-            "ingredients": [
-                "Salad"
-            ]
-        }
-    ]
-},
-    {
-        "name": "Cocktail Meatballs",
-        "link": "https://www.youtube.com/watch?v=veaaoBi3YzM",
-        "tags": [
-            "Slow cooker",
-            "Meatballs"
-        ],
-        "components": [
-            {
-                "name": "Main Dish",
-                "type": "main",
-                "ingredients": [
-                    "Frozen meatballs",
-                    "grape jelly",
-                    "BBQ sauce"
-                ]
-            },
-            {
-                "name": "Mashed potatoes",
-                "type": "side",
-                "ingredients": [
-                    "mashed potatoes"
-                ]
-            },
-            {
-                "name": "Corn",
-                "type": "side",
-                "ingredients": [
-                    "corn"
-                ]
-            },
-            {
-                "name": "Egg noodle",
-                "type": "side",
-                "ingredients": [
-                    "egg noodles"
                 ]
             }
         ]
@@ -833,42 +871,6 @@
     ]
 },
     {
-    "name": "BBQ Chicken",
-    "link": "PASTE_LINK_HERE",
-    "tags": ["Chicken", "Slow cooker"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "chicken",
-                "ketchup",
-                "worcestershire",
-                "brown sugar",
-                "chili powder",
-                "curry"
-            ]
-        },
-         {
-            "name": "Noodles",
-            "type": "side",
-            "ingredients": ["noodles"]
-        },
-        {
-            "name": "Rice",
-            "type": "side",
-            "ingredients": ["rice"]
-        },
-        {
-            "name": "Veggie",
-            "type": "side",
-            "ingredients": [
-                "veggie"
-            ]
-        }
-    ]
-},
-    {
     "name": "Pineapple Meatballs",
     "link": "https://youtu.be/ILE2nTP-eP0?si=0FN8DVdI-Lr8IeD6&t=619",
     "tags": ["Meatballs"],
@@ -985,6 +987,42 @@
             "name": "Garlic / Cheesy Bread",
             "type": "side",
             "ingredients": ["garlic (cheesy) bread"]
+        }
+    ]
+},
+    {
+    "name": "Wings (BBQ)",
+    "link": "https://www.tiktok.com/t/ZThRHvm9T/",
+    "tags": ["Chicken", "American"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Wings",
+                "Wing Sauce"
+            ]
+        },
+        {
+            "name": "Celery",
+            "type": "side",
+            "ingredients": [
+                "Celery"
+            ]
+        },
+        {
+            "name": "Carrots",
+            "type": "side",
+            "ingredients": [
+                "Carrots"
+            ]
+        },
+        {
+            "name": "Blue Cheese Dip",
+            "type": "side",
+            "ingredients": [
+                "Blue Cheese Dip"
+            ]
         }
     ]
 }
