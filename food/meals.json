@@ -818,6 +818,25 @@
     ]
 },
     {
+    "name": "Stuffed Peppers",
+    "link": "https://recipecenter.giantfood.com/recipes/231137/rice-and-ground-beef-stuffed-bell-peppers",
+    "tags": ["Beef"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Bell Peppers",
+                "Ground Beef",
+                "Onion",
+                "Precooked Basmati Rice",
+                "Pasta Sauce",
+                "Shredded Italian Blend cheese"
+            ]
+        }
+    ]
+}
+    {
     "name": "Spaghetti Aglio e olio",
     "link": "https://www.tiktok.com/t/ZThebEsKn/",
     "tags": ["Italian", "Pasta"],
