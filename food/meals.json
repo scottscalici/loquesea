@@ -83,7 +83,7 @@
     {
     "name": "Cheeseburger Sliders",
     "link": "https://www.tiktok.com/t/ZTNNQ6nRX/",
-    "tags": [],
+    "tags": ["Sheet", "Beef", "American"],
     "components": [
         {
             "name": "Main Dish",
@@ -959,6 +959,32 @@
             "ingredients": [
                 "salad"
             ]
+        }
+    ]
+},
+    {
+    "name": "Turkey sausage orzo",
+    "link": "https://thedomesticgeek.com/turkey-sausage-broccolini-orzo/",
+    "tags": [],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "turkey sausage",
+                "Orzo",
+                "Broccoli(ni)"
+            ]
+        },
+        {
+            "name": "Cottage Cheese",
+            "type": "side",
+            "ingredients": ["cottage cheese"]
+        },
+        {
+            "name": "Garlic / Cheesy Bread",
+            "type": "side",
+            "ingredients": ["garlic (cheesy) bread"]
         }
     ]
 }
