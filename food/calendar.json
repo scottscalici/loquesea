@@ -88,5 +88,14 @@
       "Rice",
       "Veggie"
     ]
+  },
+  {
+    "date": "2026-01-05",
+    "meal": "Sweet & Sour Pork tenderloin",
+    "sides_included": [
+      "Main Dish",
+      "Rice",
+      "Broccoli"
+    ]
   }
 ]
