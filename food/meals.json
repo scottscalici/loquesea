@@ -80,6 +80,40 @@
             }
         ]
     },
+    {
+    "name": "Cheeseburger Sliders",
+    "link": "https://www.tiktok.com/t/ZTNNQ6nRX/",
+    "tags": [],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Hawaiian Rolls",
+                "ground beef",
+                "american and colby jack slices",
+                "burger sauce",
+                "sesame seeds",
+                "chopped onion",
+                "asparagus"
+            ]
+        },
+        {
+            "name": "Fries",
+            "type": "side",
+            "ingredients": [
+                "fries"
+            ]
+        },
+        {
+            "name": "Asparagus ",
+            "type": "side",
+            "ingredients": [
+                "asparagus"
+            ]
+        }
+    ]
+},
 {
     "name": "Flounder",
     "link": "PASTE_LINK_HERE",
