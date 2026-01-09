@@ -97,5 +97,15 @@
       "Rice",
       "Broccoli"
     ]
+  },
+  {
+    "date": "2026-01-16",
+    "meal": "Breakfast",
+    "sides_included": [
+      "Main Dish",
+      "Pancakes",
+      "Bacon or Sausage",
+      "Eggs"
+    ]
   }
 ]
