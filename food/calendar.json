@@ -114,5 +114,14 @@
     "sides_included": [
       "Main Dish"
     ]
+  },
+  {
+    "date": "2026-01-22",
+    "meal": "Chicken Marinara Subs",
+    "sides_included": [
+      "Main Dish",
+      "Noodles",
+      "Green Beans"
+    ]
   }
 ]
