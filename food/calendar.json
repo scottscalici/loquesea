@@ -123,5 +123,12 @@
       "Noodles",
       "Green Beans"
     ]
+  },
+  {
+    "date": "2026-01-21",
+    "meal": "Pastalaya",
+    "sides_included": [
+      "Main Dish"
+    ]
   }
 ]
