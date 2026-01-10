@@ -199,7 +199,7 @@
     ]
 },
 {
-    "name": "BLT",
+    "name": "BLT with cucumber salad",
     "link": "https://www.tiktok.com/t/ZTFQGUTFh/",
     "tags": ["Sandwich", "American"],
     "components": [
@@ -212,7 +212,13 @@
                 "Lettuce",
                 "Tomatoes",
                 "Mayo",
-                "American Cheese",
+                "American Cheese"
+            ]
+        },
+        {
+            "name": "Cucumber Salad",
+            "type": "side",
+            "ingredients": [
                 "cucumber",
                 "crab",
                 "seaweed",
@@ -221,13 +227,6 @@
                 "sesame seeds",
                 "soy sauce",
                 "MSG"
-            ]
-        },
-        {
-            "name": "Cucumber Salad",
-            "type": "side",
-            "ingredients": [
-                "Cucumber Salad"
             ]
         },
         {
