@@ -1,5 +1,27 @@
 [
         {
+    "name": "Balsamic Glazed Chicken and Potatoes",
+    "link": "https://thedomesticgeek.com/balsamic-glazed-chicken-roast-potatoes/",
+    "tags": ["Chicken", "One-pot"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "chicken breasts",
+                "petite potatoes"
+            ]
+        },
+        {
+            "name": "Green beans",
+            "type": "side",
+            "ingredients": [
+                "green beans"
+            ]
+        }
+    ]
+},
+        {
     "name": "BBQ Chicken",
     "link": "PASTE_LINK_HERE",
     "tags": ["Chicken", "Slow cooker"],
@@ -35,7 +57,73 @@
         }
     ]
 },
-        
+     {
+    "name": "Beef Sirloin and Broccoli ",
+    "link": "https://youtube.com/shorts/C00s2Cdc4sI?si=i2bEYPkgd9T0c82h",
+    "tags": [],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "flank steak",
+                "broccoli",
+                "corn on the cob"
+            ]
+        },
+        {
+            "name": "Corn on the cob ",
+            "type": "side",
+            "ingredients": []
+        },
+        {
+            "name": "Seaweed crisps",
+            "type": "side",
+            "ingredients": [
+                "seaweed crisps"
+            ]
+        }
+    ]
+},
+        {
+    "name": "Beef Stir Fry",
+    "link": "https://www.allrecipes.com/recipe/228823/quick-beef-stir-fry/",
+    "tags": ["Beef", "Stir Fry", "Chinese"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "sliced beef (flank steak or sirloin)",
+                "soy sauce",
+                "cornstarch",
+                "garlic",
+                "ginger",
+                "bell peppers",
+                "broccoli",
+                "carrots",
+                "stir-fry sauce ingredients (oyster sauce",
+                "hoisin",
+                "sesame oil",
+                "brown sugar)"
+            ]
+        },
+        {
+            "name": "Jasmine Rice",
+            "type": "side",
+            "ingredients": [
+                "jasmine rice"
+            ]
+        },
+        {
+            "name": "Stir Fry Noodles",
+            "type": "side",
+            "ingredients": [
+                "stir fry noodles"
+            ]
+        }
+    ]
+},
     {
         "name": "Beef tips",
         "link": "https://www.tiktok.com/t/ZThJCjTva/",
