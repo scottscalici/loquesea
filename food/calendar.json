@@ -130,5 +130,14 @@
       "Garlic Bread",
       "Salad"
     ]
+  },
+  {
+    "date": "2026-01-12",
+    "meal": "Hot dogs",
+    "sides_included": [
+      "Main Dish",
+      "Onion rings",
+      "Corn on the cob"
+    ]
   }
 ]
