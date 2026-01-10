@@ -651,7 +651,34 @@
         }
     ]
 },
-
+{
+    "name": "Menemen (Turkish eggs)",
+    "link": "https://www.tiktok.com/t/ZTHsbJE6tTv2Q-01fiB/",
+    "tags": [],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Green Bell Pepper",
+                "Tomatoes",
+                "Eggs",
+                "Parmesan"
+            ]
+        },
+        {
+            "name": "Pita/Sourdough",
+            "type": "side",
+            "ingredients": ["Pita or Sourdough"]
+        },
+        {
+            "name": "Cheese with Honey",
+            "type": "side",
+            "ingredients": ["Feta Block",
+            "Honey or Fig Jam"]
+        }
+    ]
+},
         
     {
     "name": "Mississippi Pot Roast",
