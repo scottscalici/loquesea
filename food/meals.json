@@ -294,7 +294,7 @@
           {
     "name": "Chicken Marinara Subs",
     "link": "https://youtu.be/PPG-IpXfLo0?si=WhgH0ohotvrCMsY8&t=627",
-    "tags": ["Crock Pot", "Chicken"],
+    "tags": ["Crockpot", "Chicken"],
     "components": [
         {
             "name": "Main Dish",
@@ -404,7 +404,39 @@
     ]
 },
 
-        
+  {
+    "name": "Crockpot Chicken spaghetti ",
+    "link": "https://www.tiktok.com/t/ZTNNQ9F5e/",
+    "tags": ["Crockpot", "Chicken", "Pasta"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Chicken breasts",
+                "BW Parmesan Garlic sauce",
+                "Alfredo sauce",
+                "Shredded Cheese",
+                "Spaghetti",
+                "Bacon topping"
+            ]
+        },
+        {
+            "name": "Garlic Bread",
+            "type": "side",
+            "ingredients": [
+                "Garlic bread"
+            ]
+        },
+        {
+            "name": "Caesar Salad",
+            "type": "side",
+            "ingredients": [
+                "Caesar salad"
+            ]
+        }
+    ]
+},      
     {
     "name": "Fajita Wraps",
     "link": "PASTE_LINK_HERE",
@@ -654,7 +686,7 @@
 {
     "name": "Menemen (Turkish eggs)",
     "link": "https://www.tiktok.com/t/ZTHsbJE6tTv2Q-01fiB/",
-    "tags": [],
+    "tags": ["Turkish", "Eggs", "Breakfast"],
     "components": [
         {
             "name": "Main Dish",
