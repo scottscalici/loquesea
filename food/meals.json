@@ -739,7 +739,7 @@
         {
     "name": "Dumpling Lasagna ",
     "link": "https://www.tiktok.com/t/ZThYMjJwn/",
-    "tags": [],
+    "tags": ["Asian", "One-pot"],
     "components": [
         {
             "name": "Main Dish",
@@ -1470,7 +1470,7 @@
         ]
     },
   {
-    "name": "Taco Salad: Brown ground turkey with taco seasoning. Serve over a bed of lettuce and top with tomatoes, cheese, avocado, black beans, and a dollop of sour cream or salsa.",
+    "name": "Taco Salad",
     "link": "PASTE_LINK_HERE",
     "tags": ["Mexican"],
     "components": [
