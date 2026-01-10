@@ -598,7 +598,34 @@
         }
     ]
 },
-        
+{
+    "name": "Lobster Pasta",
+    "link": "https://www.tiktok.com/t/ZThFCbQ78/",
+    "tags": ["Pasta", "Seafood"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Cherry tomatoes",
+                "Lobster (claw crab meat)",
+                "lobster bisque",
+                "Parmesan cheese",
+                "spaghetti"
+            ]
+        },
+        {
+            "name": "Garlic Bread",
+            "type": "side",
+            "ingredients": []
+        },
+        {
+            "name": "Salad",
+            "type": "side",
+            "ingredients": []
+        }
+    ]
+},        
     {
     "name": "Lomo Saltado",
     "link": "https://www.tiktok.com/t/ZTNcUJdKb/",
