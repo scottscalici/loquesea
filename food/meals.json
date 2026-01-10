@@ -141,7 +141,38 @@
         }
     ]
 },
-
+{
+    "name": "Cajun Shrimp & Sausage Skillet",
+    "link": "https://thedomesticgeek.com/cajun-shrimp-sausage-skillet/",
+    "tags": ["Cajun", "Seafood", "Shrimp", "Sausage", "One-pot"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "smoked sausage",
+                "peeled shrimp",
+                "diced bell peppers and onion",
+                "celery",
+                "cajun seasoning"
+            ]
+        },
+        {
+            "name": "Rice",
+            "type": "side",
+            "ingredients": [
+                "rice"
+            ]
+        },
+        {
+            "name": "Cornbread",
+            "type": "side",
+            "ingredients": [
+                "cornbread"
+            ]
+        }
+    ]
+},
             {
     "name": "Cheeseburger Sliders",
     "link": "https://www.tiktok.com/t/ZTNNQ6nRX/",
