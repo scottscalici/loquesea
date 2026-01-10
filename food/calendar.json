@@ -130,5 +130,14 @@
     "sides_included": [
       "Main Dish"
     ]
+  },
+  {
+    "date": "2026-01-19",
+    "meal": "BLT",
+    "sides_included": [
+      "Main Dish",
+      "Cucumber Salad",
+      "Baked Beans"
+    ]
   }
 ]
