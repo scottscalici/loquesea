@@ -334,6 +334,22 @@
         }
     ]
 },
+        {
+    "name": "Bruschetta Chicken Penne",
+    "link": "https://thedomesticgeek.com/bruschetta-chicken-pasta/",
+    "tags": ["One-pot", "Chicken", "Pasta"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "penne",
+                "chicken",
+                "cherry tomatoes"
+            ]
+        }
+    ]
+},
 {
     "name": "Cajun Shrimp & Sausage Skillet",
     "link": "https://thedomesticgeek.com/cajun-shrimp-sausage-skillet/",
@@ -685,6 +701,41 @@
         }
     ]
 },      
+{
+    "name": "Dumplings",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["Asian"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "dumplings"
+            ]
+        },
+        {
+            "name": "Egg Rolls",
+            "type": "side",
+            "ingredients": [
+                "egg rolls"
+            ]
+        },
+        {
+            "name": "Fried Rice",
+            "type": "side",
+            "ingredients": [
+                "frozen fried rice"
+            ]
+        },
+        {
+            "name": "Miso Soup",
+            "type": "side",
+            "ingredients": [
+                "miso soup"
+            ]
+        }
+    ]
+},
     {
     "name": "Fajita Wraps",
     "link": "PASTE_LINK_HERE",
