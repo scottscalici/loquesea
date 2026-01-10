@@ -198,7 +198,48 @@
         }
     ]
 },
-
+{
+    "name": "BLT",
+    "link": "https://www.tiktok.com/t/ZTFQGUTFh/",
+    "tags": ["Sandwich", "American"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Bread",
+                "Bacon",
+                "Lettuce",
+                "Tomatoes",
+                "Mayo",
+                "American Cheese",
+                "cucumber",
+                "crab",
+                "seaweed",
+                "avocado",
+                "whipped cream cheese",
+                "sesame seeds",
+                "soy sauce",
+                "MSG"
+            ]
+        },
+        {
+            "name": "Cucumber Salad",
+            "type": "side",
+            "ingredients": [
+                "Cucumber Salad"
+            ]
+        },
+        {
+            "name": "Baked Beans",
+            "type": "side",
+            "ingredients": [
+                "baked beans",
+                "baked beans"
+            ]
+        }
+    ]
+},
         {
     "name": "Breakfast",
     "link": "PASTE_LINK_HERE",
