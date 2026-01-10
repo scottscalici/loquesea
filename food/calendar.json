@@ -139,5 +139,14 @@
       "Onion rings",
       "Corn on the cob"
     ]
+  },
+  {
+    "date": "2026-01-15",
+    "meal": "Chicken Marinara Subs",
+    "sides_included": [
+      "Main Dish",
+      "Noodles",
+      "Green Beans"
+    ]
   }
 ]
