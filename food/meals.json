@@ -233,7 +233,72 @@
             "name": "Baked Beans",
             "type": "side",
             "ingredients": [
-                "baked beans",
+                "baked beans"
+            
+]
+        }
+    ]
+},
+        {
+    "name": "BLT Wraps",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["Sandwich", "American"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "tortillas",
+                "bacon",
+                "lettuce",
+                "tomato",
+                "mayo",
+                "kettle chips"
+            ]
+        },
+            {
+            "name": "Kettle Chips",
+            "type": "side",
+            "ingredients": ["kettle chips"]
+        },
+            {
+            "name": "Pickle Spear",
+            "type": "side",
+            "ingredients": ["pickle spears"]
+        }
+    ]
+},
+        {
+    "name": "Brats ",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["Sausage", "German"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "brats",
+                "sub rolls"
+            ]
+        },
+        {
+            "name": "Pretzels",
+            "type": "side",
+            "ingredients": [
+                "pretzels"
+            ]
+        },
+        {
+            "name": "Green Beans",
+            "type": "side",
+            "ingredients": [
+                "green beans"
+            ]
+        },
+        {
+            "name": "Baked Beans",
+            "type": "side",
+            "ingredients": [
                 "baked beans"
             ]
         }
@@ -487,7 +552,7 @@
         "link": "https://www.youtube.com/watch?v=veaaoBi3YzM",
         "tags": [
             "Slow cooker",
-            "Meatballs"
+            "Meatballs", "American"
         ],
         "components": [
             {
@@ -599,7 +664,7 @@
     {
     "name": "Fajita Wraps",
     "link": "PASTE_LINK_HERE",
-    "tags": ["Frozen Meal", "Chicken"],
+    "tags": ["Frozen Meal", "Chicken", "Mexican"],
     "components": [
         {
             "name": "Main Dish",
@@ -762,7 +827,33 @@
         }
     ]
 },
-
+{
+    "name": "Hot dogs",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["American"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "hotdogs",
+                "hotdog buns"
+                ]
+        },
+        {
+            "name": "Onion rings",
+            "type": "side",
+            "ingredients": [
+                "frozen fries/onion rings"
+            ]
+        },
+        {
+            "name": "Corn on the cob",
+            "type": "side",
+            "ingredients": ["frozen corn/on the cob"]
+        }
+    ]
+},
         {
     "name": "Loaded Steak Potatoes",
     "link": "https://www.tiktok.com/t/ZTHGk3kymNeK2-YiJ3v/",
