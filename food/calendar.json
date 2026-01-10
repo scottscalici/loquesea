@@ -121,5 +121,14 @@
     "sides_included": [
       "Main Dish"
     ]
+  },
+  {
+    "date": "2026-01-15",
+    "meal": "Lobster Pasta",
+    "sides_included": [
+      "Main Dish",
+      "Garlic Bread",
+      "Salad"
+    ]
   }
 ]
