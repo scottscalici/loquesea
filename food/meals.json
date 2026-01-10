@@ -1139,7 +1139,33 @@
             }
         ]
     },
-  
+  {
+    "name": "Taco Salad: Brown ground turkey with taco seasoning. Serve over a bed of lettuce and top with tomatoes, cheese, avocado, black beans, and a dollop of sour cream or salsa.",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["Mexican"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "ground turkey",
+                "taco seasoning",
+                "lettuce",
+                "tomatoes",
+                "cheese",
+                "avocado",
+                "black beans",
+                "salsa",
+                "sour cream"
+            ]
+        },
+        {
+            "name": "Nacho Chips",
+            "type": "side",
+            "ingredients": ["nachos"]
+        }
+    ]
+},
         
         {
     "name": "Tuna Helper",
