@@ -627,7 +627,31 @@
         }
     ]
 },
-
+{
+    "name": "Completo chileno ",
+    "link": "https://www.tiktok.com/t/ZTFbcwHFD/",
+    "tags": ["Chilean"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "hotdogs",
+                "mayo",
+                "avocado",
+                "diced tomatoes",
+                "buns"
+            ]
+        },
+        {
+            "name": "Fries",
+            "type": "side",
+            "ingredients": [
+                "fries"
+            ]
+        }
+    ]
+},
   {
     "name": "Crockpot Chicken spaghetti ",
     "link": "https://www.tiktok.com/t/ZTNNQ9F5e/",
