@@ -736,6 +736,42 @@
         }
     ]
 },
+        {
+    "name": "Dumpling Lasagna ",
+    "link": "https://www.tiktok.com/t/ZThYMjJwn/",
+    "tags": [],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Ground pork",
+                "green onion",
+                "oyster sauce",
+                "chili oil",
+                "chopped cabbage (Napa)",
+                "sesame oil",
+                "hoisin",
+                "wonton wrappers",
+                "mirin (rice vinegar)"
+            ]
+        },
+        {
+            "name": "Green Beans",
+            "type": "side",
+            "ingredients": [
+                "green beans"
+            ]
+        },
+        {
+            "name": "Miso Soup",
+            "type": "side",
+            "ingredients": [
+                "miso soup"
+            ]
+        }
+    ]
+},
     {
     "name": "Fajita Wraps",
     "link": "PASTE_LINK_HERE",
