@@ -1434,7 +1434,39 @@
         }
     ]
 },
-
+{
+    "name": "Swamp Potatoes",
+    "link": "https://www.tiktok.com/t/ZTMKCLuwk/",
+    "tags": ["Cajun"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Potatoes",
+                "Green Beans",
+                "Onion",
+                "Smoke Sausage",
+                "Onion Soup Mix",
+                "Butter"
+            ]
+        },
+        {
+            "name": "Caesar salad",
+            "type": "side",
+            "ingredients": [
+                "Caesar Salad"
+            ]
+        },
+        {
+            "name": "French Bread",
+            "type": "side",
+            "ingredients": [
+                "French Bread"
+            ]
+        }
+    ]
+},
     {
         "name": "Sweet & Sour Pork tenderloin",
         "link": "https://www.tiktok.com/t/ZThJXn2C9/",
