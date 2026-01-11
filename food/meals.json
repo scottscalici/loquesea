@@ -1469,6 +1469,49 @@
             }
         ]
     },
+        {
+    "name": "Tacos",
+    "link": "PASTE_LINK_HERE",
+    "tags": [],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "ground turkey",
+                "taco seasoning",
+                "tortillas",
+                "taco shells",
+                "shredded cheese",
+                "lettuce",
+                "tomato",
+                "sour cream",
+                "guacamole",
+                "salsa"
+            ]
+        },
+        {
+            "name": "Rice",
+            "type": "side",
+            "ingredients": [
+                "rice"
+            ]
+        },
+        {
+            "name": "Beans",
+            "type": "side",
+            "ingredients": [
+                "beans"
+            ]
+        },
+        {
+            "name": "Tortilla Chips and queso",
+            "type": "side",
+            "ingredients": ["tortilla chips",
+            "queso"]
+        }
+    ]
+},
   {
     "name": "Taco Salad",
     "link": "PASTE_LINK_HERE",
