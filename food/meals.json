@@ -1414,7 +1414,32 @@
         }
     ]
 },
-
+{
+    "name": "Steak Bites",
+    "link": "https://www.tiktok.com/t/ZTNNPuLkR/",
+    "tags": ["Steak", "Beef"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "strip steak",
+            ]
+        },
+        {
+            "name": "Smashed potatoes ",
+            "type": "side",
+            "ingredients": ["potatoes"]
+        },
+        {
+            "name": "Broccoli",
+            "type": "side",
+            "ingredients": [
+                "broccoli"
+            ]
+        }
+    ]
+},
       {
     "name": "Stuffed Peppers",
     "link": "https://recipecenter.giantfood.com/recipes/231137/rice-and-ground-beef-stuffed-bell-peppers",
@@ -1504,7 +1529,7 @@
         {
     "name": "Tacos",
     "link": "PASTE_LINK_HERE",
-    "tags": [],
+    "tags": ["Mexican"],
     "components": [
         {
             "name": "Main Dish",
