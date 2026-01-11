@@ -1455,7 +1455,7 @@
   {
     "name": "Sloppy Joe",
     "link": "PASTE_LINK_HERE",
-    "tags": [],
+    "tags": ["American"],
     "components": [
       {
         "name": "Main Dish",
@@ -1471,6 +1471,13 @@
         "type": "side",
         "ingredients": [
           "chips"
+        ]
+      },
+            {
+        "name": "Green Beans",
+        "type": "side",
+        "ingredients": [
+          "green beans"
         ]
       },
       {
