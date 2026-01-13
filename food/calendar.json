@@ -139,5 +139,14 @@
       "Noodles",
       "Green Beans"
     ]
+  },
+  {
+    "date": "2026-01-20",
+    "meal": "Dumpling Lasagna ",
+    "sides_included": [
+      "Main Dish",
+      "Green Beans",
+      "Miso Soup"
+    ]
   }
 ]
