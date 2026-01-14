@@ -1,36 +1,78 @@
 async function buildMyDay() {
-    // 1. FETCH DATA
-    const scheduleRes = await fetch('https://raw.githubusercontent.com/scottscalici/loquesea/refs/heads/main/planner/schedule.json');
-    const calendarRes = await fetch('https://raw.githubusercontent.com/scottscalici/imagenes/refs/heads/main/planes/calendario.json');
-    
-    const schedule = await scheduleRes.json();
-    const calendar = await calendarRes.json();
+    try {
+        // 1. FETCH DATA
+        const scheduleRes = await fetch('https://raw.githubusercontent.com/scottscalici/loquesea/refs/heads/main/planner/schedule.json');
+        const calendarRes = await fetch('https://raw.githubusercontent.com/scottscalici/imagenes/refs/heads/main/planes/calendario.json');
+        
+        const schedule = await scheduleRes.json();
+        const calendar = await calendarRes.json();
 
-    // 2. IDENTIFY TODAY'S TYPE
-    const todayStr = new Date().toISOString().split('T')[0]; // e.g. "2026-01-14"
-    const dayType = calendar[todayStr] || "Default"; // Gets "A", "B", or "PD"
+        // 2. IDENTIFY TODAY
+        const now = new Date();
+        const todayStr = now.toISOString().split('T')[0]; 
+        const dayType = calendar[todayStr] || "A"; // Default to A if not found
+        
+        document.getElementById('day-header').innerText = `${todayStr} (${dayType} Day)`;
 
-    // 3. THE REVERSE MATH (The "Drop-off" Trigger)
-    const dropOff = schedule.hard_stops.school_dropoff;
-    const routine = schedule.definitions.routines[dropOff.trigger_routine];
+        const timeline = document.getElementById('timeline');
+        timeline.innerHTML = ''; // Clear existing
 
-    // Calculate "Wheels Up" time
-    const wheelsUp = subtractMinutes(dropOff.time, dropOff.commute_minutes);
-    // Calculate "Start Routine" time
-    const wakeUp = subtractMinutes(wheelsUp, routine.duration);
+        // 3. CALCULATE MORNING LAUNCH (Reverse Math)
+        const dropOff = schedule.hard_stops.school_dropoff;
+        const routine = schedule.definitions.routines[dropOff.trigger_routine];
+        
+        const wheelsUp = subtractMinutes(dropOff.time, dropOff.commute_minutes);
+        const wakeUp = subtractMinutes(wheelsUp, routine.duration);
 
-    console.log(`Today is ${dayType} Day`);
-    console.log(`Wake up at: ${wakeUp} to start ${routine.label}`);
-    console.log(`Be in car by: ${wheelsUp}`);
-    
-    // 4. RENDER TO SCREEN
-    renderBrick(wakeUp, wheelsUp, routine);
+        // 4. RENDER MORNING LAUNCH
+        renderBrick(wakeUp, wheelsUp, routine.label, routine.color, routine.subtasks);
+
+        // 5. RENDER DAY-SPECIFIC FOUNDATION (A or B Day)
+        const dayBricks = schedule.days[`${dayType}_Day`] || [];
+        dayBricks.forEach(brick => {
+            // Calculate end time based on duration
+            const endTime = addMinutes(brick.start, brick.duration);
+            const template = schedule.definitions.brick_templates[brick.template];
+            renderBrick(brick.start, endTime, brick.label, template.color, []);
+        });
+
+    } catch (error) {
+        console.error("Error building the day:", error);
+        document.getElementById('day-header').innerText = "Error Loading Schedule";
+    }
 }
 
-// Utility to handle time math (e.g., "06:45" minus 10 mins = "06:35")
+function renderBrick(start, end, title, colorClass, subtasks) {
+    const timeline = document.getElementById('timeline');
+    
+    const brickDiv = document.createElement('div');
+    brickDiv.className = `brick ${colorClass}`;
+    
+    let subtasksHtml = '';
+    if (subtasks && subtasks.length > 0) {
+        subtasksHtml = `<ul class="subtasks">${subtasks.map(s => `<li>${s}</li>`).join('')}</ul>`;
+    }
+
+    brickDiv.innerHTML = `
+        <div class="time-label">${start} - ${end}</div>
+        <div class="title">${title}</div>
+        ${subtasksHtml}
+    `;
+    
+    timeline.appendChild(brickDiv);
+}
+
+// UTILITIES
 function subtractMinutes(timeStr, mins) {
     const [h, m] = timeStr.split(':').map(Number);
-    const date = new Date();
-    date.setHours(h, m - mins);
-    return date.toTimeString().slice(0, 5);
+    const d = new Date();
+    d.setHours(h, m - mins);
+    return d.toTimeString().slice(0, 5);
+}
+
+function addMinutes(timeStr, mins) {
+    const [h, m] = timeStr.split(':').map(Number);
+    const d = new Date();
+    d.setHours(h, m + mins);
+    return d.toTimeString().slice(0, 5);
 }
