@@ -1,0 +1,18 @@
+{
+  "house_tasks": [
+    {
+      "task": "Change Air Filter",
+      "frequency_days": 90,
+      "last_done": "2024-02-01",
+      "priority": "medium",
+      "category": "maintenance"
+    },
+    {
+      "task": "Clean Bathrooms",
+      "frequency_days": 7,
+      "last_done": "2024-05-15",
+      "priority": "high",
+      "category": "cleaning"
+    }
+  ]
+}
