@@ -27,3 +27,28 @@
     "2026-01-15": "A_Day"
   }
 }
+{
+  "definitions": {
+    "routines": {
+      "morning_launch": {
+        "label": "Morning Launch",
+        "duration": 45,
+        "color": "purple",
+        "subtasks": [
+          "Care for dog",
+          "Breakfast/Coffee/Water",
+          "Pack Lunch",
+          "Load Car"
+        ]
+      }
+    }
+  },
+  "hard_stops": {
+    "school_dropoff": {
+      "label": "Daughter Drop-off",
+      "time": "06:45",
+      "commute_minutes": 10,
+      "trigger_routine": "morning_launch"
+    }
+  }
+}
