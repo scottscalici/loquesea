@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart House Manager</title>
+    <style>
+        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 500px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #333; }
+        .task-card { border-bottom: 1px solid #eee; padding: 15px 0; display: flex; flex-direction: column; gap: 8px; }
+        .task-header { display: flex; justify-content: space-between; align-items: center; }
+        .task-name { font-weight: bold; font-size: 1.1em; color: #2c3e50; }
+        .task-due { font-size: 0.85em; color: #e67e22; }
+        .controls { display: flex; gap: 10px; }
+        button { padding: 8px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn-done { background: #2ecc71; color: white; flex-grow: 2; }
+        .btn-snooze { background: #3498db; color: white; flex-grow: 1; }
+        button:hover { opacity: 0.8; }
+        .tag { font-size: 0.7em; padding: 2px 6px; border-radius: 4px; background: #eee; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🏠 House Maintenance</h1>
+    <div id="task-list"></div>
+</div>
+
+<script>
+    // Task Logic Types: 
+    // "FIXED" = Always same day (Garbage)
+    // "INTERVAL" = Reset based on completion date (Air Filters)
+
+    let tasks = [
+        { id: 1, name: "Garbage Day", type: "FIXED", due: "2026-01-15T18:00", intervalDays: 7, note: "Thursday Nights" },
+        { id: 2, name: "Air Filters", type: "INTERVAL", due: "2026-01-14T12:00", intervalDays: 90 },
+        { id: 3, name: "Dishwasher", type: "FIXED", due: "2026-01-14T20:00", intervalDays: 1 },
+        { id: 4, name: "Flush Water Heater", type: "INTERVAL", due: "2026-06-01T09:00", intervalDays: 365 },
+        { id: 5, name: "Dryer Vent Cleaning", type: "INTERVAL", due: "2026-04-10T10:00", intervalDays: 180 },
+        { id: 6, name: "Inspect Sump Pump", type: "INTERVAL", due: "2026-03-20T08:00", intervalDays: 120 }
+    ];
+
+    function renderTasks() {
+        const list = document.getElementById('task-list');
+        list.innerHTML = '';
+        
+        // Sort by due date
+        tasks.sort((a, b) => new Date(a.due) - new Date(b.due));
+
+        tasks.forEach(task => {
+            const dueDate = new Date(task.due);
+            const card = document.createElement('div');
+            card.className = 'task-card';
+            card.innerHTML = `
+                <div class="task-header">
+                    <div>
+                        <span class="task-name">${task.name}</span>
+                        <span class="tag">${task.type}</span>
+                    </div>
+                    <span class="task-due">${dueDate.toLocaleDateString()} ${dueDate.getHours()}:00</span>
+                </div>
+                <div class="controls">
+                    <button class="btn-done" onclick="completeTask(${task.id})">Mark Done</button>
+                    <button class="btn-snooze" onclick="snoozeTask(${task.id})">Snooze 1 Day</button>
+                </div>
+            `;
+            list.appendChild(card);
+        });
+    }
+
+    function completeTask(id) {
+        const task = tasks.find(t => t.id === id);
+        let nextDue = new Date();
+
+        if (task.type === "FIXED") {
+            // Logic: Take the CURRENT due date and add the interval
+            nextDue = new Date(task.due);
+            nextDue.setDate(nextDue.getDate() + task.intervalDays);
+        } else {
+            // Logic: Take TODAY'S date and add the interval
+            nextDue.setDate(nextDue.getDate() + task.intervalDays);
+        }
+
+        task.due = nextDue.toISOString();
+        alert(`${task.name} updated! Next due: ${nextDue.toLocaleDateString()}`);
+        renderTasks();
+    }
+
+    function snoozeTask(id) {
+        const task = tasks.find(t => t.id === id);
+        let currentDue = new Date(task.due);
+        currentDue.setDate(currentDue.getDate() + 1); // Snooze for 24 hours
+        task.due = currentDue.toISOString();
+        renderTasks();
+    }
+
+    renderTasks();
+</script>
+
+</body>
+</html>
