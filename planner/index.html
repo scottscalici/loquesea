@@ -23,10 +23,12 @@
 <body>
 
 <div class="config-bar">
-    <input type="password" id="cal-token" placeholder="Paste Calendly Token">
-    <button onclick="refreshDashboard()">Sync Dashboard</button>
+    <input type="text" id="cal-token" placeholder="1. Paste Token Here" style="background: #fff; color: #000;">
+    <input type="text" id="user-uri" placeholder="2. URI will appear here" style="background: #eee; color: #000;" readonly>
+    <button class="btn-uri" onclick="findMyUri()">Step 1: Get URI</button>
+    <button class="btn-sync" onclick="refreshDashboard()">Step 2: Sync Dashboard</button>
+    <button onclick="document.querySelectorAll('input').forEach(i => i.readOnly = false); alert('Unlocked!')" style="font-size: 10px;">Unlock Fields</button>
 </div>
-
 <div class="timeline" id="dashboard">
     </div>
 
