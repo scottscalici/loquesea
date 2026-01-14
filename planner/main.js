@@ -1,41 +1,41 @@
 async function buildMyDay() {
     try {
-        // 1. PATHS TO YOUR JSON DATA
         const scheduleUrl = 'https://raw.githubusercontent.com/scottscalici/loquesea/main/planner/schedule.json';
         const calendarUrl = 'https://raw.githubusercontent.com/scottscalici/imagenes/main/planes/calendario.json';
-        const coziUrl = 'https://corsproxy.io/?' + encodeURIComponent('https://rest.cozi.com/api/ext/1103/f9f7020d-05c9-4720-b813-2155b4485be7/icalendar/feed/feed.ics');
+        // Replace the placeholder below with your actual Cozi URL
+        const coziUrl = 'https://corsproxy.io/?' + encodeURIComponent('PASTE_YOUR_COZI_ICS_LINK_HERE');
 
-        // 2. FETCH ALL DATA SIMULTANEOUSLY
         const [scheduleRes, calendarRes, coziRes] = await Promise.all([
             fetch(scheduleUrl),
             fetch(calendarUrl),
             fetch(coziUrl)
         ]);
 
+        if (!scheduleRes.ok) throw new Error("Schedule file not found on GitHub");
+        
         const schedule = await scheduleRes.json();
         const calendar = await calendarRes.json();
         const coziText = await coziRes.text();
 
-        // 3. DATE LOGIC
         const now = new Date();
         const todayStr = now.toISOString().split('T')[0]; 
-        const todayClean = todayStr.replace(/-/g, ''); // For Cozi matching
+        const todayClean = todayStr.replace(/-/g, '');
         
-        // Determine Day Type: Override (PD) > Calendar (A/B) > Default (A)
+        // Priority: Override -> Calendar -> Default
         const dayTypeKey = schedule.overrides[todayStr] || calendar[todayStr] || "A_Day";
         
         document.getElementById('day-header').innerText = `${todayStr} (${dayTypeKey})`;
         const timeline = document.getElementById('timeline');
         timeline.innerHTML = '';
 
-        // 4. MORNING LAUNCH (Reverse Math)
+        // 1. MORNING LAUNCH
         const dropOff = schedule.hard_stops.school_dropoff;
         const routine = schedule.definitions.routines[dropOff.trigger_routine];
         const wheelsUp = subtractMinutes(dropOff.time, dropOff.commute_minutes);
         const wakeUp = subtractMinutes(wheelsUp, routine.duration);
         renderBrick(wakeUp, wheelsUp, routine.label, routine.color, routine.subtasks);
 
-        // 5. FOUNDATION BRICKS (Work/School)
+        // 2. FOUNDATION BRICKS
         const dayBricks = schedule.days[dayTypeKey] || [];
         dayBricks.forEach(brick => {
             const template = schedule.definitions.brick_templates[brick.template];
@@ -44,29 +44,29 @@ async function buildMyDay() {
             renderBrick(start, end, brick.label, template.color, []);
         });
 
-        // 6. COZI VARIABLE BRICKS (Orange)
+        // 3. COZI BRICKS
         const vevents = coziText.split("BEGIN:VEVENT");
         vevents.forEach(block => {
-            // Only pull events for today
             if (block.includes(todayClean)) {
                 const title = block.match(/SUMMARY:(.*)/)?.[1];
-                const startRaw = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
-                const endRaw = block.match(/DTEND[:;](?:.*T)?(\d{2})(\d{2})/);
+                const startMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
+                const endMatch = block.match(/DTEND[:;](?:.*T)?(\d{2})(\d{2})/);
                 
-                if (title && startRaw) {
-                    const sTime = `${startRaw[1]}:${startRaw[2]}`;
-                    const eTime = endRaw ? `${endRaw[1]}:${endRaw[2]}` : addMinutes(sTime, 60);
+                if (title && startMatch) {
+                    const sTime = `${startMatch[1]}:${startMatch[2]}`;
+                    const eTime = endMatch ? `${endMatch[1]}:${endMatch[2]}` : addMinutes(sTime, 60);
                     renderBrick(sTime, eTime, title.trim(), "orange", []);
                 }
             }
         });
 
     } catch (error) {
-        console.error("The Engine Stalled:", error);
+        console.error("Engine Error:", error);
         document.getElementById('day-header').innerText = `Error: ${error.message}`;
     }
 }
 
+// THE RENDER FUNCTION (Unified name)
 function renderBrick(start, end, title, colorClass, subtasks) {
     const timeline = document.getElementById('timeline');
     const brickDiv = document.createElement('div');
@@ -85,7 +85,6 @@ function renderBrick(start, end, title, colorClass, subtasks) {
     timeline.appendChild(brickDiv);
 }
 
-// TIME UTILITIES
 function subtractMinutes(timeStr, mins) {
     const [h, m] = timeStr.split(':').map(Number);
     const d = new Date();
