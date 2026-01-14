@@ -3,7 +3,7 @@ const CONFIG = {
     scheduleUrl: 'https://raw.githubusercontent.com/scottscalici/loquesea/main/planner/schedule.json',
     calendarUrl: 'https://raw.githubusercontent.com/scottscalici/imagenes/main/planes/calendario.json',
     // Replace the URL below with your actual Cozi ICS link
-    coziUrl: 'https://corsproxy.io/?' + encodeURIComponent('PASTE_YOUR_COZI_ICS_LINK_HERE'),
+    coziUrl: 'https://corsproxy.io/?' + encodeURIComponent('https://rest.cozi.com/api/ext/1103/f9f7020d-05c9-4720-b813-2155b4485be7/icalendar/feed/feed.ics'),
     pixelsPerMinute: 1.8 // This controls how fast the red line moves down the screen
 };
 
