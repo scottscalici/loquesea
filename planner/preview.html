@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Life Brick - Day Previewer</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+        .brick { background: white; padding: 10px; margin: 5px 0; border-radius: 8px; border-left: 5px solid #ccc; }
+        .prep { border-left-color: #3498db; background: #e3f2fd; } /* Blue for Prep */
+        .class { border-left-color: #e67e22; } /* Orange for Teaching */
+        .gym { border-left-color: #2ecc71; } /* Green for Gym */
+        .header { margin-bottom: 20px; background: white; padding: 15px; border-radius: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2>Life Brick Simulator</h2>
+    <input type="date" id="datePicker" value="2026-01-16">
+    <button onclick="previewDay()">Check Schedule</button>
+    <div id="dayInfo" style="margin-top:10px; font-weight:bold;"></div>
+</div>
+
+<div id="scheduleContainer"></div>
+
+<script>
+// This represents your school calendar JSON
+const schoolCalendar = [
+    { "fecha": "2026-01-14", "dia": null, "note": "PD / No school" },
+    { "fecha": "2026-01-15", "dia": 39, "ciclo": "B" },
+    { "fecha": "2026-01-16", "dia": 40, "ciclo": "A" },
+    { "fecha": "2026-01-19", "dia": null, "note": "MLK / No school" },
+    { "fecha": "2026-01-20", "dia": 40, "ciclo": "B" }
+];
+
+// Your Teaching Templates
+const templates = {
+    "A": [
+        { name: "1A: Prep Block", time: "7:15-8:45", type: "prep" },
+        { name: "2A: Prep Block", time: "8:51-10:21", type: "prep" },
+        { name: "Lunch", time: "10:27-10:57", type: "break" },
+        { name: "3A: Gym", time: "11:03-12:32", type: "gym" },
+        { name: "4A: Spanish IV", time: "12:38-2:09", type: "class" }
+    ],
+    "B": [
+        { name: "1B: Prep Block", time: "7:15-8:45", type: "prep" },
+        { name: "2B: Spanish 2", time: "8:51-10:21", type: "class" },
+        { name: "Lunch", time: "10:27-10:57", type: "break" },
+        { name: "3B: Gym", time: "11:03-12:32", type: "gym" },
+        { name: "4B: Spanish IV", time: "12:38-2:09", type: "class" }
+    ]
+};
+
+function previewDay() {
+    const selectedDate = document.getElementById('datePicker').value;
+    const dayData = schoolCalendar.find(d => d.fecha === selectedDate);
+    const container = document.getElementById('scheduleContainer');
+    const info = document.getElementById('dayInfo');
+    
+    container.innerHTML = "";
+    
+    if (!dayData) {
+        info.innerText = "No data for this date.";
+        return;
+    }
+
+    if (dayData.dia === null) {
+        info.innerText = `Note: ${dayData.note}`;
+        container.innerHTML = `<div class="brick">Ghost Gap: Use this time for House Management!</div>`;
+    } else {
+        info.innerText = `Cycle: ${dayData.ciclo} Day`;
+        const schedule = templates[dayData.ciclo];
+        schedule.forEach(item => {
+            const div = document.createElement('div');
+            div.className = `brick ${item.type}`;
+            div.innerHTML = `<strong>${item.time}</strong> - ${item.name}`;
+            container.appendChild(div);
+        });
+    }
+}
+</script>
+</body>
+</html>
