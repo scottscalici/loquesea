@@ -2,93 +2,184 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>JSON Driven House Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lego Dashboard & House Hub</title>
     <style>
-        body { font-family: system-ui, sans-serif; background: #f4f7f6; padding: 20px; color: #333; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .task-card { border: 1px solid #eee; margin-bottom: 1rem; padding: 1rem; border-radius: 8px; transition: transform 0.1s; }
-        .task-card:hover { transform: translateY(-2px); border-color: #3498db; }
-        .controls { display: flex; gap: 10px; margin-top: 10px; }
-        button { flex: 1; padding: 10px; cursor: pointer; border-radius: 5px; border: none; font-weight: 600; }
-        .btn-done { background: #27ae60; color: white; }
-        .btn-snooze { background: #3498db; color: white; }
-        .status-msg { color: #7f8c8d; font-size: 0.9rem; text-align: center; margin-top: 20px; }
+        :root {
+            --bg: #121212;
+            --brick-blue: #3498db;
+            --brick-purple: #9b59b6;
+            --ghost-border: #444;
+            --text: #ffffff;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        
+        /* Configuration Bar */
+        .config-bar { background: #222; padding: 15px; border-radius: 10px; margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+        input { background: #333; color: white; border: 1px solid #555; padding: 8px; border-radius: 5px; flex-grow: 1; }
+        button { cursor: pointer; padding: 8px 15px; border-radius: 5px; border: none; font-weight: bold; transition: 0.2s; }
+        .btn-sync { background: var(--brick-blue); color: white; }
+        .btn-uri { background: #f1c40f; color: black; }
+        
+        /* Lego Timeline */
+        .timeline { display: flex; flex-direction: column; gap: 12px; }
+        
+        .brick { 
+            background: var(--brick-blue); 
+            border-radius: 8px; 
+            padding: 20px; 
+            border-left: 12px solid rgba(0,0,0,0.3);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .brick.meeting-nested { background: var(--brick-purple); }
+        
+        .ghost-brick { 
+            border: 2px dashed var(--ghost-border); 
+            border-radius: 8px; 
+            padding: 15px; 
+            text-align: center; 
+            cursor: pointer; 
+            color: #888; 
+            transition: all 0.3s;
+        }
+        .ghost-brick:hover { border-color: var(--brick-blue); color: var(--brick-blue); background: rgba(52, 152, 219, 0.05); }
+
+        .nested-event { 
+            background: rgba(0,0,0,0.2); 
+            margin-top: 12px; 
+            padding: 10px; 
+            border-radius: 6px; 
+            font-size: 0.9em; 
+            border-left: 3px solid #fff;
+        }
+        .time-label { font-size: 0.8em; opacity: 0.7; display: block; margin-bottom: 5px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🏠 House Tasks</h1>
-    <div id="task-list">Loading chores from JSON...</div>
-    <p id="status" class="status-msg"></p>
+    <div class="config-bar">
+        <input type="password" id="cal-token" placeholder="Paste Calendly Token">
+        <input type="text" id="user-uri" placeholder="User URI (Leave blank first time)">
+        <button class="btn-uri" onclick="findMyUri()">1. Get URI</button>
+        <button class="btn-sync" onclick="refreshDashboard()">2. Sync Dashboard</button>
+    </div>
+
+    <div id="dashboard" class="timeline">
+        </div>
 </div>
 
 <script>
-    let tasks = [];
+    // --- YOUR BASE SCHEDULE ---
+    let dailyBlocks = [
+        { name: "Morning Routine", start: "07:00", end: "09:00" },
+        { name: "Deep Work", start: "09:00", end: "12:00" },
+        { name: "Admin/Prep", start: "13:00", end: "15:00" },
+        { name: "PM Cleanup", start: "19:00", end: "20:30" }
+    ];
 
-    // 1. FETCH the data from your house.json file
-    async function loadTasks() {
+    const PROXY = "https://corsproxy.io/?";
+
+    // STEP 1: Find the URI for your account
+    async function findMyUri() {
+        const token = document.getElementById('cal-token').value;
+        if (!token) return alert("Please paste your token first!");
+        
         try {
-            const response = await fetch('house.json');
-            if (!response.ok) throw new Error("Could not find house.json");
-            tasks = await response.json();
-            renderTasks();
-            document.getElementById('status').innerText = "Data loaded successfully.";
-        } catch (err) {
-            document.getElementById('task-list').innerHTML = 
-                `<p style="color:red">Error: ${err.message}<br>Note: You must run this via a local server (like Live Server) for fetch to work.</p>`;
+            const target = "https://api.calendly.com/users/me";
+            const res = await fetch(PROXY + encodeURIComponent(target), {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await res.json();
+            const uri = data.resource.uri;
+            document.getElementById('user-uri').value = uri;
+            alert("Found it! URI loaded into the box.");
+        } catch (e) {
+            alert("Error finding URI. Check your token and console.");
+            console.error(e);
         }
     }
 
-    function renderTasks() {
-        const list = document.getElementById('task-list');
-        list.innerHTML = '';
+    // STEP 2: Fetch meetings and draw the dashboard
+    async function refreshDashboard() {
+        const token = document.getElementById('cal-token').value;
+        const userUri = document.getElementById('user-uri').value;
         
-        tasks.sort((a, b) => new Date(a.due) - new Date(b.due));
+        if (!token || !userUri) return alert("Need both Token and URI to sync!");
 
-        tasks.forEach(task => {
-            const dueDate = new Date(task.due);
-            const card = document.createElement('div');
-            card.className = 'task-card';
-            card.innerHTML = `
-                <div style="display:flex; justify-content:space-between">
-                    <strong>${task.name}</strong>
-                    <span style="color:#e67e22">${dueDate.toLocaleDateString()}</span>
-                </div>
-                <div class="controls">
-                    <button class="btn-done" onclick="updateTask(${task.id}, 'DONE')">Complete</button>
-                    <button class="btn-snooze" onclick="updateTask(${task.id}, 'SNOOZE')">Snooze</button>
-                </div>
+        try {
+            const target = `https://api.calendly.com/scheduled_events?user=${userUri}&status=active`;
+            const response = await fetch(PROXY + encodeURIComponent(target), {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await response.json();
+            renderDashboard(data.collection || []);
+        } catch (e) {
+            console.error("Fetch error:", e);
+            alert("Could not fetch meetings.");
+        }
+    }
+
+    function renderDashboard(meetings) {
+        const container = document.getElementById('dashboard');
+        container.innerHTML = "";
+        
+        // Sort blocks by time
+        dailyBlocks.sort((a,b) => a.start.localeCompare(b.start));
+
+        dailyBlocks.forEach((block, index) => {
+            // Check for Gaps (Ghost Blocks)
+            if (index > 0) {
+                const prevEnd = dailyBlocks[index-1].end;
+                if (prevEnd < block.start) {
+                    container.appendChild(createGhostBlock(prevEnd, block.start));
+                }
+            }
+
+            // Create Lego Brick
+            const brick = document.createElement('div');
+            brick.className = 'brick';
+            brick.innerHTML = `
+                <span class="time-label">${block.start} - ${block.end}</span>
+                <strong>${block.name}</strong>
             `;
-            list.appendChild(card);
+
+            // Nest Calendly Meetings (Logic: if meeting starts during this block)
+            meetings.forEach(m => {
+                const mTime = new Date(m.start_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
+                if (mTime >= block.start && mTime < block.end) {
+                    brick.classList.add('meeting-nested');
+                    brick.innerHTML += `
+                        <div class="nested-event">
+                            <strong>📅 ${m.name}</strong><br>
+                            Starts: ${mTime}
+                        </div>`;
+                }
+            });
+
+            container.appendChild(brick);
         });
     }
 
-    function updateTask(id, action) {
-        const task = tasks.find(t => t.id === id);
-        let dateObj = new Date(task.due);
-
-        if (action === 'SNOOZE') {
-            dateObj.setDate(dateObj.getDate() + 1);
-        } else if (action === 'DONE') {
-            if (task.type === "FIXED") {
-                // Next week/month based on when it was DUE
-                dateObj.setDate(dateObj.getDate() + task.intervalDays);
-            } else {
-                // Next interval based on TODAY
-                dateObj = new Date();
-                dateObj.setDate(dateObj.getDate() + task.intervalDays);
+    function createGhostBlock(start, end) {
+        const ghost = document.createElement('div');
+        ghost.className = 'ghost-brick';
+        ghost.innerHTML = `<span>+ Add Task to Gap (${start} - ${end})</span>`;
+        ghost.onclick = () => {
+            const taskName = prompt(`What are we doing between ${start} and ${end}?`);
+            if (taskName) {
+                dailyBlocks.push({ name: taskName, start, end });
+                refreshDashboard(); // Re-render
             }
-        }
-
-        task.due = dateObj.toISOString();
-        renderTasks();
-        
-        console.log("Updated Data (Ready to save):", JSON.stringify(tasks, null, 2));
-        document.getElementById('status').innerText = `Updated ${task.name}. Note: Browser can't auto-save back to JSON file for security.`;
+        };
+        return ghost;
     }
 
-    loadTasks();
+    // Initial draw
+    renderDashboard([]);
 </script>
+
 </body>
 </html>
