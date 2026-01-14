@@ -1,18 +1,16 @@
-{
-  "house_tasks": [
-    {
-      "task": "Change Air Filter",
-      "frequency_days": 90,
-      "last_done": "2024-02-01",
-      "priority": "medium",
-      "category": "maintenance"
-    },
-    {
-      "task": "Clean Bathrooms",
-      "frequency_days": 7,
-      "last_done": "2024-05-15",
-      "priority": "high",
-      "category": "cleaning"
-    }
-  ]
-}
+[
+  {
+    "id": 1,
+    "name": "Garbage Day",
+    "type": "FIXED",
+    "due": "2026-01-15T18:00",
+    "intervalDays": 7
+  },
+  {
+    "id": 2,
+    "name": "Air Filters",
+    "type": "INTERVAL",
+    "due": "2026-01-14T12:00",
+    "intervalDays": 90
+  }
+]
