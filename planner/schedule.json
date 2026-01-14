@@ -1,0 +1,29 @@
+{
+  "config": {
+    "version": "1.0",
+    "user_name": "Scott",
+    "home_base": "Your Home Address"
+  },
+  "definitions": {
+    "brick_templates": {
+      "prep": { "color": "blue", "type": "work", "can_nest": true },
+      "class": { "color": "green", "type": "work", "can_nest": false },
+      "sports": { "color": "orange", "type": "variable", "can_nest": false },
+      "routine": { "color": "grey", "type": "static", "can_nest": false }
+    }
+  },
+  "days": {
+    "A_Day": [
+      { "label": "1A Prep", "start": "07:15", "duration": 90, "template": "prep" },
+      { "label": "2A Prep", "start": "08:45", "duration": 90, "template": "prep" },
+      { "label": "Lunch", "start": "10:15", "duration": 45, "template": "routine" }
+    ],
+    "PD_Day": [
+      { "label": "PD Session", "start": "08:00", "end": "15:00", "template": "work" }
+    ]
+  },
+  "overrides": {
+    "2026-01-14": "PD_Day",
+    "2026-01-15": "A_Day"
+  }
+}
