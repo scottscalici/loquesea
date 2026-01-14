@@ -2,9 +2,9 @@
 const CONFIG = {
     scheduleUrl: 'https://raw.githubusercontent.com/scottscalici/loquesea/main/planner/schedule.json',
     calendarUrl: 'https://raw.githubusercontent.com/scottscalici/imagenes/main/planes/calendario.json',
-    // Replace the URL below with your actual Cozi ICS link
+    // Your verified Cozi Link
     coziUrl: 'https://corsproxy.io/?' + encodeURIComponent('https://rest.cozi.com/api/ext/1103/f9f7020d-05c9-4720-b813-2155b4485be7/icalendar/feed/feed.ics'),
-    pixelsPerMinute: 1.8 // This controls how fast the red line moves down the screen
+    pixelsPerMinute: 1.8 
 };
 
 async function buildMyDay() {
@@ -22,9 +22,9 @@ async function buildMyDay() {
         // 1. DATE & TRANSLATION LOGIC
         const now = new Date();
         const todayStr = now.toISOString().split('T')[0]; 
-        const todayMatch = todayStr.replace(/-/g, ''); // Format: 20260114
+        const todayMatch = todayStr.replace(/-/g, ''); 
         
-        // Map Spanish Calendar keys to your Planner JSON keys
+        // Translation: Maps Spanish Calendar keys (A, B, PD) to Planner JSON keys
         const rawValue = schedule.overrides[todayStr] || calendar[todayStr] || "A";
         const dayTypeMap = { "A": "A_Day", "B": "B_Day", "PD": "PD_Day", "Work": "PD_Day" };
         const dayTypeKey = dayTypeMap[rawValue] || rawValue;
@@ -33,12 +33,14 @@ async function buildMyDay() {
         const timeline = document.getElementById('timeline');
         timeline.innerHTML = '';
 
-        // 2. MORNING LAUNCH (Reverse Math)
-        const dropOff = schedule.hard_stops.school_dropoff;
-        const routine = schedule.definitions.routines[dropOff.trigger_routine];
-        const wheelsUp = subtractMinutes(dropOff.time, dropOff.commute_minutes);
-        const wakeUp = subtractMinutes(wheelsUp, routine.duration);
-        renderBrick(wakeUp, wheelsUp, routine.label, "purple", routine.subtasks);
+        // 2. MORNING LAUNCH
+        if (schedule.hard_stops && schedule.hard_stops.school_dropoff) {
+            const dropOff = schedule.hard_stops.school_dropoff;
+            const routine = schedule.definitions.routines[dropOff.trigger_routine];
+            const wheelsUp = subtractMinutes(dropOff.time, dropOff.commute_minutes);
+            const wakeUp = subtractMinutes(wheelsUp, routine.duration);
+            renderBrick(wakeUp, wheelsUp, routine.label, "purple", routine.subtasks);
+        }
 
         // 3. FOUNDATION BRICKS (Work/School)
         const dayBricks = schedule.days[dayTypeKey] || [];
@@ -63,12 +65,12 @@ async function buildMyDay() {
             }
         });
 
-        // 5. FOOTER & TIME MARKER
+        // 5. FINAL UI TOUCHES
         renderCurrentTimeLine();
         const lastSync = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         const footer = document.createElement('div');
         footer.style.cssText = "text-align:center; font-size:0.7rem; color:#999; margin-top:20px; padding-bottom:20px;";
-        footer.innerText = `Last Sync: ${lastSync} ${coziFound ? '' : '(No Cozi events)'}`;
+        footer.innerText = `Last Sync: ${lastSync} ${coziFound ? '' : '(No Cozi events today)'}`;
         timeline.appendChild(footer);
 
     } catch (error) {
@@ -77,22 +79,13 @@ async function buildMyDay() {
     }
 }
 
-// --- CORE FUNCTIONS ---
-
+// --- RENDERING ENGINE ---
 function renderBrick(start, end, title, colorClass, subtasks) {
     const timeline = document.getElementById('timeline');
     const brickDiv = document.createElement('div');
     brickDiv.className = `brick ${colorClass}`;
-    
-    let subtasksHtml = subtasks.length > 0 
-        ? `<ul class="subtasks">${subtasks.map(s => `<li>${s}</li>`).join('')}</ul>` 
-        : '';
-
-    brickDiv.innerHTML = `
-        <div class="time-label">${start} - ${end}</div>
-        <div class="title">${title}</div>
-        ${subtasksHtml}
-    `;
+    let subHtml = subtasks.length > 0 ? `<ul class="subtasks">${subtasks.map(s => `<li>${s}</li>`).join('')}</ul>` : '';
+    brickDiv.innerHTML = `<div class="time-label">${start} - ${end}</div><div class="title">${title}</div>${subHtml}`;
     timeline.appendChild(brickDiv);
 }
 
@@ -100,37 +93,27 @@ function renderCurrentTimeLine() {
     const now = new Date();
     const hours = now.getHours();
     const minutes = now.getMinutes();
-    
-    // Timeline starts calculating from 5:00 AM
     const startHour = 5; 
     if (hours < startHour || hours > 22) return;
-
     const totalMinutes = (hours - startHour) * 60 + minutes;
-    
-    let marker = document.getElementById('time-marker');
-    if (!marker) {
-        marker = document.createElement('div');
-        marker.id = 'time-marker';
-        document.getElementById('timeline').appendChild(marker);
-    }
-    
-    // Position the red line based on total minutes passed since 5am
+    let marker = document.getElementById('time-marker') || document.createElement('div');
+    marker.id = 'time-marker';
+    document.getElementById('timeline').appendChild(marker);
     marker.style.top = `${totalMinutes * CONFIG.pixelsPerMinute}px`; 
 }
 
-// --- TIME UTILITIES ---
-
-function subtractMinutes(timeStr, mins) {
-    const [h, m] = timeStr.split(':').map(Number);
-    const d = new Date(); d.setHours(h, m - mins);
+// --- UTILITIES ---
+function subtractMinutes(t, m) {
+    const [h, min] = t.split(':').map(Number);
+    const d = new Date(); d.setHours(h, min - m);
+    return d.toTimeString().slice(0, 5);
+}
+function addMinutes(t, m) {
+    const [h, min] = t.split(':').map(Number);
+    const d = new Date(); d.setHours(h, min + m);
     return d.toTimeString().slice(0, 5);
 }
 
-function addMinutes(timeStr, mins) {
-    const [h, m] = timeStr.split(':').map(Number);
-    const d = new Date(); d.setHours(h, m + mins);
-    return d.toTimeString().slice(0, 5);
-}
-
-// Kickstart the clock and refresh line position every minute
+// Initialization
+buildMyDay();
 setInterval(renderCurrentTimeLine, 60000);
