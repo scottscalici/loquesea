@@ -1,14 +1,14 @@
 /**
- * GEMINI MASTER CONTROL SCRIPT - VERSION 1.5
- * Fix: Precise Time Marker Alignment & Compact Scaling
+ * GEMINI MASTER CONTROL SCRIPT - VERSION 1.6
+ * Final Fix: Absolute Positioning for perfect Red Line alignment
  */
 
 const CONFIG = {
     scheduleUrl: 'https://raw.githubusercontent.com/scottscalici/loquesea/main/planner/schedule.json',
     calendarUrl: 'https://raw.githubusercontent.com/scottscalici/imagenes/main/planes/calendario.json',
     coziUrl: 'https://corsproxy.io/?' + encodeURIComponent('https://rest.cozi.com/api/ext/1103/f9f7020d-05c9-4720-b813-2155b4485be7/icalendar/feed/feed.ics'),
-    pixelsPerMinute: 1.2,
-    dayStartHour: 5 // This is our "Zero" point on the screen
+    pixelsPerMinute: 1.2, // Compactness
+    dayStartHour: 5 // The "Zero" point (5:00 AM) at the very top of the timeline
 };
 
 async function buildMyDay() {
@@ -34,7 +34,10 @@ async function buildMyDay() {
         document.getElementById('day-header').innerText = `${todayStr} (${dayTypeKey})`;
         const timeline = document.getElementById('timeline');
         timeline.innerHTML = '';
-        timeline.style.position = 'relative'; // Crucial for the marker to float correctly
+        
+        // Setup the timeline container for absolute positioning
+        timeline.style.position = 'relative';
+        timeline.style.height = `${(22 - CONFIG.dayStartHour) * 60 * CONFIG.pixelsPerMinute}px`;
 
         // 1. MORNING LAUNCH
         if (schedule.hard_stops?.school_dropoff) {
@@ -53,7 +56,7 @@ async function buildMyDay() {
             renderBrick(brick.start, end, brick.label, temp.color, []);
         });
 
-        // 3. COZI BRICKS
+        // 3. COZI BRICKS (Fuzzy dedupe)
         const vevents = coziText.split("BEGIN:VEVENT");
         let takenTimes = new Set(); 
         vevents.forEach(block => {
@@ -79,25 +82,29 @@ async function buildMyDay() {
     }
 }
 
-// --- RENDERING ENGINE ---
+// --- UPDATED RENDER ENGINE FOR ABSOLUTE POSITIONING ---
 
 function renderBrick(start, end, title, colorClass, subtasks) {
     const timeline = document.getElementById('timeline');
     const brickDiv = document.createElement('div');
     brickDiv.className = `brick ${colorClass}`;
     
-    const duration = getDurationMinutes(start, end);
-    brickDiv.style.minHeight = `${duration * CONFIG.pixelsPerMinute}px`;
-
-    // Calculate top offset relative to 5:00 AM
+    // Position logic: How many minutes from 5:00 AM?
     const startMins = getDurationMinutes(`${CONFIG.dayStartHour}:00`, start);
-    brickDiv.style.marginTop = `${Math.max(0, startMins * CONFIG.pixelsPerMinute)}px`;
-    brickDiv.style.position = "absolute";
-    brickDiv.style.width = "90%";
-    brickDiv.style.left = "5%";
+    const durationMins = getDurationMinutes(start, end);
+
+    brickDiv.style.position = 'absolute';
+    brickDiv.style.top = `${startMins * CONFIG.pixelsPerMinute}px`;
+    brickDiv.style.height = `${durationMins * CONFIG.pixelsPerMinute}px`;
+    brickDiv.style.width = 'calc(100% - 20px)';
+    brickDiv.style.margin = '0 10px';
 
     const subHtml = subtasks.length > 0 ? `<ul class="subtasks">${subtasks.map(s => `<li>${s}</li>`).join('')}</ul>` : '';
-    brickDiv.innerHTML = `<div class="time-label">${formatTo12Hr(start)} - ${formatTo12Hr(end)}</div><div class="title">${title}</div>${subHtml}`;
+    brickDiv.innerHTML = `
+        <div class="time-label">${formatTo12Hr(start)} - ${formatTo12Hr(end)}</div>
+        <div class="title">${title}</div>
+        ${subHtml}
+    `;
     timeline.appendChild(brickDiv);
 }
 
@@ -108,19 +115,17 @@ function renderCurrentTimeLine() {
     
     if (hours < CONFIG.dayStartHour || hours > 22) return;
     
-    // Minutes since 5:00 AM
     const elapsedMinutes = (hours - CONFIG.dayStartHour) * 60 + minutes;
     
     let marker = document.getElementById('time-marker') || document.createElement('div');
     marker.id = 'time-marker';
     document.getElementById('timeline').appendChild(marker);
     
-    // Absolute position based on same math as bricks
+    // Line and bricks now use the exact same coordinate system
     marker.style.top = `${elapsedMinutes * CONFIG.pixelsPerMinute}px`; 
 }
 
-// --- FORMATTERS & MATH ---
-
+// --- UTILS ---
 function formatTo12Hr(timeStr) {
     const [h, m] = timeStr.split(':');
     let hour = parseInt(h);
