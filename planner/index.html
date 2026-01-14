@@ -76,6 +76,27 @@
             margin-right: 8px;
             color: #bdc3c7;
         }
+#time-marker {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 2px solid #ff4444;
+    z-index: 10;
+    pointer-events: none; /* So it doesn't interfere with clicking bricks */
+}
+
+#time-marker::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -5px;
+    width: 10px;
+    height: 10px;
+    background: #ff4444;
+    border-radius: 50%;
+}
+
+        
     </style>
 </head>
 <body>
