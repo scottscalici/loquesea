@@ -3,7 +3,7 @@ async function buildMyDay() {
         const scheduleUrl = 'https://raw.githubusercontent.com/scottscalici/loquesea/main/planner/schedule.json';
         const calendarUrl = 'https://raw.githubusercontent.com/scottscalici/imagenes/main/planes/calendario.json';
         // Replace the placeholder below with your actual Cozi URL
-        const coziUrl = 'https://corsproxy.io/?' + encodeURIComponent('PASTE_YOUR_COZI_ICS_LINK_HERE');
+        const coziUrl = 'https://corsproxy.io/?' + encodeURIComponent('https://rest.cozi.com/api/ext/1103/f9f7020d-05c9-4720-b813-2155b4485be7/icalendar/feed/feed.ics');
 
         const [scheduleRes, calendarRes, coziRes] = await Promise.all([
             fetch(scheduleUrl),
