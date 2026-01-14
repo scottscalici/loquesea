@@ -8,9 +8,82 @@
   },
   {
     "id": 2,
-    "name": "Air Filters",
+    "name": "Empty dishwasher",
     "type": "INTERVAL",
     "due": "2026-01-14T12:00",
+    "intervalDays": 1
+  },
+  {
+    "id": 3,
+    "name": "Load dishwasher",
+    "type": "INTERVAL",
+    "due": "2026-01-14T12:00",
+    "intervalDays": 1
+  },
+  {
+    "id": 4,
+    "name": "Vacuum",
+    "type": "FIXED",
+    "due": "2026-01-16T12:00",
+    "intervalDays": 7
+  },  
+  {
+    "id": 5,
+    "name": "Mop",
+    "type": "FIXED",
+    "due": "2026-01-16T12:00",
+    "intervalDays": 7
+  },
+    {
+    "id": 6,
+    "name": "Clean Bathrooms",
+    "type": "FIXED",
+    "due": "2026-01-16T12:00",
+    "intervalDays": 7
+  },
+    {
+    "id": 7,
+    "name": "Clean Toilets",
+    "type": "FIXED",
+    "due": "2026-01-16T12:00",
+    "intervalDays": 7
+  },
+    {
+    "id": 8,
+    "name": "Empty Bathroom Garbages",
+    "type": "FIXED",
+    "due": "2026-01-15T12:00",
+    "intervalDays": 7
+  },
+    {
+    "id": 9,
+    "name": "Refill humidifiers",
+    "type": "INTERVAL",
+    "due": "2026-01-14T12:00",
+    "intervalDays": 1
+  },
+  {
+    "id": 10,
+    "name": "Charge Car",
+    "type": "INTERVAL",
+    "due": "2026-01-14T12:00",
+    "intervalDays": 1
+  },
+  {
+    "id": 11,
+    "name": "Clothes for tomorrow",
+    "type": "FIXED",
+    "due": "2026-01-16T12:00",
+    "intervalDays": 7
+  },
+
+
+
+  {
+    "id": 22,
+    "name": "Air Filters",
+    "type": "INTERVAL",
+    "due": "2026-01-17T12:00",
     "intervalDays": 90
   }
 ]
