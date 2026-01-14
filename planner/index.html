@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Brick Planner</title>
+    <style>
+        :root {
+            --bg: #f4f7f6;
+            --work-blue: #4a90e2;
+            --routine-purple: #9b59b6;
+            --variable-orange: #f39c12;
+            --text: #2c3e50;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #timeline {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .brick {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 8px solid #ccc;
+            position: relative;
+        }
+
+        .brick.work { border-left-color: var(--work-blue); }
+        .brick.purple { border-left-color: var(--routine-purple); }
+        .brick.orange { border-left-color: var(--variable-orange); }
+
+        .time-label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #7f8c8d;
+            margin-bottom: 4px;
+        }
+
+        .title {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .subtasks {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: #555;
+            list-style: none;
+            padding: 0;
+        }
+
+        .subtasks li {
+            padding: 3px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .subtasks li::before {
+            content: "▢";
+            margin-right: 8px;
+            color: #bdc3c7;
+        }
+    </style>
+</head>
+<body>
+
+    <h2 id="day-header">Loading Schedule...</h2>
+    
+    <div id="timeline">
+        </div>
+
+    <script src="main.js"></script>
+    <script>
+        // Start the engine when the page loads
+        window.onload = buildMyDay;
+    </script>
+</body>
+</html>
