@@ -164,21 +164,17 @@ async function logTransaction() {
         const isAmazon = vendor.toLowerCase().includes("amazon");
         const isIncome = vendor.toLowerCase().includes("income") || vendor.toLowerCase().includes("payday");
 
-        // RULE 1: Checking Balance always moves (The Real World)
         if (isIncome) {
             data.state.checking_balance += absAmt;
-            data.state.weekly_budget_remaining += absAmt;
         } else {
             data.state.checking_balance -= absAmt;
 
-            // RULE 2: The Amazon Shield Logic
-            const today = new Date();
-            const day = today.getDate();
+            // Manual Spend (NOT bills) counts against the $1000 Weekly Budget
+            const day = new Date().getDate();
             const isInsideWindow = (day >= 21 && day <= 27);
 
             if (isAmazon && isInsideWindow) {
-                // Determine how much shield is actually left
-                const currentMonth = today.toISOString().slice(0, 7);
+                const currentMonth = new Date().toISOString().slice(0, 7);
                 const amzTotal = data.history.filter(h => {
                     const hDate = new Date(h.date + "T12:00:00");
                     return h.date.startsWith(currentMonth) && 
@@ -187,12 +183,9 @@ async function logTransaction() {
                 }).reduce((sum, h) => sum + Math.abs(h.amount), 0);
 
                 const shieldRemaining = Math.max(0, 500 - amzTotal);
-                
-                // If purchase is $100 and shield has $40 left, weekly budget is hit for $60
-                const hitToWeeklyBudget = Math.max(0, absAmt - shieldRemaining);
-                data.state.weekly_budget_remaining -= hitToWeeklyBudget;
+                data.state.weekly_budget_remaining -= Math.max(0, absAmt - shieldRemaining);
             } else {
-                // Not Amazon OR not in the window (1/13 or 1/28) = Hits Weekly Budget fully
+                // Normal manual spend (Gas, Food, Target, etc.)
                 data.state.weekly_budget_remaining -= absAmt;
             }
         }
@@ -203,7 +196,6 @@ async function logTransaction() {
             amount: isIncome ? absAmt : -absAmt 
         });
         
-        // Reset and Sync
         document.getElementById('amt').value = '';
         document.getElementById('who').value = '';
         document.getElementById('what').value = '';
@@ -293,10 +285,8 @@ async function logTransaction() {
         container.appendChild(div);
     }
 
-    async function processInbox(idx, type) {
+   async function processInbox(idx, type) {
         let name, defaultAmt;
-        
-        // 1. Identify the bill/payday and its expected amount
         if (type === 'INCOME') {
             name = idx === -1 ? "Scott Payday" : "Wife Payday";
             defaultAmt = 2500;
@@ -306,6 +296,29 @@ async function logTransaction() {
             defaultAmt = bill.amount;
         }
 
+        const userInput = prompt(`Enter amount for ${name}:`, defaultAmt);
+        if (userInput === null) return;
+        const finalAmt = parseFloat(userInput);
+        if (isNaN(finalAmt)) return;
+
+        if (type === 'INCOME') {
+            data.state.checking_balance += finalAmt;
+            // Payday usually doesn't increase weekly spending room, so we leave budget alone
+        } else {
+            data.state.checking_balance -= finalAmt;
+            // BILLS: We do NOT subtract from weekly_budget_remaining here
+            advanceDate(idx);
+        }
+
+        data.history.push({ 
+            date: new Date().toISOString().split('T')[0], 
+            vendor: name, 
+            amount: type === 'INCOME' ? finalAmt : -finalAmt,
+            category: type // We'll use this to help Undo logic later
+        });
+
+        await sync();
+    }
         // 2. ASK FOR THE AMOUNT (This solves your "varying bills" problem)
         const userInput = prompt(`Enter amount for ${name}:`, defaultAmt);
         
