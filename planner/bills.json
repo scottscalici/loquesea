@@ -109,48 +109,6 @@
       "vendor": "Gas",
       "what": "Gas",
       "amount": 62.79
-    },
-    {
-      "date": "2026-01-15",
-      "vendor": "Scott Payday",
-      "what": "INCOME",
-      "amount": 2500,
-      "category": "INCOME"
-    },
-    {
-      "date": "2026-01-15",
-      "vendor": "Scott Payday",
-      "what": "INCOME",
-      "amount": 2500,
-      "category": "INCOME"
-    },
-    {
-      "date": "2026-01-15",
-      "vendor": "Scott Payday",
-      "what": "INCOME",
-      "amount": 2500,
-      "category": "INCOME"
-    },
-    {
-      "date": "2026-01-15",
-      "vendor": "WEA",
-      "what": "BILL",
-      "amount": -104.6,
-      "category": "BILL"
-    },
-    {
-      "date": "2026-01-15",
-      "vendor": "Jax S",
-      "what": "BILL",
-      "amount": -35.99,
-      "category": "BILL"
-    },
-    {
-      "date": "2026-01-15",
-      "vendor": "Paramount Plus",
-      "what": "BILL",
-      "amount": -12.99,
-      "category": "BILL"
     }
   ],
   "bills": [
