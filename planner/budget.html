@@ -44,6 +44,7 @@
     <span class="label">Spendable Balance <span id="syncStatus" class="status-dot"></span></span>
     <div class="balance-amt" id="mainBalance">$0.00</div>
     <div id="savingsContainer"></div>
+    <div id="amazonStatus" style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee;"></div>
 </div>
 
 
@@ -96,8 +97,33 @@
                     <div class="progress-bg"><div class="progress-fill" style="width:${pct}%"></div></div>
                 </div>`;
         });
+        function renderAmazonEscrow() {
+    const amzDiv = document.getElementById('amazonStatus');
+    const today = new Date();
+    const day = today.getDate();
+    
+    // Calculate total Amazon spending this month from history
+    const currentMonth = today.toISOString().slice(0, 7); // "2026-01"
+    const amzTotal = data.history
+        .filter(h => h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon"))
+        .reduce((sum, h) => sum + Math.abs(h.amount), 0);
+
+    let allowance = (day >= 21) ? 500 : 1000;
+    let remaining = allowance - amzTotal;
+
+    amzDiv.innerHTML = `
+        <span class="label">Amazon Budget (${day >= 21 ? 'Post-21st' : 'Pre-21st'})</span>
+        <div style="display:flex; justify-content:space-between; font-size: 0.9rem;">
+            <span>Spent: $${amzTotal.toLocaleString()}</span>
+            <span style="font-weight:bold; color:${remaining < 0 ? 'red' : 'green'}">
+                Rem: $${remaining.toLocaleString()}
+            </span>
+        </div>
+    `;
+}
         renderInbox();
         renderHistory();
+        renderAmazonEscrow();
     }
 
     // [SECTION: INBOX LOGIC]
@@ -210,22 +236,34 @@
     }
 
 
-    async function logTransaction() {
-        const desc = document.getElementById('desc').value;
-        const amt = parseFloat(document.getElementById('amt').value);
-        if(!desc || isNaN(amt)) return;
+  async function logTransaction() {
+    const desc = document.getElementById('desc').value;
+    let amt = parseFloat(document.getElementById('amt').value);
+    if(!desc || isNaN(amt)) return;
 
-        data.state.checking_balance += amt;
-        data.history.push({
-            date: new Date().toISOString().split('T')[0],
-            vendor: desc, what: "Manual Entry", amount: amt, category: amt < 0 ? "Spending" : "Income"
-        });
-        
-        document.getElementById('desc').value = '';
-        document.getElementById('amt').value = '';
-        await sync();
+    // SMART LOGIC: If it's not labeled "Income" or "Deposit", 
+    // and you entered a positive number, flip it to negative.
+    const isIncome = desc.toLowerCase().includes("income") || desc.toLowerCase().includes("payday") || desc.toLowerCase().includes("deposit");
+    if (!isIncome && amt > 0) {
+        amt = -amt; 
     }
 
+    data.state.checking_balance += amt;
+
+    data.history.push({
+        date: new Date().toISOString().split('T')[0],
+        vendor: desc, 
+        what: "Manual Entry", 
+        amount: amt, 
+        category: amt < 0 ? "Spending" : "Income"
+    });
+    
+    document.getElementById('desc').value = '';
+    document.getElementById('amt').value = '';
+    await sync();
+}
+
+    
     function renderHistory() {
         const histDiv = document.getElementById('recentHistory');
         histDiv.innerHTML = '';
