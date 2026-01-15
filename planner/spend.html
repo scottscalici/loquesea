@@ -1,1 +1,31 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Budget</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f9; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 40px; border-radius: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 80%; }
+        .label { color: #888; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; }
+        .big-num { font-size: 5rem; font-weight: bold; color: #2e7d32; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <span class="label">Safe to spend today</span>
+        <div class="big-num" id="out">--</div>
+        <span class="label">Remaining for week: </span><b id="week">--</b>
+    </div>
+    <script>
+        async function load() {
+            const r = await fetch('bills.json?t=' + Date.now());
+            const d = await r.json();
+            const days = (8 - (new Date().getDay() || 7));
+            document.getElementById('out').innerText = '$' + (d.state.current_weekly_remaining / days).toFixed(2);
+            document.getElementById('week').innerText = '$' + d.state.current_weekly_remaining.toFixed(2);
+        }
+        load();
+    </script>
+</body>
+</html>
