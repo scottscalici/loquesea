@@ -210,13 +210,28 @@ async function logTransaction() {
         await sync();
     }
     
-    async function undoLast() {
+   async function undoLast() {
         if (!data.history.length || !confirm("Undo last transaction?")) return;
+        
         const last = data.history.pop();
         const isAmazon = last.vendor.toLowerCase().includes("amazon");
         const amount = Math.abs(last.amount);
         const day = new Date(last.date).getDate();
 
+        // NEW: Check if this was a bill payment from your bill list
+        const billIndex = data.bills.findIndex(b => b.name === last.vendor);
+        if (billIndex !== -1 && last.amount < 0) {
+            // Roll the date BACK
+            let d = new Date(data.bills[billIndex].next_due_date + "T12:00:00");
+            if (data.bills[billIndex].frequency === "monthly") {
+                d.setMonth(d.getMonth() - 1);
+            } else {
+                d.setDate(d.getDate() - 14);
+            }
+            data.bills[billIndex].next_due_date = d.toISOString().split('T')[0];
+        }
+
+        // Reverse the math (Existing Logic)
         if (last.amount > 0) {
             data.state.checking_balance -= amount;
             data.state.weekly_budget_remaining -= amount;
@@ -224,7 +239,12 @@ async function logTransaction() {
             data.state.checking_balance += amount;
             if (isAmazon && day >= 21 && day <= 27) {
                 const currentMonth = last.date.slice(0, 7);
-                const amzTotal = data.history.filter(h => h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon")).reduce((sum, h) => sum + Math.abs(h.amount), 0);
+                const amzTotal = data.history.filter(h => {
+                    const hDate = new Date(h.date + "T12:00:00");
+                    return h.date.startsWith(currentMonth) && 
+                           h.vendor.toLowerCase().includes("amazon") &&
+                           hDate.getDate() >= 21 && hDate.getDate() <= 27;
+                }).reduce((sum, h) => sum + Math.abs(h.amount), 0);
                 const shieldRemaining = Math.max(0, 500 - amzTotal);
                 data.state.weekly_budget_remaining += Math.max(0, amount - shieldRemaining);
             } else {
@@ -233,7 +253,7 @@ async function logTransaction() {
         }
         await sync();
     }
-
+    
     function renderInbox() {
         const container = document.getElementById('inboxList');
         container.innerHTML = '';
