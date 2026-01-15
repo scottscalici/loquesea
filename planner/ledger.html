@@ -1,0 +1,37 @@
+<div class="card">
+    <span class="label">Master Transaction Ledger</span>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody id="masterLedgerBody"></tbody>
+    </table>
+</div>
+
+<script>
+// Logic to render the full history
+function renderLedger(data) {
+    const body = document.getElementById('masterLedgerBody');
+    body.innerHTML = '';
+    
+    // Show absolutely every transaction in the history array
+    data.history.slice().reverse().forEach(item => {
+        const isIncome = item.vendor === "INCOME" || item.amount < 0; // Adjust based on your logging math
+        body.innerHTML += `
+            <tr>
+                <td>${new Date(item.date).toLocaleDateString()}</td>
+                <td>${item.vendor} ${item.what ? '('+item.what+')' : ''}</td>
+                <td><span class="pill">${item.vendor === 'BILL' ? 'BILL' : 'SPEND'}</span></td>
+                <td style="color: ${item.vendor === 'INCOME' ? 'green' : 'red'}">
+                    ${item.vendor === 'INCOME' ? '+' : '-'}$${Math.abs(item.amount).toFixed(2)}
+                </td>
+            </tr>
+        `;
+    });
+}
+</script>
