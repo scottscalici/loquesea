@@ -203,6 +203,44 @@
         }
         renderUI();
     }
+    // [SECTION: GITHUB SAVE ENGINE]
+async function saveToGithub(updatedData) {
+    const GITHUB_TOKEN = localStorage.getItem('gh_token') || "YOUR_TOKEN_HERE";
+    const REPO_OWNER = 'scottscalici';
+    const REPO_NAME = 'loquesea';
+    const FILE_PATH = 'planner/bills.json';
+
+    try {
+        // 1. Get the current file SHA
+        const getFile = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+            headers: { "Authorization": `token ${GITHUB_TOKEN}` }
+        });
+        const fileData = await getFile.json();
+        const sha = fileData.sha;
+
+        // 2. Push the updated data
+        const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+            method: "PUT",
+            headers: {
+                "Authorization": `token ${GITHUB_TOKEN}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: "Update budget via Control Center",
+                content: btoa(JSON.stringify(updatedData, null, 2)),
+                sha: sha
+            })
+        });
+
+        if (response.ok) {
+            console.log("Successfully synced to GitHub");
+        } else {
+            console.error("GitHub Save Failed:", await response.text());
+        }
+    } catch (err) {
+        console.error("Error during sync:", err);
+    }
+}
 
     init();
 </script>
