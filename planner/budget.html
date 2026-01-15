@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Control Center</title>
     <style>
-        :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; }
+        :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; --danger: #d32f2f; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; color: var(--text); }
         .card { background: var(--card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
         .label { font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; }
@@ -17,21 +17,33 @@
         .btn-blue { background: var(--accent); }
         .btn-green { background: var(--primary); }
         .btn-orange { background: #ff9800; }
+        .btn-red { background: var(--danger); }
         .item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .progress-bg { background: #eee; height: 8px; border-radius: 4px; margin-top: 5px; overflow: hidden; }
+        .warning-text { color: var(--danger); font-weight: bold; font-size: 0.85rem; margin-top: 10px; text-align: center; }
+        .progress-bg { background: #eee; height: 8px; border-radius: 4px; margin-top: 5px; overflow: hidden; width: 100%; }
         .progress-fill { background: var(--primary); height: 100%; width: 0%; transition: 0.3s; }
         .hidden { display: none; }
+        #syncStatus { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-left: 5px; background: #ccc; }
+        .sync-saving { background: #ffeb3b !important; }
+        .sync-success { background: #4caf50 !important; }
+        .sync-error { background: #f44336 !important; }
     </style>
 </head>
 <body>
 
+    <div class="flex-row" style="margin-bottom:10px;">
+        <h3 style="margin:0;">Control Center <div id="syncStatus"></div></h3>
+        <button onclick="toggleSettings()" style="background:none; border:none; font-size: 1.2rem; cursor:pointer;">⚙️</button>
+    </div>
+
     <div class="card" style="background: #333; color: white;">
-        <span class="label" style="color: #aaa;">Cash Flow Projections (Checking)</span>
-        <div class="flex-row" style="margin-top:10px; text-align:center;">
-            <div>10 Days<br><b id="proj10" style="color:#4CAF50; font-size: 1.1rem;">$0</b></div>
-            <div>30 Days<br><b id="proj30" style="color:#4CAF50; font-size: 1.1rem;">$0</b></div>
-            <div>4 Months<br><b id="proj120" style="color:#4CAF50; font-size: 1.1rem;">$0</b></div>
+        <span class="label" style="color: #aaa;">Projected Checking</span>
+        <div class="flex-row" style="margin:10px 0; text-align:center;">
+            <div>10 Days<br><b id="proj10" style="color:#4CAF50;">$0</b></div>
+            <div>30 Days<br><b id="proj30" style="color:#4CAF50;">$0</b></div>
+            <div>4 Months<br><b id="proj120" style="color:#4CAF50;">$0</b></div>
         </div>
+        <div id="lowPointWarning" class="warning-text" style="color: #ff9800;"></div>
     </div>
 
     <div class="card">
@@ -42,10 +54,9 @@
     </div>
 
     <div class="card">
-        <span class="label">Income & Savings Goals</span>
+        <span class="label">Income & Savings</span>
         <div id="incomeList"></div>
-        <div id="savingsList" style="margin-top:15px;"></div>
-        <button class="btn btn-blue" style="font-size: 0.8rem; padding: 5px;" onclick="addSavingsGoal()">+ Add Goal</button>
+        <div id="savingsList" style="margin-top:10px;"></div>
     </div>
 
     <div class="card">
@@ -62,6 +73,9 @@
     <div class="card">
         <span class="label">Upcoming Bills</span>
         <div id="billList"></div>
+        <hr style="margin:15px 0; border:0; border-top:1px solid #eee;">
+        <span class="label">Adjust Bill Settings (Amt/Freq)</span>
+        <div id="billEditorList" style="margin-top:10px;"></div>
     </div>
 
     <div class="card">
@@ -73,6 +87,12 @@
         </div>
     </div>
 
+    <div id="settings" class="card hidden">
+        <span class="label">Settings</span>
+        <input type="password" id="ghToken" placeholder="GitHub Token" style="margin-top:10px;">
+        <button class="btn btn-blue" onclick="saveToken()">Save Token</button>
+    </div>
+
 <script>
     const CONFIG = { owner: 'scottscalici', repo: 'loquesea', path: 'planner/bills.json' };
     let data = null;
@@ -80,11 +100,9 @@
     async function init() {
         const resp = await fetch(`bills.json?t=${Date.now()}`);
         data = await resp.json();
-        
         const menu = document.getElementById('pVendor');
         menu.innerHTML = '';
         data.vendors.forEach(v => menu.add(new Option(v, v)));
-        
         render();
     }
 
@@ -93,23 +111,28 @@
         document.getElementById('pacingDisplay').innerText = `$${(data.state.current_weekly_remaining / days).toFixed(2)}`;
         document.getElementById('checkingBal').innerText = `$${data.state.checking_balance.toLocaleString()}`;
 
-        // Projections
-        document.getElementById('proj10').innerText = `$${calculateProjection(10)}`;
-        document.getElementById('proj30').innerText = `$${calculateProjection(30)}`;
-        document.getElementById('proj120').innerText = `$${calculateProjection(120)}`;
+        // Run Projections
+        document.getElementById('proj10').innerText = `$${calculateProjection(10).balance}`;
+        document.getElementById('proj30').innerText = `$${calculateProjection(30).balance}`;
+        const longTerm = calculateProjection(120);
+        document.getElementById('proj120').innerText = `$${longTerm.balance}`;
+        
+        const warning = document.getElementById('lowPointWarning');
+        if (longTerm.lowPointDate) {
+            warning.innerText = `⚠️ Balance drops below $500 on ${longTerm.lowPointDate}`;
+        } else {
+            warning.innerText = "✅ Projection clear above $500 for 4 months";
+            warning.style.color = "#4CAF50";
+        }
 
-        // Income
+        // Render Income
         const iList = document.getElementById('incomeList');
         iList.innerHTML = '';
         data.paydays.forEach(pay => {
-            iList.innerHTML += `
-                <div class="item-row">
-                    <span><b>${pay.name}</b> ($${pay.amount})</span>
-                    <button class="btn btn-green" style="width:auto; margin:0; padding:5px 10px;" onclick="receivePay('${pay.id}')">Receive</button>
-                </div>`;
+            iList.innerHTML += `<div class="item-row"><span><b>${pay.name}</b></span><button class="btn btn-green" style="width:auto;margin:0;padding:5px 10px;" onclick="receivePay('${pay.id}')">Receive Pay</button></div>`;
         });
 
-        // Savings Goals
+        // Render Savings
         const sList = document.getElementById('savingsList');
         const rollMenu = document.getElementById('rollTarget');
         sList.innerHTML = ''; rollMenu.innerHTML = '';
@@ -117,111 +140,130 @@
             const pct = Math.min((goal.current / goal.target) * 100, 100);
             sList.innerHTML += `
                 <div style="margin-bottom:10px;">
-                    <div class="flex-row"><span style="font-size:0.9rem;">${goal.name}</span><b>$${goal.current} / $${goal.target}</b></div>
+                    <div class="flex-row"><span>${goal.name}</span><b>$${goal.current} / $${goal.target}</b></div>
                     <div class="progress-bg"><div class="progress-fill" style="width:${pct}%"></div></div>
+                    <button class="btn btn-red" style="padding:2px 8px; font-size:0.7rem; width:auto; margin-top:5px;" onclick="withdrawFromGoal(${idx})">Withdraw</button>
                 </div>`;
             rollMenu.add(new Option(goal.name, idx));
         });
 
-        // Bills
+        // Render Bills
         const bList = document.getElementById('billList');
-        bList.innerHTML = '';
-        data.bills.sort((a,b) => new Date(a.next_due_date) - new Date(b.next_due_date)).forEach(bill => {
-            bList.innerHTML += `
-                <div class="item-row">
-                    <div><b>${bill.name}</b><br><small>${bill.next_due_date}</small></div>
-                    <button class="btn btn-blue" style="width:auto; margin:0; padding:5px 10px;" onclick="payBill('${bill.id}')">Pay $${bill.amount}</button>
+        const bEditList = document.getElementById('billEditorList');
+        bList.innerHTML = ''; bEditList.innerHTML = '';
+        data.bills.sort((a,b) => new Date(a.next_due_date) - new Date(b.next_due_date)).forEach((bill, idx) => {
+            bList.innerHTML += `<div class="item-row"><div><b>${bill.name}</b><br><small>${bill.next_due_date}</small></div><button class="btn btn-blue" style="width:auto;margin:0;padding:5px 10px;" onclick="payBill('${bill.id}')">Pay $${bill.amount}</button></div>`;
+            bEditList.innerHTML += `
+                <div class="item-row" style="font-size:0.8rem; background:#f9f9f9; padding:5px; margin-bottom:5px; border-radius:4px;">
+                    <span>${bill.name}</span>
+                    <div style="display:flex; gap:5px;">
+                        <input type="number" style="width:70px; padding:2px;" value="${bill.amount}" onchange="updateBillData(${idx}, 'amount', this.value)">
+                        <select style="width:90px; padding:2px;" onchange="updateBillData(${idx}, 'frequency', this.value)">
+                            <option value="monthly" ${bill.frequency === 'monthly' ? 'selected' : ''}>Monthly</option>
+                            <option value="bi-weekly" ${bill.frequency === 'bi-weekly' ? 'selected' : ''}>Bi-Weekly</option>
+                            <option value="semi-annually" ${bill.frequency === 'semi-annually' ? 'selected' : ''}>6-Months</option>
+                        </select>
+                    </div>
                 </div>`;
         });
     }
 
+    function calculateProjection(days) {
+        let bal = data.state.checking_balance;
+        let d = new Date();
+        const end = new Date(); end.setDate(end.getDate() + days);
+        let lowPointDate = null;
+
+        bal -= data.state.current_weekly_remaining;
+        
+        // Use a temporary copy of bills to simulate date jumps
+        let simBills = JSON.parse(JSON.stringify(data.bills));
+
+        while(d <= end) {
+            const dateStr = d.toISOString().split('T')[0];
+            const dom = d.getDate();
+            
+            if(d.getDay() === 1) bal -= 1000; // Monday Burn
+            if(dom === 1) bal -= 500; // Monthly Amazon Estimate
+            
+            // Scott Pay
+            if(dom === 15) bal += 2500;
+            if(dom === new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()) bal += 2500;
+            
+            // Wife Pay (Reference: Jan 16, 2026)
+            const diff = Math.floor((d - new Date("2026-01-16")) / 86400000);
+            if(diff >= 0 && diff % 14 === 0) bal += 2500;
+
+            // Bills
+            simBills.forEach(b => {
+                if(b.next_due_date === dateStr) {
+                    bal -= b.amount;
+                    let next = new Date(b.next_due_date);
+                    if(b.frequency === "monthly") next.setMonth(next.getMonth()+1);
+                    else if(b.frequency === "bi-weekly") next.setDate(next.getDate()+14);
+                    else if(b.frequency === "semi-annually") next.setMonth(next.getMonth()+6);
+                    b.next_due_date = next.toISOString().split('T')[0];
+                }
+            });
+
+            if (bal < 500 && !lowPointDate) {
+                lowPointDate = d.toLocaleDateString(undefined, {month:'short', day:'numeric'});
+            }
+            d.setDate(d.getDate() + 1);
+        }
+        return { balance: Math.round(bal).toLocaleString(), lowPointDate };
+    }
+
     async function receivePay(id) {
         const pay = data.paydays.find(p => p.id === id);
-        const actual = prompt(`Enter actual pay for ${pay.name}:`, pay.amount);
-        if(actual === null) return;
-        data.state.checking_balance += parseFloat(actual);
-        data.history.push({ date: new Date().toISOString(), vendor: "INCOME", what: pay.name, amount: parseFloat(actual) });
-        await sync(); render();
+        const amt = prompt(`Actual pay for ${pay.name}:`, pay.amount);
+        if(amt) {
+            data.state.checking_balance += parseFloat(amt);
+            data.history.push({ date: new Date().toISOString(), vendor: "INCOME", what: pay.name, amount: parseFloat(amt) });
+            await sync(); render();
+        }
     }
 
     async function payBill(id) {
         const bill = data.bills.find(b => b.id === id);
         const actual = prompt(`Actual amount for ${bill.name}:`, bill.amount);
-        if(actual === null) return;
-        const amt = parseFloat(actual);
-        data.state.checking_balance -= amt;
-        
-        const date = new Date(bill.next_due_date);
-        if (bill.frequency === "monthly") date.setMonth(date.getMonth() + 1);
-        else if (bill.frequency === "bi-weekly") date.setDate(date.getDate() + 14);
-        bill.next_due_date = date.toISOString().split('T')[0];
+        if(actual) {
+            const amt = parseFloat(actual);
+            data.state.checking_balance -= amt;
+            const date = new Date(bill.next_due_date);
+            if (bill.frequency === "monthly") date.setMonth(date.getMonth() + 1);
+            else if (bill.frequency === "bi-weekly") date.setDate(date.getDate() + 14);
+            else if (bill.frequency === "semi-annually") date.setMonth(date.getMonth() + 6);
+            bill.next_due_date = date.toISOString().split('T')[0];
+            data.history.push({ date: new Date().toISOString(), vendor: "BILL", what: bill.name, amount: amt });
+            await sync(); render();
+        }
+    }
 
-        data.history.push({ date: new Date().toISOString(), vendor: "BILL", what: bill.name, amount: amt });
+    async function updateBillData(idx, field, value) {
+        if (field === 'amount') data.bills[idx].amount = parseFloat(value);
+        else data.bills[idx].frequency = value;
         await sync(); render();
     }
 
-    function calculateProjection(days) {
-    let bal = data.state.checking_balance;
-    let d = new Date();
-    // Use a fixed "today" to avoid timezone drifting during the loop
-    const end = new Date(); 
-    end.setDate(end.getDate() + days);
-
-    // 1. Subtract what's left of THIS week's 1000 immediately
-    bal -= data.state.current_weekly_remaining;
-    
-    // 2. Loop through every day in the future
-    while(d <= end) {
-        const dom = d.getDate();
-        const dow = d.getDay(); // 0=Sun, 1=Mon...
-        const dateStr = d.toISOString().split('T')[0];
-
-        // Hits every Monday: The fresh $1000 allowance
-        if(dow === 1) bal -= 1000;
-
-        // Hits 1st of every month: Simulate the Amazon Escrow spend
-        if(dom === 1) bal -= 500; 
-
-        // Scott Pay: 15th and Last Day
-        if(dom === 15) bal += 2500;
-        const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-        if(dom === lastDay) bal += 2500;
-
-        // Wife Pay: Every other Friday (Reference: Jan 16, 2026)
-        const refDate = new Date("2026-01-16");
-        const diffDays = Math.floor((d - refDate) / (1000 * 60 * 60 * 24));
-        if(diffDays >= 0 && diffDays % 14 === 0) bal += 2500;
-
-        // Bills: Subtract if the next_due_date matches this future day
-        // Note: For long-term (4 month) projections, we simulate the bill repeating
-        data.bills.forEach(b => {
-            let bDate = new Date(b.next_due_date);
-            // This checks if the bill falls on THIS specific day in the loop
-            if(bDate.toISOString().split('T')[0] === dateStr) {
-                bal -= b.amount;
-                // Move the bill date forward in the temporary loop so it can hit again next month
-                if(b.frequency === "monthly") bDate.setMonth(bDate.getMonth() + 1);
-                if(b.frequency === "bi-weekly") bDate.setDate(bDate.getDate() + 14);
-                b.next_due_date = bDate.toISOString().split('T')[0];
-            }
-        });
-
-        d.setDate(d.getDate() + 1);
+    async function withdrawFromGoal(idx) {
+        const amt = prompt(`Withdraw from ${data.savings_goals[idx].name}:`);
+        if(amt && parseFloat(amt) <= data.savings_goals[idx].current) {
+            data.savings_goals[idx].current -= parseFloat(amt);
+            data.state.checking_balance += parseFloat(amt);
+            await sync(); render();
+        }
     }
-    // Return to original state for the next calculation
-    init(); 
-    return Math.round(bal).toLocaleString();
-}
-    
+
     async function rollover(type) {
         const left = data.state.current_weekly_remaining;
         if(type === 'goal') {
             const idx = document.getElementById('rollTarget').value;
             data.savings_goals[idx].current += left;
+            data.state.current_weekly_remaining = 1000;
         } else {
             data.state.current_weekly_remaining += 1000;
         }
-        if(type === 'goal') data.state.current_weekly_remaining = 1000;
         await sync(); render();
     }
 
@@ -238,26 +280,25 @@
         await sync(); render();
     }
 
-    async function addSavingsGoal() {
-        const name = prompt("Goal Name:");
-        const target = prompt("Target Amount:");
-        if(name && target) {
-            data.savings_goals.push({ name, target: parseFloat(target), current: 0 });
-            await sync(); render();
-        }
-    }
-
     async function sync() {
-        const token = localStorage.getItem('gh_token');
-        const url = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`;
-        const file = await fetch(url, { headers: { 'Authorization': `token ${token}` } }).then(r => r.json());
-        await fetch(url, {
-            method: 'PUT',
-            headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: "Update", content: btoa(JSON.stringify(data, null, 2)), sha: file.sha })
-        });
+        const indicator = document.getElementById('syncStatus');
+        indicator.className = 'sync-saving';
+        try {
+            const token = localStorage.getItem('gh_token');
+            const url = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`;
+            const file = await fetch(url, { headers: { 'Authorization': `token ${token}` } }).then(r => r.json());
+            const resp = await fetch(url, {
+                method: 'PUT',
+                headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: "Update", content: btoa(JSON.stringify(data, null, 2)), sha: file.sha })
+            });
+            if (resp.ok) { indicator.className = 'sync-success'; setTimeout(()=>indicator.className='', 2000); }
+            else throw new Error();
+        } catch (e) { indicator.className = 'sync-error'; }
     }
 
+    function toggleSettings() { document.getElementById('settings').classList.toggle('hidden'); }
+    function saveToken() { localStorage.setItem('gh_token', document.getElementById('ghToken').value); toggleSettings(); }
     init();
 </script>
 </body>
