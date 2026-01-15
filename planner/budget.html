@@ -72,7 +72,8 @@
     let data = null;
 
     async function init() {
-    // Adding ?t=Date.now() forces the browser to get the freshest data
+    // The ?t=${Date.now()} part is the magic trick. 
+    // It makes every request look unique so the browser can't use a saved copy.
     const resp = await fetch(`bills.json?t=${Date.now()}`);
     data = await resp.json();
     renderUI();
