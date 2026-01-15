@@ -33,7 +33,7 @@
   "state": {
     "current_weekly_remaining": 988,
     "escrow_remaining": 500,
-    "checking_balance": 688,
+    "checking_balance": 888,
     "travel_savings": 0
   },
   "vendors": [
@@ -47,7 +47,7 @@
   ],
   "history": [
     {
-      "date": "2026-01-15T04:25:52.568Z",
+      "date": "2026-01-15T04:26:09.563Z",
       "vendor": "Venmo",
       "amount": 12
     }
