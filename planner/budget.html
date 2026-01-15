@@ -274,21 +274,54 @@ async function logTransaction() {
     }
 
     async function processInbox(idx, type) {
+        let name, defaultAmt;
+        
+        // 1. Identify the bill/payday and its expected amount
         if (type === 'INCOME') {
-            const name = idx === -1 ? "Scott Payday" : "Wife Payday";
-            data.state.checking_balance += 2500;
-            data.state.weekly_budget_remaining += 2500;
-            data.history.push({ date: new Date().toISOString().split('T')[0], vendor: name, amount: 2500 });
+            name = idx === -1 ? "Scott Payday" : "Wife Payday";
+            defaultAmt = 2500;
         } else {
             const bill = data.bills[idx];
-            data.state.checking_balance -= bill.amount;
-            data.state.weekly_budget_remaining -= bill.amount;
-            data.history.push({ date: new Date().toISOString().split('T')[0], vendor: bill.name, amount: -bill.amount });
-            advanceDate(idx);
+            name = bill.name;
+            defaultAmt = bill.amount;
         }
+
+        // 2. ASK FOR THE AMOUNT (This solves your "varying bills" problem)
+        const userInput = prompt(`Enter amount for ${name}:`, defaultAmt);
+        
+        // 3. If you hit 'Cancel', stop the process
+        if (userInput === null) return;
+        
+        const finalAmt = parseFloat(userInput);
+        if (isNaN(finalAmt)) {
+            alert("Please enter a valid number.");
+            return;
+        }
+
+        // 4. Update the balances
+        if (type === 'INCOME') {
+            data.state.checking_balance += finalAmt;
+            data.state.weekly_budget_remaining += finalAmt;
+            data.history.push({ 
+                date: new Date().toISOString().split('T')[0], 
+                vendor: name, 
+                amount: finalAmt 
+            });
+        } else {
+            data.state.checking_balance -= finalAmt;
+            data.state.weekly_budget_remaining -= finalAmt;
+            data.history.push({ 
+                date: new Date().toISOString().split('T')[0], 
+                vendor: name, 
+                amount: -finalAmt 
+            });
+            advanceDate(idx); // Moves the bill to next month/period
+        }
+
+        // 5. Save to GitHub (and if you updated init/sync as suggested, this is now instant)
         await sync();
     }
-
+    
     async function skipInbox(idx, type) {
         if (type === 'BILL') advanceDate(idx);
         await sync();
