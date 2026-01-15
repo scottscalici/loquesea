@@ -98,7 +98,12 @@ function renderInbox() {
     today.setHours(0,0,0,0);
     const todayStr = today.toISOString().split('T')[0];
 
-    // --- 1. ACTIONABLE ITEMS (Buttons) ---
+    // Define the "Action Window" (Anything due within the next 3 days gets a button)
+    const actionLimit = new Date();
+    actionLimit.setDate(today.getDate() + 3);
+
+    // --- 1. ACTIONABLE ITEMS (Paydays & Bills within 3 days) ---
+    
     // Scott's Payday
     const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
     if (today.getDate() === 15 || today.getDate() === lastDay) {
@@ -114,28 +119,31 @@ function renderInbox() {
         if (!alreadyLogged) appendInboxItem(container, "Wife Payday", 2500, 'INCOME', -2);
     }
 
-    // Bills Due Today or Overdue
+    // Bills
     const sortedBills = [...data.bills].sort((a,b) => new Date(a.next_due_date) - new Date(b.next_due_date));
     
-    // Filter for Active items vs Future items
-    const activeBills = sortedBills.filter(b => new Date(b.next_due_date + "T12:00:00") <= today);
-    const futureBills = sortedBills.filter(b => new Date(b.next_due_date + "T12:00:00") > today).slice(0, 3);
+    // Items that get an "OK" button (Due today or in the next 3 days)
+    const actionableBills = sortedBills.filter(b => new Date(b.next_due_date + "T12:00:00") <= actionLimit);
+    
+    // Items that are just for info (Due 4+ days away)
+    const futureBills = sortedBills.filter(b => new Date(b.next_due_date + "T12:00:00") > actionLimit).slice(0, 3);
 
-    activeBills.forEach((bill) => {
+    actionableBills.forEach((bill) => {
         const originalIdx = data.bills.findIndex(b => b.name === bill.name);
         appendInboxItem(container, bill.name, bill.amount, 'BILL', originalIdx, bill.next_due_date);
     });
 
-    // --- 2. COMING UP (Read-only list) ---
+    // --- 2. COMING UP NEXT (Read-only for the distant future) ---
     if (futureBills.length > 0) {
         const divider = document.createElement('div');
-        divider.innerHTML = `<span class="label" style="margin: 15px 0 5px 0;">Coming Up Next</span>`;
+        divider.style = "margin: 20px 0 10px 0; border-top: 1px dashed #ccc; padding-top: 10px;";
+        divider.innerHTML = `<span class="label">Coming Up Later</span>`;
         container.appendChild(divider);
 
         futureBills.forEach(bill => {
             const div = document.createElement('div');
             div.className = 'inbox-item';
-            div.style.opacity = "0.6"; // Dim it to show it's not "active" yet
+            div.style.opacity = "0.5"; 
             div.innerHTML = `
                 <div><b>${bill.name}</b><br><small>Due ${bill.next_due_date}</small></div>
                 <div><span style="font-weight:bold;">$${bill.amount.toLocaleString()}</span></div>`;
