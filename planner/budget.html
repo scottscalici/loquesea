@@ -7,30 +7,23 @@
     <style>
         :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; --danger: #d32f2f; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-top: 60px; color: var(--text); }
-        
-        /* Navigation */
         .nav-bar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: #fff; display: flex; align-items: center; justify-content: space-around; border-bottom: 1px solid #ddd; z-index: 1000; }
         .nav-item { text-decoration: none; color: #666; font-size: 0.75rem; font-weight: bold; }
         .nav-item.active { color: var(--accent); }
-
-        /* Balance Card */
         .card { background: var(--card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
-        .balance-display { text-align: center; padding: 20px 0; }
-        .balance-amt { font-size: 2.2rem; font-weight: 800; color: var(--primary); display: block; margin-bottom: 10px; }
-        .label { font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; }
-
-        /* Buttons */
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        button { border: none; border-radius: 8px; padding: 12px; font-weight: bold; font-size: 0.9rem; cursor: pointer; }
-        .btn-payday { background: var(--primary); color: white; }
-        .btn-custom { background: #333; color: white; }
-        .btn-paid { background: #eee; color: var(--text); padding: 8px 12px; font-size: 0.8rem; }
+        .label { font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 5px; }
         
-        /* Bill List */
-        .bill-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; }
-        .bill-info b { display: block; font-size: 1rem; }
-        .bill-info span { font-size: 0.8rem; color: #666; }
-        .bill-info small { font-weight: normal; color: var(--accent); margin-left: 5px; }
+        /* Balance & Savings */
+        .balance-amt { font-size: 2rem; font-weight: 800; color: var(--primary); }
+        .progress-bg { background: #eee; height: 10px; border-radius: 5px; margin: 10px 0; overflow: hidden; }
+        .progress-fill { background: var(--accent); height: 100%; transition: width 0.3s; }
+
+        /* Form & Lists */
+        .input-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        input, select { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        .btn-main { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; }
+        .bill-item, .history-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        .btn-paid { background: #f0f0f0; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; }
     </style>
 </head>
 <body>
@@ -42,136 +35,133 @@
         <a href="ledger.html" class="nav-item">LEDGER</a>
     </nav>
 
-    <div class="card balance-display">
-        <span class="label">Current Bank Balance</span>
-        <span id="mainBalance" class="balance-amt">$0.00</span>
-        <div class="btn-grid">
-            <button class="btn-payday" onclick="handlePayday()">Record Payday (+$2500)</button>
-            <button class="btn-custom" onclick="customTransaction()">Manual Entry</button>
+    <div class="card">
+        <span class="label">Spendable Balance</span>
+        <div class="balance-amt" id="mainBalance">$0.00</div>
+        
+        <div id="savingsContainer"></div>
+    </div>
+
+    <div class="card">
+        <span class="label">Log Purchase / Income</span>
+        <div class="input-group">
+            <input type="text" id="desc" placeholder="What (e.g. Kroger)">
+            <input type="number" id="amt" placeholder="Amount (Spending = Negative)">
+            <button class="btn-main" onclick="logTransaction()">Add Transaction</button>
+            <button onclick="handlePayday()" style="background:#e8f5e9; color:#2e7d32; border:none; padding:8px; border-radius:8px; font-size:0.8rem;">Quick Record Payday (+$2500)</button>
         </div>
     </div>
 
     <div class="card">
-        <span class="label">Upcoming Bills (Next 31 Days)</span>
+        <span class="label">Upcoming (31 Days)</span>
         <div id="actionList"></div>
+    </div>
+
+    <div class="card">
+        <span class="label">Recent History</span>
+        <div id="recentHistory"></div>
     </div>
 
 <script>
     let globalData = null;
 
-    // 1. Load Data
     async function init() {
         const resp = await fetch(`bills.json?t=${Date.now()}`);
         globalData = await resp.json();
         renderUI();
     }
 
-    // 2. Render UI with Chronological Sorting
     function renderUI() {
+        // Balance
         document.getElementById('mainBalance').innerText = `$${globalData.state.checking_balance.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
         
+        // Savings Progress
+        const savDiv = document.getElementById('savingsContainer');
+        savDiv.innerHTML = '';
+        (globalData.savings_goals || []).forEach(g => {
+            const pct = Math.min((g.current / g.target) * 100, 100);
+            savDiv.innerHTML += `
+                <div style="margin-top:10px;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.75rem;">
+                        <span>${g.name}</span>
+                        <span>$${g.current} / $${g.target}</span>
+                    </div>
+                    <div class="progress-bg"><div class="progress-fill" style="width:${pct}%"></div></div>
+                </div>`;
+        });
+
+        // Bills (Sorted Chronologically)
         const actionList = document.getElementById('actionList');
         actionList.innerHTML = '';
-
-        const today = new Date();
-        today.setHours(0,0,0,0);
-        const limit = new Date();
-        limit.setDate(today.getDate() + 31); // 31-day lookahead
-
-        // Sort by date soonest to latest
-        const sortedBills = [...globalData.bills].sort((a, b) => new Date(a.next_due_date) - new Date(b.next_due_date));
-
-        sortedBills.forEach(bill => {
+        const limit = new Date(); limit.setDate(limit.getDate() + 31);
+        const sorted = [...globalData.bills].sort((a,b) => new Date(a.next_due_date) - new Date(b.next_due_date));
+        
+        sorted.forEach(bill => {
             const dueDate = new Date(bill.next_due_date + "T12:00:00");
-            
             if (dueDate <= limit) {
-                // Check if it's more than 14 days away to label as "Next Month"
-                const isFuture = (dueDate - today) > (14 * 86400000);
-                
-                const item = document.createElement('div');
-                item.className = 'bill-item';
-                item.innerHTML = `
-                    <div class="bill-info">
-                        <b>${bill.name}${isFuture ? '<small>(Next Month)</small>' : ''}</b>
-                        <span>Due: ${dueDate.getMonth()+1}/${dueDate.getDate()} • $${bill.amount.toLocaleString()}</span>
-                    </div>
-                    <button class="btn-paid" onclick="markAsPaid('${bill.name}')">PAID</button>
-                `;
-                actionList.appendChild(item);
+                actionList.innerHTML += `
+                    <div class="bill-item">
+                        <div><b>${bill.name}</b><br><small>${dueDate.getMonth()+1}/${dueDate.getDate()}</small></div>
+                        <div>$${bill.amount} <button class="btn-paid" onclick="markAsPaid('${bill.name}')">PAID</button></div>
+                    </div>`;
             }
         });
+
+        // Recent History (Last 5 items)
+        const histDiv = document.getElementById('recentHistory');
+        histDiv.innerHTML = '';
+        globalData.history.slice(-5).reverse().forEach(h => {
+            histDiv.innerHTML += `
+                <div class="history-item">
+                    <span>${h.vendor}</span>
+                    <span style="color:${h.amount < 0 ? '#d32f2f' : '#2e7d32'}">${h.amount < 0 ? '' : '+'}$${h.amount}</span>
+                </div>`;
+        });
     }
 
-    // 3. Logic: Mark Bill as Paid
+    // --- LOGIC ---
+    async function logTransaction() {
+        const desc = document.getElementById('desc').value;
+        const amt = parseFloat(document.getElementById('amt').value);
+        if(!desc || isNaN(amt)) return;
+
+        globalData.state.checking_balance += amt;
+        globalData.history.push({
+            date: new Date().toISOString().split('T')[0],
+            vendor: desc, what: "Manual", amount: amt, category: amt < 0 ? "Spending" : "Income"
+        });
+        await syncAndReload();
+    }
+
+    async function handlePayday() {
+        globalData.state.checking_balance += 2500;
+        globalData.history.push({
+            date: new Date().toISOString().split('T')[0],
+            vendor: "Deposit", what: "Payday", amount: 2500, category: "Income"
+        });
+        await syncAndReload();
+    }
+
     async function markAsPaid(billName) {
         const bill = globalData.bills.find(b => b.name === billName);
-        if (!bill) return;
-
-        // Update Balance
         globalData.state.checking_balance -= bill.amount;
-
-        // Add to History (Used by Ledger & Spend pages)
         globalData.history.push({
             date: new Date().toISOString().split('T')[0],
-            vendor: bill.name,
-            what: "Bill Payment",
-            amount: -bill.amount,
-            category: "Bills"
+            vendor: bill.name, what: "Bill", amount: -bill.amount, category: "Bills"
         });
-
-        // Advance the Due Date
         let next = new Date(bill.next_due_date + "T12:00:00");
-        if(bill.frequency === "monthly") next.setMonth(next.getMonth() + 1);
-        else if(bill.frequency === "bi-weekly") next.setDate(next.getDate() + 14);
+        if(bill.frequency === "monthly") next.setMonth(next.getMonth()+1);
+        else next.setDate(next.getDate()+14);
         bill.next_due_date = next.toISOString().split('T')[0];
-
         await syncAndReload();
     }
 
-    // 4. Logic: Record Payday
-    async function handlePayday() {
-        const val = 2500;
-        globalData.state.checking_balance += val;
-        
-        globalData.history.push({
-            date: new Date().toISOString().split('T')[0],
-            vendor: "Deposit",
-            what: "Scott Payday",
-            amount: val,
-            category: "Income"
-        });
-
-        await syncAndReload();
-    }
-
-    // 5. Logic: Manual Entry
-    async function customTransaction() {
-        const desc = prompt("Description:");
-        const amt = prompt("Amount (negative for spending):");
-        if(!desc || !amt) return;
-
-        const val = parseFloat(amt);
-        globalData.state.checking_balance += val;
-        
-        globalData.history.push({
-            date: new Date().toISOString().split('T')[0],
-            vendor: desc,
-            what: "Manual Entry",
-            amount: val,
-            category: val < 0 ? "Spending" : "Income"
-        });
-
-        await syncAndReload();
-    }
-
-    // 6. SYNC TO GITHUB (Ensure this matches your actual GitHub function name)
     async function syncAndReload() {
-        if (typeof saveToGithub === "function") {
-            await saveToGithub(globalData);
-        } else {
-            console.warn("GitHub save function not detected. UI updated locally only.");
-            renderUI();
-        }
+        if (typeof saveToGithub === "function") await saveToGithub(globalData);
+        else { console.warn("Save function missing!"); renderUI(); }
+        document.getElementById('desc').value = '';
+        document.getElementById('amt').value = '';
+        renderUI();
     }
 
     init();
