@@ -157,9 +157,9 @@
         const isIncome = vendor.toLowerCase().includes("income") || vendor.toLowerCase().includes("payday");
 
         if (isIncome) {
-            data.state.checking_balance += absAmt;
-            data.state.weekly_budget_remaining += absAmt;
-        } else {
+        // Payday goes to bank, but doesn't change the $1000 weekly spending limit
+        data.state.checking_balance += absAmt;
+    } else {
             data.state.checking_balance -= absAmt;
             
             const day = new Date().getDate();
