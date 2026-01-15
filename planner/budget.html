@@ -62,7 +62,7 @@
         </div>
         <div style="display: flex; gap: 10px; margin-top: 10px;">
             <input type="number" id="amt" placeholder="Amount" step="0.01" style="flex: 2; padding: 12px; border-radius: 8px; border: 1px solid #ddd;">
-            <button onclick="logTransaction()" class="btn-paid" style="flex: 1; background: var(--primary); color: white;">Add</button>
+           <button id="addBtn" onclick="logTransaction()" class="btn-paid" style="flex: 1; background: var(--primary); color: white;">Add</button>
         </div>
     </div>
 
@@ -290,14 +290,32 @@ async function undoLast() {
         });
     }
 
-    async function sync() {
-        const dot = document.getElementById('syncStatus');
-        dot.className = 'status-dot status-saving';
-        const success = await saveToGithub(data);
-        dot.className = success ? 'status-dot status-success' : 'status-dot status-error';
-        if (success) await init();
+async function sync() {
+    const dot = document.getElementById('syncStatus');
+    const addBtn = document.getElementById('addBtn');
+    
+    // Lock the interface
+    dot.className = 'status-dot status-saving';
+    if (addBtn) addBtn.disabled = true;
+    
+    const success = await saveToGithub(data);
+    
+    if (success) {
+        dot.className = 'status-dot status-success';
+        // Force a fresh data pull after saving
+        await init(); 
+    } else {
+        dot.className = 'status-dot status-error';
+        alert("Sync failed. Check your connection/token.");
     }
-
+    
+    // Unlock the interface
+    if (addBtn) addBtn.disabled = false;
+}    
+    // Unlock the interface
+    if (addBtn) addBtn.disabled = false;
+}
+    
     async function saveToGithub(updatedData) {
         const TOKEN = localStorage.getItem('gh_token');
         const getFile = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`, { headers: { "Authorization": `token ${TOKEN}` } });
