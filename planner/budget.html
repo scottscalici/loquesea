@@ -13,25 +13,26 @@
         .nav-item { text-decoration: none; color: #666; font-size: 0.75rem; font-weight: bold; }
         .nav-item.active { color: var(--accent); }
 
-        /* UI Components */
         .card { background: var(--card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
         .label { font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; display: block; }
         .flex-row { display: flex; justify-content: space-between; align-items: center; }
         
         .btn { padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; width: 100%; margin-top: 10px; }
         .btn-blue { background: var(--accent); }
-        .btn-green { background: var(--primary); }
         
         table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 10px; }
         th { text-align: left; color: #888; padding: 5px; border-bottom: 1px solid #eee; }
         td { padding: 8px 5px; border-bottom: 1px solid #f9f9f9; }
         
         .hidden { display: none; }
-        input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; } /* 16px prevents iOS zoom */
+        input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
         
         #syncStatus { width: 10px; height: 10px; border-radius: 50%; background: #ccc; }
         .sync-saving { background: #ffeb3b !important; }
         .sync-success { background: #4caf50 !important; }
+        
+        .amt-pos { color: var(--primary); font-weight: bold; }
+        .amt-neg { color: var(--danger); font-weight: bold; }
     </style>
 </head>
 <body>
@@ -47,7 +48,7 @@
 
     <div class="card">
         <div class="flex-row">
-            <div><span class="label">Bank Balance</span><b id="checkingBal" style="font-size:1.4rem;">$0</b></div>
+            <div><span class="label">Current Bank Balance</span><b id="checkingBal" style="font-size:1.4rem;">$0</b></div>
             <div style="text-align:right;"><span class="label">Amazon Escrow</span><b id="escrowBal" style="color:var(--accent);">$0</b></div>
         </div>
     </div>
@@ -59,27 +60,16 @@
             <input type="number" id="pAmt" placeholder="$ Amount" inputmode="decimal">
         </div>
         <div id="otherVendorDiv" class="hidden">
-            <input type="text" id="pVendorOther" placeholder="Where did you spend it?">
+            <input type="text" id="pVendorOther" placeholder="Entry Description">
         </div>
-        <button class="btn btn-blue" onclick="logTransaction()">Confirm Purchase</button>
+        <button class="btn btn-blue" onclick="logTransaction()">Log to Ledger</button>
     </div>
 
     <div class="card">
-        <span class="label">Savings Goals</span>
-        <div id="goalsList" style="margin-top:10px;"></div>
-        <div id="addGoalForm" class="hidden" style="margin-top:10px; border-top:1px solid #eee; padding-top:10px;">
-            <input type="text" id="gName" placeholder="Goal Name (e.g. Meemic)">
-            <input type="number" id="gTarget" placeholder="Target Amount">
-            <button class="btn btn-blue" onclick="saveNewGoal()">Create Goal</button>
-        </div>
-        <button class="btn" style="background:#eee; color:#666; font-size:0.7rem;" onclick="document.getElementById('addGoalForm').classList.toggle('hidden')">+ New Virtual Goal</button>
-    </div>
-
-    <div class="card">
-        <span class="label">Recent Activity</span>
+        <span class="label">Recent Activity (Checkbook)</span>
         <table id="historyTable">
             <thead>
-                <tr><th>Date</th><th>Item</th><th>Amt</th></tr>
+                <tr><th>Date</th><th>Description</th><th>Amount</th></tr>
             </thead>
             <tbody id="historyBody"></tbody>
         </table>
@@ -100,44 +90,36 @@
         const resp = await fetch(`bills.json?t=${Date.now()}`);
         data = await resp.json();
         
+        // Setup Vendor Dropdown (Includes INCOME and BILL for manual logging)
         const menu = document.getElementById('pVendor');
-        menu.innerHTML = '<option value="" disabled selected>Select Vendor</option>';
+        menu.innerHTML = '<option value="" disabled selected>Select Category</option>';
+        menu.add(new Option("INCOME (Payday)", "INCOME"));
+        menu.add(new Option("BILL (Automated)", "BILL"));
         data.vendors.forEach(v => menu.add(new Option(v, v)));
-        menu.add(new Option("Other...", "Other..."));
+        menu.add(new Option("Other / Purchase...", "Other..."));
         
         render();
     }
 
     function checkOther(val) {
-        document.getElementById('otherVendorDiv').classList.toggle('hidden', val !== "Other...");
+        document.getElementById('otherVendorDiv').classList.toggle('hidden', val !== "Other..." && val !== "BILL" && val !== "INCOME");
     }
 
     function render() {
         document.getElementById('checkingBal').innerText = `$${data.state.checking_balance.toLocaleString()}`;
         document.getElementById('escrowBal').innerText = `$${data.state.escrow_remaining}`;
         
-        const gList = document.getElementById('goalsList');
-        gList.innerHTML = '';
-        data.goals.forEach((g, idx) => {
-            const pct = Math.min((g.current / g.target) * 100, 100);
-            gList.innerHTML += `
-                <div style="margin-bottom:12px;">
-                    <div class="flex-row" style="font-size:0.85rem;"><b>${g.name}</b><span>$${g.current} / $${g.target}</span></div>
-                    <div style="background:#eee; height:6px; border-radius:3px; margin:4px 0;">
-                        <div style="background:var(--accent); width:${pct}%; height:100%; border-radius:3px;"></div>
-                    </div>
-                    <button onclick="transferToGoal(${idx})" style="font-size:0.6rem; background:none; border:1px solid #ccc; border-radius:4px; padding:2px 5px;">+ Fund from Weekly</button>
-                </div>`;
-        });
-
+        // Master History Rendering
         const hBody = document.getElementById('historyBody');
         hBody.innerHTML = '';
-        data.history.slice(-10).reverse().forEach(h => {
+        
+        // Show last 15 items, newest at top
+        data.history.slice(-15).reverse().forEach(h => {
             const isInc = h.vendor === "INCOME";
             hBody.innerHTML += `<tr>
                 <td>${new Date(h.date).toLocaleDateString(undefined, {month:'short', day:'numeric'})}</td>
-                <td>${h.vendor}</td>
-                <td style="color:${isInc ? 'green' : 'red'}; font-weight:bold;">${isInc ? '+' : '-'}$${h.amount}</td>
+                <td>${h.vendor === "Other..." || h.vendor === "BILL" || h.vendor === "INCOME" ? (h.what || h.vendor) : h.vendor}</td>
+                <td class="${isInc ? 'amt-pos' : 'amt-neg'}">${isInc ? '+' : '-'}$${h.amount.toLocaleString()}</td>
             </tr>`;
         });
     }
@@ -147,38 +129,38 @@
         const otherV = document.getElementById('pVendorOther').value;
         const a = parseFloat(document.getElementById('pAmt').value);
         if(!a || !v) return;
-        if(v === "Other...") v = otherV || "Misc";
 
-        // Logic: All transactions subtract from Bank first
-        data.state.checking_balance -= a;
-
-        if(v === "Amazon") {
-            if(data.state.escrow_remaining >= a) data.state.escrow_remaining -= a;
-            else { 
-                const diff = a - data.state.escrow_remaining;
-                data.state.escrow_remaining = 0;
-                data.state.current_weekly_remaining -= diff;
-            }
-        } else if(v === "INCOME") {
-            data.state.checking_balance += (a * 2); // Reverse subtraction + add income
-        } else {
-            data.state.current_weekly_remaining -= a;
+        let description = v;
+        if (v === "Other..." || v === "BILL" || v === "INCOME") {
+            description = otherV || v;
         }
 
-        data.history.push({ date: new Date().toISOString(), vendor: v, amount: a });
+        // --- MATH ---
+        if(v === "INCOME") {
+            data.state.checking_balance += a;
+        } else {
+            data.state.checking_balance -= a;
+            // Only non-bill purchases affect the $1,000 Weekly Budget
+            if(v !== "BILL") {
+                if(v === "Amazon") {
+                    if(data.state.escrow_remaining >= a) data.state.escrow_remaining -= a;
+                    else { 
+                        const diff = a - data.state.escrow_remaining;
+                        data.state.escrow_remaining = 0;
+                        data.state.current_weekly_remaining -= diff;
+                    }
+                } else {
+                    data.state.current_weekly_remaining -= a;
+                }
+            }
+        }
+
+        data.history.push({ date: new Date().toISOString(), vendor: v, what: description, amount: a });
+        
         await sync(); 
         document.getElementById('pAmt').value = '';
-        document.getElementById('otherVendorDiv').classList.add('hidden');
+        document.getElementById('pVendorOther').value = '';
         render();
-    }
-
-    async function transferToGoal(idx) {
-        const amt = parseFloat(prompt("Move from Weekly Budget to Goal?"));
-        if(!amt) return;
-        data.state.current_weekly_remaining -= amt;
-        data.goals[idx].current += amt;
-        data.history.push({ date: new Date().toISOString(), vendor: "GOAL", what: data.goals[idx].name, amount: amt });
-        await sync(); render();
     }
 
     async function undoLast() {
@@ -187,8 +169,7 @@
         if(last.vendor === "INCOME") data.state.checking_balance -= last.amount;
         else {
             data.state.checking_balance += last.amount;
-            if(last.vendor === "GOAL") { /* Reverse goal math */ }
-            else data.state.current_weekly_remaining += last.amount;
+            if(last.vendor !== "BILL") data.state.current_weekly_remaining += last.amount;
         }
         await sync(); render();
     }
@@ -199,15 +180,15 @@
         try {
             const token = localStorage.getItem('gh_token');
             const url = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`;
-            const file = await fetch(url, { headers: { 'Authorization': `token ${token}` } }).then(r => r.json());
+            const file = await fetch(url).then(r => r.json());
             await fetch(url, {
                 method: 'PUT',
                 headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: "Update", content: btoa(JSON.stringify(data, null, 2)), sha: file.sha })
+                body: JSON.stringify({ message: "Update Ledger", content: btoa(JSON.stringify(data, null, 2)), sha: file.sha })
             });
             status.className = 'sync-success';
             setTimeout(()=>status.className='', 2000);
-        } catch (e) { alert("Sync Failed. Check Token."); }
+        } catch (e) { alert("Sync Failed."); }
     }
 
     function toggleSettings() { document.getElementById('settings').classList.toggle('hidden'); }
