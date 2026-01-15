@@ -110,30 +110,6 @@
       "vendor": "Gas",
       "what": "Gas",
       "amount": 62.79
-    },
-    {
-      "date": "2026-01-15",
-      "vendor": "Scott Payday",
-      "what": "INCOME",
-      "amount": 2500,
-      "category": "INCOME"
-    },
-    {
-      "date": "2026-01-15",
-      "vendor": "Amazon",
-      "what": "Manual Entry",
-      "amount": 1,
-      "category": "Income"
-    },
-    {
-      "date": "2026-01-15",
-      "vendor": "Apple Storage (User)",
-      "amount": -9.99
-    },
-    {
-      "date": "2026-01-15",
-      "vendor": "Jax A",
-      "amount": -26.99
     }
   ],
   "bills": [
@@ -156,7 +132,7 @@
       "name": "Apple Storage (User)",
       "frequency": "monthly",
       "amount": 9.99,
-      "next_due_date": "2026-03-07"
+      "next_due_date": "2026-02-07"
     },
     {
       "id": "apple-storage-2",
@@ -170,7 +146,7 @@
       "name": "AXA A",
       "frequency": "monthly",
       "amount": 44.49,
-      "next_due_date": "2026-03-21"
+      "next_due_date": "2026-01-21"
     },
     {
       "id": "axa-s",
@@ -317,7 +293,7 @@
       "name": "Luna Vet (Annual)",
       "frequency": "annually",
       "amount": 300,
-      "next_due_date": "2027-01-06"
+      "next_due_date": "2026-12-15"
     },
     {
       "id": "meemic",
@@ -331,7 +307,7 @@
       "name": "Michigan SOS",
       "frequency": "annually",
       "amount": 400,
-      "next_due_date": "2026-03-20"
+      "next_due_date": "2026-03-01"
     },
     {
       "id": "mortgage",
@@ -352,7 +328,7 @@
       "name": "Paramount Plus",
       "frequency": "monthly",
       "amount": 12.99,
-      "next_due_date": "2026-02-17"
+      "next_due_date": "2026-01-17"
     },
     {
       "id": "priority-waste",
@@ -457,7 +433,7 @@
       "name": "Zambombazo",
       "frequency": "quarterly",
       "amount": 26.22,
-      "next_due_date": "2026-04-16"
+      "next_due_date": "2026-01-16"
     },
     {
       "id": "costco",
