@@ -88,17 +88,17 @@
         renderInbox();
         renderHistory();
     }
-// [SECTION: INBOX LOGIC]
-function renderInbox() {
-    const container = document.getElementById('inboxList');
-    container.innerHTML = '';
-    const today = new Date();
-    today.setHours(0,0,0,0);
-    const todayStr = today.toISOString().split('T')[0];
 
-    // 31 DAYS
-    const actionLimit = new Date();
-    actionLimit.setDate(today.getDate() + 31); 
+    // [SECTION: INBOX LOGIC]
+    function renderInbox() {
+        const container = document.getElementById('inboxList');
+        container.innerHTML = '';
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const todayStr = today.toISOString().split('T')[0];
+
+        const actionLimit = new Date();
+        actionLimit.setDate(today.getDate() + 31); // 31-day window as requested
 
         // 1. Scott's Payday
         const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
@@ -134,11 +134,11 @@ function renderInbox() {
             <div>
                 <span style="margin-right:10px; font-weight:bold; color:${type==='INCOME'?'green':'red'}">$${amount.toLocaleString()}</span>
                 <button class="btn-paid" style="margin-right:5px;" onclick="processInboxAction(${idx}, '${type}')">OK</button>
-                <button class="btn-paid" style="color:var(--danger); border:1px solid #ffcdd2;" onclick="skipItem(${idx}, '${type}')">SKIP</button>
+                <button class="btn-paid" style="color:var(--danger);" onclick="skipItem(${idx}, '${type}')">SKIP</button>
             </div>`;
         container.appendChild(div);
     }
-    
+
     // [SECTION: TRANSACTION LOGIC]
     async function processInboxAction(idx, type) {
         let name = (idx === -1) ? "Scott Payday" : (idx === -2) ? "Wife Payday" : data.bills[idx].name;
@@ -158,12 +158,32 @@ function renderInbox() {
         });
 
         if (type === 'BILL' && idx >= 0) {
-            let d = new Date(data.bills[idx].next_due_date + "T12:00:00");
-            if (data.bills[idx].frequency === "monthly") d.setMonth(d.getMonth() + 1);
-            else d.setDate(d.getDate() + 14);
-            data.bills[idx].next_due_date = d.toISOString().split('T')[0];
+            advanceBillDate(idx);
         }
         await sync();
+    }
+
+    async function skipItem(idx, type) {
+        let name = (idx === -1) ? "Scott Payday" : (idx === -2) ? "Wife Payday" : data.bills[idx].name;
+        if (!confirm(`Skip ${name} and move to next due date?`)) return;
+
+        if (type === 'BILL' && idx >= 0) {
+            advanceBillDate(idx);
+        } else if (idx < 0) {
+            // For Paydays, log a 0 entry so the "alreadyLogged" check hides it
+            data.history.push({
+                date: new Date().toISOString().split('T')[0],
+                vendor: name, what: "SKIPPED", amount: 0, category: "Skip"
+            });
+        }
+        await sync();
+    }
+
+    function advanceBillDate(idx) {
+        let d = new Date(data.bills[idx].next_due_date + "T12:00:00");
+        if (data.bills[idx].frequency === "monthly") d.setMonth(d.getMonth() + 1);
+        else d.setDate(d.getDate() + 14);
+        data.bills[idx].next_due_date = d.toISOString().split('T')[0];
     }
 
     async function logTransaction() {
@@ -182,7 +202,6 @@ function renderInbox() {
         await sync();
     }
 
-    // [SECTION: HISTORY RENDER]
     function renderHistory() {
         const histDiv = document.getElementById('recentHistory');
         histDiv.innerHTML = '';
@@ -195,10 +214,9 @@ function renderInbox() {
         });
     }
 
-    // [SECTION: GITHUB SYNC]
     async function sync() {
         await saveToGithub(data);
-        await init(); // This re-fetches data and runs renderUI() to clear "paid" items
+        await init(); 
     }
 
     async function saveToGithub(updatedData) {
@@ -222,5 +240,6 @@ function renderInbox() {
 
     init();
 </script>
+
 </body>
 </html>
