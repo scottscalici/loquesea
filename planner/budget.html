@@ -7,27 +7,21 @@
     <style>
         :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; --danger: #d32f2f; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-top: 60px; color: var(--text); }
-        
         .nav-bar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: #fff; display: flex; align-items: center; justify-content: space-around; border-bottom: 1px solid #ddd; z-index: 1000; }
         .nav-item { text-decoration: none; color: #666; font-size: 0.75rem; font-weight: bold; }
         .nav-item.active { color: var(--accent); }
-
         .card { background: var(--card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
         .label { font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; display: block; }
         .flex-row { display: flex; justify-content: space-between; align-items: center; }
-        
         .btn { padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; width: 100%; }
         .btn-blue { background: var(--accent); }
         .btn-green { background: var(--primary); }
-        
-        .inbox-item { background: #fdfdfd; border-left: 4px solid var(--accent); padding: 12px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #eee; border-left-width: 5px; }
-        
+        .inbox-item { background: #fdfdfd; border-left: 5px solid var(--accent); padding: 12px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #eee; }
         input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
         .hidden { display: none; }
-        #syncStatus { width: 10px; height: 10px; border-radius: 50%; background: #ccc; }
+        #syncStatus { width: 10px; height: 10px; border-radius: 50%; background: #ccc; margin-left: 10px; }
         .sync-saving { background: #ffeb3b !important; }
         .sync-success { background: #4caf50 !important; }
-        
         table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
         td { padding: 8px 0; border-bottom: 1px solid #f9f9f9; }
     </style>
@@ -40,7 +34,7 @@
         <a href="projection.html" class="nav-item">PROJECTION</a>
         <a href="ledger.html" class="nav-item">LEDGER</a>
         <div id="syncStatus"></div>
-        <button onclick="toggleSettings()" style="border:none; background:none;">⚙️</button>
+        <button onclick="toggleSettings()" style="border:none; background:none; font-size: 1.2rem;">⚙️</button>
     </nav>
 
     <div id="actionInbox">
@@ -51,7 +45,7 @@
     <div class="card">
         <div class="flex-row">
             <div><span class="label">Bank Balance</span><b id="checkingBal" style="font-size:1.4rem;">$0</b></div>
-            <div style="text-align:right;"><span class="label">Amazon Escrow</span><b id="escrowBal" style="color:var(--accent);">$0</b></div>
+            <div style="text-align:right;"><span class="label">Amazon Escrow (Post-21st)</span><b id="escrowBal" style="color:var(--accent);">$0</b></div>
         </div>
     </div>
 
@@ -91,29 +85,22 @@
     async function init() {
         const resp = await fetch(`bills.json?t=${Date.now()}`);
         data = await resp.json();
-        
-        // Setup Vendor Dropdown
         const menu = document.getElementById('pVendor');
         menu.innerHTML = '<option value="" disabled selected>Select Vendor</option>';
         data.vendors.forEach(v => menu.add(new Option(v, v)));
         menu.add(new Option("Other...", "Other..."));
-        
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('pDate').value = today;
-
+        document.getElementById('pDate').value = new Date().toISOString().split('T')[0];
         render();
     }
 
     function render() {
         document.getElementById('checkingBal').innerText = `$${data.state.checking_balance.toLocaleString()}`;
         document.getElementById('escrowBal').innerText = `$${data.state.escrow_remaining}`;
-        
         renderInbox();
         renderGoals();
         renderHistory();
     }
 
-    // --- 1. INBOX LOGIC (BILLS & PAYDAYS) ---
     function renderInbox() {
         const container = document.getElementById('inboxList');
         container.innerHTML = '';
@@ -121,14 +108,12 @@
         const windowEnd = new Date();
         windowEnd.setDate(today.getDate() + 3);
 
-        // Check Payday (Bi-weekly from Jan 16)
         const paydayStart = new Date("2026-01-16T12:00:00");
         const diff = Math.floor((today - paydayStart) / 86400000);
         if (diff % 14 >= -2 && diff % 14 <= 0) {
             appendInboxItem(container, "Scott Payday", 2500, 'INCOME', -1);
         }
 
-        // Check Bills
         data.bills.forEach((bill, idx) => {
             const dueDate = new Date(bill.next_due_date + "T12:00:00");
             if (dueDate <= windowEnd) {
@@ -140,59 +125,49 @@
     function appendInboxItem(container, name, amount, type, idx) {
         const div = document.createElement('div');
         div.className = 'inbox-item';
-        div.innerHTML = `
-            <div class="flex-row">
-                <div><b>${name}</b><br><small style="color:${type==='INCOME'?'green':'red'}">$${amount}</small></div>
-                <div style="display:flex; gap:5px;">
-                    <button onclick="processAction(${idx}, '${type}', 'ok')" style="background:var(--primary); color:white; border:none; padding:5px 10px; border-radius:4px;">OK</button>
-                    <button onclick="processAction(${idx}, '${type}', 'edit')" style="background:#eee; border:none; padding:5px 10px; border-radius:4px;">✏️</button>
-                    <button onclick="processAction(${idx}, '${type}', 'skip')" style="background:#eee; border:none; padding:5px 10px; border-radius:4px;">Skip</button>
-                </div>
+        div.innerHTML = `<div class="flex-row">
+            <div><b>${name}</b><br><small style="color:${type==='INCOME'?'green':'red'}">$${amount}</small></div>
+            <div style="display:flex; gap:5px;">
+                <button onclick="processAction(${idx}, '${type}', 'ok')" style="background:var(--primary); color:white; border:none; padding:5px 10px; border-radius:4px;">OK</button>
+                <button onclick="processAction(${idx}, '${type}', 'edit')" style="background:#eee; border:none; padding:5px 10px; border-radius:4px;">✏️</button>
+                <button onclick="processAction(${idx}, '${type}', 'skip')" style="background:#eee; border:none; padding:5px 10px; border-radius:4px;">Skip</button>
             </div>
-        `;
+        </div>`;
         container.appendChild(div);
     }
 
     async function processAction(idx, type, action) {
         let item = type === 'INCOME' ? {name: "Scott Payday", amount: 2500} : data.bills[idx];
         let finalAmt = item.amount;
-
         if (action === 'edit') {
             const newAmt = prompt("Enter actual amount:", item.amount);
             if (newAmt === null) return;
             finalAmt = parseFloat(newAmt);
         }
-
         if (action !== 'skip') {
             if (type === 'INCOME') data.state.checking_balance += finalAmt;
             else data.state.checking_balance -= finalAmt;
-            
             data.history.push({ date: new Date().toISOString(), vendor: type, what: item.name, amount: finalAmt });
         }
-
-        // Cycle the Bill Date
         if (type === 'BILL') {
             let d = new Date(data.bills[idx].next_due_date + "T12:00:00");
             if (data.bills[idx].frequency === "monthly") d.setMonth(d.getMonth() + 1);
             else d.setDate(d.getDate() + 14);
             data.bills[idx].next_due_date = d.toISOString().split('T')[0];
         }
-
         await sync(); render();
     }
 
-    // --- 2. GOALS LOGIC ---
     function renderGoals() {
         const container = document.getElementById('goalsList');
         container.innerHTML = '';
         data.goals.forEach((g, idx) => {
             const pct = Math.min((g.current / g.target) * 100, 100);
-            container.innerHTML += `
-                <div style="margin-bottom:10px;">
-                    <div class="flex-row"><small><b>${g.name}</b></small><small>$${g.current}/$${g.target}</small></div>
-                    <div style="background:#eee; height:4px; border-radius:2px; margin:4px 0;"><div style="background:var(--accent); width:${pct}%; height:100%;"></div></div>
-                    <button onclick="fundGoal(${idx})" style="font-size:0.6rem; background:none; border:1px solid #ccc; padding:2px 5px; border-radius:3px;">+ Fund from Weekly</button>
-                </div>`;
+            container.innerHTML += `<div style="margin-bottom:10px;">
+                <div class="flex-row"><small><b>${g.name}</b></small><small>$${g.current}/$${g.target}</small></div>
+                <div style="background:#eee; height:4px; border-radius:2px; margin:4px 0;"><div style="background:var(--accent); width:${pct}%; height:100%;"></div></div>
+                <button onclick="fundGoal(${idx})" style="font-size:0.6rem; background:none; border:1px solid #ccc; padding:2px 5px; border-radius:3px;">+ Fund from Weekly</button>
+            </div>`;
         });
     }
 
@@ -205,27 +180,44 @@
         await sync(); render();
     }
 
-    // --- 3. MANUAL LOGGING ---
     function checkOther(val) { document.getElementById('pVendorOther').parentElement.classList.toggle('hidden', val !== "Other..."); }
-    
+
     async function logManual() {
         let v = document.getElementById('pVendor').value;
         const otherV = document.getElementById('pVendorOther').value;
         const a = parseFloat(document.getElementById('pAmt').value);
-        const d = document.getElementById('pDate').value;
+        const dStr = document.getElementById('pDate').value;
         if (!a || !v) return;
         
+        const entryDate = new Date(dStr + "T12:00:00");
+        const dayOfMonth = entryDate.getDate();
         let desc = v === "Other..." ? otherV : v;
+
+        // 1. Bank subtraction happens for everyone
         data.state.checking_balance -= a;
-        
+
+        // 2. Budget Logic
         if (v === "Amazon") {
-            if (data.state.escrow_remaining >= a) data.state.escrow_remaining -= a;
-            else { data.state.current_weekly_remaining -= (a - data.state.escrow_remaining); data.state.escrow_remaining = 0; }
+            // Logic: Before the 21st, always hits Weekly Budget.
+            // On/After the 21st, use Escrow first.
+            if (dayOfMonth >= 21) {
+                if (data.state.escrow_remaining >= a) {
+                    data.state.escrow_remaining -= a;
+                } else {
+                    const overage = a - data.state.escrow_remaining;
+                    data.state.escrow_remaining = 0;
+                    data.state.current_weekly_remaining -= overage;
+                }
+            } else {
+                // Before the 21st
+                data.state.current_weekly_remaining -= a;
+            }
         } else {
+            // Not Amazon, hits weekly budget normally
             data.state.current_weekly_remaining -= a;
         }
 
-        data.history.push({ date: new Date(d + "T12:00:00").toISOString(), vendor: v, what: desc, amount: a });
+        data.history.push({ date: entryDate.toISOString(), vendor: v, what: desc, amount: a });
         await sync(); 
         document.getElementById('pAmt').value = '';
         render();
@@ -240,7 +232,7 @@
             body.innerHTML += `<tr>
                 <td style="color:#888;">${dt.getMonth()+1}/${dt.getDate()}</td>
                 <td><b>${h.what || h.vendor}</b></td>
-                <td style="text-align:right; color:${isInc?'green':'red'}; font-weight:bold;">${isInc?'+':'-'}$${h.amount}</td>
+                <td style="text-align:right; color:${isInc?'green':'red'}; font-weight:bold;">${isInc?'+':'-'}$${h.amount.toLocaleString()}</td>
             </tr>`;
         });
     }
@@ -261,7 +253,6 @@
             s.className = 'sync-success'; setTimeout(()=>s.className='', 2000);
         } catch (e) { alert("Sync Error"); }
     }
-
     function toggleSettings() { document.getElementById('settings').classList.toggle('hidden'); }
     function saveToken() { localStorage.setItem('gh_token', document.getElementById('ghToken').value); toggleSettings(); }
     init();
