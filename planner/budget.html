@@ -141,45 +141,50 @@
         container.appendChild(div);
     }
 
-    // [SECTION: TRANSACTION LOGIC]
-    async function processInboxAction(idx, type) {
-        let name = (idx === -1) ? "Scott Payday" : (idx === -2) ? "Wife Payday" : data.bills[idx].name;
-        let amt = (idx < 0) ? 2500 : data.bills[idx].amount;
+// [SECTION: TRANSACTION LOGIC]
+async function logTransaction() {
+    const desc = document.getElementById('desc').value;
+    const amt = parseFloat(document.getElementById('amt').value);
+    if(!desc || isNaN(amt)) return;
 
-        if (type === 'INCOME') data.state.checking_balance += amt;
-        else data.state.checking_balance -= amt;
+    const today = new Date();
+    const dayOfMonth = today.getDate();
 
-        data.history.push({
-            date: new Date().toISOString().split('T')[0],
-            vendor: name, what: type, amount: (type === 'BILL' ? -amt : amt), category: type
-        });
+    // Standard Balance Update
+    data.state.checking_balance += amt;
 
-        if (type === 'BILL' && idx >= 0) {
-            let d = new Date(data.bills[idx].next_due_date + "T12:00:00");
-            if (data.bills[idx].frequency === "monthly") d.setMonth(d.getMonth() + 1);
-            else d.setDate(d.getDate() + 14);
-            data.bills[idx].next_due_date = d.toISOString().split('T')[0];
+    // Amazon Specific Budget Logic
+    if (desc.toLowerCase().includes("amazon")) {
+        // If it's after the 21st, the first $500 is exempt (doesn't hit spending budget)
+        // We can add a simple console log or alert here to remind you of the rule
+        if (dayOfMonth < 21) {
+            console.log("Amazon purchase before 21st: Hits spending budget.");
+        } else {
+            console.log("Amazon purchase after 21st: First $500 exempt.");
         }
-
-        await sync();
     }
 
-    async function logTransaction() {
-        const desc = document.getElementById('desc').value;
-        const amt = parseFloat(document.getElementById('amt').value);
-        if(!desc || isNaN(amt)) return;
+    data.history.push({
+        date: today.toISOString().split('T')[0],
+        vendor: desc, 
+        what: "Manual Entry", 
+        amount: amt, 
+        category: amt < 0 ? "Spending" : "Income"
+    });
+    
+    document.getElementById('desc').value = '';
+    document.getElementById('amt').value = '';
+    await sync();
+}
 
-        data.state.checking_balance += amt;
-        data.history.push({
-            date: new Date().toISOString().split('T')[0],
-            vendor: desc, what: "Manual", amount: amt, category: amt < 0 ? "Spending" : "Income"
-        });
-        
-        document.getElementById('desc').value = '';
-        document.getElementById('amt').value = '';
-        await sync();
-    }
-
+// Added back the Undo function for your peace of mind
+async function undoLast() {
+    if (!data.history.length || !confirm("Undo last entry?")) return;
+    const last = data.history.pop();
+    data.state.checking_balance -= last.amount;
+    await sync();
+}
+    
     // [SECTION: HISTORY RENDER]
     function renderHistory() {
         const histDiv = document.getElementById('recentHistory');
