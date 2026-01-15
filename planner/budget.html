@@ -148,19 +148,19 @@
         await sync();
     }
 
-    function renderInbox() {
+   function renderInbox() {
         const container = document.getElementById('inboxList');
         container.innerHTML = '';
         const today = new Date();
         const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
         
-        // Scott Payday
+        // 1. Scott Payday
         if (today.getDate() === 15 || today.getDate() === lastDay) {
             if (!data.history.some(h => h.date === today.toISOString().split('T')[0] && h.vendor === "Scott Payday")) {
                 appendInboxItem(container, "Scott Payday", 2500, 'INCOME', -1);
             }
         }
-        // Wife Payday (Every 14 days from Jan 16, 2026)
+        // 2. Wife Payday
         const wifeRef = new Date("2026-01-16T12:00:00");
         const diff = Math.floor((today - wifeRef) / 86400000);
         if (diff >= 0 && diff % 14 === 0) {
@@ -168,13 +168,18 @@
                 appendInboxItem(container, "Wife Payday", 2500, 'INCOME', -2);
             }
         }
-        // Bills (31 days)
+        
+        // 3. Bills (SORTED CHRONOLOGICALLY)
         const limit = new Date(); limit.setDate(today.getDate() + 31);
-        data.bills.forEach((bill, idx) => {
-            if (new Date(bill.next_due_date) <= limit) appendInboxItem(container, bill.name, bill.amount, 'BILL', idx, bill.next_due_date);
+        const sortedBills = [...data.bills].sort((a, b) => new Date(a.next_due_date) - new Date(b.next_due_date));
+
+        sortedBills.forEach((bill) => {
+            if (new Date(bill.next_due_date) <= limit) {
+                const originalIdx = data.bills.findIndex(b => b.name === bill.name);
+                appendInboxItem(container, bill.name, bill.amount, 'BILL', originalIdx, bill.next_due_date);
+            }
         });
     }
-
     function appendInboxItem(container, name, amt, type, idx, date = "Today") {
         const div = document.createElement('div');
         div.className = 'inbox-item';
