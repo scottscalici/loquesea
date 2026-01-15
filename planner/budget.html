@@ -161,43 +161,58 @@
     }
 
     function calculateProjection(days) {
-        let bal = data.state.checking_balance;
-        let d = new Date();
-        const end = new Date(); end.setDate(end.getDate() + days);
+    let bal = data.state.checking_balance;
+    let d = new Date();
+    // Use a fixed "today" to avoid timezone drifting during the loop
+    const end = new Date(); 
+    end.setDate(end.getDate() + days);
 
-        // Subtract current week leftover immediately
-        bal -= data.state.current_weekly_remaining;
-        
-        while(d <= end) {
-            const dateStr = d.toISOString().split('T')[0];
-            const dom = d.getDate();
-            const dow = d.getDay(); // 5 is Friday
+    // 1. Subtract what's left of THIS week's 1000 immediately
+    bal -= data.state.current_weekly_remaining;
+    
+    // 2. Loop through every day in the future
+    while(d <= end) {
+        const dom = d.getDate();
+        const dow = d.getDay(); // 0=Sun, 1=Mon...
+        const dateStr = d.toISOString().split('T')[0];
 
-            // 1. Weekly spending hits (Every Monday)
-            if(dow === 1) bal -= 1000;
+        // Hits every Monday: The fresh $1000 allowance
+        if(dow === 1) bal -= 1000;
 
-            // 2. Payday Projections
-            // Scott: 15th and Last Day
-            if(dom === 15) bal += 2500;
-            const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-            if(dom === lastDay) bal += 2500;
+        // Hits 1st of every month: Simulate the Amazon Escrow spend
+        if(dom === 1) bal -= 500; 
 
-            // Wife: Bi-weekly Friday
-            // Calculate weeks since Jan 16, 2026
-            const start = new Date("2026-01-16");
-            const diff = Math.floor((d - start) / (1000 * 60 * 60 * 24));
-            if(diff >= 0 && diff % 14 === 0) bal += 2500;
+        // Scott Pay: 15th and Last Day
+        if(dom === 15) bal += 2500;
+        const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+        if(dom === lastDay) bal += 2500;
 
-            // 3. Bills
-            data.bills.forEach(b => {
-                if(b.next_due_date === dateStr) bal -= b.amount;
-            });
+        // Wife Pay: Every other Friday (Reference: Jan 16, 2026)
+        const refDate = new Date("2026-01-16");
+        const diffDays = Math.floor((d - refDate) / (1000 * 60 * 60 * 24));
+        if(diffDays >= 0 && diffDays % 14 === 0) bal += 2500;
 
-            d.setDate(d.getDate() + 1);
-        }
-        return Math.round(bal).toLocaleString();
+        // Bills: Subtract if the next_due_date matches this future day
+        // Note: For long-term (4 month) projections, we simulate the bill repeating
+        data.bills.forEach(b => {
+            let bDate = new Date(b.next_due_date);
+            // This checks if the bill falls on THIS specific day in the loop
+            if(bDate.toISOString().split('T')[0] === dateStr) {
+                bal -= b.amount;
+                // Move the bill date forward in the temporary loop so it can hit again next month
+                if(b.frequency === "monthly") bDate.setMonth(bDate.getMonth() + 1);
+                if(b.frequency === "bi-weekly") bDate.setDate(bDate.getDate() + 14);
+                b.next_due_date = bDate.toISOString().split('T')[0];
+            }
+        });
+
+        d.setDate(d.getDate() + 1);
     }
-
+    // Return to original state for the next calculation
+    init(); 
+    return Math.round(bal).toLocaleString();
+}
+    
     async function rollover(type) {
         const left = data.state.current_weekly_remaining;
         if(type === 'goal') {
