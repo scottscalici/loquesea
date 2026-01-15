@@ -33,9 +33,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5564.02,
+    "checking_balance": 3001.2300000000005,
     "travel_savings": 0,
-    "weekly_budget_remaining": 2473.01
+    "weekly_budget_remaining": -89.78
   },
   "vendors": [
     "Amazon",
@@ -104,17 +104,6 @@
       "vendor": "Other...",
       "what": "restaurant",
       "amount": 15.65
-    },
-    {
-      "date": "2026-01-14T17:00:00.000Z",
-      "vendor": "Gas",
-      "what": "Gas",
-      "amount": 62.79
-    },
-    {
-      "date": "2026-01-15",
-      "vendor": "Scott Payday",
-      "amount": 2500
     }
   ],
   "bills": [
