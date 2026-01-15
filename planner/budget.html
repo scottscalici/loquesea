@@ -169,51 +169,61 @@
     }
 
     function calculateProjection(days) {
-        let bal = data.state.checking_balance;
-        let d = new Date();
-        const end = new Date(); end.setDate(end.getDate() + days);
-        let lowPointDate = null;
+    let bal = data.state.checking_balance;
+    let d = new Date();
+    const end = new Date(); 
+    end.setDate(end.getDate() + days);
+    
+    let lowPointDate = null;
+    let simBills = JSON.parse(JSON.stringify(data.bills));
+    
+    // Daily burn rate (1000 per week / 7 days)
+    const dailyBurn = 1000 / 7;
 
-        bal -= data.state.current_weekly_remaining;
+    while(d <= end) {
+        const dateStr = d.toISOString().split('T')[0];
+        const dom = d.getDate();
         
-        // Use a temporary copy of bills to simulate date jumps
-        let simBills = JSON.parse(JSON.stringify(data.bills));
+        // 1. Daily Spend (Linear Burn like Excel)
+        bal -= dailyBurn;
 
-        while(d <= end) {
-            const dateStr = d.toISOString().split('T')[0];
-            const dom = d.getDate();
-            
-            if(d.getDay() === 1) bal -= 1000; // Monday Burn
-            if(dom === 1) bal -= 500; // Monthly Amazon Estimate
-            
-            // Scott Pay
-            if(dom === 15) bal += 2500;
-            if(dom === new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()) bal += 2500;
-            
-            // Wife Pay (Reference: Jan 16, 2026)
-            const diff = Math.floor((d - new Date("2026-01-16")) / 86400000);
-            if(diff >= 0 && diff % 14 === 0) bal += 2500;
+        // 2. Monthly Amazon Escrow (Spread out or hit on 1st)
+        if(dom === 1) bal -= 500; 
+        
+        // 3. Scott Pay (15th / EOM)
+        if(dom === 15) bal += 2500;
+        const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+        if(dom === lastDay) bal += 2500;
+        
+        // 4. Wife Pay (Bi-weekly Fridays)
+        const refDate = new Date("2026-01-16");
+        const diff = Math.floor((d - refDate) / 86400000);
+        if(diff >= 0 && diff % 14 === 0) bal += 2500;
 
-            // Bills
-            simBills.forEach(b => {
-                if(b.next_due_date === dateStr) {
-                    bal -= b.amount;
-                    let next = new Date(b.next_due_date);
-                    if(b.frequency === "monthly") next.setMonth(next.getMonth()+1);
-                    else if(b.frequency === "bi-weekly") next.setDate(next.getDate()+14);
-                    else if(b.frequency === "semi-annually") next.setMonth(next.getMonth()+6);
-                    b.next_due_date = next.toISOString().split('T')[0];
-                }
-            });
-
-            if (bal < 500 && !lowPointDate) {
-                lowPointDate = d.toLocaleDateString(undefined, {month:'short', day:'numeric'});
+        // 5. Bills (Specific Dates)
+        simBills.forEach(b => {
+            if(b.next_due_date === dateStr) {
+                bal -= b.amount;
+                let next = new Date(b.next_due_date);
+                if(b.frequency === "monthly") next.setMonth(next.getMonth()+1);
+                else if(b.frequency === "bi-weekly") next.setDate(next.getDate()+14);
+                else if(b.frequency === "semi-annually") next.setMonth(next.getMonth()+6);
+                b.next_due_date = next.toISOString().split('T')[0];
             }
-            d.setDate(d.getDate() + 1);
-        }
-        return { balance: Math.round(bal).toLocaleString(), lowPointDate };
-    }
+        });
 
+        // 6. Check for Low Point (Safety Floor $500)
+        if (bal < 500 && !lowPointDate) {
+            lowPointDate = d.toLocaleDateString(undefined, {month:'short', day:'numeric'});
+        }
+        
+        d.setDate(d.getDate() + 1);
+    }
+    return { 
+        balance: Math.round(bal).toLocaleString(), 
+        lowPointDate 
+    };
+}
     async function receivePay(id) {
         const pay = data.paydays.find(p => p.id === id);
         const amt = prompt(`Actual pay for ${pay.name}:`, pay.amount);
