@@ -1,1 +1,29 @@
+{
+  "meta": {
+    "version": "1.2",
+    "last_updated": "2026-01-14",
+    "authoritative_editor": "User"
+  },
+  "budget_rules": {
+    "base_weekly_allowance": 1000.00,
+    "amazon_escrow_earmark": 750.00,
+    "amazon_wave_start_day": 19,
+    "amazon_wave_end_day": 26,
+    "rollover_threshold": 100.00
+  },
+  "bills": [
+    { "id": "mortgage-biweekly", "name": "Mortgage", "excel_code": 14, "amount": 612.99, "next_due_date": "2026-01-21" },
+    { "id": "secondary-mortgage", "name": "Secondary Mortgage", "excel_code": 1, "amount": 377.32, "next_due_date": "2026-02-05" },
+    { "id": "ford-f150", "name": "Ford F-150", "excel_code": 1, "amount": 665.74, "next_due_date": "2026-02-09" },
+    { "id": "ford-mache", "name": "Ford Mach-E", "excel_code": 1, "amount": 611.34, "next_due_date": "2026-02-09" },
+    { "id": "dte-energy", "name": "DTE", "excel_code": 1, "amount": 450.00, "next_due_date": "2026-01-18" },
+    { "id": "t-mobile", "name": "T-Mobile", "excel_code": 1, "amount": 300.00, "next_due_date": "2026-01-21" },
+    { "id": "semco", "name": "Semco", "excel_code": 1, "amount": 250.00, "next_due_date": "2026-02-14" },
+    { "id": "meemic-insurance", "name": "Meemic", "excel_code": 6, "amount": 1246.00, "next_due_date": "2026-06-08" },
+    { "id": "priority-waste", "name": "Priority Waste", "excel_code": 3, "amount": 54.84, "next_due_date": "2026-03-01" },
+    { "id": "jax-a", "name": "Jax A", "excel_code": 1, "amount": 26.99, "next_due_date": "2026-01-21" },
+    { "id": "jax-s", "name": "Jax S", "excel_code": 1, "amount": 35.99, "next_due_date": "2026-01-16" },
+    { "id": "water-sewer", "name": "Water & Sewer", "excel_code": 3, "amount": 350.00, "next_due_date": "2026-02-15" }
+  ]
+}
 
