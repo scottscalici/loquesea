@@ -33,9 +33,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3001.2300000000005,
+    "checking_balance": 678,
     "travel_savings": 0,
-    "weekly_budget_remaining": -89.78
+    "weekly_budget_remaining": 500
   },
   "vendors": [
     "Amazon",
