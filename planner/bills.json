@@ -32,8 +32,8 @@
   ],
   "state": {
     "current_weekly_remaining": 760.6199999999999,
-    "escrow_remaining": 476.53,
-    "checking_balance": 637.1499999999999,
+    "escrow_remaining": 462.84,
+    "checking_balance": 623.4599999999998,
     "travel_savings": 0
   },
   "vendors": [
@@ -65,6 +65,11 @@
       "date": "2026-01-15T04:31:58.199Z",
       "vendor": "Amazon",
       "amount": 23.47
+    },
+    {
+      "date": "2026-01-15T04:32:08.006Z",
+      "vendor": "Amazon",
+      "amount": 13.69
     }
   ],
   "bills": [
