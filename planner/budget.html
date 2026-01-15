@@ -23,6 +23,8 @@
         .sync-success { background: #4caf50 !important; }
         table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
         td { padding: 8px 0; border-bottom: 1px solid #f9f9f9; }
+        .progress-container { background: #eee; height: 8px; border-radius: 4px; margin: 8px 0; overflow: hidden; position: relative; }
+        .progress-bar { background: var(--accent); height: 100%; transition: width 0.3s; }
     </style>
 </head>
 <body>
@@ -93,16 +95,55 @@
     function render() {
         document.getElementById('checkingBal').innerText = `$${data.state.checking_balance.toLocaleString()}`;
         document.getElementById('escrowBal').innerText = `$${data.state.escrow_remaining}`;
-        renderInbox();
         renderGoals();
+        renderInbox();
         renderHistory();
+    }
+
+    function renderGoals() {
+        const container = document.getElementById('goalsList');
+        container.innerHTML = '';
+        
+        // Use the actual data from your JSON
+        const goals = data.savings_goals || []; 
+        
+        goals.forEach((g, idx) => {
+            const pct = Math.min((g.current / g.target) * 100, 100).toFixed(0);
+            const remaining = g.target - g.current;
+            
+            container.innerHTML += `
+                <div style="margin-bottom:15px;">
+                    <div class="flex-row" style="font-size:0.85rem;">
+                        <b>${g.name}</b>
+                        <span>$${g.current.toLocaleString()} / $${g.target.toLocaleString()}</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: ${pct}%"></div>
+                    </div>
+                    <div class="flex-row">
+                        <small style="color:#888;">${pct}% complete • $${remaining.toLocaleString()} left</small>
+                        <button onclick="fundGoal(${idx})" style="font-size:0.6rem; background:none; border:1px solid #ccc; padding:2px 8px; border-radius:4px; color:#666;">+ Move from Weekly</button>
+                    </div>
+                </div>`;
+        });
+    }
+
+    async function fundGoal(idx) {
+        const goal = data.savings_goals[idx];
+        const amt = parseFloat(prompt(`How much of your Weekly Budget to move to ${goal.name}?`));
+        if (!amt || isNaN(amt)) return;
+        
+        data.state.current_weekly_remaining -= amt;
+        goal.current += amt;
+        data.history.push({ date: new Date().toISOString(), vendor: "GOAL", what: goal.name, amount: amt });
+        
+        await sync(); 
+        render();
     }
 
     function renderInbox() {
         const container = document.getElementById('inboxList');
         container.innerHTML = '';
-        
-        // 1. Payday (Bi-weekly logic)
         const today = new Date();
         const paydayStart = new Date("2026-01-16T12:00:00");
         const diff = Math.floor((today - paydayStart) / 86400000);
@@ -110,11 +151,8 @@
             appendInboxItem(container, "Scott Payday", 2500, 'INCOME', -1);
         }
 
-        // 2. All Bills (Sorted by date)
         const sortedBills = [...data.bills].sort((a,b) => new Date(a.next_due_date) - new Date(b.next_due_date));
-        
         sortedBills.forEach((bill) => {
-            // Find actual index in original array for the processAction function
             const originalIdx = data.bills.findIndex(b => b.name === bill.name);
             appendInboxItem(container, bill.name, bill.amount, 'BILL', originalIdx, bill.next_due_date);
         });
@@ -124,7 +162,6 @@
         const div = document.createElement('div');
         div.className = 'inbox-item';
         const isOverdue = date && new Date(date) < new Date().setHours(0,0,0,0);
-        
         div.innerHTML = `<div class="flex-row">
             <div>
                 <b style="font-size:0.9rem;">${name}</b>
@@ -162,32 +199,6 @@
         await sync(); render();
     }
 
-    function renderGoals() {
-        const container = document.getElementById('goalsList');
-        container.innerHTML = '';
-        if(data.goals.length === 0) {
-            container.innerHTML = '<div style="font-size:0.8rem; color:#aaa; text-align:center;">No goals set. Add them in bills.json!</div>';
-            return;
-        }
-        data.goals.forEach((g, idx) => {
-            const pct = Math.min((g.current / g.target) * 100, 100);
-            container.innerHTML += `<div style="margin-bottom:10px;">
-                <div class="flex-row"><small><b>${g.name}</b></small><small>$${g.current}/$${g.target}</small></div>
-                <div style="background:#eee; height:6px; border-radius:3px; margin:4px 0;"><div style="background:var(--accent); width:${pct}%; height:100%; border-radius:3px;"></div></div>
-                <button onclick="fundGoal(${idx})" style="font-size:0.6rem; background:none; border:1px solid #ccc; padding:2px 8px; border-radius:4px; color:#666;">+ Move from Weekly</button>
-            </div>`;
-        });
-    }
-
-    async function fundGoal(idx) {
-        const amt = parseFloat(prompt(`How much to move to ${data.goals[idx].name}?`));
-        if (!amt) return;
-        data.state.current_weekly_remaining -= amt;
-        data.goals[idx].current += amt;
-        data.history.push({ date: new Date().toISOString(), vendor: "GOAL", what: data.goals[idx].name, amount: amt });
-        await sync(); render();
-    }
-
     function checkOther(val) { document.getElementById('pVendorOther').parentElement.classList.toggle('hidden', val !== "Other..."); }
 
     async function logManual() {
@@ -203,22 +214,12 @@
 
         data.state.checking_balance -= a;
 
-        // Amazon Escrow logic
         if (v === "Amazon") {
             if (dayOfMonth >= 21) {
-                if (data.state.escrow_remaining >= a) {
-                    data.state.escrow_remaining -= a;
-                } else {
-                    const overage = a - data.state.escrow_remaining;
-                    data.state.escrow_remaining = 0;
-                    data.state.current_weekly_remaining -= overage;
-                }
-            } else {
-                data.state.current_weekly_remaining -= a;
-            }
-        } else {
-            data.state.current_weekly_remaining -= a;
-        }
+                if (data.state.escrow_remaining >= a) { data.state.escrow_remaining -= a; } 
+                else { data.state.current_weekly_remaining -= (a - data.state.escrow_remaining); data.state.escrow_remaining = 0; }
+            } else { data.state.current_weekly_remaining -= a; }
+        } else { data.state.current_weekly_remaining -= a; }
 
         data.history.push({ date: entryDate.toISOString(), vendor: v, what: desc, amount: a });
         await sync(); 
@@ -240,17 +241,14 @@
         });
     }
 
-    async function undoLast() { if(confirm("Undo last log? (Will reverse balances)")) { 
-        const last = data.history.pop();
-        if(last.vendor === 'INCOME') data.state.checking_balance -= last.amount;
-        else {
-            data.state.checking_balance += last.amount;
-            // Note: Simple undo doesn't reverse every complex escrow logic perfectly, 
-            // but it covers standard spends.
-            data.state.current_weekly_remaining += last.amount;
+    async function undoLast() {
+        if(confirm("Undo last log?")) { 
+            const last = data.history.pop();
+            if(last.vendor === 'INCOME') data.state.checking_balance -= last.amount;
+            else { data.state.checking_balance += last.amount; data.state.current_weekly_remaining += last.amount; }
+            await sync(); render(); 
         }
-        await sync(); render(); 
-    } }
+    }
 
     async function sync() {
         const s = document.getElementById('syncStatus'); s.className = 'sync-saving';
@@ -261,10 +259,10 @@
             await fetch(url, {
                 method: 'PUT',
                 headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: "Update Budget", content: btoa(JSON.stringify(data, null, 2)), sha: file.sha })
+                body: JSON.stringify({ message: "Update", content: btoa(JSON.stringify(data, null, 2)), sha: file.sha })
             });
             s.className = 'sync-success'; setTimeout(()=>s.className='', 2000);
-        } catch (e) { alert("Sync Error. Check Settings/Token."); }
+        } catch (e) { alert("Sync Error"); }
     }
     function toggleSettings() { document.getElementById('settings').classList.toggle('hidden'); }
     function saveToken() { localStorage.setItem('gh_token', document.getElementById('ghToken').value); toggleSettings(); }
