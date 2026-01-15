@@ -33,9 +33,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3091.01,
+    "checking_balance": 3064.0200000000004,
     "travel_savings": 0,
-    "weekly_budget_remaining": null
+    "weekly_budget_remaining": -26.99
   },
   "vendors": [
     "Amazon",
@@ -129,6 +129,11 @@
       "date": "2026-01-15",
       "vendor": "Apple Storage (User)",
       "amount": -9.99
+    },
+    {
+      "date": "2026-01-15",
+      "vendor": "Jax A",
+      "amount": -26.99
     }
   ],
   "bills": [
@@ -165,7 +170,7 @@
       "name": "AXA A",
       "frequency": "monthly",
       "amount": 44.49,
-      "next_due_date": "2026-02-21"
+      "next_due_date": "2026-01-21"
     },
     {
       "id": "axa-s",
@@ -298,7 +303,7 @@
       "name": "Jax A",
       "frequency": "monthly",
       "amount": 26.99,
-      "next_due_date": "2026-01-21"
+      "next_due_date": "2026-02-21"
     },
     {
       "id": "jax-s",
