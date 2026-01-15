@@ -6,83 +6,85 @@
     <title>Control Center</title>
     <style>
         :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; --danger: #d32f2f; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; color: var(--text); padding-top: 60px; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-top: 60px; color: var(--text); }
         
         .nav-bar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: #fff; display: flex; align-items: center; justify-content: space-around; border-bottom: 1px solid #ddd; z-index: 1000; }
-        .nav-item { text-decoration: none; color: #666; font-size: 0.8rem; font-weight: bold; }
+        .nav-item { text-decoration: none; color: #666; font-size: 0.75rem; font-weight: bold; }
         .nav-item.active { color: var(--accent); }
 
         .card { background: var(--card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
-        .label { font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; }
+        .label { font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; display: block; }
         .flex-row { display: flex; justify-content: space-between; align-items: center; }
         
         .btn { padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; width: 100%; margin-top: 10px; }
         .btn-blue { background: var(--accent); }
+        .btn-green { background: var(--primary); }
         .btn-red { background: var(--danger); }
         
-        .warning-text { font-weight: bold; font-size: 0.85rem; margin-top: 10px; text-align: center; color: #d32f2f; background: #ffebee; padding: 10px; border-radius: 8px; border: 1px solid #ffcdd2; }
-        
         table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 10px; }
-        th { text-align: left; color: #888; padding: 8px 5px; border-bottom: 1px solid #eee; }
-        td { padding: 10px 5px; border-bottom: 1px solid #f9f9f9; }
-        .critical-row { background: #fff3e0; color: #e65100; font-weight: bold; }
-        .danger-row { background: #ffebee; color: #c62828; font-weight: bold; }
+        th { text-align: left; color: #888; padding: 5px; border-bottom: 1px solid #eee; }
+        td { padding: 8px 5px; border-bottom: 1px solid #f9f9f9; }
         
+        .hidden { display: none; }
+        input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
         #syncStatus { width: 10px; height: 10px; border-radius: 50%; background: #ccc; }
         .sync-saving { background: #ffeb3b !important; }
         .sync-success { background: #4caf50 !important; }
-        .hidden { display: none; }
     </style>
 </head>
 <body>
 
     <nav class="nav-bar">
-    <a href="budget.html" class="nav-item">CONTROL</a>
-    <a href="spend.html" class="nav-item">WEEKLY</a>
-    <a href="projection.html" class="nav-item">PROJECTION</a>
-    <div id="syncStatus"></div>
-</nav>
-    
-    <div class="card" style="background: #333; color: white;">
-        <span class="label" style="color: #aaa;">Projected Checking (Daily Burn Logic)</span>
-        <div class="flex-row" style="margin:10px 0; text-align:center;">
-            <div>10d<br><b id="proj10" style="color:#4CAF50;">$0</b></div>
-            <div>30d<br><b id="proj30" style="color:#4CAF50;">$0</b></div>
-            <div>4m<br><b id="proj120" style="color:#4CAF50;">$0</b></div>
-        </div>
-        <div id="lowPointWarning" class="hidden"></div>
-    </div>
+        <a href="budget.html" class="nav-item active">CONTROL</a>
+        <a href="spend.html" class="nav-item">WEEKLY</a>
+        <a href="projection.html" class="nav-item">PROJECTION</a>
+        <a href="ledger.html" class="nav-item">LEDGER</a>
+        <div id="syncStatus"></div>
+        <button onclick="toggleSettings()" style="border:none; background:none;">⚙️</button>
+    </nav>
 
     <div class="card">
         <div class="flex-row">
-            <div><span class="label">Balance</span><br><b id="checkingBal" style="font-size:1.4rem;">$0</b></div>
-            <div><span class="label">Amazon Escrow</span><br><b id="escrowBal" style="color:var(--accent);">$0</b></div>
-            <button class="btn-red" style="padding:4px 8px; font-size:0.7rem; width:auto; margin:0;" onclick="undoLast()">Undo</button>
+            <div><span class="label">Checking Balance</span><b id="checkingBal" style="font-size:1.4rem;">$0</b></div>
+            <div style="text-align:right;"><span class="label">Amazon Escrow</span><b id="escrowBal" style="color:var(--accent);">$0</b></div>
         </div>
     </div>
 
     <div class="card">
-        <span class="label">Log Purchase</span>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:10px;">
+        <span class="label">Log Transaction</span>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
             <select id="pVendor"></select>
             <input type="number" id="pAmt" placeholder="$ Amount">
         </div>
         <button class="btn btn-blue" onclick="logTransaction()">Log Spend</button>
+        <button class="btn btn-green" onclick="undoLast()" style="margin-top:5px; background:#666;">Undo Last</button>
     </div>
 
     <div class="card">
-        <span class="label">30-Day Cash Flow Table</span>
-        <table id="projectionTable">
+        <span class="label">Savings Goals (Virtual Pots)</span>
+        <div id="goalsList" style="margin-top:10px;"></div>
+        <div id="addGoalForm" class="hidden" style="margin-top:10px; border-top:1px solid #eee; pt:10px;">
+            <input type="text" id="gName" placeholder="Goal Name">
+            <input type="number" id="gTarget" placeholder="Target $">
+            <button class="btn btn-blue" onclick="saveNewGoal()">Save Goal</button>
+        </div>
+        <button class="btn" style="background:#eee; color:#666; font-size:0.7rem;" onclick="document.getElementById('addGoalForm').classList.toggle('hidden')">+ Add New Goal</button>
+    </div>
+
+    <div class="card">
+        <span class="label">Recent Activity (Checkbook)</span>
+        <table id="historyTable">
             <thead>
-                <tr><th>Date</th><th>Description</th><th>Amount</th><th>Balance</th></tr>
+                <tr><th>Date</th><th>Item</th><th>Amt</th></tr>
             </thead>
-            <tbody id="projectionBody"></tbody>
+            <tbody id="historyBody"></tbody>
         </table>
     </div>
 
     <div id="settings" class="card hidden">
-        <input type="password" id="ghToken" placeholder="GitHub Token">
-        <button class="btn btn-blue" onclick="saveToken()">Save</button>
+        <span class="label">GitHub Token</span>
+        <input type="password" id="ghToken" placeholder="Token">
+        <button class="btn btn-blue" onclick="saveToken()">Save Settings</button>
     </div>
 
 <script>
@@ -92,138 +94,98 @@
     async function init() {
         const resp = await fetch(`bills.json?t=${Date.now()}`);
         data = await resp.json();
-        const menu = document.getElementById('pVendor');
-        data.vendors.forEach(v => menu.add(new Option(v, v)));
-        render();
-    }
-
-    function calculateProjection(days) {
-        let bal = data.state.checking_balance;
-        let d = new Date(); d.setHours(12,0,0,0);
-        const end = new Date(d); end.setDate(end.getDate() + days);
         
-        let lowPointEvent = null;
-        let simBills = JSON.parse(JSON.stringify(data.bills));
-        let events = [];
-        const dailyBurn = 1000 / 7;
-
-        while(d <= end) {
-            const dateStr = d.toLocaleDateString('en-CA');
-            const dom = d.getDate();
-            
-            // 1. Daily Living Burn
-            bal -= dailyBurn;
-
-            // 2. Amazon Escrow Hit (The 21st)
-            if(dom === 21) {
-                bal -= 500;
-                events.push({date: dateStr, label: "Amazon Escrow Hit", amt: -500, current: bal});
-            }
-
-            // 3. Paydays
-            if(dom === 15 || dom === new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()) { 
-                bal += 2500; events.push({date: dateStr, label: "Scott Pay", amt: 2500, current: bal}); 
-            }
-            const refDate = new Date("2026-01-16T12:00:00");
-            const diff = Math.floor((d - refDate) / 86400000);
-            if(diff >= 0 && diff % 14 === 0) {
-                bal += 2500; events.push({date: dateStr, label: "Wife Pay", amt: 2500, current: bal});
-            }
-
-            // 4. Bills
-            simBills.forEach(b => {
-                if(b.next_due_date === dateStr) {
-                    bal -= b.amount;
-                    events.push({date: dateStr, label: b.name, amt: -b.amount, current: bal});
-                    let next = new Date(b.next_due_date + "T12:00:00");
-                    if(b.frequency === "monthly") next.setMonth(next.getMonth()+1);
-                    else if(b.frequency === "bi-weekly") next.setDate(next.getDate()+14);
-                    else if(b.frequency === "semi-annually") next.setMonth(next.getMonth()+6);
-                    b.next_due_date = next.toLocaleDateString('en-CA');
-                }
-            });
-
-            // Capture the culprit
-            if (bal < 500 && !lowPointEvent) {
-                const lastEv = events[events.length-1];
-                lowPointEvent = { date: d.toLocaleDateString(undefined, {month:'short', day:'numeric'}), label: (lastEv && lastEv.date === dateStr) ? lastEv.label : "Daily Spend" };
-            }
-            d.setDate(d.getDate() + 1);
-        }
-        return { balance: Math.round(bal).toLocaleString(), lowPointEvent, events };
+        // Populate Vendor Menu
+        const menu = document.getElementById('pVendor');
+        menu.innerHTML = '';
+        data.vendors.forEach(v => menu.add(new Option(v, v)));
+        
+        render();
     }
 
     function render() {
         document.getElementById('checkingBal').innerText = `$${data.state.checking_balance.toLocaleString()}`;
         document.getElementById('escrowBal').innerText = `$${data.state.escrow_remaining}`;
         
-        const p10 = calculateProjection(10);
-        const p30 = calculateProjection(30);
-        const p120 = calculateProjection(120);
+        // Render Goals
+        const gList = document.getElementById('goalsList');
+        gList.innerHTML = '';
+        data.goals.forEach((g, idx) => {
+            const pct = Math.min((g.current / g.target) * 100, 100);
+            gList.innerHTML += `
+                <div style="margin-bottom:12px;">
+                    <div class="flex-row" style="font-size:0.85rem;">
+                        <b>${g.name}</b>
+                        <span>$${g.current} / $${g.target}</span>
+                    </div>
+                    <div style="background:#eee; height:6px; border-radius:3px; margin:4px 0;">
+                        <div style="background:var(--accent); width:${pct}%; height:100%; border-radius:3px;"></div>
+                    </div>
+                    <div class="flex-row">
+                        <button onclick="transferToGoal(${idx})" style="font-size:0.6rem; background:none; border:1px solid #ccc; border-radius:4px; padding:2px 5px;">+ Fund from Weekly</button>
+                        <button onclick="deleteGoal(${idx})" style="font-size:0.6rem; color:red; border:none; background:none;">Delete</button>
+                    </div>
+                </div>
+            `;
+        });
 
-        document.getElementById('proj10').innerText = `$${p10.balance}`;
-        document.getElementById('proj30').innerText = `$${p30.balance}`;
-        document.getElementById('proj120').innerText = `$${p120.balance}`;
-
-        const warning = document.getElementById('lowPointWarning');
-        if (p120.lowPointEvent) {
-            warning.classList.remove('hidden');
-            warning.innerText = `⚠️ Low Point: ${p120.lowPointEvent.date} (${p120.lowPointEvent.label})`;
-        } else { warning.classList.add('hidden'); }
-
-        const body = document.getElementById('projectionBody');
-        body.innerHTML = '';
-        p30.events.forEach(ev => {
-            let rowClass = ev.current < 500 ? 'danger-row' : (ev.current < 1000 ? 'critical-row' : '');
-            body.innerHTML += `<tr class="${rowClass}">
-                <td>${ev.date.split('-').slice(1).join('/')}</td>
-                <td>${ev.label}</td>
-                <td>${ev.amt > 0 ? '+' : ''}${ev.amt}</td>
-                <td>$${Math.round(ev.current)}</td>
+        // Render History (Last 10)
+        const hBody = document.getElementById('historyBody');
+        hBody.innerHTML = '';
+        data.history.slice(-10).reverse().forEach(h => {
+            const isInc = h.vendor === "INCOME";
+            hBody.innerHTML += `<tr>
+                <td>${new Date(h.date).toLocaleDateString(undefined, {month:'short', day:'numeric'})}</td>
+                <td>${h.vendor}</td>
+                <td style="color:${isInc ? 'green' : 'red'}; font-weight:bold;">${isInc ? '+' : '-'}$${h.amount}</td>
             </tr>`;
         });
     }
 
     async function logTransaction() {
-        const vendor = document.getElementById('pVendor').value;
-        const amt = parseFloat(document.getElementById('pAmt').value);
-        if(!amt) return;
+        const v = document.getElementById('pVendor').value;
+        const a = parseFloat(document.getElementById('pAmt').value);
+        if(!a) return;
 
-        data.state.checking_balance -= amt;
-
-        if(vendor === "Amazon") {
-            if(data.state.escrow_remaining >= amt) {
-                data.state.escrow_remaining -= amt; // Escrow covers it
-            } else {
-                const overage = amt - data.state.escrow_remaining;
+        data.state.checking_balance -= a;
+        if(v === "Amazon") {
+            if(data.state.escrow_remaining >= a) data.state.escrow_remaining -= a;
+            else { 
+                const diff = a - data.state.escrow_remaining;
                 data.state.escrow_remaining = 0;
-                data.state.current_weekly_remaining -= overage; // Overage eats into weekly budget
+                data.state.current_weekly_remaining -= diff;
             }
+        } else if(v !== "INCOME") {
+            data.state.current_weekly_remaining -= a;
         } else {
-            data.state.current_weekly_remaining -= amt;
+            data.state.checking_balance += (a * 2); // Correcting the minus above for income
         }
 
-        data.history.push({ date: new Date().toISOString(), vendor, amount: amt });
+        data.history.push({ date: new Date().toISOString(), vendor: v, amount: a });
+        document.getElementById('pAmt').value = '';
         await sync(); render();
     }
 
-    async function undoLast() {
-        const last = data.history.pop();
-        if(!last) return;
-        data.state.checking_balance += last.amount;
-        if(last.vendor === "Amazon") {
-            data.state.escrow_remaining += last.amount;
-            if(data.state.escrow_remaining > 500) { // If it overflowed back into weekly
-                 const extra = data.state.escrow_remaining - 500;
-                 data.state.escrow_remaining = 500;
-                 data.state.current_weekly_remaining += extra;
-            }
-        } else {
-            data.state.current_weekly_remaining += last.amount;
-        }
+    async function transferToGoal(idx) {
+        const amt = parseFloat(prompt("Amount to move from Weekly Budget to this goal?"));
+        if(!amt) return;
+        data.state.current_weekly_remaining -= amt;
+        data.goals[idx].current += amt;
+        data.history.push({ date: new Date().toISOString(), vendor: "GOAL", what: data.goals[idx].name, amount: amt });
         await sync(); render();
     }
 
+    async function saveNewGoal() {
+        const n = document.getElementById('gName').value;
+        const t = parseFloat(document.getElementById('gTarget').value);
+        if(!n || !t) return;
+        data.goals.push({ name: n, target: t, current: 0 });
+        document.getElementById('addGoalForm').classList.add('hidden');
+        await sync(); render();
+    }
+
+    async function deleteGoal(idx) { if(confirm("Delete goal?")) { data.goals.splice(idx,1); await sync(); render(); } }
+    
     async function sync() {
         const status = document.getElementById('syncStatus');
         status.className = 'sync-saving';
@@ -237,7 +199,7 @@
                 body: JSON.stringify({ message: "Update", content: btoa(JSON.stringify(data, null, 2)), sha: file.sha })
             });
             if(resp.ok) { status.className = 'sync-success'; setTimeout(()=>status.className='', 2000); }
-        } catch (e) { status.className = 'sync-error'; }
+        } catch (e) { alert("Sync Failed"); }
     }
 
     function toggleSettings() { document.getElementById('settings').classList.toggle('hidden'); }
