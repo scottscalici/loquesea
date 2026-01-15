@@ -13,9 +13,7 @@
   "history": [],
   "bills": [
     { "id": "m-1", "name": "Mortgage", "frequency": "bi-weekly", "amount": 612.99, "next_due_date": "2026-01-21" }
-  ]
-},
-
+  ],
 "bills": [
     { "id": "aaa", "name": "AAA", "frequency": "annually", "amount": 107, "next_due_date": "2026-08-13" },
     { "id": "amz-prime", "name": "Amazon Prime", "frequency": "annually", "amount": 150, "next_due_date": "2026-08-08" },
