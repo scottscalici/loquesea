@@ -133,11 +133,12 @@ function renderInbox() {
             <div><b>${name}</b><br><small>${date}</small></div>
             <div>
                 <span style="margin-right:10px; font-weight:bold; color:${type==='INCOME'?'green':'red'}">$${amount.toLocaleString()}</span>
-                <button class="btn-paid" onclick="processInboxAction(${idx}, '${type}')">OK</button>
+                <button class="btn-paid" style="margin-right:5px;" onclick="processInboxAction(${idx}, '${type}')">OK</button>
+                <button class="btn-paid" style="color:var(--danger); border:1px solid #ffcdd2;" onclick="skipItem(${idx}, '${type}')">SKIP</button>
             </div>`;
         container.appendChild(div);
     }
-
+    
     // [SECTION: TRANSACTION LOGIC]
     async function processInboxAction(idx, type) {
         let name = (idx === -1) ? "Scott Payday" : (idx === -2) ? "Wife Payday" : data.bills[idx].name;
