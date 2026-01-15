@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Control Center</title>
     <style>
         :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; --danger: #d32f2f; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-top: 60px; color: var(--text); }
         
-        /* Navigation */
         .nav-bar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: #fff; display: flex; align-items: center; justify-content: space-around; border-bottom: 1px solid #ddd; z-index: 1000; }
         .nav-item { text-decoration: none; color: #666; font-size: 0.75rem; font-weight: bold; }
         .nav-item.active { color: var(--accent); }
@@ -17,22 +16,20 @@
         .label { font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; display: block; }
         .flex-row { display: flex; justify-content: space-between; align-items: center; }
         
-        .btn { padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; width: 100%; margin-top: 10px; }
+        .btn { padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; width: 100%; }
         .btn-blue { background: var(--accent); }
+        .btn-green { background: var(--primary); }
         
-        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 10px; }
-        th { text-align: left; color: #888; padding: 5px; border-bottom: 1px solid #eee; }
-        td { padding: 8px 5px; border-bottom: 1px solid #f9f9f9; }
+        .inbox-item { background: #fdfdfd; border-left: 4px solid var(--accent); padding: 12px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #eee; border-left-width: 5px; }
         
-        .hidden { display: none; }
         input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
-        
+        .hidden { display: none; }
         #syncStatus { width: 10px; height: 10px; border-radius: 50%; background: #ccc; }
         .sync-saving { background: #ffeb3b !important; }
         .sync-success { background: #4caf50 !important; }
         
-        .amt-pos { color: var(--primary); font-weight: bold; }
-        .amt-neg { color: var(--danger); font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        td { padding: 8px 0; border-bottom: 1px solid #f9f9f9; }
     </style>
 </head>
 <body>
@@ -46,40 +43,45 @@
         <button onclick="toggleSettings()" style="border:none; background:none;">⚙️</button>
     </nav>
 
+    <div id="actionInbox">
+        <span class="label" style="margin-bottom:10px;">Pending Actions</span>
+        <div id="inboxList"></div>
+    </div>
+
     <div class="card">
         <div class="flex-row">
-            <div><span class="label">Current Bank Balance</span><b id="checkingBal" style="font-size:1.4rem;">$0</b></div>
+            <div><span class="label">Bank Balance</span><b id="checkingBal" style="font-size:1.4rem;">$0</b></div>
             <div style="text-align:right;"><span class="label">Amazon Escrow</span><b id="escrowBal" style="color:var(--accent);">$0</b></div>
         </div>
     </div>
 
     <div class="card">
-        <span class="label">Log Transaction</span>
+        <span class="label">Manual Entry</span>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
             <select id="pVendor" onchange="checkOther(this.value)"></select>
             <input type="number" id="pAmt" placeholder="$ Amount" inputmode="decimal">
         </div>
-        <div id="otherVendorDiv" class="hidden">
-            <input type="text" id="pVendorOther" placeholder="Entry Description">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:8px;">
+            <input type="date" id="pDate">
+            <input type="text" id="pVendorOther" placeholder="Description">
         </div>
-        <button class="btn btn-blue" onclick="logTransaction()">Log to Ledger</button>
+        <button class="btn btn-blue" onclick="logManual()" style="margin-top:10px;">Log Transaction</button>
     </div>
 
     <div class="card">
-        <span class="label">Recent Activity (Checkbook)</span>
-        <table id="historyTable">
-            <thead>
-                <tr><th>Date</th><th>Description</th><th>Amount</th></tr>
-            </thead>
-            <tbody id="historyBody"></tbody>
-        </table>
-        <button class="btn" style="background:#666; font-size:0.7rem;" onclick="undoLast()">Undo Last Entry</button>
+        <span class="label">Savings Goals</span>
+        <div id="goalsList" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="card">
+        <span class="label">Last 5 Transactions</span>
+        <table><tbody id="quickHistory"></tbody></table>
+        <button class="btn" style="background:#666; font-size:0.7rem; margin-top:10px;" onclick="undoLast()">Undo Last</button>
     </div>
 
     <div id="settings" class="card hidden">
-        <span class="label">GitHub Token</span>
-        <input type="password" id="ghToken" placeholder="Enter Token">
-        <button class="btn btn-blue" onclick="saveToken()">Save Token</button>
+        <input type="password" id="ghToken" placeholder="GitHub Token">
+        <button class="btn btn-blue" onclick="saveToken()">Save</button>
     </div>
 
 <script>
@@ -90,93 +92,163 @@
         const resp = await fetch(`bills.json?t=${Date.now()}`);
         data = await resp.json();
         
-        // Setup Vendor Dropdown (Includes INCOME and BILL for manual logging)
+        // Setup Vendor Dropdown
         const menu = document.getElementById('pVendor');
-        menu.innerHTML = '<option value="" disabled selected>Select Category</option>';
-        menu.add(new Option("INCOME (Payday)", "INCOME"));
-        menu.add(new Option("BILL (Automated)", "BILL"));
+        menu.innerHTML = '<option value="" disabled selected>Select Vendor</option>';
         data.vendors.forEach(v => menu.add(new Option(v, v)));
-        menu.add(new Option("Other / Purchase...", "Other..."));
+        menu.add(new Option("Other...", "Other..."));
         
-        render();
-    }
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('pDate').value = today;
 
-    function checkOther(val) {
-        document.getElementById('otherVendorDiv').classList.toggle('hidden', val !== "Other..." && val !== "BILL" && val !== "INCOME");
+        render();
     }
 
     function render() {
         document.getElementById('checkingBal').innerText = `$${data.state.checking_balance.toLocaleString()}`;
         document.getElementById('escrowBal').innerText = `$${data.state.escrow_remaining}`;
         
-        // Master History Rendering
-        const hBody = document.getElementById('historyBody');
-        hBody.innerHTML = '';
+        renderInbox();
+        renderGoals();
+        renderHistory();
+    }
+
+    // --- 1. INBOX LOGIC (BILLS & PAYDAYS) ---
+    function renderInbox() {
+        const container = document.getElementById('inboxList');
+        container.innerHTML = '';
+        const today = new Date();
+        const windowEnd = new Date();
+        windowEnd.setDate(today.getDate() + 3);
+
+        // Check Payday (Bi-weekly from Jan 16)
+        const paydayStart = new Date("2026-01-16T12:00:00");
+        const diff = Math.floor((today - paydayStart) / 86400000);
+        if (diff % 14 >= -2 && diff % 14 <= 0) {
+            appendInboxItem(container, "Scott Payday", 2500, 'INCOME', -1);
+        }
+
+        // Check Bills
+        data.bills.forEach((bill, idx) => {
+            const dueDate = new Date(bill.next_due_date + "T12:00:00");
+            if (dueDate <= windowEnd) {
+                appendInboxItem(container, bill.name, bill.amount, 'BILL', idx);
+            }
+        });
+    }
+
+    function appendInboxItem(container, name, amount, type, idx) {
+        const div = document.createElement('div');
+        div.className = 'inbox-item';
+        div.innerHTML = `
+            <div class="flex-row">
+                <div><b>${name}</b><br><small style="color:${type==='INCOME'?'green':'red'}">$${amount}</small></div>
+                <div style="display:flex; gap:5px;">
+                    <button onclick="processAction(${idx}, '${type}', 'ok')" style="background:var(--primary); color:white; border:none; padding:5px 10px; border-radius:4px;">OK</button>
+                    <button onclick="processAction(${idx}, '${type}', 'edit')" style="background:#eee; border:none; padding:5px 10px; border-radius:4px;">✏️</button>
+                    <button onclick="processAction(${idx}, '${type}', 'skip')" style="background:#eee; border:none; padding:5px 10px; border-radius:4px;">Skip</button>
+                </div>
+            </div>
+        `;
+        container.appendChild(div);
+    }
+
+    async function processAction(idx, type, action) {
+        let item = type === 'INCOME' ? {name: "Scott Payday", amount: 2500} : data.bills[idx];
+        let finalAmt = item.amount;
+
+        if (action === 'edit') {
+            const newAmt = prompt("Enter actual amount:", item.amount);
+            if (newAmt === null) return;
+            finalAmt = parseFloat(newAmt);
+        }
+
+        if (action !== 'skip') {
+            if (type === 'INCOME') data.state.checking_balance += finalAmt;
+            else data.state.checking_balance -= finalAmt;
+            
+            data.history.push({ date: new Date().toISOString(), vendor: type, what: item.name, amount: finalAmt });
+        }
+
+        // Cycle the Bill Date
+        if (type === 'BILL') {
+            let d = new Date(data.bills[idx].next_due_date + "T12:00:00");
+            if (data.bills[idx].frequency === "monthly") d.setMonth(d.getMonth() + 1);
+            else d.setDate(d.getDate() + 14);
+            data.bills[idx].next_due_date = d.toISOString().split('T')[0];
+        }
+
+        await sync(); render();
+    }
+
+    // --- 2. GOALS LOGIC ---
+    function renderGoals() {
+        const container = document.getElementById('goalsList');
+        container.innerHTML = '';
+        data.goals.forEach((g, idx) => {
+            const pct = Math.min((g.current / g.target) * 100, 100);
+            container.innerHTML += `
+                <div style="margin-bottom:10px;">
+                    <div class="flex-row"><small><b>${g.name}</b></small><small>$${g.current}/$${g.target}</small></div>
+                    <div style="background:#eee; height:4px; border-radius:2px; margin:4px 0;"><div style="background:var(--accent); width:${pct}%; height:100%;"></div></div>
+                    <button onclick="fundGoal(${idx})" style="font-size:0.6rem; background:none; border:1px solid #ccc; padding:2px 5px; border-radius:3px;">+ Fund from Weekly</button>
+                </div>`;
+        });
+    }
+
+    async function fundGoal(idx) {
+        const amt = parseFloat(prompt("Amount from weekly budget?"));
+        if (!amt) return;
+        data.state.current_weekly_remaining -= amt;
+        data.goals[idx].current += amt;
+        data.history.push({ date: new Date().toISOString(), vendor: "GOAL", what: data.goals[idx].name, amount: amt });
+        await sync(); render();
+    }
+
+    // --- 3. MANUAL LOGGING ---
+    function checkOther(val) { document.getElementById('pVendorOther').parentElement.classList.toggle('hidden', val !== "Other..."); }
+    
+    async function logManual() {
+        let v = document.getElementById('pVendor').value;
+        const otherV = document.getElementById('pVendorOther').value;
+        const a = parseFloat(document.getElementById('pAmt').value);
+        const d = document.getElementById('pDate').value;
+        if (!a || !v) return;
         
-        // Show last 15 items, newest at top
-        data.history.slice(-15).reverse().forEach(h => {
+        let desc = v === "Other..." ? otherV : v;
+        data.state.checking_balance -= a;
+        
+        if (v === "Amazon") {
+            if (data.state.escrow_remaining >= a) data.state.escrow_remaining -= a;
+            else { data.state.current_weekly_remaining -= (a - data.state.escrow_remaining); data.state.escrow_remaining = 0; }
+        } else {
+            data.state.current_weekly_remaining -= a;
+        }
+
+        data.history.push({ date: new Date(d + "T12:00:00").toISOString(), vendor: v, what: desc, amount: a });
+        await sync(); 
+        document.getElementById('pAmt').value = '';
+        render();
+    }
+
+    function renderHistory() {
+        const body = document.getElementById('quickHistory');
+        body.innerHTML = '';
+        data.history.slice(-5).reverse().forEach(h => {
             const isInc = h.vendor === "INCOME";
-            hBody.innerHTML += `<tr>
-                <td>${new Date(h.date).toLocaleDateString(undefined, {month:'short', day:'numeric'})}</td>
-                <td>${h.vendor === "Other..." || h.vendor === "BILL" || h.vendor === "INCOME" ? (h.what || h.vendor) : h.vendor}</td>
-                <td class="${isInc ? 'amt-pos' : 'amt-neg'}">${isInc ? '+' : '-'}$${h.amount.toLocaleString()}</td>
+            const dt = new Date(h.date);
+            body.innerHTML += `<tr>
+                <td style="color:#888;">${dt.getMonth()+1}/${dt.getDate()}</td>
+                <td><b>${h.what || h.vendor}</b></td>
+                <td style="text-align:right; color:${isInc?'green':'red'}; font-weight:bold;">${isInc?'+':'-'}$${h.amount}</td>
             </tr>`;
         });
     }
 
-    async function logTransaction() {
-        let v = document.getElementById('pVendor').value;
-        const otherV = document.getElementById('pVendorOther').value;
-        const a = parseFloat(document.getElementById('pAmt').value);
-        if(!a || !v) return;
-
-        let description = v;
-        if (v === "Other..." || v === "BILL" || v === "INCOME") {
-            description = otherV || v;
-        }
-
-        // --- MATH ---
-        if(v === "INCOME") {
-            data.state.checking_balance += a;
-        } else {
-            data.state.checking_balance -= a;
-            // Only non-bill purchases affect the $1,000 Weekly Budget
-            if(v !== "BILL") {
-                if(v === "Amazon") {
-                    if(data.state.escrow_remaining >= a) data.state.escrow_remaining -= a;
-                    else { 
-                        const diff = a - data.state.escrow_remaining;
-                        data.state.escrow_remaining = 0;
-                        data.state.current_weekly_remaining -= diff;
-                    }
-                } else {
-                    data.state.current_weekly_remaining -= a;
-                }
-            }
-        }
-
-        data.history.push({ date: new Date().toISOString(), vendor: v, what: description, amount: a });
-        
-        await sync(); 
-        document.getElementById('pAmt').value = '';
-        document.getElementById('pVendorOther').value = '';
-        render();
-    }
-
-    async function undoLast() {
-        if(!confirm("Undo last entry?")) return;
-        const last = data.history.pop();
-        if(last.vendor === "INCOME") data.state.checking_balance -= last.amount;
-        else {
-            data.state.checking_balance += last.amount;
-            if(last.vendor !== "BILL") data.state.current_weekly_remaining += last.amount;
-        }
-        await sync(); render();
-    }
+    async function undoLast() { if(confirm("Undo?")) { data.history.pop(); await sync(); render(); } }
 
     async function sync() {
-        const status = document.getElementById('syncStatus');
-        status.className = 'sync-saving';
+        const s = document.getElementById('syncStatus'); s.className = 'sync-saving';
         try {
             const token = localStorage.getItem('gh_token');
             const url = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`;
@@ -184,11 +256,10 @@
             await fetch(url, {
                 method: 'PUT',
                 headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: "Update Ledger", content: btoa(JSON.stringify(data, null, 2)), sha: file.sha })
+                body: JSON.stringify({ message: "Update", content: btoa(JSON.stringify(data, null, 2)), sha: file.sha })
             });
-            status.className = 'sync-success';
-            setTimeout(()=>status.className='', 2000);
-        } catch (e) { alert("Sync Failed."); }
+            s.className = 'sync-success'; setTimeout(()=>s.className='', 2000);
+        } catch (e) { alert("Sync Error"); }
     }
 
     function toggleSettings() { document.getElementById('settings').classList.toggle('hidden'); }
