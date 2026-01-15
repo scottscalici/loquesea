@@ -45,6 +45,30 @@
     <div class="balance-amt" id="mainBalance">$0.00</div>
     <div id="savingsContainer"></div>
     <div id="amazonStatus" style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee;"></div>
+        <div class="card">
+    <span class="label">Log Transaction</span>
+    
+    <select id="vendorSelect" onchange="toggleOtherVendor()" style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #ddd;">
+        <option value="Amazon">Amazon</option>
+        <option value="Grocery">Grocery</option>
+        <option value="Gas">Gas</option>
+        <option value="Dining">Dining</option>
+        <option value="Income">Income/Payday</option>
+        <option value="OTHER">Other...</option>
+    </select>
+
+    <input type="text" id="otherVendor" placeholder="Vendor Name" style="display:none; width: 100%; padding: 10px; margin-top: 10px; border-radius: 8px; border: 1px solid #ddd;">
+
+    <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <input type="text" id="who" placeholder="Who" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+        <input type="text" id="what" placeholder="What/Note" style="flex: 2; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+    </div>
+
+    <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <input type="number" id="amt" placeholder="Amount" step="0.01" style="flex: 2; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+        <button onclick="logTransaction()" class="btn btn-ok" style="flex: 1;">Add</button>
+    </div>
+</div>
 </div>
 
 
@@ -248,33 +272,65 @@
     }
 
 
-  async function logTransaction() {
-    const desc = document.getElementById('desc').value;
-    let amt = parseFloat(document.getElementById('amt').value);
-    if(!desc || isNaN(amt)) return;
-
-    // SMART LOGIC: If it's not labeled "Income" or "Deposit", 
-    // and you entered a positive number, flip it to negative.
-    const isIncome = desc.toLowerCase().includes("income") || desc.toLowerCase().includes("payday") || desc.toLowerCase().includes("deposit");
-    if (!isIncome && amt > 0) {
-        amt = -amt; 
-    }
-
-    data.state.checking_balance += amt;
-
-    data.history.push({
-        date: new Date().toISOString().split('T')[0],
-        vendor: desc, 
-        what: "Manual Entry", 
-        amount: amt, 
-        category: amt < 0 ? "Spending" : "Income"
-    });
-    
-    document.getElementById('desc').value = '';
-    document.getElementById('amt').value = '';
-    await sync();
+function toggleOtherVendor() {
+    const select = document.getElementById('vendorSelect');
+    const otherInput = document.getElementById('otherVendor');
+    otherInput.style.display = (select.value === 'OTHER') ? 'block' : 'none';
 }
 
+async function logTransaction() {
+    const select = document.getElementById('vendorSelect');
+    const otherInput = document.getElementById('otherVendor');
+    const who = document.getElementById('who').value;
+    const what = document.getElementById('what').value;
+    let amt = parseFloat(document.getElementById('amt').value);
+    
+    let vendor = (select.value === 'OTHER') ? otherInput.value : select.value;
+    if (!vendor || isNaN(amt)) return;
+
+    const isAmazon = vendor.toLowerCase().includes("amazon");
+    const isIncome = vendor.toLowerCase().includes("income") || vendor.toLowerCase().includes("payday");
+
+    // 1. Calculate current Amazon spend this month BEFORE this transaction
+    const currentMonth = new Date().toISOString().slice(0, 7);
+    const amzTotal = data.history
+        .filter(h => h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon"))
+        .reduce((sum, h) => sum + Math.abs(h.amount), 0);
+
+    // 2. Main Balance Logic
+    if (isIncome) {
+        data.state.checking_balance += Math.abs(amt);
+    } else {
+        let chargeToBalance = Math.abs(amt);
+        
+        if (isAmazon) {
+            // Apply the $500 shield logic
+            const shieldRemaining = Math.max(0, 500 - amzTotal);
+            // Only charge the balance for the amount that exceeds the shield
+            chargeToBalance = Math.max(0, Math.abs(amt) - shieldRemaining);
+        }
+        
+        data.state.checking_balance -= chargeToBalance;
+    }
+
+    // 3. Record in History
+    data.history.push({
+        date: new Date().toISOString().split('T')[0],
+        vendor: vendor,
+        who: who,
+        what: what,
+        amount: isIncome ? Math.abs(amt) : -Math.abs(amt),
+        category: isAmazon ? "Amazon" : (isIncome ? "Income" : "Spending")
+    });
+
+    // Clear Inputs
+    document.getElementById('amt').value = '';
+    document.getElementById('who').value = '';
+    document.getElementById('what').value = '';
+    otherInput.value = '';
+    
+    await sync();
+}
     
     function renderHistory() {
         const histDiv = document.getElementById('recentHistory');
