@@ -3,41 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Weekly Budget</title>
+    <title>Daily Spend Limit</title>
     <style>
         :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-top: 60px; color: var(--text); }
-        .nav-bar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: #fff; display: flex; align-items: center; justify-content: space-around; border-bottom: 1px solid #ddd; z-index: 1000; }
-        .nav-item { text-decoration: none; color: #666; font-size: 0.75rem; font-weight: bold; }
-        .nav-item.active { color: var(--accent); }
-        .card { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; text-align: center; }
-        .label { font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
-        .big-amt { font-size: 2.5rem; font-weight: 800; margin: 10px 0; display: block; }
-        .progress-container { background: #eee; height: 12px; border-radius: 6px; margin: 20px 0; overflow: hidden; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; }
+        
+        /* Nav removed as requested */
+
+        .card { background: var(--card); border-radius: 20px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        .label { font-size: 0.9rem; color: #888; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
+        .big-amt { font-size: 3.5rem; font-weight: 900; margin: 15px 0; display: block; color: var(--primary); }
+        .sub-label { font-size: 1.1rem; color: #555; margin-bottom: 20px; display: block; }
+        
+        .progress-container { background: #eee; height: 14px; border-radius: 7px; margin: 25px 0; overflow: hidden; }
         .progress-bar { background: var(--primary); height: 100%; transition: width 0.5s ease; }
-        .stats { display: flex; justify-content: space-between; margin-top: 10px; font-weight: bold; }
-        .history-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
+        .stat-box { text-align: center; }
+        .stat-val { font-size: 1.2rem; font-weight: bold; display: block; }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <span class="label">Remaining This Week</span>
-        <span id="weeklyRemaining" class="big-amt">$0</span>
+        <span class="label">Available Today</span>
+        <span id="dailyLimit" class="big-amt">$0</span>
+        <span id="daysLeftMsg" class="sub-label">to last you 0 days</span>
         
         <div class="progress-container">
             <div id="progressBar" class="progress-bar" style="width: 0%"></div>
         </div>
 
-        <div class="stats">
-            <div><span class="label">Spent</span><br><span id="weeklySpent" style="color:#d32f2f;">$0</span></div>
-            <div><span class="label">Budget</span><br><span>$1,000</span></div>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span class="label">Weekly Spent</span>
+                <span id="weeklySpent" class="stat-val" style="color:#d32f2f;">$0</span>
+            </div>
+            <div class="stat-box">
+                <span class="label">Left in Week</span>
+                <span id="weeklyRemaining" class="stat-val">$0</span>
+            </div>
         </div>
-    </div>
-
-    <div class="card" style="text-align: left;">
-        <span class="label">This Week's Spending</span>
-        <div id="weeklyList" style="margin-top:10px;"></div>
     </div>
 
 <script>
@@ -48,51 +54,43 @@
     }
 
     function updateUI(data) {
-        // 1. Define this week (Monday start)
         const now = new Date();
+        
+        // 1. Calculate Monday of this week
         const day = now.getDay();
-        const diff = now.getDate() - day + (day === 0 ? -6 : 1);
-        const monday = new Date(now.setDate(diff));
+        const diffToMonday = now.getDate() - day + (day === 0 ? -6 : 1);
+        const monday = new Date(new Date().setDate(diffToMonday));
         monday.setHours(0,0,0,0);
 
-        // 2. FILTER & SUM EVERYTHING (EXCEL-STYLE)
-        // Find all history items that happened since Monday
+        // 2. Calculate Days Remaining in Budget Week (until next Monday)
+        // If today is Thursday, days left = Thu, Fri, Sat, Sun (4 days)
+        const nextMonday = new Date(monday);
+        nextMonday.setDate(monday.getDate() + 7);
+        const msLeft = nextMonday - now;
+        const daysLeft = Math.ceil(msLeft / (1000 * 60 * 60 * 24));
+
+        // 3. Sum Weekly Spending from History
         const thisWeeksItems = data.history.filter(h => {
             const hDate = new Date(h.date);
             return hDate >= monday;
         });
-
-        // Sum up the absolute total of those items
         const spent = thisWeeksItems.reduce((sum, item) => sum + Math.abs(item.amount), 0);
         
-        // 3. APPLY TO BUDGET ($1,000 Weekly Allowance)
-        const budget = 1000;
-        const remaining = budget - spent;
-        const pct = Math.min((spent / budget) * 100, 100);
+        // 4. Calculate Remaining & Daily Limit
+        const weeklyBudget = 1000;
+        const remaining = Math.max(0, weeklyBudget - spent);
+        const dailyLimit = remaining / (daysLeft || 1);
+        const pct = Math.min((spent / weeklyBudget) * 100, 100);
 
-        // 4. Update UI Elements
-        document.getElementById('weeklyRemaining').innerText = `$${remaining.toLocaleString()}`;
+        // 5. Update UI
+        document.getElementById('dailyLimit').innerText = `$${Math.floor(dailyLimit)}`;
+        document.getElementById('daysLeftMsg').innerText = `to last you ${daysLeft} days`;
         document.getElementById('weeklySpent').innerText = `$${spent.toLocaleString()}`;
+        document.getElementById('weeklyRemaining').innerText = `$${remaining.toLocaleString()}`;
         document.getElementById('progressBar').style.width = pct + '%';
-        
-        // Update Color based on spending
-        if (remaining < 200) document.getElementById('weeklyRemaining').style.color = '#d32f2f';
-        else document.getElementById('weeklyRemaining').style.color = '#2e7d32';
 
-        // 5. Render List
-        const list = document.getElementById('weeklyList');
-        list.innerHTML = '';
-        thisWeeksItems.reverse().forEach(item => {
-            const dt = new Date(item.date);
-            list.innerHTML += `
-                <div class="history-item">
-                    <div>
-                        <b>${item.what || item.vendor}</b><br>
-                        <small style="color:#888;">${dt.getMonth()+1}/${dt.getDate()}</small>
-                    </div>
-                    <span style="color:#d32f2f; font-weight:bold;">-$${item.amount.toLocaleString()}</span>
-                </div>`;
-        });
+        // Color coding
+        if (dailyLimit < 50) document.getElementById('dailyLimit').style.color = '#d32f2f';
     }
 
     init();
