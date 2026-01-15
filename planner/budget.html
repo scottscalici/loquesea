@@ -40,12 +40,18 @@
         <a href="ledger.html" class="nav-item">LEDGER</a>
     </nav>
 
-    <div class="card">
-    <span class="label">Spendable Balance <span id="syncStatus" class="status-dot"></span></span>
+   <div class="card">
+    <span class="label">Total Checking <span id="syncStatus" class="status-dot"></span></span>
     <div class="balance-amt" id="mainBalance">$0.00</div>
+    
+    <div id="weeklyBudgetContainer" style="margin-bottom: 15px;"></div>
+
+    <span class="label">Savings Goals</span>
     <div id="savingsContainer"></div>
-    <div id="amazonStatus" style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee;"></div>
-        <div class="card">
+    
+    <div id="amazonStatus"></div>
+</div>
+    
     <span class="label">Log Transaction</span>
     
     <select id="vendorSelect" onchange="toggleOtherVendor()" style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #ddd;">
@@ -103,56 +109,69 @@
     data = await resp.json();
     renderUI();
 }
-    // [SECTION: CORE UI RENDER]
-    function renderUI() {
-        if (!data) return;
-        document.getElementById('mainBalance').innerText = `$${data.state.checking_balance.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-        
-        const savDiv = document.getElementById('savingsContainer');
-        savDiv.innerHTML = '';
-        (data.savings_goals || []).forEach(g => {
-            const pct = Math.min((g.current / g.target) * 100, 100);
-            savDiv.innerHTML += `
-                <div style="margin-top:10px;">
-                    <div style="display:flex; justify-content:space-between; font-size:0.75rem;">
-                        <span>${g.name}</span>
-                        <span>$${g.current.toLocaleString()} / $${g.target.toLocaleString()}</span>
-                    </div>
-                    <div class="progress-bg"><div class="progress-fill" style="width:${pct}%"></div></div>
-                </div>`;
-        });
-   function renderAmazonEscrow() {
+   // [SECTION: CORE UI RENDER]
+function renderUI() {
+    if (!data) return;
+
+    // 1. Update Main Checking Balance
+    document.getElementById('mainBalance').innerText = `$${data.state.checking_balance.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+    
+    // 2. Update Weekly Budget Display ($1,000 allowance)
+    const budgetRemaining = data.state.weekly_budget_remaining || 0;
+    const budgetDiv = document.getElementById('weeklyBudgetContainer');
+    if (budgetDiv) {
+        budgetDiv.innerHTML = `
+            <div style="font-size: 1.1rem; font-weight: bold; color: ${budgetRemaining < 0 ? '#d32f2f' : '#2e7d32'};">
+                Weekly Spend Left: $${budgetRemaining.toLocaleString()}
+            </div>
+        `;
+    }
+    
+    // 3. Update Savings Goals (Progress Bars)
+    const savDiv = document.getElementById('savingsContainer');
+    savDiv.innerHTML = '';
+    (data.savings_goals || []).forEach(g => {
+        const pct = Math.min((g.current / g.target) * 100, 100);
+        savDiv.innerHTML += `
+            <div style="margin-top:10px;">
+                <div style="display:flex; justify-content:space-between; font-size:0.75rem;">
+                    <span>${g.name}</span>
+                    <span>$${g.current.toLocaleString()} / $${g.target.toLocaleString()}</span>
+                </div>
+                <div class="progress-bg"><div class="progress-fill" style="width:${pct}%"></div></div>
+            </div>`;
+    });
+
+    // 4. Update the Amazon Shield & Sub-sections
+    renderAmazonEscrow();
+    renderInbox();
+    renderHistory();
+}
+
+function renderAmazonEscrow() {
     const amzDiv = document.getElementById('amazonStatus');
     if (!amzDiv) return;
     
     const today = new Date();
     const currentMonth = today.toISOString().slice(0, 7); 
     
-    // 1. Calculate total Amazon spend this month
     const amzTotal = data.history
         .filter(h => h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon"))
         .reduce((sum, h) => sum + Math.abs(h.amount), 0);
 
-    // 2. Determine how much of the $500 shield is left
     const shieldLimit = 500;
     const shieldRemaining = Math.max(0, shieldLimit - amzTotal);
     const overage = Math.max(0, amzTotal - shieldLimit);
-
-    // 3. UI Colors
-    let statusColor = "#2e7d32"; // Green while under $500
-    if (overage > 0) statusColor = "#d32f2f"; // Red if you've eaten through the shield
+    let statusColor = (overage > 0) ? "#d32f2f" : "#2e7d32";
 
     amzDiv.innerHTML = `
         <div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #eee;">
             <span class="label">Amazon Subscription Shield ($500)</span>
             <div style="display:flex; justify-content:space-between; font-size: 0.85rem; margin-top:5px;">
-                <span>Total Spent: $${amzTotal.toLocaleString()}</span>
+                <span>Month Total: $${amzTotal.toLocaleString()}</span>
                 <span style="font-weight:bold; color:${statusColor}">
                     ${overage > 0 ? `Over Shield: $${overage.toLocaleString()}` : `Shield Left: $${shieldRemaining.toLocaleString()}`}
                 </span>
-            </div>
-            <div style="font-size: 0.7rem; color: #666; margin-top: 4px;">
-                *Subscriptions (21st-27th) use this shield first.
             </div>
         </div>
     `;
@@ -212,46 +231,63 @@
         container.appendChild(div);
     }
 
-    // [SECTION: TRANSACTION LOGIC]
-    async function processInboxAction(idx, type) {
-        let name = (idx === -1) ? "Scott Payday" : (idx === -2) ? "Wife Payday" : data.bills[idx].name;
-        let defaultAmt = (idx < 0) ? 2500 : data.bills[idx].amount;
+   // [SECTION: TRANSACTION LOGIC]
+function toggleOtherVendor() {
+    const select = document.getElementById('vendorSelect');
+    const otherInput = document.getElementById('otherVendor');
+    otherInput.style.display = (select.value === 'OTHER') ? 'block' : 'none';
+}
 
-        let userInput = prompt(`Confirm amount for ${name}:`, defaultAmt);
-        if (userInput === null) return;
-        let finalAmt = parseFloat(userInput);
-        if (isNaN(finalAmt)) return;
+async function logTransaction() {
+    const select = document.getElementById('vendorSelect');
+    const otherInput = document.getElementById('otherVendor');
+    const who = document.getElementById('who').value;
+    const what = document.getElementById('what').value;
+    let amt = parseFloat(document.getElementById('amt').value);
+    
+    let vendor = (select.value === 'OTHER') ? otherInput.value : select.value;
+    if (!vendor || isNaN(amt)) return;
 
-        if (type === 'INCOME') data.state.checking_balance += finalAmt;
-        else data.state.checking_balance -= finalAmt;
+    const absAmt = Math.abs(amt);
+    const isAmazon = vendor.toLowerCase().includes("amazon");
+    const isIncome = vendor.toLowerCase().includes("income") || vendor.toLowerCase().includes("payday");
 
-        data.history.push({
-            date: new Date().toISOString().split('T')[0],
-            vendor: name, what: type, amount: (type === 'BILL' ? -finalAmt : finalAmt), category: type
-        });
+    if (isIncome) {
+        data.state.checking_balance += absAmt;
+        data.state.weekly_budget_remaining += absAmt;
+    } else {
+        // Checking Balance ALWAYS goes down
+        data.state.checking_balance -= absAmt;
 
-        if (type === 'BILL' && idx >= 0) {
-            advanceBillDate(idx);
+        // Weekly Budget only hits if it's NOT a "Shielded" Amazon purchase
+        if (isAmazon) {
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            const amzTotal = data.history
+                .filter(h => h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon"))
+                .reduce((sum, h) => sum + Math.abs(h.amount), 0);
+
+            const shieldRemaining = Math.max(0, 500 - amzTotal);
+            const hitToWeeklyBudget = Math.max(0, absAmt - shieldRemaining);
+            data.state.weekly_budget_remaining -= hitToWeeklyBudget;
+        } else {
+            data.state.weekly_budget_remaining -= absAmt;
         }
-        await sync();
     }
 
-        async function skipItem(idx, type) {
-        let name = (idx === -1) ? "Scott Payday" : (idx === -2) ? "Wife Payday" : data.bills[idx].name;
-        if (!confirm(`Skip ${name} and move to next due date?`)) return;
+    data.history.push({
+        date: new Date().toISOString().split('T')[0],
+        vendor: vendor, who: who, what: what,
+        amount: isIncome ? absAmt : -absAmt,
+        category: isAmazon ? "Amazon" : (isIncome ? "Income" : "Spending")
+    });
 
-        console.log("Skipping:", name); // Debug line
-
-        if (type === 'BILL' && idx >= 0) {
-            advanceBillDate(idx);
-            console.log("New Date set to:", data.bills[idx].next_due_date); // Debug line
-        } else if (idx < 0) {
-            data.history.push({
-                date: new Date().toISOString().split('T')[0],
-                vendor: name, what: "SKIPPED", amount: 0, category: "Skip"
-            });
-        }
-        
+    // Reset Inputs
+    document.getElementById('amt').value = '';
+    document.getElementById('who').value = '';
+    document.getElementById('what').value = '';
+    await sync();
+}
+    
         // Ensure we await the sync so the page doesn't refresh too early
         await sync();
     }
@@ -288,50 +324,52 @@ async function logTransaction() {
     let vendor = (select.value === 'OTHER') ? otherInput.value : select.value;
     if (!vendor || isNaN(amt)) return;
 
+    const absAmt = Math.abs(amt);
     const isAmazon = vendor.toLowerCase().includes("amazon");
     const isIncome = vendor.toLowerCase().includes("income") || vendor.toLowerCase().includes("payday");
 
-    // 1. Calculate current Amazon spend this month BEFORE this transaction
-    const currentMonth = new Date().toISOString().slice(0, 7);
-    const amzTotal = data.history
-        .filter(h => h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon"))
-        .reduce((sum, h) => sum + Math.abs(h.amount), 0);
-
-    // 2. Main Balance Logic
     if (isIncome) {
-        data.state.checking_balance += Math.abs(amt);
+        data.state.checking_balance += absAmt;
+        data.state.weekly_budget_remaining += absAmt; // Income adds to your spending power
     } else {
-        let chargeToBalance = Math.abs(amt);
-        
+        // RULE 1: Checking Balance ALWAYS goes down (Real World)
+        data.state.checking_balance -= absAmt;
+
+        // RULE 2: Weekly Budget Logic
         if (isAmazon) {
-            // Apply the $500 shield logic
+            // Calculate current Amazon spend this month BEFORE this transaction
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            const amzTotal = data.history
+                .filter(h => h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon"))
+                .reduce((sum, h) => sum + Math.abs(h.amount), 0);
+
             const shieldRemaining = Math.max(0, 500 - amzTotal);
-            // Only charge the balance for the amount that exceeds the shield
-            chargeToBalance = Math.max(0, Math.abs(amt) - shieldRemaining);
+            
+            // Only subtract from the Weekly Budget what the shield doesn't cover
+            const hitToWeeklyBudget = Math.max(0, absAmt - shieldRemaining);
+            data.state.weekly_budget_remaining -= hitToWeeklyBudget;
+        } else {
+            // Non-Amazon spending always hits the Weekly Budget
+            data.state.weekly_budget_remaining -= absAmt;
         }
-        
-        data.state.checking_balance -= chargeToBalance;
     }
 
-    // 3. Record in History
+    // Record in History
     data.history.push({
         date: new Date().toISOString().split('T')[0],
         vendor: vendor,
         who: who,
         what: what,
-        amount: isIncome ? Math.abs(amt) : -Math.abs(amt),
+        amount: isIncome ? absAmt : -absAmt,
         category: isAmazon ? "Amazon" : (isIncome ? "Income" : "Spending")
     });
 
-    // Clear Inputs
+    // Clear and Sync
     document.getElementById('amt').value = '';
     document.getElementById('who').value = '';
     document.getElementById('what').value = '';
-    otherInput.value = '';
-    
     await sync();
-}
-    
+}    
     function renderHistory() {
         const histDiv = document.getElementById('recentHistory');
         histDiv.innerHTML = '';
