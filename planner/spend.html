@@ -6,37 +6,41 @@
     <title>Weekly Budget Tracker</title>
     <style>
         :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; --danger: #d32f2f; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; color: var(--text); padding-top: 20px; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 10px; color: var(--text); padding-top: 10px; }
         
-        .card { background: var(--card); border-radius: 16px; padding: 30px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; text-align: center; }
-        .label { font-size: 0.8rem; color: #888; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; }
+        .card { background: var(--card); border-radius: 16px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 15px; text-align: center; }
+        .label { font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; display: block; }
         
-        /* The "Giant Number" */
-        .pacing-val { font-size: 4.5rem; font-weight: 800; color: var(--primary); margin: 15px 0; line-height: 1; }
-        .sub-text { color: #666; font-size: 1rem; font-weight: 500; }
+        .pacing-val { font-size: 4rem; font-weight: 800; color: var(--primary); margin: 5px 0; line-height: 1; }
+        .sub-text { color: #666; font-size: 0.9rem; }
         
-        /* The Progress Bar */
-        .progress-container { background: #e0e0e0; height: 30px; border-radius: 15px; margin: 25px 0; position: relative; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--primary); transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); width: 0%; }
-        .target-marker { position: absolute; top: 0; width: 4px; height: 100%; background: #333; z-index: 2; }
+        .progress-container { background: #e0e0e0; height: 24px; border-radius: 12px; margin: 15px 0; position: relative; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary); transition: width 0.8s ease; width: 0%; }
+        .target-marker { position: absolute; top: 0; width: 3px; height: 100%; background: #333; z-index: 2; }
         
-        .progress-label { display: flex; justify-content: space-between; font-size: 0.85rem; color: #555; font-weight: bold; margin-top: -15px; }
-        .status-msg { margin-top: 25px; font-size: 1.1rem; font-weight: bold; padding: 10px; border-radius: 8px; }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: bold; margin-top: -10px; }
         
-        /* Auto-Refresh Indicator */
-        .refresh-tag { font-size: 0.65rem; color: #bbb; text-align: center; margin-top: 20px; }
+        /* History Styles */
+        .history-list { text-align: left; margin-top: 10px; }
+        .history-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.85rem; }
+        .history-item:last-child { border-bottom: none; }
+        .hist-date { color: #999; font-size: 0.7rem; width: 45px; }
+        .hist-vendor { font-weight: 600; flex-grow: 1; }
+        .hist-amt { font-weight: bold; color: var(--danger); }
+
+        #lastUpdated { font-size: 0.65rem; color: #bbb; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <span class="label">Available for Today</span>
+        <span class="label">Available Today</span>
         <div class="pacing-val" id="dailyPacing">$0</div>
         <div class="sub-text" id="daysLeftMsg">...</div>
     </div>
 
     <div class="card">
-        <span class="label">Weekly Spending Progress</span>
+        <span class="label">Weekly Progress</span>
         <div class="progress-container">
             <div id="targetMarker" class="target-marker"></div>
             <div id="spendFill" class="progress-fill"></div>
@@ -45,23 +49,24 @@
             <span>Spent: <span id="amtSpent">$0</span></span>
             <span>Target: <span id="amtTarget">$0</span></span>
         </div>
-        <div id="pacingMsg" class="status-msg"></div>
     </div>
 
-    <div class="refresh-tag">Updates automatically when transactions are logged</div>
+    <div class="card">
+        <span class="label">Recent Purchases</span>
+        <div id="historyBody" class="history-list">
+            </div>
+        <div id="lastUpdated">Checking for updates...</div>
+    </div>
 
 <script>
     const CONFIG = { owner: 'scottscalici', repo: 'loquesea', path: 'planner/bills.json' };
 
     async function fetchData() {
         try {
-            // Adding a timestamp to the URL to bypass browser caching
             const resp = await fetch(`bills.json?t=${Date.now()}`);
             const data = await resp.json();
             render(data);
-        } catch (e) {
-            console.error("Data fetch failed");
-        }
+        } catch (e) { console.error("Sync failed"); }
     }
 
     function render(data) {
@@ -74,38 +79,46 @@
         const daysLeft = (8 - dayOfWeek);
         const targetSpend = (totalWeekly / 7) * dayOfWeek;
 
-        // 1. Update Numbers
+        // 1. Pacing & Bar
         document.getElementById('dailyPacing').innerText = `$${Math.floor(remaining / daysLeft)}`;
-        document.getElementById('daysLeftMsg').innerText = `${daysLeft} days left in the week`;
+        document.getElementById('daysLeftMsg').innerText = `${daysLeft} days until Sunday reset`;
         document.getElementById('amtSpent').innerText = '$' + Math.round(spent);
         document.getElementById('amtTarget').innerText = '$' + Math.round(targetSpend);
-
-        // 2. Update Progress Bar
-        const spendPct = Math.min((spent / totalWeekly) * 100, 100);
-        const targetPct = Math.min((targetSpend / totalWeekly) * 100, 100);
         
+        const spendPct = Math.min((spent / totalWeekly) * 100, 100);
         document.getElementById('spendFill').style.width = spendPct + '%';
-        document.getElementById('targetMarker').style.left = targetPct + '%';
+        document.getElementById('targetMarker').style.left = Math.min((targetSpend / totalWeekly) * 100, 100) + '%';
+        document.getElementById('spendFill').style.background = spent > targetSpend ? "var(--danger)" : "var(--primary)";
 
-        // 3. Pacing Message
-        const diff = targetSpend - spent;
-        const msg = document.getElementById('pacingMsg');
-        if (diff >= 0) {
-            msg.innerText = `✅ $${Math.round(diff)} Under Weekly Average`;
-            msg.style.color = "var(--primary)";
-            msg.style.backgroundColor = "#e8f5e9";
-            document.getElementById('spendFill').style.background = "var(--primary)";
-        } else {
-            msg.innerText = `⚠️ $${Math.round(Math.abs(diff))} Over Weekly Average`;
-            msg.style.color = "var(--danger)";
-            msg.style.backgroundColor = "#ffebee";
-            document.getElementById('spendFill').style.background = "var(--danger)";
-        }
+        // 2. Filter for only Purchases (No BILL or INCOME)
+        const historyBody = document.getElementById('historyBody');
+        historyBody.innerHTML = '';
+        
+        const purchases = data.history
+            .filter(item => item.vendor !== "BILL" && item.vendor !== "INCOME")
+            .reverse() // Newest first
+            .slice(0, 20); // Top 20
+
+        purchases.forEach(item => {
+            const dateObj = new Date(item.date);
+            const dateStr = (dateObj.getMonth() + 1) + '/' + dateObj.getDate();
+            historyBody.innerHTML += `
+                <div class="history-item">
+                    <span class="hist-date">${dateStr}</span>
+                    <span class="hist-vendor">${item.vendor} ${item.what ? '- ' + item.what : ''}</span>
+                    <span class="hist-amt">-$${item.amount.toFixed(2)}</span>
+                </div>
+            `;
+        });
+
+        // 3. Timestamp
+        const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        document.getElementById('lastUpdated').innerText = `Last updated today at ${timeStr}`;
     }
 
-    // Initialize and set to refresh every 5 minutes in case she leaves the tab open
     fetchData();
-    setInterval(fetchData, 300000); 
+    // Auto-refresh every 2 minutes
+    setInterval(fetchData, 120000); 
 </script>
 </body>
 </html>
