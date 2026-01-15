@@ -4,8 +4,8 @@
     "amazon_escrow_earmark": 500
   },
  "savings_goals": [
-    { "name": "Emergency Fund", "target": 2000.00, "current": 0.00 },
-    { "name": "Travel", "target": 5000.00, "current": 0.00 }
+    { "name": "Emergency Fund", "target": 1000.00, "current": 0.00 },
+    { "name": "Travel", "target": 2000.00, "current": 100.00 }
   ],
   "paydays": [
     { "id": "wife-pay", "name": "Wife Pay", "amount": 2500.00, "type": "bi-weekly", "last_date": "2026-01-16" },
