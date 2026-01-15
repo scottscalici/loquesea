@@ -253,32 +253,37 @@
     }
 
     async function saveToGithub(updatedData) {
-        const GITHUB_TOKEN = localStorage.getItem('gh_token') || "YOUR_TOKEN_HERE";
-        try {
-            const getFile = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`, {
-                headers: { "Authorization": `token ${GITHUB_TOKEN}` }
-            });
-            const fileData = await getFile.json();
-            
-            const response = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`, {
-                method: "PUT",
-                headers: { 
-                    "Authorization": `token ${GITHUB_TOKEN}`, 
-                    "Content-Type": "application/json" 
-                },
-                body: JSON.stringify({
-                    message: "Update via Control Center",
-                    content: btoa(JSON.stringify(updatedData, null, 2)),
-                    sha: fileData.sha
-                })
-            });
-            return response.ok;
-        } catch (err) { 
-            console.error("Sync Error:", err); 
-            return false;
-        }
-    }
+    // 1. Get the token from storage or the hardcoded string
+    const GITHUB_TOKEN = localStorage.getItem('gh_token') || "YOUR_TOKEN_HERE";
+    
+    try {
+        // 2. Ask GitHub for the current version of the file (to get the 'sha' ID)
+        const getFile = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`, {
+            headers: { "Authorization": `token ${GITHUB_TOKEN}` }
+        });
+        const fileData = await getFile.json();
 
+        // 3. Send the new data
+        const response = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`, {
+            method: "PUT",
+            headers: { 
+                "Authorization": `token ${GITHUB_TOKEN}`, 
+                "Content-Type": "application/json" 
+            },
+            body: JSON.stringify({
+                message: `Update via Control Center: ${new Date().toLocaleString()}`,
+                // This 'unescape' trick prevents issues with emojis or special symbols
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(updatedData, null, 2)))),
+                sha: fileData.sha
+            })
+        });
+
+        return response.ok; // Returns true if it worked, false if it failed
+    } catch (err) { 
+        console.error("Sync Error:", err); 
+        return false; 
+    }
+}
     
 
     init();
