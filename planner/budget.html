@@ -106,18 +106,39 @@
         renderHistory();
     }
 
-    function renderAmazonEscrow() {
+   function renderAmazonEscrow() {
         const amzDiv = document.getElementById('amazonStatus');
         const today = new Date();
         const day = today.getDate();
         const currentMonth = today.toISOString().slice(0, 7); 
-        const amzTotal = data.history.filter(h => h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon")).reduce((sum, h) => sum + Math.abs(h.amount), 0);
-        const shieldActive = (day >= 21 && day <= 27);
-        const shieldRemaining = Math.max(0, 500 - amzTotal);
-        const overage = Math.max(0, amzTotal - 500);
-        amzDiv.innerHTML = `<div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #eee;"><span class="label">Amazon Shield ($500) - ${shieldActive ? 'ACTIVE' : 'INACTIVE'}</span><div style="display:flex; justify-content:space-between; font-size: 0.85rem;"><span>Spent: $${amzTotal.toLocaleString()}</span><span style="font-weight:bold; color:${overage > 0 ? 'var(--danger)' : 'var(--primary)'}">${overage > 0 ? 'Over: $'+overage.toLocaleString() : 'Shield Left: $'+shieldRemaining.toLocaleString()}</span></div></div>`;
-    }
+        
+        // This filter now strictly checks for the window (21st - 27th)
+        const amzTotalInWindow = data.history.filter(h => {
+            const hDate = new Date(h.date + "T12:00:00");
+            const hDay = hDate.getDate();
+            return h.date.startsWith(currentMonth) && 
+                   h.vendor.toLowerCase().includes("amazon") &&
+                   hDay >= 21 && 
+                   hDay <= 27;
+        }).reduce((sum, h) => sum + Math.abs(h.amount), 0);
 
+        const shieldActive = (day >= 21 && day <= 27);
+        const shieldRemaining = Math.max(0, 500 - amzTotalInWindow);
+        const overage = Math.max(0, amzTotalInWindow - 500);
+
+        amzDiv.innerHTML = `
+            <div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #eee;">
+                <span class="label">Amazon Shield ($500) - ${shieldActive ? 'ACTIVE' : 'OFF-SEASON'}</span>
+                <div style="display:flex; justify-content:space-between; font-size: 0.85rem;">
+                    <span>Window Total: $${amzTotalInWindow.toLocaleString()}</span>
+                    <span style="font-weight:bold; color:${overage > 0 ? 'var(--danger)' : 'var(--primary)'}">
+                        ${overage > 0 ? 'Over: $'+overage.toLocaleString() : 'Shield Left: $'+shieldRemaining.toLocaleString()}
+                    </span>
+                </div>
+                ${!shieldActive ? `<small style="color:#888;">(Jan 14 purchases excluded from shield window)</small>` : ''}
+            </div>`;
+    }
+    
     function toggleOtherVendor() {
         const select = document.getElementById('vendorSelect');
         document.getElementById('otherVendor').style.display = (select.value === 'OTHER') ? 'block' : 'none';
