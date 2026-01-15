@@ -3,18 +3,37 @@
     "base_weekly_allowance": 1000,
     "amazon_escrow_earmark": 500
   },
- "savings_goals": [
-    { "name": "Emergency Fund", "target": 1000.00, "current": 0.00 },
-    { "name": "Travel", "target": 2000.00, "current": 100.00 }
+  "savings_goals": [
+    {
+      "name": "Emergency Fund",
+      "target": 1000,
+      "current": 0
+    },
+    {
+      "name": "Travel",
+      "target": 2000,
+      "current": 100
+    }
   ],
   "paydays": [
-    { "id": "wife-pay", "name": "Wife Pay", "amount": 2500.00, "type": "bi-weekly", "last_date": "2026-01-16" },
-    { "id": "scott-pay", "name": "Scott Pay", "amount": 2500.00, "type": "semi-monthly" }
+    {
+      "id": "wife-pay",
+      "name": "Wife Pay",
+      "amount": 2500,
+      "type": "bi-weekly",
+      "last_date": "2026-01-16"
+    },
+    {
+      "id": "scott-pay",
+      "name": "Scott Pay",
+      "amount": 2500,
+      "type": "semi-monthly"
+    }
   ],
-    "state": {
-    "current_weekly_remaining": 1000,
+  "state": {
+    "current_weekly_remaining": 988,
     "escrow_remaining": 500,
-    "checking_balance": 900,
+    "checking_balance": 688,
     "travel_savings": 0
   },
   "vendors": [
@@ -26,7 +45,13 @@
     "Tim Horton's",
     "Other"
   ],
-  "history": [  ],
+  "history": [
+    {
+      "date": "2026-01-15T04:25:52.568Z",
+      "vendor": "Venmo",
+      "amount": 12
+    }
+  ],
   "bills": [
     {
       "id": "aaa",
