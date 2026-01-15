@@ -98,41 +98,39 @@ function renderInbox() {
     today.setHours(0,0,0,0);
     const todayStr = today.toISOString().split('T')[0];
 
-    // Define the "Action Window" (Anything due within the next 3 days gets a button)
+    // Look ahead 14 days - if it's in this window, it gets an OK button
     const actionLimit = new Date();
-    actionLimit.setDate(today.getDate() + 3);
+    actionLimit.setDate(today.getDate() + 14);
 
-    // --- 1. ACTIONABLE ITEMS (Paydays & Bills within 3 days) ---
-    
-    // Scott's Payday
+    // 1. Scott's Payday
     const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
     if (today.getDate() === 15 || today.getDate() === lastDay) {
         const alreadyLogged = data.history.some(h => h.date === todayStr && h.vendor === "Scott Payday");
-        if (!alreadyLogged) appendInboxItem(container, "Scott Payday", 2500, 'INCOME', -1);
+        if (!alreadyLogged) appendInboxItem(container, "Scott Payday", 2500, 'INCOME', -1, "Due Today");
     }
 
-    // Wife's Payday
+    // 2. Wife's Payday
     const wifeRef = new Date("2026-01-16T12:00:00");
     const diffDays = Math.floor((today - wifeRef) / 86400000);
     if (diffDays >= 0 && diffDays % 14 === 0) {
         const alreadyLogged = data.history.some(h => h.date === todayStr && h.vendor === "Wife Payday");
-        if (!alreadyLogged) appendInboxItem(container, "Wife Payday", 2500, 'INCOME', -2);
+        if (!alreadyLogged) appendInboxItem(container, "Wife Payday", 2500, 'INCOME', -2, "Due Today");
     }
 
-    // Bills
+    // 3. Bills (Sorted by Date)
     const sortedBills = [...data.bills].sort((a,b) => new Date(a.next_due_date) - new Date(b.next_due_date));
     
-    // Items that get an "OK" button (Due today or in the next 3 days)
-    const actionableBills = sortedBills.filter(b => new Date(b.next_due_date + "T12:00:00") <= actionLimit);
-    
-    // Items that are just for info (Due 4+ days away)
-    const futureBills = sortedBills.filter(b => new Date(b.next_due_date + "T12:00:00") > actionLimit).slice(0, 3);
-
-    actionableBills.forEach((bill) => {
-        const originalIdx = data.bills.findIndex(b => b.name === bill.name);
-        appendInboxItem(container, bill.name, bill.amount, 'BILL', originalIdx, bill.next_due_date);
+    sortedBills.forEach((bill) => {
+        const billDate = new Date(bill.next_due_date + "T12:00:00");
+        
+        // If the bill is due within the next 14 days, show it with an OK button
+        if (billDate <= actionLimit) {
+            const originalIdx = data.bills.findIndex(b => b.name === bill.name);
+            appendInboxItem(container, bill.name, bill.amount, 'BILL', originalIdx, bill.next_due_date);
+        }
     });
-
+}
+    
     // --- 2. COMING UP NEXT (Read-only for the distant future) ---
     if (futureBills.length > 0) {
         const divider = document.createElement('div');
