@@ -135,7 +135,10 @@
             data.state.weekly_budget_remaining += absAmt;
         } else {
             data.state.checking_balance -= absAmt;
-            if (isAmazon) {
+            
+            const day = new Date().getDate();
+            // Shield only active 21st through 27th
+            if (isAmazon && day >= 21 && day <= 27) {
                 const currentMonth = new Date().toISOString().slice(0, 7);
                 const amzTotal = data.history.filter(h => h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon")).reduce((sum, h) => sum + Math.abs(h.amount), 0);
                 const shieldRemaining = Math.max(0, 500 - amzTotal);
@@ -145,10 +148,15 @@
             }
         }
         data.history.push({ date: new Date().toISOString().split('T')[0], vendor, who, what, amount: isIncome ? absAmt : -absAmt });
+        
+        // Clear inputs
+        document.getElementById('amt').value = '';
+        document.getElementById('who').value = '';
+        document.getElementById('what').value = '';
         await sync();
     }
 
-   function renderInbox() {
+    function renderInbox() {
         const container = document.getElementById('inboxList');
         container.innerHTML = '';
         const today = new Date();
