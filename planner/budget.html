@@ -1,1 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Planner - Budget</title>
+    <style>
+        :root { --primary: #2e7d32; --bg: #f4f4f9; --card: #ffffff; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 20px; }
+        
+        /* Layout */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .back-btn { text-decoration: none; color: #666; font-weight: bold; }
+        .card { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        
+        /* Wife View Styles */
+        .pacing-val { font-size: 3rem; font-weight: bold; color: var(--primary); text-align: center; margin: 10px 0; }
+        .label { font-size: 0.8rem; color: #888; text-transform: uppercase; text-align: center; display: block; }
+        
+        /* Editor Styles */
+        .bill-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .paid-btn { background: var(--primary); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
+        
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="index.html" class="back-btn">← Back to Life Hub</a>
+        <button onclick="toggleSettings()">⚙️</button>
+    </div>
+
+    <div id="settings" class="card hidden">
+        <h3>Settings</h3>
+        <input type="password" id="ghToken" placeholder="GitHub Personal Access Token">
+        <button onclick="saveToken()">Save Token</button>
+    </div>
+
+    <div class="card">
+        <span class="label">Safe to Spend Today</span>
+        <div id="pacingDisplay" class="pacing-val">$0.00</div>
+        <span class="label" id="weeklyRemaining">Weekly Left: $0.00</span>
+    </div>
+
+    <div class="card">
+        <h3>Upcoming Bills</h3>
+        <div id="billList">Loading bills...</div>
+    </div>
+
+    <script>
+        // --- 1. CONFIGURATION ---
+        const GITHUB_CONFIG = {
+            owner: 'scottscalici',
+            repo: 'loquesea',
+            path: 'planner/bills.json'
+        };
+
+        let budgetData = null;
+
+        // --- 2. DATA LOADING ---
+        async function loadData() {
+            try {
+                // Fetch from the GitHub Pages URL (Read-only)
+                const response = await fetch(`https://${GITHUB_CONFIG.owner}.github.io/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.path}?t=${Date.now()}`);
+                budgetData = await response.json();
+                renderApp();
+            } catch (err) {
+                document.getElementById('billList').innerText = "Error loading JSON.";
+            }
+        }
+
+        // --- 3. PACING LOGIC ---
+        function renderApp() {
+            const today = new Date();
+            const dayOfWeek = today.getDay(); // Sun=0, Mon=1...
+            const dayOfYourWeek = dayOfWeek === 0 ? 7 : dayOfWeek; 
+            const daysRemaining = (7 - dayOfYourWeek) + 1;
+
+            const pacing = (budgetData.state.current_weekly_remaining / daysRemaining).toFixed(2);
+            
+            document.getElementById('pacingDisplay').innerText = `$${pacing}`;
+            document.getElementById('weeklyRemaining').innerText = `Weekly Left: $${budgetData.state.current_weekly_remaining}`;
+            
+            renderBills();
+        }
+
+        // --- 4. BILLS LIST ---
+        function renderBills() {
+            const list = document.getElementById('billList');
+            list.innerHTML = '';
+            
+            // Sort by next due date
+            const sortedBills = budgetData.bills.sort((a,b) => new Date(a.next_due_date) - new Date(b.next_due_date));
+
+            sortedBills.forEach(bill => {
+                const div = document.createElement('div');
+                div.className = 'bill-item';
+                div.innerHTML = `
+                    <div>
+                        <strong>${bill.name}</strong><br>
+                        <small>Due: ${bill.next_due_date}</small>
+                    </div>
+                    <div>$${bill.amount}</div>
+                    <button class="paid-btn" onclick="payBill('${bill.id}')">Paid</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        // --- 5. THE "SAVE" LOGIC (GitHub API) ---
+        async function payBill(id) {
+            const bill = budgetData.bills.find(b => b.id === id);
+            // ... Logic to update the next_due_date based on excel_code ...
+            // (We will insert your jump logic here)
+            
+            alert(`Marking ${bill.name} as paid. Saving to GitHub...`);
+            // await saveToGitHub();
+        }
+
+        // --- UTILS ---
+        function toggleSettings() { document.getElementById('settings').classList.toggle('hidden'); }
+        function saveToken() { localStorage.setItem('gh_token', document.getElementById('ghToken').value); toggleSettings(); }
+
+        loadData();
+    </script>
+</body>
+</html>
 
