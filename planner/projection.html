@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6-Month Projection</title>
+    <style>
+        :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-top: 60px; color: var(--text); }
+        
+        .nav-bar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: #fff; display: flex; align-items: center; justify-content: space-around; border-bottom: 1px solid #ddd; z-index: 1000; }
+        .nav-item { text-decoration: none; color: #666; font-size: 0.8rem; font-weight: bold; }
+        .nav-item.active { color: var(--accent); }
+
+        .card { background: var(--card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .label { font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; }
+        
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 10px; }
+        th { text-align: left; color: #888; padding: 8px; border-bottom: 2px solid #eee; }
+        td { padding: 10px 8px; border-bottom: 1px solid #f0f0f0; }
+        
+        .income { color: #2e7d32; font-weight: bold; }
+        .expense { color: #d32f2f; }
+        .low-balance { background-color: #ffebee; }
+        .summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; text-align: center; margin-top: 10px; }
+        .summary-val { font-size: 1.1rem; font-weight: bold; display: block; }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-bar">
+        <a href="budget.html" class="nav-item">⬅️ CONTROL CENTER</a>
+        <a href="#" class="nav-item active">6-MONTH PROJECTION</a>
+    </nav>
+
+    <div class="card" style="background: #333; color: white;">
+        <span class="label" style="color: #aaa;">Projected Milestones</span>
+        <div class="summary-grid">
+            <div><span class="label">30 Days</span><span id="m1" class="summary-val">...</span></div>
+            <div><span class="label">90 Days</span><span id="m3" class="summary-val">...</span></div>
+            <div><span class="label">180 Days</span><span id="m6" class="summary-val">...</span></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <span class="label">Forecasted Timeline (Next 180 Days)</span>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Event</th>
+                    <th>Amt</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody id="projectionBody"></tbody>
+        </table>
+    </div>
+
+<script>
+    async function init() {
+        const resp = await fetch(`bills.json?t=${Date.now()}`);
+        const data = await resp.json();
+        runProjection(data);
+    }
+
+    function runProjection(data) {
+        let bal = data.state.checking_balance;
+        let d = new Date(); d.setHours(12,0,0,0);
+        const end = new Date(); end.setDate(end.getDate() + 180);
+        
+        let simBills = JSON.parse(JSON.stringify(data.bills));
+        const body = document.getElementById('projectionBody');
+        const dailyBurn = 1000 / 7;
+
+        while(d <= end) {
+            const dateStr = d.toLocaleDateString('en-CA');
+            const dom = d.getDate();
+            let eventsThisDay = [];
+
+            // 1. Daily Burn
+            bal -= dailyBurn;
+
+            // 2. Paydays
+            if(dom === 15 || dom === new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()) { 
+                bal += 2500; eventsThisDay.push({label: "Scott Pay", amt: 2500}); 
+            }
+            const refDate = new Date("2026-01-16T12:00:00");
+            const diff = Math.floor((d - refDate) / 86400000);
+            if(diff >= 0 && diff % 14 === 0) {
+                bal += 2500; eventsThisDay.push({label: "Wife Pay", amt: 2500});
+            }
+
+            // 3. Amazon Escrow (21st)
+            if(dom === 21) {
+                bal -= 500; eventsThisDay.push({label: "Amazon Escrow", amt: -500});
+            }
+
+            // 4. Bills
+            simBills.forEach(b => {
+                if(b.next_due_date === dateStr) {
+                    bal -= b.amount;
+                    eventsThisDay.push({label: b.name, amt: -b.amount});
+                    let next = new Date(b.next_due_date + "T12:00:00");
+                    if(b.frequency === "monthly") next.setMonth(next.getMonth()+1);
+                    else if(b.frequency === "bi-weekly") next.setDate(next.getDate()+14);
+                    else if(b.frequency === "semi-annually") next.setMonth(next.getMonth()+6);
+                    b.next_due_date = next.toLocaleDateString('en-CA');
+                }
+            });
+
+            // Log Milestones
+            const daysOut = Math.floor((d - new Date().setHours(12,0,0,0)) / 86400000);
+            if(daysOut === 30) document.getElementById('m1').innerText = `$${Math.round(bal).toLocaleString()}`;
+            if(daysOut === 90) document.getElementById('m3').innerText = `$${Math.round(bal).toLocaleString()}`;
+            if(daysOut === 180) document.getElementById('m6').innerText = `$${Math.round(bal).toLocaleString()}`;
+
+            // Add to Table if something happened
+            eventsThisDay.forEach(ev => {
+                const row = document.createElement('tr');
+                if(bal < 500) row.className = 'low-balance';
+                row.innerHTML = `
+                    <td>${d.getMonth()+1}/${d.getDate()}</td>
+                    <td>${ev.label}</td>
+                    <td class="${ev.amt > 0 ? 'income' : 'expense'}">${ev.amt > 0 ? '+' : ''}${ev.amt}</td>
+                    <td><b>$${Math.round(bal).toLocaleString()}</b></td>
+                `;
+                body.appendChild(row);
+            });
+
+            d.setDate(d.getDate() + 1);
+        }
+    }
+    init();
+</script>
+</body>
+</html>
