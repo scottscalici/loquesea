@@ -34,7 +34,10 @@
     </nav>
 
     <div class="card">
-        <span class="label">Total Checking <span id="syncStatus" class="status-dot"></span></span>
+        <span class="label">
+    Total Checking <span id="syncStatus" class="status-dot"></span>
+    <button onclick="undoLast()" style="float:right; background:none; border:none; color:var(--accent); font-size:0.7rem; cursor:pointer;">(UNDO LAST)</button>
+</span>
         <div class="balance-amt" id="mainBalance">$0.00</div>
         <div id="weeklyBudgetContainer" style="margin-bottom: 15px;"></div>
         <span class="label">Savings Goals</span>
