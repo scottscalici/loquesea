@@ -4,13 +4,23 @@
     "amazon_escrow_earmark": 750
   },
   "paydays": [
-    { "name": "Scott Pay", "amount": 2500.00, "frequency": "bi-weekly", "next_date": "2026-01-23" },
-    { "name": "Wife Pay", "amount": 1800.00, "frequency": "monthly", "next_date": "2026-02-01" }
+    {
+      "name": "Scott Pay",
+      "amount": 2500,
+      "frequency": "bi-weekly",
+      "next_date": "2026-01-23"
+    },
+    {
+      "name": "Wife Pay",
+      "amount": 1800,
+      "frequency": "monthly",
+      "next_date": "2026-02-01"
+    }
   ],
   "state": {
     "current_weekly_remaining": 1000,
     "escrow_remaining": 487.44,
-    "checking_balance": 477.45000000000005,
+    "checking_balance": 407.45000000000005,
     "travel_savings": 0
   },
   "vendors": [
@@ -41,6 +51,12 @@
       "vendor": "BILL",
       "what": "Semco",
       "amount": 250
+    },
+    {
+      "date": "2026-01-15T02:32:02.363Z",
+      "vendor": "BILL",
+      "what": "Rec Center",
+      "amount": 70
     }
   ],
   "bills": [
@@ -273,7 +289,7 @@
       "name": "Rec Center",
       "frequency": "monthly",
       "amount": 70,
-      "next_due_date": "2026-01-15"
+      "next_due_date": "2026-02-15"
     },
     {
       "id": "salt-stone",
