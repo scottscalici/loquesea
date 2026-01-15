@@ -5,20 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Ledger</title>
     <style>
-        :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; }
+        :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; --danger: #d32f2f; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-top: 60px; color: var(--text); }
+        
         .nav-bar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: #fff; display: flex; align-items: center; justify-content: space-around; border-bottom: 1px solid #ddd; z-index: 1000; }
-        .nav-item { text-decoration: none; color: #666; font-size: 0.8rem; font-weight: bold; }
+        .nav-item { text-decoration: none; color: #666; font-size: 0.75rem; font-weight: bold; }
         .nav-item.active { color: var(--accent); }
+
         .card { background: var(--card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th { text-align: left; color: #888; padding: 8px; border-bottom: 2px solid #eee; }
-        td { padding: 10px 8px; border-bottom: 1px solid #f0f0f0; }
-        .amt-pos { color: #2e7d32; font-weight: bold; }
-        .amt-neg { color: #d32f2f; }
+        th { text-align: left; color: #888; padding: 10px 5px; border-bottom: 2px solid #eee; }
+        td { padding: 12px 5px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+        
+        .amt-pos { color: var(--primary); font-weight: bold; }
+        .amt-neg { color: var(--danger); font-weight: bold; }
+        .meta { font-size: 0.7rem; color: #999; display: block; margin-top: 2px; }
+        .refresh-btn { background: none; border: 1px solid #ddd; padding: 5px 10px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; float: right; margin-top: -5px; }
     </style>
 </head>
 <body>
+
     <nav class="nav-bar">
         <a href="budget.html" class="nav-item">CONTROL</a>
         <a href="spend.html" class="nav-item">WEEKLY</a>
@@ -27,35 +34,68 @@
     </nav>
 
     <div class="card">
+        <button class="refresh-btn" onclick="init()">🔄 Refresh</button>
+        <span class="label">Full Transaction History</span>
         <table>
             <thead>
                 <tr>
                     <th>Date</th>
-                    <th>Item</th>
-                    <th>Amt</th>
+                    <th>Description</th>
+                    <th style="text-align:right;">Amount</th>
                 </tr>
             </thead>
-            <tbody id="ledgerBody"></tbody>
+            <tbody id="ledgerBody">
+                <tr><td colspan="3" style="text-align:center; padding:20px;">Loading checkbook...</td></tr>
+            </tbody>
         </table>
     </div>
 
 <script>
     async function init() {
-        const resp = await fetch(`bills.json?t=${Date.now()}`);
-        const data = await resp.json();
+        try {
+            // Adding a timestamp prevents the browser from showing "old" cached data
+            const resp = await fetch(`bills.json?t=${Date.now()}`);
+            const data = await resp.json();
+            renderLedger(data);
+        } catch (e) {
+            document.getElementById('ledgerBody').innerHTML = '<tr><td colspan="3" style="color:red;">Error loading file. Check if bills.json exists.</td></tr>';
+        }
+    }
+
+    function renderLedger(data) {
         const body = document.getElementById('ledgerBody');
+        body.innerHTML = '';
         
-        // Show all history, newest first
+        if (!data.history || data.history.length === 0) {
+            body.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:20px;">No transactions found.</td></tr>';
+            return;
+        }
+
+        // Show all history, reversed so newest is at the top
         data.history.slice().reverse().forEach(item => {
             const isPos = item.vendor === "INCOME";
-            const row = `<tr>
-                <td>${new Date(item.date).toLocaleDateString(undefined, {month:'short', day:'numeric'})}</td>
-                <td>${item.vendor} ${item.what ? '<br><small>'+item.what+'</small>' : ''}</td>
-                <td class="${isPos ? 'amt-pos' : 'amt-neg'}">${isPos ? '+' : '-'}$${item.amount.toFixed(2)}</td>
-            </tr>`;
+            const dateObj = new Date(item.date);
+            const dateStr = dateObj.toLocaleDateString(undefined, {month: 'short', day: 'numeric'});
+            
+            // Determine the label: Use "what" if available, otherwise "vendor"
+            const label = item.what || item.vendor;
+            
+            const row = `
+                <tr>
+                    <td>${dateStr}</td>
+                    <td>
+                        <b>${label}</b>
+                        <span class="meta">${item.vendor !== label ? item.vendor : ''}</span>
+                    </td>
+                    <td style="text-align:right;" class="${isPos ? 'amt-pos' : 'amt-neg'}">
+                        ${isPos ? '+' : '-'}$${parseFloat(item.amount).toLocaleString(undefined, {minimumFractionDigits: 2})}
+                    </td>
+                </tr>
+            `;
             body.innerHTML += row;
         });
     }
+
     init();
 </script>
 </body>
