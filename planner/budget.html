@@ -81,11 +81,14 @@
     let data = null;
 
     async function init() {
-        const resp = await fetch(`bills.json?t=${Date.now()}`);
+        // The Date.now() part forces GitHub to bypass the cache
+        const resp = await fetch(`bills.json?t=${Date.now()}`, {
+            cache: 'no-store'
+        });
         data = await resp.json();
         renderUI();
     }
-
+    
     function renderUI() {
         if (!data) return;
         document.getElementById('mainBalance').innerText = `$${data.state.checking_balance.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
@@ -320,7 +323,12 @@ async function logTransaction() {
 
     async function saveToGithub(updatedData) {
         const TOKEN = localStorage.getItem('gh_token');
-        const getFile = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`, { headers: { "Authorization": `token ${TOKEN}` } });
+        // Cache-busting the SHA fetch is critical for speed
+        const getFile = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, { 
+            headers: { "Authorization": `token ${TOKEN}` },
+            cache: 'no-store'
+        });
+        
         const fileData = await getFile.json();
         const response = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`, {
             method: "PUT",
@@ -329,7 +337,7 @@ async function logTransaction() {
         });
         return response.ok;
     }
-
+    
     init();
 </script>
 </body>
