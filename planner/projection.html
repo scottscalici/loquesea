@@ -20,6 +20,9 @@
         .income { color: var(--primary); font-weight: bold; }
         .expense { color: var(--danger); }
         .low-balance { background-color: #fff3f3; }
+        .pay-row { background-color: #f1f8e9; }
+        .weekly-row { background-color: #fafafa; font-style: italic; }
+        .amazon-row { background-color: #e3f2fd; }
     </style>
 </head>
 <body>
@@ -32,7 +35,7 @@
     </nav>
 
     <div class="card" style="background: #333; color: white;">
-        <span class="label" style="color: #aaa;">Projected Liquid Cash</span>
+        <span class="label" style="color: #aaa;">Spendable Balance (Bank minus Savings)</span>
         <div class="summary-grid">
             <div><span class="label">30 Days</span><span id="m1" class="summary-val">$0</span></div>
             <div><span class="label">90 Days</span><span id="m3" class="summary-val">$0</span></div>
@@ -41,8 +44,8 @@
     </div>
 
     <div class="card">
-        <span class="label">180-Day Financial Forecast</span>
-        <table id="projTable">
+        <span class="label">Cash Flow Forecast</span>
+        <table id="mainTable">
             <thead>
                 <tr>
                     <th>Date</th>
@@ -57,88 +60,92 @@
 
 <script>
     async function init() {
-        try {
-            const resp = await fetch(`bills.json?t=${Date.now()}`);
-            const data = await resp.json();
-            runProjection(data);
-        } catch (e) {
-            console.error("Failed to load projection data", e);
-        }
+        const resp = await fetch(`bills.json?t=${Date.now()}`);
+        const data = await resp.json();
+        runProjection(data);
     }
 
     function runProjection(data) {
-        // 1. FIXED: Correctly reference 'savings_goals' (Emergency Fund & Travel)
-        const goals = data.savings_goals || [];
-        const goalsTotal = goals.reduce((sum, g) => sum + (g.current || 0), 0);
-        
-        // Liquid balance = Total Bank - Savings Goals
-        let bal = (data.state.checking_balance || 0) - goalsTotal;
+        // STEP 1: Accurate Starting Balance
+        const goalsTotal = (data.savings_goals || []).reduce((sum, g) => sum + (g.current || 0), 0);
+        let runningBal = data.state.checking_balance - goalsTotal;
         
         const body = document.getElementById('projectionBody');
         body.innerHTML = ''; 
 
-        let d = new Date(); 
-        d.setHours(12,0,0,0);
-        const end = new Date(); 
-        end.setDate(end.getDate() + 180);
+        // Current Date (Midnight for comparison)
+        let d = new Date(); d.setHours(0,0,0,0);
+        const end = new Date(); end.setDate(end.getDate() + 180);
         
+        // Clone bills so we don't mess up original data
         let simBills = JSON.parse(JSON.stringify(data.bills));
-        const dailyBurn = 1000 / 7; // $142.85 per day
+        const wifeRef = new Date("2026-01-16T12:00:00"); 
 
         while(d <= end) {
-            const dateStr = d.toISOString().split('T')[0];
+            const dateISO = d.toISOString().split('T')[0];
             const dom = d.getDate();
-            let events = [];
+            const dow = d.getDay(); // 5 = Friday
+            let dayEvents = [];
 
-            // A. Subtract daily allowance
-            bal -= dailyBurn;
-
-            // B. Payday Logic (15th and 30th)
-            const lastDayOfMonth = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-            const secondPayday = Math.min(30, lastDayOfMonth);
-            
-            if(dom === 15 || dom === secondPayday) { 
-                bal += 2500; 
-                events.push({label: "Payday", amt: 2500}); 
+            // A. SCOTT PAYDAY (15th and Last Day)
+            const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+            if(dom === 15 || dom === lastDay) { 
+                runningBal += 2500; 
+                dayEvents.push({label: "Scott Pay", amt: 2500, type: 'pay'}); 
             }
-            
-            // C. Amazon Allowance Logic
-            // On the 21st, $500 is "reserved" for Amazon, effectively leaving your liquid cash
+
+            // B. WIFE PAYDAY (Every 14 Days)
+            const diff = Math.round((d - wifeRef) / (1000 * 60 * 60 * 24));
+            if(diff >= 0 && diff % 14 === 0) {
+                runningBal += 2500;
+                dayEvents.push({label: "Wife Pay", amt: 2500, type: 'pay'});
+            }
+
+            // C. WEEKLY ALLOWANCE ($1000 Fridays)
+            if(dow === 5) {
+                runningBal -= 1000;
+                dayEvents.push({label: "Weekly Spend", amt: -1000, type: 'weekly'});
+            }
+
+            // D. AMAZON ESCROW ($500 on 21st)
             if(dom === 21) {
-                bal -= 500; 
-                events.push({label: "Amazon Escrow", amt: -500});
+                runningBal -= 500;
+                dayEvents.push({label: "Amazon Escrow", amt: -500, type: 'amazon'});
             }
 
-            // D. Bill Logic
+            // E. BILLS
             simBills.forEach(b => {
-                if(b.next_due_date === dateStr) {
-                    bal -= b.amount;
-                    events.push({label: b.name, amt: -b.amount});
+                if(b.next_due_date === dateISO) {
+                    runningBal -= b.amount;
+                    dayEvents.push({label: b.name, amt: -b.amount, type: 'bill'});
                     
-                    // Push bill to next occurrence
-                    let next = new Date(b.next_due_date + "T12:00:00");
-                    if(b.frequency === "monthly") next.setMonth(next.getMonth()+1);
-                    else if(b.frequency === "bi-weekly") next.setDate(next.getDate()+14);
-                    else if(b.frequency === "semi-annually") next.setMonth(next.getMonth()+6);
-                    b.next_due_date = next.toISOString().split('T')[0];
+                    // Increment bill date for next month
+                    let nextDate = new Date(b.next_due_date + "T12:00:00");
+                    if(b.frequency === "monthly") nextDate.setMonth(nextDate.getMonth()+1);
+                    else if(b.frequency === "bi-weekly") nextDate.setDate(nextDate.getDate()+14);
+                    b.next_due_date = nextDate.toISOString().split('T')[0];
                 }
             });
 
-            // Update Milestone Summaries
-            const daysOut = Math.floor((d - new Date().setHours(12,0,0,0)) / 86400000);
-            if(daysOut === 30) document.getElementById('m1').innerText = `$${Math.round(bal).toLocaleString()}`;
-            if(daysOut === 90) document.getElementById('m3').innerText = `$${Math.round(bal).toLocaleString()}`;
-            if(daysOut === 180) document.getElementById('m6').innerText = `$${Math.round(bal).toLocaleString()}`;
+            // Update Milestones
+            const daysOut = Math.round((d - new Date().setHours(0,0,0,0)) / 86400000);
+            if(daysOut === 30) document.getElementById('m1').innerText = `$${Math.round(runningBal).toLocaleString()}`;
+            if(daysOut === 90) document.getElementById('m3').innerText = `$${Math.round(runningBal).toLocaleString()}`;
+            if(daysOut === 180) document.getElementById('m6').innerText = `$${Math.round(runningBal).toLocaleString()}`;
 
-            // Add row for major events only (prevents daily burn from cluttering list)
-            events.forEach(ev => {
+            // Add rows to table
+            dayEvents.forEach(ev => {
                 const row = document.createElement('tr');
-                if(bal < 0) row.className = 'low-balance';
+                if(ev.type === 'pay') row.className = 'pay-row';
+                if(ev.type === 'weekly') row.className = 'weekly-row';
+                if(ev.type === 'amazon') row.className = 'amazon-row';
+                if(runningBal < 0) row.classList.add('low-balance');
+                
                 row.innerHTML = `
                     <td>${d.getMonth()+1}/${d.getDate()}</td>
                     <td>${ev.label}</td>
                     <td class="${ev.amt > 0 ? 'income' : 'expense'}">${ev.amt > 0 ? '+' : ''}${ev.amt.toLocaleString()}</td>
-                    <td style="font-weight:bold;">$${Math.round(bal).toLocaleString()}</td>
+                    <td><b>$${Math.round(runningBal).toLocaleString()}</b></td>
                 `;
                 body.appendChild(row);
             });
