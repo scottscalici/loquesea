@@ -1,182 +1,82 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control Center</title>
-    <style>
-        :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; }
-        .card { background: var(--card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
-        .label { font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; }
-        .val-large { font-size: 2.5rem; font-weight: bold; color: var(--primary); text-align: center; }
-        .flex-row { display: flex; justify-content: space-between; align-items: center; }
-        .input-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-        select, input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; width: 100%; box-sizing: border-box; }
-        .btn { padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; width: 100%; margin-top: 10px; }
-        .btn-blue { background: var(--accent); }
-        .btn-green { background: var(--primary); }
-        .history-item { font-size: 0.85rem; padding: 8px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
-        .bill-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .hidden { display: none; }
-    </style>
-</head>
-<body>
-
-    <div class="flex-row" style="margin-bottom: 10px;">
-        <h3 style="margin:0;">Control Center</h3>
-        <button onclick="toggleSettings()" style="background:none; border:none; font-size: 1.2rem; cursor:pointer;">⚙️</button>
+<div class="card" style="background: #333; color: white;">
+    <span class="label" style="color: #aaa;">Cash Flow Projections</span>
+    <div class="flex-row" style="margin-top:10px; font-size: 0.9rem;">
+        <div>10 Days<br><b id="proj10" style="color:#4CAF50;">$0</b></div>
+        <div>30 Days<br><b id="proj30" style="color:#4CAF50;">$0</b></div>
+        <div>4 Months<br><b id="proj120" style="color:#4CAF50;">$0</b></div>
     </div>
-
-    <div class="card">
-        <div class="flex-row">
-            <div><span class="label">Checking</span><br><b id="checkingBal" style="color:var(--accent); font-size:1.2rem;">$0</b></div>
-            <div style="text-align:right;"><span class="label">Travel</span><br><b id="travelBal" style="color:orange; font-size:1.2rem;">$0</b></div>
-        </div>
-        <div class="val-large" id="pacingDisplay" style="margin:15px 0;">--</div>
-        <span class="label" style="display:block; text-align:center;">Daily Safe Spend</span>
-    </div>
-
-    <div class="card">
-        <span class="label">Log Purchase</span>
-        <div class="input-group">
-            <select id="pVendor"></select>
-            <input type="text" id="pWho" placeholder="Who (optional)">
-            <input type="text" id="pWhat" placeholder="What (optional)">
-            <input type="number" id="pAmt" placeholder="$ Amount">
-        </div>
-        <button class="btn btn-blue" onclick="logTransaction()">Log Spend</button>
-    </div>
-
-    <div class="card">
-        <span class="label">Upcoming Bills</span>
-        <div id="billList" style="margin-top:10px;"></div>
-    </div>
-
-    <div class="card">
-        <span class="label">End of Week Rollover</span>
-        <div class="flex-row" style="gap:10px; margin-top:10px;">
-            <button class="btn btn-green" style="margin-top:0;" onclick="rollover('next')">To Next Week</button>
-            <button class="btn btn-blue" style="margin-top:0; background:orange;" onclick="rollover('travel')">To Travel</button>
-        </div>
-    </div>
-
-    <div class="card">
-        <span class="label">Last 20 Transactions</span>
-        <div id="historyList" style="margin-top:10px;"></div>
-    </div>
-
-    <div id="settings" class="card hidden">
-        <span class="label">Settings</span>
-        <input type="password" id="ghToken" placeholder="GitHub Token" style="margin-top:10px;">
-        <button class="btn btn-blue" onclick="saveToken()">Save Token</button>
-    </div>
+</div>
 
 <script>
-    const CONFIG = { owner: 'scottscalici', repo: 'loquesea', path: 'planner/bills.json' };
-    let data = null;
-
-    async function init() {
-        const resp = await fetch(`bills.json?t=${Date.now()}`);
-        data = await resp.json();
-        
-        const menu = document.getElementById('pVendor');
-        menu.innerHTML = '';
-        data.vendors.forEach(v => menu.add(new Option(v, v)));
-        
-        render();
-    }
-
-    function render() {
-        // Pacing
-        const days = (8 - (new Date().getDay() || 7));
-        document.getElementById('pacingDisplay').innerText = `$${(data.state.current_weekly_remaining / days).toFixed(2)}`;
-        document.getElementById('checkingBal').innerText = `$${data.state.checking_balance.toLocaleString()}`;
-        document.getElementById('travelBal').innerText = `$${data.state.travel_savings.toLocaleString()}`;
-
-        // Bills (Restored Rendering)
-        const bList = document.getElementById('billList');
-        bList.innerHTML = '';
-        const sorted = [...data.bills].sort((a,b) => new Date(a.next_due_date) - new Date(b.next_due_date));
-        sorted.forEach(bill => {
-            bList.innerHTML += `
-                <div class="bill-row">
-                    <div><b>${bill.name}</b><br><small>${bill.next_due_date}</small></div>
-                    <div>$${bill.amount}</div>
-                    <button class="btn btn-green" style="width:auto; margin-top:0; padding:5px 12px;" onclick="payBill('${bill.id}')">Paid</button>
-                </div>`;
-        });
-
-        // History
-        const hList = document.getElementById('historyList');
-        hList.innerHTML = '';
-        (data.history || []).slice(-20).reverse().forEach(t => {
-            hList.innerHTML += `<div class="history-item"><span>${t.vendor}: ${t.what || t.who || ''}</span><b>-$${t.amount}</b></div>`;
-        });
-    }
-
-    async function logTransaction() {
-        const vendor = document.getElementById('pVendor').value;
-        const amt = parseFloat(document.getElementById('pAmt').value);
-        if(!amt) return;
-
-        if(vendor === "Amazon" && data.state.escrow_remaining > 0) {
-            if(data.state.escrow_remaining >= amt) data.state.escrow_remaining -= amt;
-            else { data.state.current_weekly_remaining -= (amt - data.state.escrow_remaining); data.state.escrow_remaining = 0; }
-        } else {
-            data.state.current_weekly_remaining -= amt;
-        }
-
-        data.state.checking_balance -= amt;
-        data.history.push({ date: new Date().toISOString(), vendor, who: document.getElementById('pWho').value, what: document.getElementById('pWhat').value, amount: amt });
-
-        await sync();
-        render();
-    }
-
+    // --- 1. MODIFIED PAY BILL (With Actual Amount) ---
     async function payBill(id) {
         const bill = data.bills.find(b => b.id === id);
-        data.state.checking_balance -= bill.amount;
         
+        // Ask for actual amount (defaults to the usual amount)
+        const actual = prompt(`Confirm amount for ${bill.name}:`, bill.amount);
+        if (actual === null) return; // Cancel
+        const finalAmt = parseFloat(actual);
+
+        data.state.checking_balance -= finalAmt;
+        
+        // Standard Date Jump
         const date = new Date(bill.next_due_date);
         if (bill.frequency === "monthly") date.setMonth(date.getMonth() + 1);
         else if (bill.frequency === "bi-weekly") date.setDate(date.getDate() + 14);
         else if (bill.frequency === "annually") date.setFullYear(date.getFullYear() + 1);
         
         bill.next_due_date = date.toISOString().split('T')[0];
-        data.history.push({ date: new Date().toISOString(), vendor: "BILL", what: bill.name, amount: bill.amount });
+        data.history.push({ date: new Date().toISOString(), vendor: "BILL", what: bill.name, amount: finalAmt });
         
         await sync();
         render();
     }
 
-    async function rollover(type) {
-        const leftover = data.state.current_weekly_remaining;
-        if(type === 'travel') {
-            data.state.travel_savings += leftover;
-            data.state.current_weekly_remaining = 1000;
-        } else {
-            data.state.current_weekly_remaining = 1000 + leftover;
-        }
-        await sync();
-        render();
-    }
+    // --- 2. PROJECTION ENGINE ---
+    function getProjection(days) {
+        let tempBal = data.state.checking_balance;
+        let tempWeekly = data.state.current_weekly_remaining;
+        const targetDate = new Date();
+        targetDate.setDate(targetDate.getDate() + days);
 
-    async function sync() {
-        const token = localStorage.getItem('gh_token');
-        if(!token) return alert("Enter Token in Settings!");
-        const url = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`;
-        const file = await fetch(url, { headers: { 'Authorization': `token ${token}` } }).then(r => r.json());
-        await fetch(url, {
-            method: 'PUT',
-            headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: "Update", content: btoa(JSON.stringify(data, null, 2)), sha: file.sha })
+        // 1. Subtract remaining weekly budget for the first week
+        tempBal -= tempWeekly;
+
+        // 2. Simulate future weeks
+        const fullWeeks = Math.floor(days / 7);
+        tempBal -= (fullWeeks * 1000);
+
+        // 3. Subtract Bills that will fall in this window
+        data.bills.forEach(bill => {
+            let nextDue = new Date(bill.next_due_date);
+            while (nextDue <= targetDate) {
+                tempBal -= bill.amount;
+                // Move date forward to check for recurring hits in long windows (4 months)
+                if (bill.frequency === "monthly") nextDue.setMonth(nextDue.getMonth() + 1);
+                else if (bill.frequency === "bi-weekly") nextDue.setDate(nextDue.getDate() + 14);
+                else break; 
+            }
         });
+
+        // 4. Add Paydays that will fall in this window
+        (data.paydays || []).forEach(pay => {
+            let nextPay = new Date(pay.next_date);
+            while (nextPay <= targetDate) {
+                tempBal += pay.amount;
+                if (pay.frequency === "bi-weekly") nextPay.setDate(nextPay.getDate() + 14);
+                else if (pay.frequency === "monthly") nextPay.setMonth(nextPay.getMonth() + 1);
+                else break;
+            }
+        });
+
+        return tempBal.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
     }
 
-    function toggleSettings() { document.getElementById('settings').classList.toggle('hidden'); }
-    function saveToken() { localStorage.setItem('gh_token', document.getElementById('ghToken').value); toggleSettings(); }
-    init();
+    // Update render function to include projections
+    function render() {
+        // ... (existing pacing and history code) ...
+        document.getElementById('proj10').innerText = `$${getProjection(10)}`;
+        document.getElementById('proj30').innerText = `$${getProjection(30)}`;
+        document.getElementById('proj120').innerText = `$${getProjection(120)}`;
+    }
 </script>
-</body>
-</html>
