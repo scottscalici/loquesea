@@ -238,21 +238,20 @@
         });
     }
     async function sync() {
-        const status = document.getElementById('syncStatus');
-        status.className = 'status-dot status-saving'; // Orange pulsing
-        
-        const success = await saveToGithub(data);
-        
-        if (success) {
-            status.className = 'status-dot status-success'; // Green
-            // Re-fetch to ensure the UI matches the server perfectly
-            await init(); 
-        } else {
-            status.className = 'status-dot status-error'; // Red
-            alert("GitHub Sync Failed. Check your token or connection.");
-        }
+    const status = document.getElementById('syncStatus');
+    status.className = 'status-dot status-saving'; 
+    
+    const success = await saveToGithub(data);
+    
+    if (success) {
+        status.className = 'status-dot status-success';
+        // This is the line that handles the auto-refresh
+        await init(); 
+    } else {
+        status.className = 'status-dot status-error';
     }
-
+}
+    
     async function saveToGithub(updatedData) {
     // 1. Get the token from storage or the hardcoded string
     const GITHUB_TOKEN = localStorage.getItem('gh_token') || "YOUR_TOKEN_HERE";
