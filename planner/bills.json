@@ -31,9 +31,9 @@
     }
   ],
   "state": {
-    "current_weekly_remaining": 988,
+    "current_weekly_remaining": 763.8199999999999,
     "escrow_remaining": 500,
-    "checking_balance": 888,
+    "checking_balance": 663.8199999999999,
     "travel_savings": 0
   },
   "vendors": [
@@ -50,6 +50,11 @@
       "date": "2026-01-15T04:27:32.914Z",
       "vendor": "Venmo",
       "amount": 12
+    },
+    {
+      "date": "2026-01-15T04:31:26.390Z",
+      "vendor": "Kroger",
+      "amount": 224.18
     }
   ],
   "bills": [
