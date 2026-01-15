@@ -31,9 +31,9 @@
     }
   ],
   "state": {
-    "current_weekly_remaining": 1000,
+    "current_weekly_remaining": 988,
     "escrow_remaining": 500,
-    "checking_balance": 900,
+    "checking_balance": 888,
     "travel_savings": 0
   },
   "vendors": [
@@ -45,7 +45,13 @@
     "Tim Horton's",
     "Other"
   ],
-  "history": [],
+  "history": [
+    {
+      "date": "2026-01-15T04:27:32.914Z",
+      "vendor": "Venmo",
+      "amount": 12
+    }
+  ],
   "bills": [
     {
       "id": "aaa",
