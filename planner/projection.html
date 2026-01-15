@@ -21,8 +21,7 @@
         .expense { color: var(--danger); }
         .low-balance { background-color: #fff3f3; }
         .pay-row { background-color: #f1f8e9; }
-        .weekly-row { background-color: #fafafa; font-style: italic; }
-        .amazon-row { background-color: #e3f2fd; }
+        .hit-row { background-color: #f9f9f9; font-style: italic; }
     </style>
 </head>
 <body>
@@ -35,7 +34,7 @@
     </nav>
 
     <div class="card" style="background: #333; color: white;">
-        <span class="label" style="color: #aaa;">Spendable Balance (Bank minus Savings)</span>
+        <span class="label" style="color: #aaa;">Spendable Liquid Cash</span>
         <div class="summary-grid">
             <div><span class="label">30 Days</span><span id="m1" class="summary-val">$0</span></div>
             <div><span class="label">90 Days</span><span id="m3" class="summary-val">$0</span></div>
@@ -44,8 +43,8 @@
     </div>
 
     <div class="card">
-        <span class="label">Cash Flow Forecast</span>
-        <table id="mainTable">
+        <span class="label">Financial Forecast</span>
+        <table>
             <thead>
                 <tr>
                     <th>Date</th>
@@ -66,80 +65,57 @@
     }
 
     function runProjection(data) {
-        // STEP 1: Accurate Starting Balance
+        // 1. Initial Math: Bank Balance - Savings Goals
         const goalsTotal = (data.savings_goals || []).reduce((sum, g) => sum + (g.current || 0), 0);
-        let runningBal = data.state.checking_balance - goalsTotal;
+        let runningBal = (data.state.checking_balance || 0) - goalsTotal;
         
         const body = document.getElementById('projectionBody');
         body.innerHTML = ''; 
 
-        // Current Date (Midnight for comparison)
         let d = new Date(); d.setHours(0,0,0,0);
         const end = new Date(); end.setDate(end.getDate() + 180);
         
-        // Clone bills so we don't mess up original data
         let simBills = JSON.parse(JSON.stringify(data.bills));
         const wifeRef = new Date("2026-01-16T12:00:00"); 
 
         while(d <= end) {
             const dateISO = d.toISOString().split('T')[0];
             const dom = d.getDate();
-            const dow = d.getDay(); // 5 = Friday
-            let dayEvents = [];
+            const dow = d.getDay(); 
 
-            // A. SCOTT PAYDAY (15th and Last Day)
+            // Create a temporary list of things happening TODAY
+            let dailyEvents = [];
+
+            // A. Income
             const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-            if(dom === 15 || dom === lastDay) { 
-                runningBal += 2500; 
-                dayEvents.push({label: "Scott Pay", amt: 2500, type: 'pay'}); 
-            }
-
-            // B. WIFE PAYDAY (Every 14 Days)
+            if(dom === 15 || dom === lastDay) dailyEvents.push({label: "Scott Pay", amt: 2500, type: 'pay'});
+            
             const diff = Math.round((d - wifeRef) / (1000 * 60 * 60 * 24));
-            if(diff >= 0 && diff % 14 === 0) {
-                runningBal += 2500;
-                dayEvents.push({label: "Wife Pay", amt: 2500, type: 'pay'});
-            }
+            if(diff >= 0 && diff % 14 === 0) dailyEvents.push({label: "Wife Pay", amt: 2500, type: 'pay'});
 
-            // C. WEEKLY ALLOWANCE ($1000 Fridays)
-            if(dow === 5) {
-                runningBal -= 1000;
-                dayEvents.push({label: "Weekly Spend", amt: -1000, type: 'weekly'});
-            }
+            // B. Mandatory Spending Deductions
+            if(dow === 5) dailyEvents.push({label: "Weekly Allowance", amt: -1000, type: 'hit'});
+            if(dom === 21) dailyEvents.push({label: "Amazon Escrow", amt: -500, type: 'hit'});
 
-            // D. AMAZON ESCROW ($500 on 21st)
-            if(dom === 21) {
-                runningBal -= 500;
-                dayEvents.push({label: "Amazon Escrow", amt: -500, type: 'amazon'});
-            }
-
-            // E. BILLS
+            // C. Specific Bills
             simBills.forEach(b => {
                 if(b.next_due_date === dateISO) {
-                    runningBal -= b.amount;
-                    dayEvents.push({label: b.name, amt: -b.amount, type: 'bill'});
-                    
-                    // Increment bill date for next month
-                    let nextDate = new Date(b.next_due_date + "T12:00:00");
-                    if(b.frequency === "monthly") nextDate.setMonth(nextDate.getMonth()+1);
-                    else if(b.frequency === "bi-weekly") nextDate.setDate(nextDate.getDate()+14);
-                    b.next_due_date = nextDate.toISOString().split('T')[0];
+                    dailyEvents.push({label: b.name, amt: -b.amount, type: 'bill'});
+                    let next = new Date(b.next_due_date + "T12:00:00");
+                    if(b.frequency === "monthly") next.setMonth(next.getMonth()+1);
+                    else if(b.frequency === "bi-weekly") next.setDate(next.getDate()+14);
+                    b.next_due_date = next.toISOString().split('T')[0];
                 }
             });
 
-            // Update Milestones
-            const daysOut = Math.round((d - new Date().setHours(0,0,0,0)) / 86400000);
-            if(daysOut === 30) document.getElementById('m1').innerText = `$${Math.round(runningBal).toLocaleString()}`;
-            if(daysOut === 90) document.getElementById('m3').innerText = `$${Math.round(runningBal).toLocaleString()}`;
-            if(daysOut === 180) document.getElementById('m6').innerText = `$${Math.round(runningBal).toLocaleString()}`;
+            // STEP 2: The Critical Fix. 
+            // Loop through today's events, update the math, THEN render the row.
+            dailyEvents.forEach(ev => {
+                runningBal += ev.amt; // Update the math FIRST
 
-            // Add rows to table
-            dayEvents.forEach(ev => {
                 const row = document.createElement('tr');
                 if(ev.type === 'pay') row.className = 'pay-row';
-                if(ev.type === 'weekly') row.className = 'weekly-row';
-                if(ev.type === 'amazon') row.className = 'amazon-row';
-                if(runningBal < 0) row.classList.add('low-balance');
+                if(ev.type === 'hit') row.className = 'hit-row';
                 
                 row.innerHTML = `
                     <td>${d.getMonth()+1}/${d.getDate()}</td>
@@ -149,6 +125,12 @@
                 `;
                 body.appendChild(row);
             });
+
+            // Milestone Checks
+            const daysOut = Math.round((d - new Date().setHours(0,0,0,0)) / 86400000);
+            if(daysOut === 30) document.getElementById('m1').innerText = `$${Math.round(runningBal).toLocaleString()}`;
+            if(daysOut === 90) document.getElementById('m3').innerText = `$${Math.round(runningBal).toLocaleString()}`;
+            if(daysOut === 180) document.getElementById('m6').innerText = `$${Math.round(runningBal).toLocaleString()}`;
 
             d.setDate(d.getDate() + 1);
         }
