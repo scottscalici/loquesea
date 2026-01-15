@@ -70,11 +70,8 @@
     // [SECTION: CORE UI RENDER]
     function renderUI() {
         if (!data) return;
-        
-        // 1. Balance
         document.getElementById('mainBalance').innerText = `$${data.state.checking_balance.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
         
-        // 2. Savings Bars
         const savDiv = document.getElementById('savingsContainer');
         savDiv.innerHTML = '';
         (data.savings_goals || []).forEach(g => {
@@ -83,7 +80,7 @@
                 <div style="margin-top:10px;">
                     <div style="display:flex; justify-content:space-between; font-size:0.75rem;">
                         <span>${g.name}</span>
-                        <span>$${g.current} / $${g.target}</span>
+                        <span>$${g.current.toLocaleString()} / $${g.target.toLocaleString()}</span>
                     </div>
                     <div class="progress-bg"><div class="progress-fill" style="width:${pct}%"></div></div>
                 </div>`;
@@ -100,25 +97,24 @@
         const today = new Date();
         today.setHours(0,0,0,0);
 
-        // 1. Scott's Payday (15th and Last Day of Month)
+        // 1. Scott's Payday (15th and Last Day)
         const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
         if (today.getDate() === 15 || today.getDate() === lastDay) {
             appendInboxItem(container, "Scott Payday", 2500, 'INCOME', -1);
         }
 
-        // 2. Wife's Payday (Bi-weekly starting Jan 16, 2026)
+        // 2. Wife's Payday (Every 14 days starting Jan 16, 2026)
         const wifeRef = new Date("2026-01-16T12:00:00");
         const diffDays = Math.floor((today - wifeRef) / 86400000);
         if (diffDays >= 0 && diffDays % 14 === 0) {
             appendInboxItem(container, "Wife Payday", 2500, 'INCOME', -2);
         }
 
-        // 3. Bills (Sorted Chronologically)
+        // 3. Bills (Next 31 Days)
         const sortedBills = [...data.bills].sort((a,b) => new Date(a.next_due_date) - new Date(b.next_due_date));
         sortedBills.forEach((bill) => {
             const billDate = new Date(bill.next_due_date + "T12:00:00");
             const limit = new Date(); limit.setDate(limit.getDate() + 31);
-            
             if (billDate <= limit) {
                 const originalIdx = data.bills.findIndex(b => b.name === bill.name);
                 appendInboxItem(container, bill.name, bill.amount, 'BILL', originalIdx, bill.next_due_date);
@@ -130,102 +126,71 @@
         const div = document.createElement('div');
         div.className = 'inbox-item';
         div.innerHTML = `
+            <div><b>${name}</b><br><small>${date ? date : 'Due Today'}</small></div>
             <div>
-                <b>${name}</b><br>
-                <small>${date ? date : 'Due Today'}</small>
-            </div>
-            <div>
-                <span style="margin-right:10px; font-weight:bold; color:${type==='INCOME'?'green':'red'}">$${amount}</span>
+                <span style="margin-right:10px; font-weight:bold; color:${type==='INCOME'?'green':'red'}">$${amount.toLocaleString()}</span>
                 <button class="btn-paid" onclick="processInboxAction(${idx}, '${type}')">OK</button>
             </div>`;
         container.appendChild(div);
     }
 
-// [SECTION: TRANSACTION LOGIC]
-async function processInboxAction(idx, type) {
-    // 1. Identify the default name and amount
-    let name = (idx === -1) ? "Scott Payday" : (idx === -2) ? "Wife Payday" : data.bills[idx].name;
-    let defaultAmt = (idx < 0) ? 2500 : data.bills[idx].amount;
+    // [SECTION: TRANSACTION LOGIC]
+    async function processInboxAction(idx, type) {
+        let name = (idx === -1) ? "Scott Payday" : (idx === -2) ? "Wife Payday" : data.bills[idx].name;
+        let defaultAmt = (idx < 0) ? 2500 : data.bills[idx].amount;
 
-    // 2. Popup window to confirm or overwrite the amount
-    let userInput = prompt(`Confirm amount for ${name}:`, defaultAmt);
-    
-    // If user hits 'Cancel', stop everything
-    if (userInput === null) return;
+        let userInput = prompt(`Confirm amount for ${name}:`, defaultAmt);
+        if (userInput === null) return;
+        let finalAmt = parseFloat(userInput);
+        if (isNaN(finalAmt)) return;
 
-    // Convert input to a number
-    let finalAmt = parseFloat(userInput);
-    if (isNaN(finalAmt)) {
-        alert("Invalid amount entered.");
-        return;
-    }
+        if (type === 'INCOME') data.state.checking_balance += finalAmt;
+        else data.state.checking_balance -= finalAmt;
 
-    // 3. Update checking balance
-    if (type === 'INCOME') {
-        data.state.checking_balance += finalAmt;
-    } else {
-        data.state.checking_balance -= finalAmt;
-    }
+        data.history.push({
+            date: new Date().toISOString().split('T')[0],
+            vendor: name, what: type, amount: (type === 'BILL' ? -finalAmt : finalAmt), category: type
+        });
 
-    // 4. Log to history (so the Spend page/image you showed stays updated)
-    data.history.push({
-        date: new Date().toISOString().split('T')[0],
-        vendor: name, 
-        what: type, 
-        amount: (type === 'BILL' ? -finalAmt : finalAmt), 
-        category: type
-    });
-
-    // 5. If it's a bill, move the due date forward in the JSON
-    if (type === 'BILL' && idx >= 0) {
-        let d = new Date(data.bills[idx].next_due_date + "T12:00:00");
-        if (data.bills[idx].frequency === "monthly") {
-            d.setMonth(d.getMonth() + 1);
-        } else {
-            d.setDate(d.getDate() + 14);
+        if (type === 'BILL' && idx >= 0) {
+            let d = new Date(data.bills[idx].next_due_date + "T12:00:00");
+            if (data.bills[idx].frequency === "monthly") d.setMonth(d.getMonth() + 1);
+            else d.setDate(d.getDate() + 14);
+            data.bills[idx].next_due_date = d.toISOString().split('T')[0];
         }
-        data.bills[idx].next_due_date = d.toISOString().split('T')[0];
+        await sync();
     }
 
-    // 6. Save to GitHub and refresh UI
-    await sync();
-}
-    
-    // Standard Balance Update
-    data.state.checking_balance += amt;
+    async function logTransaction() {
+        const desc = document.getElementById('desc').value;
+        const amt = parseFloat(document.getElementById('amt').value);
+        if(!desc || isNaN(amt)) return;
 
-    // Amazon Specific Budget Logic
-    if (desc.toLowerCase().includes("amazon")) {
-        // If it's after the 21st, the first $500 is exempt (doesn't hit spending budget)
-        // We can add a simple console log or alert here to remind you of the rule
-        if (dayOfMonth < 21) {
-            console.log("Amazon purchase before 21st: Hits spending budget.");
-        } else {
-            console.log("Amazon purchase after 21st: First $500 exempt.");
+        const today = new Date();
+        data.state.checking_balance += amt;
+
+        // Amazon logic (Exempt $500 after 21st)
+        if (desc.toLowerCase().includes("amazon") && today.getDate() >= 21) {
+             console.log("Amazon Purchase after 21st: Budget rule applied.");
         }
+
+        data.history.push({
+            date: today.toISOString().split('T')[0],
+            vendor: desc, what: "Manual Entry", amount: amt, category: amt < 0 ? "Spending" : "Income"
+        });
+        
+        document.getElementById('desc').value = '';
+        document.getElementById('amt').value = '';
+        await sync();
     }
 
-    data.history.push({
-        date: today.toISOString().split('T')[0],
-        vendor: desc, 
-        what: "Manual Entry", 
-        amount: amt, 
-        category: amt < 0 ? "Spending" : "Income"
-    });
-    
-    document.getElementById('desc').value = '';
-    document.getElementById('amt').value = '';
-    await sync();
-}
+    async function undoLast() {
+        if (!data.history.length || !confirm("Undo last entry?")) return;
+        const last = data.history.pop();
+        data.state.checking_balance -= last.amount;
+        await sync();
+    }
 
-// Added back the Undo function for your peace of mind
-async function undoLast() {
-    if (!data.history.length || !confirm("Undo last entry?")) return;
-    const last = data.history.pop();
-    data.state.checking_balance -= last.amount;
-    await sync();
-}
-    
     // [SECTION: HISTORY RENDER]
     function renderHistory() {
         const histDiv = document.getElementById('recentHistory');
@@ -234,59 +199,35 @@ async function undoLast() {
             histDiv.innerHTML += `
                 <div class="history-item">
                     <span>${h.vendor}</span>
-                    <span style="color:${h.amount < 0 ? '#d32f2f' : '#2e7d32'}">${h.amount < 0 ? '' : '+'}$${h.amount}</span>
+                    <span style="color:${h.amount < 0 ? '#d32f2f' : '#2e7d32'}">${h.amount < 0 ? '' : '+'}$${h.amount.toLocaleString()}</span>
                 </div>`;
         });
     }
 
     // [SECTION: GITHUB SYNC]
     async function sync() {
-        // This should call your actual GitHub Save function
-        if (typeof saveToGithub === "function") {
-            await saveToGithub(data);
-        } else {
-            console.log("Local Update Only - Missing saveToGithub function");
-        }
+        await saveToGithub(data);
         renderUI();
     }
-    // [SECTION: GITHUB SAVE ENGINE]
-async function saveToGithub(updatedData) {
-    const GITHUB_TOKEN = localStorage.getItem('gh_token') || "YOUR_TOKEN_HERE";
-    const REPO_OWNER = 'scottscalici';
-    const REPO_NAME = 'loquesea';
-    const FILE_PATH = 'planner/bills.json';
 
-    try {
-        // 1. Get the current file SHA
-        const getFile = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
-            headers: { "Authorization": `token ${GITHUB_TOKEN}` }
-        });
-        const fileData = await getFile.json();
-        const sha = fileData.sha;
-
-        // 2. Push the updated data
-        const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
-            method: "PUT",
-            headers: {
-                "Authorization": `token ${GITHUB_TOKEN}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                message: "Update budget via Control Center",
-                content: btoa(JSON.stringify(updatedData, null, 2)),
-                sha: sha
-            })
-        });
-
-        if (response.ok) {
-            console.log("Successfully synced to GitHub");
-        } else {
-            console.error("GitHub Save Failed:", await response.text());
-        }
-    } catch (err) {
-        console.error("Error during sync:", err);
+    async function saveToGithub(updatedData) {
+        const GITHUB_TOKEN = localStorage.getItem('gh_token') || "YOUR_TOKEN_HERE";
+        try {
+            const getFile = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`, {
+                headers: { "Authorization": `token ${GITHUB_TOKEN}` }
+            });
+            const fileData = await getFile.json();
+            const response = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`, {
+                method: "PUT",
+                headers: { "Authorization": `token ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: "Update via Control Center",
+                    content: btoa(JSON.stringify(updatedData, null, 2)),
+                    sha: fileData.sha
+                })
+            });
+        } catch (err) { console.error("Sync Error:", err); }
     }
-}
 
     init();
 </script>
