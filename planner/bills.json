@@ -31,9 +31,9 @@
     }
   ],
   "state": {
-    "current_weekly_remaining": 687.4599999999999,
+    "current_weekly_remaining": 568.74,
     "escrow_remaining": 452.78,
-    "checking_balance": 540.2399999999999,
+    "checking_balance": 421.5199999999999,
     "travel_savings": 0
   },
   "vendors": [
@@ -91,6 +91,24 @@
       "vendor": "Starbucks",
       "what": "Starbucks",
       "amount": 8.16
+    },
+    {
+      "date": "2026-01-13T17:00:00.000Z",
+      "vendor": "Target",
+      "what": "Target",
+      "amount": 40.28
+    },
+    {
+      "date": "2026-01-13T17:00:00.000Z",
+      "vendor": "Other...",
+      "what": "restaurant",
+      "amount": 15.65
+    },
+    {
+      "date": "2026-01-14T17:00:00.000Z",
+      "vendor": "Gas",
+      "what": "Gas",
+      "amount": 62.79
     }
   ],
   "bills": [
