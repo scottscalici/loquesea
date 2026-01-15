@@ -13,7 +13,7 @@
         .card { background: var(--card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
         .label { font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; }
         .summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; text-align: center; margin-top: 10px; }
-        .summary-val { font-size: 1.1rem; font-weight: bold; display: block; color: var(--primary); }
+        .summary-val { font-size: 1.1rem; font-weight: bold; display: block; color: #4caf50; }
         table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 10px; }
         th { text-align: left; color: #888; padding: 8px; border-bottom: 2px solid #eee; }
         td { padding: 10px 8px; border-bottom: 1px solid #f0f0f0; }
@@ -42,7 +42,7 @@
 
     <div class="card">
         <span class="label">180-Day Financial Forecast</span>
-        <table>
+        <table id="projTable">
             <thead>
                 <tr>
                     <th>Date</th>
@@ -57,58 +57,65 @@
 
 <script>
     async function init() {
-        const resp = await fetch(`bills.json?t=${Date.now()}`);
-        const data = await resp.json();
-        runProjection(data);
+        try {
+            const resp = await fetch(`bills.json?t=${Date.now()}`);
+            const data = await resp.json();
+            runProjection(data);
+        } catch (e) {
+            console.error("Failed to load projection data", e);
+        }
     }
 
     function runProjection(data) {
-        // FIXED: Correctly reference 'savings_goals' instead of 'goals'
-        const goalsList = data.savings_goals || [];
-        const goalsTotal = goalsList.reduce((sum, g) => sum + g.current, 0);
+        // 1. FIXED: Correctly reference 'savings_goals' (Emergency Fund & Travel)
+        const goals = data.savings_goals || [];
+        const goalsTotal = goals.reduce((sum, g) => sum + (g.current || 0), 0);
         
-        // Liquid balance = Total Bank - Savings Pots
-        let bal = data.state.checking_balance - goalsTotal;
+        // Liquid balance = Total Bank - Savings Goals
+        let bal = (data.state.checking_balance || 0) - goalsTotal;
         
-        let d = new Date(); d.setHours(12,0,0,0);
-        const end = new Date(); end.setDate(end.getDate() + 180);
-        
-        let simBills = JSON.parse(JSON.stringify(data.bills));
         const body = document.getElementById('projectionBody');
         body.innerHTML = ''; 
 
-        const dailyBurn = 1000 / 7;
+        let d = new Date(); 
+        d.setHours(12,0,0,0);
+        const end = new Date(); 
+        end.setDate(end.getDate() + 180);
+        
+        let simBills = JSON.parse(JSON.stringify(data.bills));
+        const dailyBurn = 1000 / 7; // $142.85 per day
 
         while(d <= end) {
             const dateStr = d.toISOString().split('T')[0];
             const dom = d.getDate();
             let events = [];
 
-            // 1. Daily Spending Burn
+            // A. Subtract daily allowance
             bal -= dailyBurn;
 
-            // 2. Payday Logic (15th and 30th)
-            // Note: If month doesn't have 30 days, we use the last day
-            const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-            const payDayTwo = Math.min(30, lastDay);
+            // B. Payday Logic (15th and 30th)
+            const lastDayOfMonth = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+            const secondPayday = Math.min(30, lastDayOfMonth);
             
-            if(dom === 15 || dom === payDayTwo) { 
+            if(dom === 15 || dom === secondPayday) { 
                 bal += 2500; 
-                events.push({label: "Scott Pay", amt: 2500}); 
+                events.push({label: "Payday", amt: 2500}); 
             }
             
-            // 3. Amazon Escrow Reset (21st)
+            // C. Amazon Allowance Logic
+            // On the 21st, $500 is "reserved" for Amazon, effectively leaving your liquid cash
             if(dom === 21) {
                 bal -= 500; 
-                events.push({label: "Amazon Reset", amt: -500});
+                events.push({label: "Amazon Escrow", amt: -500});
             }
 
-            // 4. Automated Bills
+            // D. Bill Logic
             simBills.forEach(b => {
                 if(b.next_due_date === dateStr) {
                     bal -= b.amount;
                     events.push({label: b.name, amt: -b.amount});
                     
+                    // Push bill to next occurrence
                     let next = new Date(b.next_due_date + "T12:00:00");
                     if(b.frequency === "monthly") next.setMonth(next.getMonth()+1);
                     else if(b.frequency === "bi-weekly") next.setDate(next.getDate()+14);
@@ -117,21 +124,21 @@
                 }
             });
 
-            // Update Summaries
+            // Update Milestone Summaries
             const daysOut = Math.floor((d - new Date().setHours(12,0,0,0)) / 86400000);
             if(daysOut === 30) document.getElementById('m1').innerText = `$${Math.round(bal).toLocaleString()}`;
             if(daysOut === 90) document.getElementById('m3').innerText = `$${Math.round(bal).toLocaleString()}`;
             if(daysOut === 180) document.getElementById('m6').innerText = `$${Math.round(bal).toLocaleString()}`;
 
-            // Render Table Rows
+            // Add row for major events only (prevents daily burn from cluttering list)
             events.forEach(ev => {
                 const row = document.createElement('tr');
-                if(bal < 500) row.className = 'low-balance';
+                if(bal < 0) row.className = 'low-balance';
                 row.innerHTML = `
                     <td>${d.getMonth()+1}/${d.getDate()}</td>
                     <td>${ev.label}</td>
                     <td class="${ev.amt > 0 ? 'income' : 'expense'}">${ev.amt > 0 ? '+' : ''}${ev.amt.toLocaleString()}</td>
-                    <td><b>$${Math.round(bal).toLocaleString()}</b></td>
+                    <td style="font-weight:bold;">$${Math.round(bal).toLocaleString()}</td>
                 `;
                 body.appendChild(row);
             });
