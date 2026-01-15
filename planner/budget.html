@@ -15,56 +15,55 @@
         .card { background: var(--card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
         .label { font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; }
         .flex-row { display: flex; justify-content: space-between; align-items: center; }
-        .input-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-        select, input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; width: 100%; box-sizing: border-box; }
         
         .btn { padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; width: 100%; margin-top: 10px; }
         .btn-blue { background: var(--accent); }
-        .btn-green { background: var(--primary); }
         .btn-red { background: var(--danger); }
         
-        .item-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
-        .warning-text { font-weight: bold; font-size: 0.85rem; margin-top: 10px; text-align: center; color: #ff9800; }
+        .warning-text { font-weight: bold; font-size: 0.85rem; margin-top: 10px; text-align: center; color: #d32f2f; background: #ffebee; padding: 10px; border-radius: 8px; border: 1px solid #ffcdd2; }
+        
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 10px; }
+        th { text-align: left; color: #888; padding: 8px 5px; border-bottom: 1px solid #eee; }
+        td { padding: 10px 5px; border-bottom: 1px solid #f9f9f9; }
+        .critical-row { background: #fff3e0; color: #e65100; font-weight: bold; }
+        .danger-row { background: #ffebee; color: #c62828; font-weight: bold; }
         
         #syncStatus { width: 10px; height: 10px; border-radius: 50%; background: #ccc; }
         .sync-saving { background: #ffeb3b !important; }
         .sync-success { background: #4caf50 !important; }
         .hidden { display: none; }
-        
-        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 10px; }
-        th { text-align: left; color: #888; padding: 5px; border-bottom: 1px solid #eee; }
-        td { padding: 8px 5px; border-bottom: 1px solid #f9f9f9; }
     </style>
 </head>
 <body>
 
     <nav class="nav-bar">
-        <a href="#" class="nav-item active">CONTROL CENTER</a>
-        <a href="spend.html" class="nav-item">WEEKLY BUDGET</a>
+        <a href="#" class="nav-item active">CONTROL</a>
+        <a href="spend.html" class="nav-item">WEEKLY SPEND</a>
         <div id="syncStatus"></div>
         <button onclick="toggleSettings()" style="border:none; background:none;">⚙️</button>
     </nav>
 
     <div class="card" style="background: #333; color: white;">
-        <span class="label" style="color: #aaa;">Projected Checking</span>
+        <span class="label" style="color: #aaa;">Projected Checking (Daily Burn Logic)</span>
         <div class="flex-row" style="margin:10px 0; text-align:center;">
             <div>10d<br><b id="proj10" style="color:#4CAF50;">$0</b></div>
             <div>30d<br><b id="proj30" style="color:#4CAF50;">$0</b></div>
             <div>4m<br><b id="proj120" style="color:#4CAF50;">$0</b></div>
         </div>
-        <div id="lowPointWarning" class="warning-text"></div>
+        <div id="lowPointWarning" class="hidden"></div>
     </div>
 
     <div class="card">
         <div class="flex-row">
-            <div><span class="label">Checking Balance</span><br><b id="checkingBal" style="color:var(--accent);">$0</b></div>
-            <button class="btn-red" style="padding:4px 10px; font-size:0.7rem; width:auto; margin:0;" onclick="undoLast()">Undo Last Entry</button>
+            <div><span class="label">Balance</span><br><b id="checkingBal" style="font-size:1.4rem;">$0</b></div>
+            <div><span class="label">Amazon Escrow</span><br><b id="escrowBal" style="color:var(--accent);">$0</b></div>
+            <button class="btn-red" style="padding:4px 8px; font-size:0.7rem; width:auto; margin:0;" onclick="undoLast()">Undo</button>
         </div>
     </div>
 
     <div class="card">
         <span class="label">Log Purchase</span>
-        <div class="input-group">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:10px;">
             <select id="pVendor"></select>
             <input type="number" id="pAmt" placeholder="$ Amount">
         </div>
@@ -72,18 +71,17 @@
     </div>
 
     <div class="card">
-        <span class="label">30-Day Cash Flow Timeline</span>
+        <span class="label">30-Day Cash Flow Table</span>
         <table id="projectionTable">
             <thead>
-                <tr><th>Date</th><th>Event</th><th>Amount</th><th>Balance</th></tr>
+                <tr><th>Date</th><th>Description</th><th>Amount</th><th>Balance</th></tr>
             </thead>
             <tbody id="projectionBody"></tbody>
         </table>
     </div>
 
     <div id="settings" class="card hidden">
-        <span class="label">GitHub Token</span>
-        <input type="password" id="ghToken" style="margin-top:10px;">
+        <input type="password" id="ghToken" placeholder="GitHub Token">
         <button class="btn btn-blue" onclick="saveToken()">Save</button>
     </div>
 
@@ -101,10 +99,10 @@
 
     function calculateProjection(days) {
         let bal = data.state.checking_balance;
-        let d = new Date(); d.setHours(12,0,0,0); // Use High Noon to prevent date drift
+        let d = new Date(); d.setHours(12,0,0,0);
         const end = new Date(d); end.setDate(end.getDate() + days);
         
-        let lowPointDate = null;
+        let lowPointEvent = null;
         let simBills = JSON.parse(JSON.stringify(data.bills));
         let events = [];
         const dailyBurn = 1000 / 7;
@@ -113,23 +111,26 @@
             const dateStr = d.toLocaleDateString('en-CA');
             const dom = d.getDate();
             
-            // 1. Daily Burn
+            // 1. Daily Living Burn
             bal -= dailyBurn;
 
-            // 2. Paydays
-            if(dom === 15) { bal += 2500; events.push({date: dateStr, label: "Scott Pay", amt: 2500, current: bal}); }
-            if(dom === new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()) { 
+            // 2. Amazon Escrow Hit (The 21st)
+            if(dom === 21) {
+                bal -= 500;
+                events.push({date: dateStr, label: "Amazon Escrow Hit", amt: -500, current: bal});
+            }
+
+            // 3. Paydays
+            if(dom === 15 || dom === new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()) { 
                 bal += 2500; events.push({date: dateStr, label: "Scott Pay", amt: 2500, current: bal}); 
             }
-            
-            // Wife Pay
             const refDate = new Date("2026-01-16T12:00:00");
             const diff = Math.floor((d - refDate) / 86400000);
             if(diff >= 0 && diff % 14 === 0) {
                 bal += 2500; events.push({date: dateStr, label: "Wife Pay", amt: 2500, current: bal});
             }
 
-            // 3. Bills
+            // 4. Bills
             simBills.forEach(b => {
                 if(b.next_due_date === dateStr) {
                     bal -= b.amount;
@@ -142,14 +143,19 @@
                 }
             });
 
-            if (bal < 500 && !lowPointDate) lowPointDate = d.toLocaleDateString(undefined, {month:'short', day:'numeric'});
+            // Capture the culprit
+            if (bal < 500 && !lowPointEvent) {
+                const lastEv = events[events.length-1];
+                lowPointEvent = { date: d.toLocaleDateString(undefined, {month:'short', day:'numeric'}), label: (lastEv && lastEv.date === dateStr) ? lastEv.label : "Daily Spend" };
+            }
             d.setDate(d.getDate() + 1);
         }
-        return { balance: Math.round(bal).toLocaleString(), lowPointDate, events };
+        return { balance: Math.round(bal).toLocaleString(), lowPointEvent, events };
     }
 
     function render() {
         document.getElementById('checkingBal').innerText = `$${data.state.checking_balance.toLocaleString()}`;
+        document.getElementById('escrowBal').innerText = `$${data.state.escrow_remaining}`;
         
         const p10 = calculateProjection(10);
         const p30 = calculateProjection(30);
@@ -160,28 +166,44 @@
         document.getElementById('proj120').innerText = `$${p120.balance}`;
 
         const warning = document.getElementById('lowPointWarning');
-        warning.innerText = p120.lowPointDate ? `⚠️ Dips below $500 on ${p120.lowPointDate}` : "✅ Safe for 4 Months";
-        warning.style.color = p120.lowPointDate ? "#ff9800" : "#4CAF50";
+        if (p120.lowPointEvent) {
+            warning.classList.remove('hidden');
+            warning.innerText = `⚠️ Low Point: ${p120.lowPointEvent.date} (${p120.lowPointEvent.label})`;
+        } else { warning.classList.add('hidden'); }
 
-        // Render the Table
         const body = document.getElementById('projectionBody');
         body.innerHTML = '';
         p30.events.forEach(ev => {
-            body.innerHTML += `<tr>
+            let rowClass = ev.current < 500 ? 'danger-row' : (ev.current < 1000 ? 'critical-row' : '');
+            body.innerHTML += `<tr class="${rowClass}">
                 <td>${ev.date.split('-').slice(1).join('/')}</td>
                 <td>${ev.label}</td>
-                <td style="color:${ev.amt > 0 ? 'green' : 'red'}">${ev.amt > 0 ? '+' : ''}${ev.amt}</td>
-                <td><b>$${Math.round(ev.current)}</b></td>
+                <td>${ev.amt > 0 ? '+' : ''}${ev.amt}</td>
+                <td>$${Math.round(ev.current)}</td>
             </tr>`;
         });
     }
 
     async function logTransaction() {
+        const vendor = document.getElementById('pVendor').value;
         const amt = parseFloat(document.getElementById('pAmt').value);
         if(!amt) return;
+
         data.state.checking_balance -= amt;
-        data.state.current_weekly_remaining -= amt;
-        data.history.push({ date: new Date().toISOString(), vendor: document.getElementById('pVendor').value, amount: amt });
+
+        if(vendor === "Amazon") {
+            if(data.state.escrow_remaining >= amt) {
+                data.state.escrow_remaining -= amt; // Escrow covers it
+            } else {
+                const overage = amt - data.state.escrow_remaining;
+                data.state.escrow_remaining = 0;
+                data.state.current_weekly_remaining -= overage; // Overage eats into weekly budget
+            }
+        } else {
+            data.state.current_weekly_remaining -= amt;
+        }
+
+        data.history.push({ date: new Date().toISOString(), vendor, amount: amt });
         await sync(); render();
     }
 
@@ -189,7 +211,14 @@
         const last = data.history.pop();
         if(!last) return;
         data.state.checking_balance += last.amount;
-        if(last.vendor !== "BILL" && last.vendor !== "INCOME") {
+        if(last.vendor === "Amazon") {
+            data.state.escrow_remaining += last.amount;
+            if(data.state.escrow_remaining > 500) { // If it overflowed back into weekly
+                 const extra = data.state.escrow_remaining - 500;
+                 data.state.escrow_remaining = 500;
+                 data.state.current_weekly_remaining += extra;
+            }
+        } else {
             data.state.current_weekly_remaining += last.amount;
         }
         await sync(); render();
