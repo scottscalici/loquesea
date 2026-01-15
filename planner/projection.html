@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Financial Time Machine</title>
+    <title>6-Month Projection</title>
     <style>
         :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; --danger: #d32f2f; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-top: 60px; color: var(--text); }
@@ -18,13 +18,7 @@
         
         /* Summary Grid */
         .summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; text-align: center; margin-top: 10px; }
-        .summary-val { font-size: 1.1rem; font-weight: bold; display: block; color: #4caf50; }
-
-        /* What-If Section */
-        .playground { border: 2px dashed var(--accent); background: #f0f7ff; }
-        .flex-row { display: flex; gap: 10px; margin-top: 10px; }
-        input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem; }
-        .btn-test { background: var(--accent); color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .summary-val { font-size: 1.1rem; font-weight: bold; display: block; color: var(--primary); }
 
         /* Projection Table */
         table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 10px; }
@@ -33,8 +27,8 @@
         
         .income { color: var(--primary); font-weight: bold; }
         .expense { color: var(--danger); }
-        .test-row { background-color: #e3f2fd !important; font-weight: bold; }
-        .low-balance { background-color: #fff3f3; color: var(--danger); }
+        .low-balance { background-color: #fff3f3; }
+        .milestone-row { background-color: #f0f7ff; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -46,18 +40,8 @@
         <a href="ledger.html" class="nav-item">LEDGER</a>
     </nav>
 
-    <div class="card playground">
-        <span class="label" style="color: var(--accent);">🧪 What-If Playground (Temporary)</span>
-        <div class="flex-row">
-            <input type="number" id="whatIfAmt" placeholder="$ Amount">
-            <input type="date" id="whatIfDate">
-            <button class="btn-test" onclick="applyWhatIf()">Apply</button>
-            <button onclick="resetWhatIf()" style="border:none; background:none; font-size:0.7rem; color:#666; text-decoration:underline;">Reset</button>
-        </div>
-    </div>
-
     <div class="card" style="background: #333; color: white;">
-        <span class="label" style="color: #aaa;">Projected Spendable Cash</span>
+        <span class="label" style="color: #aaa;">Projected Liquid Cash</span>
         <div class="summary-grid">
             <div><span class="label">30 Days</span><span id="m1" class="summary-val">$0</span></div>
             <div><span class="label">90 Days</span><span id="m3" class="summary-val">$0</span></div>
@@ -66,7 +50,7 @@
     </div>
 
     <div class="card">
-        <span class="label">180-Day Timeline</span>
+        <span class="label">180-Day Financial Forecast</span>
         <table>
             <thead>
                 <tr>
@@ -81,43 +65,22 @@
     </div>
 
 <script>
-    let masterData = null;
-    let whatIfData = null;
-
     async function init() {
         const resp = await fetch(`bills.json?t=${Date.now()}`);
-        masterData = await resp.json();
-        runProjection();
+        const data = await resp.json();
+        runProjection(data);
     }
 
-    function applyWhatIf() {
-        const amt = parseFloat(document.getElementById('whatIfAmt').value);
-        const date = document.getElementById('whatIfDate').value;
-        if (!amt || !date) return;
-        whatIfData = { amt, date };
-        runProjection();
-    }
-
-    function resetWhatIf() {
-        whatIfData = null;
-        document.getElementById('whatIfAmt').value = '';
-        document.getElementById('whatIfDate').value = '';
-        runProjection();
-    }
-
-    function runProjection() {
-        const body = document.getElementById('projectionBody');
-        body.innerHTML = '';
-        
-        // Start with Liquid Balance: Checking minus Goals
-        const goalsTotal = masterData.goals.reduce((sum, g) => sum + g.current, 0);
-        let bal = masterData.state.checking_balance - goalsTotal;
+    function runProjection(data) {
+        // We start with checking balance MINUS virtual goals to see "Spendable" cash
+        const goalsTotal = data.goals.reduce((sum, g) => sum + g.current, 0);
+        let bal = data.state.checking_balance - goalsTotal;
         
         let d = new Date(); d.setHours(12,0,0,0);
-        const startTimestamp = d.getTime();
         const end = new Date(); end.setDate(end.getDate() + 180);
         
-        let simBills = JSON.parse(JSON.stringify(masterData.bills));
+        let simBills = JSON.parse(JSON.stringify(data.bills));
+        const body = document.getElementById('projectionBody');
         const dailyBurn = 1000 / 7;
 
         while(d <= end) {
@@ -125,36 +88,34 @@
             const dom = d.getDate();
             let events = [];
 
-            // 1. Daily Burn (The $142)
+            // 1. Weekly Burn (Applied Daily)
             bal -= dailyBurn;
 
-            // 2. Paydays
+            // 2. Paydays (15th and Last Day)
             const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
             if(dom === 15 || dom === lastDay) { 
                 bal += 2500; events.push({label: "Scott Pay", amt: 2500}); 
             }
+            
+            // Bi-Weekly Wife Pay Logic
             const wifeRef = new Date("2026-01-16T12:00:00");
-            const diffDays = Math.floor((d - wifeRef) / 86400000);
-            if(diffDays >= 0 && diffDays % 14 === 0) {
+            const diff = Math.floor((d - wifeRef) / 86400000);
+            if(diff >= 0 && diff % 14 === 0) {
                 bal += 2500; events.push({label: "Wife Pay", amt: 2500});
             }
 
-            // 3. Amazon Escrow (21st)
+            // 3. Amazon Escrow Reset (21st)
             if(dom === 21) {
                 bal -= 500; events.push({label: "Amazon Escrow", amt: -500});
             }
 
-            // 4. Test Scenario
-            if (whatIfData && dateStr === whatIfData.date) {
-                bal -= whatIfData.amt;
-                events.push({label: "🧪 TEST SPEND", amt: -whatIfData.amt, isTest: true});
-            }
-
-            // 5. Bills
+            // 4. Automated Bills
             simBills.forEach(b => {
                 if(b.next_due_date === dateStr) {
                     bal -= b.amount;
                     events.push({label: b.name, amt: -b.amount});
+                    
+                    // Cycle the bill for the next projection period
                     let next = new Date(b.next_due_date + "T12:00:00");
                     if(b.frequency === "monthly") next.setMonth(next.getMonth()+1);
                     else if(b.frequency === "bi-weekly") next.setDate(next.getDate()+14);
@@ -163,18 +124,16 @@
                 }
             });
 
-            // Update Milestones
-            const daysOut = Math.floor((d.getTime() - startTimestamp) / 86400000);
+            // Update Milestone Summaries
+            const daysOut = Math.floor((d - new Date().setHours(12,0,0,0)) / 86400000);
             if(daysOut === 30) document.getElementById('m1').innerText = `$${Math.round(bal).toLocaleString()}`;
             if(daysOut === 90) document.getElementById('m3').innerText = `$${Math.round(bal).toLocaleString()}`;
             if(daysOut === 180) document.getElementById('m6').innerText = `$${Math.round(bal).toLocaleString()}`;
 
-            // Render Row
+            // Add rows to table for events
             events.forEach(ev => {
                 const row = document.createElement('tr');
-                if(ev.isTest) row.className = 'test-row';
-                if(bal < 500) row.className += ' low-balance';
-                
+                if(bal < 500) row.className = 'low-balance';
                 row.innerHTML = `
                     <td>${d.getMonth()+1}/${d.getDate()}</td>
                     <td>${ev.label}</td>
