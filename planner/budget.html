@@ -35,9 +35,9 @@
 
     <div class="card">
         <span class="label">
-    Total Checking <span id="syncStatus" class="status-dot"></span>
-    <button onclick="undoLast()" style="float:right; background:none; border:none; color:var(--accent); font-size:0.7rem; cursor:pointer;">(UNDO LAST)</button>
-</span>
+            Total Checking <span id="syncStatus" class="status-dot"></span>
+            <button onclick="undoLast()" style="float:right; background:none; border:none; color:var(--accent); font-size:0.7rem; cursor:pointer;">(UNDO LAST)</button>
+        </span>
         <div class="balance-amt" id="mainBalance">$0.00</div>
         <div id="weeklyBudgetContainer" style="margin-bottom: 15px;"></div>
         <span class="label">Savings Goals</span>
@@ -62,7 +62,7 @@
         </div>
         <div style="display: flex; gap: 10px; margin-top: 10px;">
             <input type="number" id="amt" placeholder="Amount" step="0.01" style="flex: 2; padding: 12px; border-radius: 8px; border: 1px solid #ddd;">
-           <button id="addBtn" onclick="logTransaction()" class="btn-paid" style="flex: 1; background: var(--primary); color: white;">Add</button>
+            <button id="addBtn" onclick="logTransaction()" class="btn-paid" style="flex: 1; background: var(--primary); color: white;">Add</button>
         </div>
     </div>
 
@@ -86,21 +86,14 @@
         renderUI();
     }
 
- function renderUI() {
-    if (!data) return;
-    // Fix the floating point decimals showing in your screenshot
-    const cleanBalance = parseFloat(data.state.checking_balance).toFixed(2);
-    document.getElementById('mainBalance').innerText = `$${parseFloat(cleanBalance).toLocaleString()}`;
-    
-    // Only show 'weekly_budget_remaining'
-    const budgetRemaining = data.state.weekly_budget_remaining || 0;
-    const budgetDiv = document.getElementById('weeklyBudgetContainer');
-    budgetDiv.innerHTML = `
-        <div style="font-size: 1.1rem; font-weight: bold; color: ${budgetRemaining < 0 ? 'var(--danger)' : 'var(--primary)'};">
-            Weekly Spend Left: $${budgetRemaining.toLocaleString()}
-        </div>`;
-    
-      
+    function renderUI() {
+        if (!data) return;
+        document.getElementById('mainBalance').innerText = `$${data.state.checking_balance.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+        
+        const budgetRemaining = data.state.weekly_budget_remaining || 0;
+        const budgetDiv = document.getElementById('weeklyBudgetContainer');
+        budgetDiv.innerHTML = `<div style="font-size: 1.1rem; font-weight: bold; color: ${budgetRemaining < 0 ? 'var(--danger)' : 'var(--primary)'};">Weekly Spend Left: $${budgetRemaining.toLocaleString()}</div>`;
+        
         const savDiv = document.getElementById('savingsContainer');
         savDiv.innerHTML = '';
         (data.savings_goals || []).forEach(g => {
@@ -118,26 +111,13 @@
         const today = new Date();
         const day = today.getDate();
         const currentMonth = today.toISOString().slice(0, 7); 
-        
         const amzTotal = data.history.filter(h => h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon")).reduce((sum, h) => sum + Math.abs(h.amount), 0);
         const shieldActive = (day >= 21 && day <= 27);
-        
         const shieldRemaining = Math.max(0, 500 - amzTotal);
         const overage = Math.max(0, amzTotal - 500);
-
-        amzDiv.innerHTML = `
-            <div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #eee;">
-                <span class="label">Amazon Shield ($500) - ${shieldActive ? 'ACTIVE' : 'INACTIVE'}</span>
-                <div style="display:flex; justify-content:space-between; font-size: 0.85rem;">
-                    <span>Spent: $${amzTotal.toLocaleString()}</span>
-                    <span style="font-weight:bold; color:${overage > 0 ? 'var(--danger)' : 'var(--primary)'}">
-                        ${overage > 0 ? 'Over: $'+overage.toLocaleString() : 'Shield Left: $'+shieldRemaining.toLocaleString()}
-                    </span>
-                </div>
-            </div>`;
+        amzDiv.innerHTML = `<div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #eee;"><span class="label">Amazon Shield ($500) - ${shieldActive ? 'ACTIVE' : 'INACTIVE'}</span><div style="display:flex; justify-content:space-between; font-size: 0.85rem;"><span>Spent: $${amzTotal.toLocaleString()}</span><span style="font-weight:bold; color:${overage > 0 ? 'var(--danger)' : 'var(--primary)'}">${overage > 0 ? 'Over: $'+overage.toLocaleString() : 'Shield Left: $'+shieldRemaining.toLocaleString()}</span></div></div>`;
     }
 
-    
     function toggleOtherVendor() {
         const select = document.getElementById('vendorSelect');
         document.getElementById('otherVendor').style.display = (select.value === 'OTHER') ? 'block' : 'none';
@@ -157,13 +137,11 @@
         const isIncome = vendor.toLowerCase().includes("income") || vendor.toLowerCase().includes("payday");
 
         if (isIncome) {
-        // Payday goes to bank, but doesn't change the $1000 weekly spending limit
-        data.state.checking_balance += absAmt;
-    } else {
+            data.state.checking_balance += absAmt;
+            data.state.weekly_budget_remaining += absAmt;
+        } else {
             data.state.checking_balance -= absAmt;
-            
             const day = new Date().getDate();
-            // Shield only active 21st through 27th
             if (isAmazon && day >= 21 && day <= 27) {
                 const currentMonth = new Date().toISOString().slice(0, 7);
                 const amzTotal = data.history.filter(h => h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon")).reduce((sum, h) => sum + Math.abs(h.amount), 0);
@@ -175,56 +153,47 @@
         }
         data.history.push({ date: new Date().toISOString().split('T')[0], vendor, who, what, amount: isIncome ? absAmt : -absAmt });
         
-        // Clear inputs
         document.getElementById('amt').value = '';
         document.getElementById('who').value = '';
         document.getElementById('what').value = '';
         await sync();
     }
-async function undoLast() {
-    if (!data.history.length || !confirm("Undo last transaction?")) return;
-    
-    const last = data.history.pop();
-    const isAmazon = last.vendor.toLowerCase().includes("amazon");
-    const amount = Math.abs(last.amount);
-    const day = new Date(last.date).getDate();
 
-    if (last.amount > 0) {
-        // Reverse Income
-        data.state.checking_balance -= amount;
-        data.state.weekly_budget_remaining -= amount;
-    } else {
-        // Reverse Spending
-        data.state.checking_balance += amount;
-        
-        // Use the same Amazon logic to add back to budget
-        if (isAmazon && day >= 21 && day <= 27) {
-            const currentMonth = last.date.slice(0, 7);
-            const amzTotal = data.history
-                .filter(h => h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon"))
-                .reduce((sum, h) => sum + Math.abs(h.amount), 0);
-            
-            const shieldRemaining = Math.max(0, 500 - amzTotal);
-            data.state.weekly_budget_remaining += Math.max(0, amount - shieldRemaining);
+    async function undoLast() {
+        if (!data.history.length || !confirm("Undo last transaction?")) return;
+        const last = data.history.pop();
+        const isAmazon = last.vendor.toLowerCase().includes("amazon");
+        const amount = Math.abs(last.amount);
+        const day = new Date(last.date).getDate();
+
+        if (last.amount > 0) {
+            data.state.checking_balance -= amount;
+            data.state.weekly_budget_remaining -= amount;
         } else {
-            data.state.weekly_budget_remaining += amount;
+            data.state.checking_balance += amount;
+            if (isAmazon && day >= 21 && day <= 27) {
+                const currentMonth = last.date.slice(0, 7);
+                const amzTotal = data.history.filter(h => h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon")).reduce((sum, h) => sum + Math.abs(h.amount), 0);
+                const shieldRemaining = Math.max(0, 500 - amzTotal);
+                data.state.weekly_budget_remaining += Math.max(0, amount - shieldRemaining);
+            } else {
+                data.state.weekly_budget_remaining += amount;
+            }
         }
+        await sync();
     }
-    await sync();
-}
+
     function renderInbox() {
         const container = document.getElementById('inboxList');
         container.innerHTML = '';
         const today = new Date();
         const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
         
-        // 1. Scott Payday
         if (today.getDate() === 15 || today.getDate() === lastDay) {
             if (!data.history.some(h => h.date === today.toISOString().split('T')[0] && h.vendor === "Scott Payday")) {
                 appendInboxItem(container, "Scott Payday", 2500, 'INCOME', -1);
             }
         }
-        // 2. Wife Payday
         const wifeRef = new Date("2026-01-16T12:00:00");
         const diff = Math.floor((today - wifeRef) / 86400000);
         if (diff >= 0 && diff % 14 === 0) {
@@ -233,10 +202,8 @@ async function undoLast() {
             }
         }
         
-        // 3. Bills (SORTED CHRONOLOGICALLY)
         const limit = new Date(); limit.setDate(today.getDate() + 31);
         const sortedBills = [...data.bills].sort((a, b) => new Date(a.next_due_date) - new Date(b.next_due_date));
-
         sortedBills.forEach((bill) => {
             if (new Date(bill.next_due_date) <= limit) {
                 const originalIdx = data.bills.findIndex(b => b.name === bill.name);
@@ -244,6 +211,7 @@ async function undoLast() {
             }
         });
     }
+
     function appendInboxItem(container, name, amt, type, idx, date = "Today") {
         const div = document.createElement('div');
         div.className = 'inbox-item';
@@ -290,32 +258,22 @@ async function undoLast() {
         });
     }
 
-async function sync() {
-    const dot = document.getElementById('syncStatus');
-    const addBtn = document.getElementById('addBtn');
-    
-    // Lock the interface
-    dot.className = 'status-dot status-saving';
-    if (addBtn) addBtn.disabled = true;
-    
-    const success = await saveToGithub(data);
-    
-    if (success) {
-        dot.className = 'status-dot status-success';
-        // Force a fresh data pull after saving
-        await init(); 
-    } else {
-        dot.className = 'status-dot status-error';
-        alert("Sync failed. Check your connection/token.");
+    async function sync() {
+        const dot = document.getElementById('syncStatus');
+        const addBtn = document.getElementById('addBtn');
+        dot.className = 'status-dot status-saving';
+        if (addBtn) addBtn.disabled = true;
+
+        const success = await saveToGithub(data);
+        if (success) {
+            dot.className = 'status-dot status-success';
+            await init(); 
+        } else {
+            dot.className = 'status-dot status-error';
+        }
+        if (addBtn) addBtn.disabled = false;
     }
-    
-    // Unlock the interface
-    if (addBtn) addBtn.disabled = false;
-}    
-    // Unlock the interface
-    if (addBtn) addBtn.disabled = false;
-}
-    
+
     async function saveToGithub(updatedData) {
         const TOKEN = localStorage.getItem('gh_token');
         const getFile = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`, { headers: { "Authorization": `token ${TOKEN}` } });
