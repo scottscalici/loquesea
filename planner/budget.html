@@ -81,11 +81,15 @@
     let data = null;
 
     async function init() {
-        // The Date.now() part forces GitHub to bypass the cache
-        const resp = await fetch(`bills.json?t=${Date.now()}`, {
+        const TOKEN = localStorage.getItem('gh_token');
+        // Fetching directly from the API bypasses the "GitHub Pages" delay
+        const resp = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, {
+            headers: { "Authorization": `token ${TOKEN}` },
             cache: 'no-store'
         });
-        data = await resp.json();
+        const fileData = await resp.json();
+        // Decode the Base64 content from the API
+        data = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
         renderUI();
     }
     
@@ -305,22 +309,27 @@ async function logTransaction() {
         });
     }
 
-    async function sync() {
+async function sync() {
         const dot = document.getElementById('syncStatus');
         const addBtn = document.getElementById('addBtn');
+        
         dot.className = 'status-dot status-saving';
         if (addBtn) addBtn.disabled = true;
 
         const success = await saveToGithub(data);
+        
         if (success) {
             dot.className = 'status-dot status-success';
+            // We re-run init() to confirm the data is safe, then you can move on
             await init(); 
         } else {
             dot.className = 'status-dot status-error';
+            alert("Sync failed. Check your token.");
         }
+        
         if (addBtn) addBtn.disabled = false;
     }
-
+    
     async function saveToGithub(updatedData) {
         const TOKEN = localStorage.getItem('gh_token');
         // Cache-busting the SHA fetch is critical for speed
