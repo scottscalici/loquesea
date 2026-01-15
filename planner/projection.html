@@ -5,45 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>6-Month Projection</title>
     <style>
-        :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; }
+        :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; --danger: #d32f2f; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-top: 60px; color: var(--text); }
         
+        /* Consistent Navigation */
         .nav-bar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: #fff; display: flex; align-items: center; justify-content: space-around; border-bottom: 1px solid #ddd; z-index: 1000; }
-        .nav-item { text-decoration: none; color: #666; font-size: 0.8rem; font-weight: bold; }
+        .nav-item { text-decoration: none; color: #666; font-size: 0.75rem; font-weight: bold; }
         .nav-item.active { color: var(--accent); }
 
         .card { background: var(--card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
         .label { font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; }
         
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 10px; }
+        /* Summary Grid */
+        .summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; text-align: center; margin-top: 10px; }
+        .summary-val { font-size: 1.1rem; font-weight: bold; display: block; color: var(--primary); }
+
+        /* Projection Table */
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 10px; }
         th { text-align: left; color: #888; padding: 8px; border-bottom: 2px solid #eee; }
         td { padding: 10px 8px; border-bottom: 1px solid #f0f0f0; }
         
-        .income { color: #2e7d32; font-weight: bold; }
-        .expense { color: #d32f2f; }
-        .low-balance { background-color: #ffebee; }
-        .summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; text-align: center; margin-top: 10px; }
-        .summary-val { font-size: 1.1rem; font-weight: bold; display: block; }
+        .income { color: var(--primary); font-weight: bold; }
+        .expense { color: var(--danger); }
+        .low-balance { background-color: #fff3f3; }
+        .milestone-row { background-color: #f0f7ff; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <nav class="nav-bar">
-        <a href="budget.html" class="nav-item">⬅️ CONTROL CENTER</a>
-        <a href="#" class="nav-item active">6-MONTH PROJECTION</a>
+        <a href="budget.html" class="nav-item">CONTROL</a>
+        <a href="spend.html" class="nav-item">WEEKLY</a>
+        <a href="projection.html" class="nav-item active">PROJECTION</a>
+        <a href="ledger.html" class="nav-item">LEDGER</a>
     </nav>
 
     <div class="card" style="background: #333; color: white;">
-        <span class="label" style="color: #aaa;">Projected Milestones</span>
+        <span class="label" style="color: #aaa;">Projected Liquid Cash</span>
         <div class="summary-grid">
-            <div><span class="label">30 Days</span><span id="m1" class="summary-val">...</span></div>
-            <div><span class="label">90 Days</span><span id="m3" class="summary-val">...</span></div>
-            <div><span class="label">180 Days</span><span id="m6" class="summary-val">...</span></div>
+            <div><span class="label">30 Days</span><span id="m1" class="summary-val">$0</span></div>
+            <div><span class="label">90 Days</span><span id="m3" class="summary-val">$0</span></div>
+            <div><span class="label">180 Days</span><span id="m6" class="summary-val">$0</span></div>
         </div>
     </div>
 
     <div class="card">
-        <span class="label">Forecasted Timeline (Next 180 Days)</span>
+        <span class="label">180-Day Financial Forecast</span>
         <table>
             <thead>
                 <tr>
@@ -65,7 +72,10 @@
     }
 
     function runProjection(data) {
-        let bal = data.state.checking_balance;
+        // We start with checking balance MINUS virtual goals to see "Spendable" cash
+        const goalsTotal = data.goals.reduce((sum, g) => sum + g.current, 0);
+        let bal = data.state.checking_balance - goalsTotal;
+        
         let d = new Date(); d.setHours(12,0,0,0);
         const end = new Date(); end.setDate(end.getDate() + 180);
         
@@ -76,31 +86,36 @@
         while(d <= end) {
             const dateStr = d.toLocaleDateString('en-CA');
             const dom = d.getDate();
-            let eventsThisDay = [];
+            let events = [];
 
-            // 1. Daily Burn
+            // 1. Weekly Burn (Applied Daily)
             bal -= dailyBurn;
 
-            // 2. Paydays
-            if(dom === 15 || dom === new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()) { 
-                bal += 2500; eventsThisDay.push({label: "Scott Pay", amt: 2500}); 
+            // 2. Paydays (15th and Last Day)
+            const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+            if(dom === 15 || dom === lastDay) { 
+                bal += 2500; events.push({label: "Scott Pay", amt: 2500}); 
             }
-            const refDate = new Date("2026-01-16T12:00:00");
-            const diff = Math.floor((d - refDate) / 86400000);
+            
+            // Bi-Weekly Wife Pay Logic
+            const wifeRef = new Date("2026-01-16T12:00:00");
+            const diff = Math.floor((d - wifeRef) / 86400000);
             if(diff >= 0 && diff % 14 === 0) {
-                bal += 2500; eventsThisDay.push({label: "Wife Pay", amt: 2500});
+                bal += 2500; events.push({label: "Wife Pay", amt: 2500});
             }
 
-            // 3. Amazon Escrow (21st)
+            // 3. Amazon Escrow Reset (21st)
             if(dom === 21) {
-                bal -= 500; eventsThisDay.push({label: "Amazon Escrow", amt: -500});
+                bal -= 500; events.push({label: "Amazon Escrow", amt: -500});
             }
 
-            // 4. Bills
+            // 4. Automated Bills
             simBills.forEach(b => {
                 if(b.next_due_date === dateStr) {
                     bal -= b.amount;
-                    eventsThisDay.push({label: b.name, amt: -b.amount});
+                    events.push({label: b.name, amt: -b.amount});
+                    
+                    // Cycle the bill for the next projection period
                     let next = new Date(b.next_due_date + "T12:00:00");
                     if(b.frequency === "monthly") next.setMonth(next.getMonth()+1);
                     else if(b.frequency === "bi-weekly") next.setDate(next.getDate()+14);
@@ -109,14 +124,14 @@
                 }
             });
 
-            // Log Milestones
+            // Update Milestone Summaries
             const daysOut = Math.floor((d - new Date().setHours(12,0,0,0)) / 86400000);
             if(daysOut === 30) document.getElementById('m1').innerText = `$${Math.round(bal).toLocaleString()}`;
             if(daysOut === 90) document.getElementById('m3').innerText = `$${Math.round(bal).toLocaleString()}`;
             if(daysOut === 180) document.getElementById('m6').innerText = `$${Math.round(bal).toLocaleString()}`;
 
-            // Add to Table if something happened
-            eventsThisDay.forEach(ev => {
+            // Add rows to table for events
+            events.forEach(ev => {
                 const row = document.createElement('tr');
                 if(bal < 500) row.className = 'low-balance';
                 row.innerHTML = `
