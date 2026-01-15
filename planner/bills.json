@@ -3,21 +3,15 @@
     "base_weekly_allowance": 1000,
     "amazon_escrow_earmark": 750
   },
-  "paydays": [
-    {
-      "name": "Scott Pay",
-      "amount": 2500,
-      "frequency": "bi-weekly",
-      "next_date": "2026-01-23"
-    },
-    {
-      "name": "Wife Pay",
-      "amount": 1800,
-      "frequency": "monthly",
-      "next_date": "2026-02-01"
-    }
+ "savings_goals": [
+    { "name": "Emergency Fund", "target": 2000.00, "current": 0.00 },
+    { "name": "Travel", "target": 5000.00, "current": 0.00 }
   ],
-  "state": {
+  "paydays": [
+    { "id": "wife-pay", "name": "Wife Pay", "amount": 2500.00, "type": "bi-weekly", "last_date": "2026-01-16" },
+    { "id": "scott-pay", "name": "Scott Pay", "amount": 2500.00, "type": "semi-monthly" }
+  ],
+    "state": {
     "current_weekly_remaining": 1000,
     "escrow_remaining": 487.44,
     "checking_balance": 300.65000000000003,
