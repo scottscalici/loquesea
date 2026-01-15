@@ -213,9 +213,9 @@
     {
       "id": "meemic",
       "name": "Meemic",
-      "frequency": "semi-annually",
-      "amount": 1246,
-      "next_due_date": "2026-06-08"
+      "frequency": "monthly",
+      "amount": 210
+      "next_due_date": "2026-02-08"
     },
     {
       "id": "mi-sos",
