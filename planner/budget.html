@@ -46,11 +46,11 @@
         </div>
     </div>
 
-    <div class="card">
-        <span class="label">Inbox: Bills & Paydays (Next 14 Days)</span>
-        <div id="inboxList"></div>
-    </div>
-
+  <div class="card">
+    <span class="label">Inbox: Bills & Paydays (Next 31 Days)</span>
+    <div id="inboxList"></div>
+</div>
+    
     <div class="card">
         <span class="label">Recent History</span>
         <div id="recentHistory"></div>
@@ -88,18 +88,17 @@
         renderInbox();
         renderHistory();
     }
+// [SECTION: INBOX LOGIC]
+function renderInbox() {
+    const container = document.getElementById('inboxList');
+    container.innerHTML = '';
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const todayStr = today.toISOString().split('T')[0];
 
-    // [SECTION: INBOX LOGIC]
-    function renderInbox() {
-        const container = document.getElementById('inboxList');
-        container.innerHTML = '';
-        const today = new Date();
-        today.setHours(0,0,0,0);
-        const todayStr = today.toISOString().split('T')[0];
-
-        // Action window: items due within 14 days get buttons
-        const actionLimit = new Date();
-        actionLimit.setDate(today.getDate() + 14);
+    // 31 DAYS
+    const actionLimit = new Date();
+    actionLimit.setDate(today.getDate() + 31); 
 
         // 1. Scott's Payday
         const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
