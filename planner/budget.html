@@ -97,27 +97,39 @@
                     <div class="progress-bg"><div class="progress-fill" style="width:${pct}%"></div></div>
                 </div>`;
         });
-        function renderAmazonEscrow() {
+   function renderAmazonEscrow() {
     const amzDiv = document.getElementById('amazonStatus');
-    const today = new Date();
-    const day = today.getDate();
+    if (!amzDiv) return;
     
-    // Calculate total Amazon spending this month from history
-    const currentMonth = today.toISOString().slice(0, 7); // "2026-01"
+    const today = new Date();
+    const currentMonth = today.toISOString().slice(0, 7); 
+    
+    // 1. Calculate total Amazon spend this month
     const amzTotal = data.history
         .filter(h => h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon"))
         .reduce((sum, h) => sum + Math.abs(h.amount), 0);
 
-    let allowance = (day >= 21) ? 500 : 1000;
-    let remaining = allowance - amzTotal;
+    // 2. Determine how much of the $500 shield is left
+    const shieldLimit = 500;
+    const shieldRemaining = Math.max(0, shieldLimit - amzTotal);
+    const overage = Math.max(0, amzTotal - shieldLimit);
+
+    // 3. UI Colors
+    let statusColor = "#2e7d32"; // Green while under $500
+    if (overage > 0) statusColor = "#d32f2f"; // Red if you've eaten through the shield
 
     amzDiv.innerHTML = `
-        <span class="label">Amazon Budget (${day >= 21 ? 'Post-21st' : 'Pre-21st'})</span>
-        <div style="display:flex; justify-content:space-between; font-size: 0.9rem;">
-            <span>Spent: $${amzTotal.toLocaleString()}</span>
-            <span style="font-weight:bold; color:${remaining < 0 ? 'red' : 'green'}">
-                Rem: $${remaining.toLocaleString()}
-            </span>
+        <div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #eee;">
+            <span class="label">Amazon Subscription Shield ($500)</span>
+            <div style="display:flex; justify-content:space-between; font-size: 0.85rem; margin-top:5px;">
+                <span>Total Spent: $${amzTotal.toLocaleString()}</span>
+                <span style="font-weight:bold; color:${statusColor}">
+                    ${overage > 0 ? `Over Shield: $${overage.toLocaleString()}` : `Shield Left: $${shieldRemaining.toLocaleString()}`}
+                </span>
+            </div>
+            <div style="font-size: 0.7rem; color: #666; margin-top: 4px;">
+                *Subscriptions (21st-27th) use this shield first.
+            </div>
         </div>
     `;
 }
