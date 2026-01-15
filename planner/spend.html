@@ -3,61 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekly Budget</title>
+    <title>Weekly Budget Tracker</title>
     <style>
         :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; --danger: #d32f2f; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; color: var(--text); padding-top: 60px; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; color: var(--text); padding-top: 20px; }
         
-        /* Navigation */
-        .nav-bar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: #fff; display: flex; align-items: center; justify-content: space-around; border-bottom: 1px solid #ddd; z-index: 1000; }
-        .nav-item { text-decoration: none; color: #666; font-size: 0.8rem; font-weight: bold; }
-        .nav-item.active { color: var(--accent); }
-
-        .card { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; text-align: center; }
-        .label { font-size: 0.75rem; color: #888; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 5px; }
+        .card { background: var(--card); border-radius: 16px; padding: 30px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; text-align: center; }
+        .label { font-size: 0.8rem; color: #888; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; }
         
-        /* Pacing Display */
-        .pacing-val { font-size: 3.5rem; font-weight: bold; color: var(--primary); margin: 10px 0; }
+        /* The "Giant Number" */
+        .pacing-val { font-size: 4.5rem; font-weight: 800; color: var(--primary); margin: 15px 0; line-height: 1; }
+        .sub-text { color: #666; font-size: 1rem; font-weight: 500; }
         
-        /* Progress Bar */
-        .progress-container { background: #eee; height: 24px; border-radius: 12px; margin: 20px 0; position: relative; overflow: hidden; border: 1px solid #ddd; }
-        .progress-fill { height: 100%; background: var(--primary); transition: width 0.5s ease; width: 0%; }
-        .target-marker { position: absolute; top: 0; width: 3px; height: 100%; background: #333; z-index: 2; border-radius: 2px; }
-        .progress-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: #666; font-weight: bold; margin-top: -10px; }
-
-        /* Amazon Shield */
-        .escrow-pill { display: inline-block; background: #e3f2fd; color: #1976d2; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-top: 10px; }
-
-        /* Quick Log Buttons */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .btn { padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white; font-size: 1rem; }
-        .btn-blue { background: var(--accent); }
-        .btn-green { background: var(--primary); }
+        /* The Progress Bar */
+        .progress-container { background: #e0e0e0; height: 30px; border-radius: 15px; margin: 25px 0; position: relative; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary); transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); width: 0%; }
+        .target-marker { position: absolute; top: 0; width: 4px; height: 100%; background: #333; z-index: 2; }
         
-        input { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 1.2rem; box-sizing: border-box; text-align: center; }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.85rem; color: #555; font-weight: bold; margin-top: -15px; }
+        .status-msg { margin-top: 25px; font-size: 1.1rem; font-weight: bold; padding: 10px; border-radius: 8px; }
         
-        #syncStatus { width: 10px; height: 10px; border-radius: 50%; background: #ccc; }
-        .sync-saving { background: #ffeb3b !important; }
-        .sync-success { background: #4caf50 !important; }
-        .hidden { display: none; }
+        /* Auto-Refresh Indicator */
+        .refresh-tag { font-size: 0.65rem; color: #bbb; text-align: center; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <nav class="nav-bar">
-        <a href="budget.html" class="nav-item">CONTROL CENTER</a>
-        <a href="#" class="nav-item active">WEEKLY BUDGET</a>
-        <div id="syncStatus"></div>
-    </nav>
-
     <div class="card">
-        <span class="label">Daily Safe Spend</span>
+        <span class="label">Available for Today</span>
         <div class="pacing-val" id="dailyPacing">$0</div>
-        <span id="daysLeftMsg" style="color: #666; font-size: 0.9rem;"></span>
+        <div class="sub-text" id="daysLeftMsg">...</div>
     </div>
 
     <div class="card">
-        <span class="label">Weekly Progress ($1,000 Allowance)</span>
+        <span class="label">Weekly Spending Progress</span>
         <div class="progress-container">
             <div id="targetMarker" class="target-marker"></div>
             <div id="spendFill" class="progress-fill"></div>
@@ -66,45 +45,40 @@
             <span>Spent: <span id="amtSpent">$0</span></span>
             <span>Target: <span id="amtTarget">$0</span></span>
         </div>
-        <div id="pacingMsg" style="margin-top:15px; font-weight:bold;"></div>
-        
-        <div class="escrow-pill">
-            Amazon Shield: <span id="escrowBal">$0</span> remaining
-        </div>
+        <div id="pacingMsg" class="status-msg"></div>
     </div>
 
-    <div class="card">
-        <span class="label">Log Purchase</span>
-        <input type="number" id="pAmt" placeholder="0.00" inputmode="decimal">
-        <div class="grid">
-            <button class="btn btn-blue" onclick="logQuick('Amazon')">Amazon</button>
-            <button class="btn btn-green" onclick="logQuick('General')">General Spend</button>
-        </div>
-    </div>
+    <div class="refresh-tag">Updates automatically when transactions are logged</div>
 
 <script>
     const CONFIG = { owner: 'scottscalici', repo: 'loquesea', path: 'planner/bills.json' };
-    let data = null;
 
-    async function init() {
-        const resp = await fetch(`bills.json?t=${Date.now()}`);
-        data = await resp.json();
-        render();
+    async function fetchData() {
+        try {
+            // Adding a timestamp to the URL to bypass browser caching
+            const resp = await fetch(`bills.json?t=${Date.now()}`);
+            const data = await resp.json();
+            render(data);
+        } catch (e) {
+            console.error("Data fetch failed");
+        }
     }
 
-    function render() {
+    function render(data) {
         const totalWeekly = 1000;
-        const spent = totalWeekly - data.state.current_weekly_remaining;
+        const remaining = data.state.current_weekly_remaining;
+        const spent = totalWeekly - remaining;
         
-        // Date Logic (Mon-Sun week)
         const now = new Date();
         const dayOfWeek = now.getDay() || 7; 
         const daysLeft = (8 - dayOfWeek);
         const targetSpend = (totalWeekly / 7) * dayOfWeek;
 
-        // 1. Update Pacing
-        document.getElementById('dailyPacing').innerText = `$${Math.floor(data.state.current_weekly_remaining / daysLeft)}`;
-        document.getElementById('daysLeftMsg').innerText = `${daysLeft} days remaining this week`;
+        // 1. Update Numbers
+        document.getElementById('dailyPacing').innerText = `$${Math.floor(remaining / daysLeft)}`;
+        document.getElementById('daysLeftMsg').innerText = `${daysLeft} days left in the week`;
+        document.getElementById('amtSpent').innerText = '$' + Math.round(spent);
+        document.getElementById('amtTarget').innerText = '$' + Math.round(targetSpend);
 
         // 2. Update Progress Bar
         const spendPct = Math.min((spent / totalWeekly) * 100, 100);
@@ -112,74 +86,26 @@
         
         document.getElementById('spendFill').style.width = spendPct + '%';
         document.getElementById('targetMarker').style.left = targetPct + '%';
-        
-        // 3. Update Labels
-        document.getElementById('amtSpent').innerText = '$' + Math.round(spent);
-        document.getElementById('amtTarget').innerText = '$' + Math.round(targetSpend);
-        document.getElementById('escrowBal').innerText = '$' + data.state.escrow_remaining;
 
+        // 3. Pacing Message
         const diff = targetSpend - spent;
         const msg = document.getElementById('pacingMsg');
         if (diff >= 0) {
             msg.innerText = `✅ $${Math.round(diff)} Under Weekly Average`;
             msg.style.color = "var(--primary)";
+            msg.style.backgroundColor = "#e8f5e9";
             document.getElementById('spendFill').style.background = "var(--primary)";
         } else {
             msg.innerText = `⚠️ $${Math.round(Math.abs(diff))} Over Weekly Average`;
             msg.style.color = "var(--danger)";
+            msg.style.backgroundColor = "#ffebee";
             document.getElementById('spendFill').style.background = "var(--danger)";
         }
     }
 
-    async function logQuick(vendor) {
-        const amtInput = document.getElementById('pAmt');
-        const amt = parseFloat(amtInput.value);
-        if(!amt) return;
-
-        // Update Checking
-        data.state.checking_balance -= amt;
-
-        // Amazon Shield Logic
-        if(vendor === 'Amazon') {
-            if(data.state.escrow_remaining >= amt) {
-                data.state.escrow_remaining -= amt;
-            } else {
-                const overage = amt - data.state.escrow_remaining;
-                data.state.escrow_remaining = 0;
-                data.state.current_weekly_remaining -= overage;
-            }
-        } else {
-            data.state.current_weekly_remaining -= amt;
-        }
-
-        data.history.push({ 
-            date: new Date().toISOString(), 
-            vendor: vendor, 
-            amount: amt 
-        });
-
-        amtInput.value = '';
-        await sync();
-        render();
-    }
-
-    async function sync() {
-        const status = document.getElementById('syncStatus');
-        status.className = 'sync-saving';
-        try {
-            const token = localStorage.getItem('gh_token');
-            const url = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`;
-            const file = await fetch(url, { headers: { 'Authorization': `token ${token}` } }).then(r => r.json());
-            const resp = await fetch(url, {
-                method: 'PUT',
-                headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: "Mobile Log", content: btoa(JSON.stringify(data, null, 2)), sha: file.sha })
-            });
-            if(resp.ok) { status.className = 'sync-success'; setTimeout(()=>status.className='', 2000); }
-        } catch (e) { alert("Sync failed. Check settings."); }
-    }
-
-    init();
+    // Initialize and set to refresh every 5 minutes in case she leaves the tab open
+    fetchData();
+    setInterval(fetchData, 300000); 
 </script>
 </body>
 </html>
