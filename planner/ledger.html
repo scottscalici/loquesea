@@ -1,44 +1,62 @@
-<nav class="nav-bar">
-    <a href="budget.html" class="nav-item">CONTROL</a>
-    <a href="spend.html" class="nav-item">WEEKLY</a>
-    <a href="projection.html" class="nav-item">PROJECTION</a>
-    <a href="ledger.html" class="nav-item">LEDGER</a>
-    <div id="syncStatus"></div>
-</nav>
-<div class="card">
-    <span class="label">Master Transaction Ledger</span>
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Description</th>
-                <th>Category</th>
-                <th>Amount</th>
-            </tr>
-        </thead>
-        <tbody id="masterLedgerBody"></tbody>
-    </table>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Ledger</title>
+    <style>
+        :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-top: 60px; color: var(--text); }
+        .nav-bar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: #fff; display: flex; align-items: center; justify-content: space-around; border-bottom: 1px solid #ddd; z-index: 1000; }
+        .nav-item { text-decoration: none; color: #666; font-size: 0.8rem; font-weight: bold; }
+        .nav-item.active { color: var(--accent); }
+        .card { background: var(--card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th { text-align: left; color: #888; padding: 8px; border-bottom: 2px solid #eee; }
+        td { padding: 10px 8px; border-bottom: 1px solid #f0f0f0; }
+        .amt-pos { color: #2e7d32; font-weight: bold; }
+        .amt-neg { color: #d32f2f; }
+    </style>
+</head>
+<body>
+    <nav class="nav-bar">
+        <a href="budget.html" class="nav-item">CONTROL</a>
+        <a href="spend.html" class="nav-item">WEEKLY</a>
+        <a href="projection.html" class="nav-item">PROJECTION</a>
+        <a href="ledger.html" class="nav-item active">LEDGER</a>
+    </nav>
+
+    <div class="card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Item</th>
+                    <th>Amt</th>
+                </tr>
+            </thead>
+            <tbody id="ledgerBody"></tbody>
+        </table>
+    </div>
 
 <script>
-// Logic to render the full history
-function renderLedger(data) {
-    const body = document.getElementById('masterLedgerBody');
-    body.innerHTML = '';
-    
-    // Show absolutely every transaction in the history array
-    data.history.slice().reverse().forEach(item => {
-        const isIncome = item.vendor === "INCOME" || item.amount < 0; // Adjust based on your logging math
-        body.innerHTML += `
-            <tr>
-                <td>${new Date(item.date).toLocaleDateString()}</td>
-                <td>${item.vendor} ${item.what ? '('+item.what+')' : ''}</td>
-                <td><span class="pill">${item.vendor === 'BILL' ? 'BILL' : 'SPEND'}</span></td>
-                <td style="color: ${item.vendor === 'INCOME' ? 'green' : 'red'}">
-                    ${item.vendor === 'INCOME' ? '+' : '-'}$${Math.abs(item.amount).toFixed(2)}
-                </td>
-            </tr>
-        `;
-    });
-}
+    async function init() {
+        const resp = await fetch(`bills.json?t=${Date.now()}`);
+        const data = await resp.json();
+        const body = document.getElementById('ledgerBody');
+        
+        // Show all history, newest first
+        data.history.slice().reverse().forEach(item => {
+            const isPos = item.vendor === "INCOME";
+            const row = `<tr>
+                <td>${new Date(item.date).toLocaleDateString(undefined, {month:'short', day:'numeric'})}</td>
+                <td>${item.vendor} ${item.what ? '<br><small>'+item.what+'</small>' : ''}</td>
+                <td class="${isPos ? 'amt-pos' : 'amt-neg'}">${isPos ? '+' : '-'}$${item.amount.toFixed(2)}</td>
+            </tr>`;
+            body.innerHTML += row;
+        });
+    }
+    init();
 </script>
+</body>
+</html>
