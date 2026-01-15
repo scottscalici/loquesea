@@ -12,18 +12,14 @@
         .nav-item.active { color: var(--accent); }
         .card { background: var(--card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
         .label { font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 5px; }
-        
-        /* Balance & Savings */
         .balance-amt { font-size: 2rem; font-weight: 800; color: var(--primary); }
         .progress-bg { background: #eee; height: 10px; border-radius: 5px; margin: 10px 0; overflow: hidden; }
         .progress-fill { background: var(--accent); height: 100%; transition: width 0.3s; }
-
-        /* Form & Lists */
         .input-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-        input, select { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
         .btn-main { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; }
-        .bill-item, .history-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
-        .btn-paid { background: #f0f0f0; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; }
+        .inbox-item, .history-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        .btn-paid { background: #f0f0f0; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -38,7 +34,6 @@
     <div class="card">
         <span class="label">Spendable Balance</span>
         <div class="balance-amt" id="mainBalance">$0.00</div>
-        
         <div id="savingsContainer"></div>
     </div>
 
@@ -48,13 +43,12 @@
             <input type="text" id="desc" placeholder="What (e.g. Kroger)">
             <input type="number" id="amt" placeholder="Amount (Spending = Negative)">
             <button class="btn-main" onclick="logTransaction()">Add Transaction</button>
-            <button onclick="handlePayday()" style="background:#e8f5e9; color:#2e7d32; border:none; padding:8px; border-radius:8px; font-size:0.8rem;">Quick Record Payday (+$2500)</button>
         </div>
     </div>
 
     <div class="card">
-        <span class="label">Upcoming (31 Days)</span>
-        <div id="actionList"></div>
+        <span class="label">Inbox: Bills & Paydays (31 Days)</span>
+        <div id="inboxList"></div>
     </div>
 
     <div class="card">
@@ -62,30 +56,44 @@
         <div id="recentHistory"></div>
     </div>
 
-<script><script>
+<script>
+    // [SECTION: CONFIG & DATA]
     const CONFIG = { owner: 'scottscalici', repo: 'loquesea', path: 'planner/bills.json' };
     let data = null;
 
     async function init() {
         const resp = await fetch(`bills.json?t=${Date.now()}`);
         data = await resp.json();
-        const menu = document.getElementById('pVendor');
-        menu.innerHTML = '<option value="" disabled selected>Select Vendor</option>';
-        data.vendors.forEach(v => menu.add(new Option(v, v)));
-        menu.add(new Option("Other...", "Other..."));
-        document.getElementById('pDate').value = new Date().toISOString().split('T')[0];
-        render();
+        renderUI();
     }
 
-    function render() {
-        document.getElementById('checkingBal').innerText = `$${data.state.checking_balance.toLocaleString()}`;
-        document.getElementById('escrowBal').innerText = `$${data.state.escrow_remaining}`;
-        renderGoals();
-        renderInbox(); // This calls the function below
+    // [SECTION: CORE UI RENDER]
+    function renderUI() {
+        if (!data) return;
+        
+        // 1. Balance
+        document.getElementById('mainBalance').innerText = `$${data.state.checking_balance.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+        
+        // 2. Savings Bars
+        const savDiv = document.getElementById('savingsContainer');
+        savDiv.innerHTML = '';
+        (data.savings_goals || []).forEach(g => {
+            const pct = Math.min((g.current / g.target) * 100, 100);
+            savDiv.innerHTML += `
+                <div style="margin-top:10px;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.75rem;">
+                        <span>${g.name}</span>
+                        <span>$${g.current} / $${g.target}</span>
+                    </div>
+                    <div class="progress-bg"><div class="progress-fill" style="width:${pct}%"></div></div>
+                </div>`;
+        });
+
+        renderInbox();
         renderHistory();
     }
 
-    // --- UPDATED RENDER INBOX ---
+    // [SECTION: INBOX LOGIC]
     function renderInbox() {
         const container = document.getElementById('inboxList');
         container.innerHTML = '';
@@ -108,38 +116,44 @@
         // 3. Bills (Sorted Chronologically)
         const sortedBills = [...data.bills].sort((a,b) => new Date(a.next_due_date) - new Date(b.next_due_date));
         sortedBills.forEach((bill) => {
-            const originalIdx = data.bills.findIndex(b => b.name === bill.name);
-            appendInboxItem(container, bill.name, bill.amount, 'BILL', originalIdx, bill.next_due_date);
+            const billDate = new Date(bill.next_due_date + "T12:00:00");
+            const limit = new Date(); limit.setDate(limit.getDate() + 31);
+            
+            if (billDate <= limit) {
+                const originalIdx = data.bills.findIndex(b => b.name === bill.name);
+                appendInboxItem(container, bill.name, bill.amount, 'BILL', originalIdx, bill.next_due_date);
+            }
         });
     }
 
-    // --- UPDATED PROCESS ACTION ---
-    async function processAction(idx, type, action) {
-        // Determine what we are dealing with based on the Index
+    function appendInboxItem(container, name, amount, type, idx, date) {
+        const div = document.createElement('div');
+        div.className = 'inbox-item';
+        div.innerHTML = `
+            <div>
+                <b>${name}</b><br>
+                <small>${date ? date : 'Due Today'}</small>
+            </div>
+            <div>
+                <span style="margin-right:10px; font-weight:bold; color:${type==='INCOME'?'green':'red'}">$${amount}</span>
+                <button class="btn-paid" onclick="processInboxAction(${idx}, '${type}')">OK</button>
+            </div>`;
+        container.appendChild(div);
+    }
+
+    // [SECTION: TRANSACTION LOGIC]
+    async function processInboxAction(idx, type) {
         let name = (idx === -1) ? "Scott Payday" : (idx === -2) ? "Wife Payday" : data.bills[idx].name;
         let amt = (idx < 0) ? 2500 : data.bills[idx].amount;
 
-        if (action === 'edit') {
-            const newAmt = prompt("Enter actual amount:", amt);
-            if (newAmt === null) return;
-            amt = parseFloat(newAmt);
-        }
+        if (type === 'INCOME') data.state.checking_balance += amt;
+        else data.state.checking_balance -= amt;
 
-        if (action !== 'skip') {
-            // Update checking balance
-            if (type === 'INCOME') data.state.checking_balance += amt;
-            else data.state.checking_balance -= amt;
+        data.history.push({
+            date: new Date().toISOString().split('T')[0],
+            vendor: name, what: type, amount: (type === 'BILL' ? -amt : amt), category: type
+        });
 
-            // Log to history so Ledger and Spend pages see it
-            data.history.push({ 
-                date: new Date().toISOString(), 
-                vendor: type, 
-                what: name, 
-                amount: amt 
-            });
-        }
-
-        // If it's a bill, move the date forward
         if (type === 'BILL' && idx >= 0) {
             let d = new Date(data.bills[idx].next_due_date + "T12:00:00");
             if (data.bills[idx].frequency === "monthly") d.setMonth(d.getMonth() + 1);
@@ -147,16 +161,30 @@
             data.bills[idx].next_due_date = d.toISOString().split('T')[0];
         }
 
-        await sync(); 
-        render();
+        await sync();
     }
 
-    // ... (rest of your original functions like logManual, sync, etc. stay exactly the same)
+    async function logTransaction() {
+        const desc = document.getElementById('desc').value;
+        const amt = parseFloat(document.getElementById('amt').value);
+        if(!desc || isNaN(amt)) return;
 
-        // Recent History (Last 5 items)
+        data.state.checking_balance += amt;
+        data.history.push({
+            date: new Date().toISOString().split('T')[0],
+            vendor: desc, what: "Manual", amount: amt, category: amt < 0 ? "Spending" : "Income"
+        });
+        
+        document.getElementById('desc').value = '';
+        document.getElementById('amt').value = '';
+        await sync();
+    }
+
+    // [SECTION: HISTORY RENDER]
+    function renderHistory() {
         const histDiv = document.getElementById('recentHistory');
         histDiv.innerHTML = '';
-        globalData.history.slice(-5).reverse().forEach(h => {
+        data.history.slice(-5).reverse().forEach(h => {
             histDiv.innerHTML += `
                 <div class="history-item">
                     <span>${h.vendor}</span>
@@ -165,48 +193,14 @@
         });
     }
 
-    // --- LOGIC ---
-    async function logTransaction() {
-        const desc = document.getElementById('desc').value;
-        const amt = parseFloat(document.getElementById('amt').value);
-        if(!desc || isNaN(amt)) return;
-
-        globalData.state.checking_balance += amt;
-        globalData.history.push({
-            date: new Date().toISOString().split('T')[0],
-            vendor: desc, what: "Manual", amount: amt, category: amt < 0 ? "Spending" : "Income"
-        });
-        await syncAndReload();
-    }
-
-    async function handlePayday() {
-        globalData.state.checking_balance += 2500;
-        globalData.history.push({
-            date: new Date().toISOString().split('T')[0],
-            vendor: "Deposit", what: "Payday", amount: 2500, category: "Income"
-        });
-        await syncAndReload();
-    }
-
-    async function markAsPaid(billName) {
-        const bill = globalData.bills.find(b => b.name === billName);
-        globalData.state.checking_balance -= bill.amount;
-        globalData.history.push({
-            date: new Date().toISOString().split('T')[0],
-            vendor: bill.name, what: "Bill", amount: -bill.amount, category: "Bills"
-        });
-        let next = new Date(bill.next_due_date + "T12:00:00");
-        if(bill.frequency === "monthly") next.setMonth(next.getMonth()+1);
-        else next.setDate(next.getDate()+14);
-        bill.next_due_date = next.toISOString().split('T')[0];
-        await syncAndReload();
-    }
-
-    async function syncAndReload() {
-        if (typeof saveToGithub === "function") await saveToGithub(globalData);
-        else { console.warn("Save function missing!"); renderUI(); }
-        document.getElementById('desc').value = '';
-        document.getElementById('amt').value = '';
+    // [SECTION: GITHUB SYNC]
+    async function sync() {
+        // This should call your actual GitHub Save function
+        if (typeof saveToGithub === "function") {
+            await saveToGithub(data);
+        } else {
+            console.log("Local Update Only - Missing saveToGithub function");
+        }
         renderUI();
     }
 
