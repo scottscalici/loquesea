@@ -86,14 +86,21 @@
         renderUI();
     }
 
-    function renderUI() {
-        if (!data) return;
-        document.getElementById('mainBalance').innerText = `$${data.state.checking_balance.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-        
-        const budgetRemaining = data.state.weekly_budget_remaining || 0;
-        const budgetDiv = document.getElementById('weeklyBudgetContainer');
-        budgetDiv.innerHTML = `<div style="font-size: 1.1rem; font-weight: bold; color: ${budgetRemaining < 0 ? 'var(--danger)' : 'var(--primary)'};">Weekly Spend Left: $${budgetRemaining.toLocaleString()}</div>`;
-        
+ function renderUI() {
+    if (!data) return;
+    // Fix the floating point decimals showing in your screenshot
+    const cleanBalance = parseFloat(data.state.checking_balance).toFixed(2);
+    document.getElementById('mainBalance').innerText = `$${parseFloat(cleanBalance).toLocaleString()}`;
+    
+    // Only show 'weekly_budget_remaining'
+    const budgetRemaining = data.state.weekly_budget_remaining || 0;
+    const budgetDiv = document.getElementById('weeklyBudgetContainer');
+    budgetDiv.innerHTML = `
+        <div style="font-size: 1.1rem; font-weight: bold; color: ${budgetRemaining < 0 ? 'var(--danger)' : 'var(--primary)'};">
+            Weekly Spend Left: $${budgetRemaining.toLocaleString()}
+        </div>`;
+    
+      
         const savDiv = document.getElementById('savingsContainer');
         savDiv.innerHTML = '';
         (data.savings_goals || []).forEach(g => {
@@ -174,7 +181,37 @@
         document.getElementById('what').value = '';
         await sync();
     }
+async function undoLast() {
+    if (!data.history.length || !confirm("Undo last transaction?")) return;
+    
+    const last = data.history.pop();
+    const isAmazon = last.vendor.toLowerCase().includes("amazon");
+    const amount = Math.abs(last.amount);
+    const day = new Date(last.date).getDate();
 
+    if (last.amount > 0) {
+        // Reverse Income
+        data.state.checking_balance -= amount;
+        data.state.weekly_budget_remaining -= amount;
+    } else {
+        // Reverse Spending
+        data.state.checking_balance += amount;
+        
+        // Use the same Amazon logic to add back to budget
+        if (isAmazon && day >= 21 && day <= 27) {
+            const currentMonth = last.date.slice(0, 7);
+            const amzTotal = data.history
+                .filter(h => h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon"))
+                .reduce((sum, h) => sum + Math.abs(h.amount), 0);
+            
+            const shieldRemaining = Math.max(0, 500 - amzTotal);
+            data.state.weekly_budget_remaining += Math.max(0, amount - shieldRemaining);
+        } else {
+            data.state.weekly_budget_remaining += amount;
+        }
+    }
+    await sync();
+}
     function renderInbox() {
         const container = document.getElementById('inboxList');
         container.innerHTML = '';
