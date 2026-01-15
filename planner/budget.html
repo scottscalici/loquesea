@@ -63,7 +63,7 @@
 
     <div class="card">
         <h3>Upcoming Bills</h3>
-        <div id="billList">Loading data from GitHub...</div>
+        <div id="billList">Loading data...</div>
     </div>
 
     <script>
@@ -75,9 +75,10 @@
 
         let budgetData = null;
 
+        // --- DATA LOADING ---
         async function loadData() {
             try {
-                // Fetching with a timestamp to bust cache
+                // Fetching from the same folder with cache-busting
                 const response = await fetch(`bills.json?t=${Date.now()}`);
                 if (!response.ok) throw new Error("JSON file not found.");
                 budgetData = await response.json();
@@ -87,12 +88,14 @@
             }
         }
 
+        // --- UI RENDERING ---
         function renderApp() {
             const today = new Date();
             const dayOfWeek = today.getDay(); 
             const dayOfYourWeek = dayOfWeek === 0 ? 7 : dayOfWeek; 
             const daysRemaining = (7 - dayOfYourWeek) + 1;
 
+            // Wife's Pacing Logic
             const pacing = (budgetData.state.current_weekly_remaining / daysRemaining).toFixed(2);
             
             document.getElementById('pacingDisplay').innerText = `$${pacing}`;
@@ -106,6 +109,7 @@
             const list = document.getElementById('billList');
             list.innerHTML = '';
             
+            // Sort bills by closest due date
             const sortedBills = budgetData.bills.sort((a,b) => new Date(a.next_due_date) - new Date(b.next_due_date));
 
             sortedBills.forEach(bill => {
@@ -114,7 +118,7 @@
                 div.innerHTML = `
                     <div class="bill-info">
                         <b>${bill.name}</b>
-                        <small>Due: ${bill.next_due_date}</small>
+                        <small>Due: ${bill.next_due_date} (${bill.frequency})</small>
                     </div>
                     <div>$${Math.abs(bill.amount)}</div>
                     <button class="paid-btn" onclick="payBill('${bill.id}')">Paid</button>
@@ -123,16 +127,17 @@
             });
         }
 
+        // --- BILL PAYMENT & DATE JUMP ---
         async function payBill(id) {
             const bill = budgetData.bills.find(b => b.id === id);
             const date = new Date(bill.next_due_date);
 
-            // Date Jump Logic
-            if (bill.excel_code === 1) date.setMonth(date.getMonth() + 1);
-            else if (bill.excel_code === 14) date.setDate(date.getDate() + 14);
-            else if (bill.excel_code === 12) date.setFullYear(date.getFullYear() + 1);
-            else if (bill.excel_code === 3) date.setMonth(date.getMonth() + 3);
-            else if (bill.excel_code === 6) date.setMonth(date.getMonth() + 6);
+            // Frequency Logic
+            if (bill.frequency === "monthly") date.setMonth(date.getMonth() + 1);
+            else if (bill.frequency === "bi-weekly") date.setDate(date.getDate() + 14);
+            else if (bill.frequency === "annually") date.setFullYear(date.getFullYear() + 1);
+            else if (bill.frequency === "quarterly") date.setMonth(date.getMonth() + 3);
+            else if (bill.frequency === "semi-annually") date.setMonth(date.getMonth() + 6);
 
             bill.next_due_date = date.toISOString().split('T')[0];
             
@@ -141,40 +146,40 @@
             renderApp();
         }
 
+        // --- GITHUB API SYNC ---
         async function saveToGitHub() {
             const token = localStorage.getItem('gh_token');
             if (!token) {
-                alert("Please enter your GitHub Token in Settings first!");
+                alert("Please enter your GitHub Token in Settings (⚙️) first!");
                 toggleSettings();
                 return;
             }
 
             try {
-                // 1. Get current file SHA
                 const url = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`;
                 const getFile = await fetch(url, {
                     headers: { 'Authorization': `token ${token}`, 'Cache-Control': 'no-cache' }
                 });
                 const fileData = await getFile.json();
                 
-                // 2. Push Update
                 const update = await fetch(url, {
                     method: 'PUT',
                     headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        message: "Budget Update",
+                        message: "Budget Update via Web App",
                         content: btoa(JSON.stringify(budgetData, null, 2)),
                         sha: fileData.sha
                     })
                 });
 
-                if (update.ok) showStatus("Changes saved to GitHub!");
+                if (update.ok) showStatus("Saved to GitHub!");
                 else throw new Error("GitHub Save Failed");
             } catch (err) {
                 alert(err.message);
             }
         }
 
+        // --- UTILS ---
         function showStatus(msg) {
             const s = document.getElementById('status');
             s.innerText = msg;
@@ -182,10 +187,14 @@
         }
 
         function toggleSettings() { document.getElementById('settings').classList.toggle('visible'); }
+        
         function saveToken() { 
-            localStorage.setItem('gh_token', document.getElementById('ghToken').value); 
-            toggleSettings(); 
-            showStatus("Token Saved Locally");
+            const val = document.getElementById('ghToken').value;
+            if(val) {
+                localStorage.setItem('gh_token', val); 
+                toggleSettings(); 
+                showStatus("Token Saved Locally");
+            }
         }
 
         loadData();
