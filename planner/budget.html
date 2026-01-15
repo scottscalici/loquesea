@@ -142,14 +142,55 @@
     }
 
 // [SECTION: TRANSACTION LOGIC]
-async function logTransaction() {
-    const desc = document.getElementById('desc').value;
-    const amt = parseFloat(document.getElementById('amt').value);
-    if(!desc || isNaN(amt)) return;
+async function processInboxAction(idx, type) {
+    // 1. Identify the default name and amount
+    let name = (idx === -1) ? "Scott Payday" : (idx === -2) ? "Wife Payday" : data.bills[idx].name;
+    let defaultAmt = (idx < 0) ? 2500 : data.bills[idx].amount;
 
-    const today = new Date();
-    const dayOfMonth = today.getDate();
+    // 2. Popup window to confirm or overwrite the amount
+    let userInput = prompt(`Confirm amount for ${name}:`, defaultAmt);
+    
+    // If user hits 'Cancel', stop everything
+    if (userInput === null) return;
 
+    // Convert input to a number
+    let finalAmt = parseFloat(userInput);
+    if (isNaN(finalAmt)) {
+        alert("Invalid amount entered.");
+        return;
+    }
+
+    // 3. Update checking balance
+    if (type === 'INCOME') {
+        data.state.checking_balance += finalAmt;
+    } else {
+        data.state.checking_balance -= finalAmt;
+    }
+
+    // 4. Log to history (so the Spend page/image you showed stays updated)
+    data.history.push({
+        date: new Date().toISOString().split('T')[0],
+        vendor: name, 
+        what: type, 
+        amount: (type === 'BILL' ? -finalAmt : finalAmt), 
+        category: type
+    });
+
+    // 5. If it's a bill, move the due date forward in the JSON
+    if (type === 'BILL' && idx >= 0) {
+        let d = new Date(data.bills[idx].next_due_date + "T12:00:00");
+        if (data.bills[idx].frequency === "monthly") {
+            d.setMonth(d.getMonth() + 1);
+        } else {
+            d.setDate(d.getDate() + 14);
+        }
+        data.bills[idx].next_due_date = d.toISOString().split('T')[0];
+    }
+
+    // 6. Save to GitHub and refresh UI
+    await sync();
+}
+    
     // Standard Balance Update
     data.state.checking_balance += amt;
 
