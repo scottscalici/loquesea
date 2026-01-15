@@ -72,11 +72,11 @@
     let data = null;
 
     async function init() {
-        const resp = await fetch(`bills.json?t=${Date.now()}`);
-        data = await resp.json();
-        renderUI();
-    }
-
+    // Adding ?t=Date.now() forces the browser to get the freshest data
+    const resp = await fetch(`bills.json?t=${Date.now()}`);
+    data = await resp.json();
+    renderUI();
+}
     // [SECTION: CORE UI RENDER]
     function renderUI() {
         if (!data) return;
