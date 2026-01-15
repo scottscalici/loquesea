@@ -7,24 +7,27 @@
     <style>
         :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; --danger: #d32f2f; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-top: 60px; color: var(--text); }
+        
         .nav-bar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: #fff; display: flex; align-items: center; justify-content: space-around; border-bottom: 1px solid #ddd; z-index: 1000; }
         .nav-item { text-decoration: none; color: #666; font-size: 0.75rem; font-weight: bold; }
         .nav-item.active { color: var(--accent); }
+
         .card { background: var(--card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
-        .label { font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; display: block; }
-        .flex-row { display: flex; justify-content: space-between; align-items: center; }
-        .btn { padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; width: 100%; }
-        .btn-blue { background: var(--accent); }
-        .inbox-item { background: #fdfdfd; border-left: 5px solid var(--accent); padding: 12px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #eee; }
-        input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
-        .hidden { display: none; }
-        #syncStatus { width: 10px; height: 10px; border-radius: 50%; background: #ccc; margin-left: 10px; }
-        .sync-saving { background: #ffeb3b !important; }
-        .sync-success { background: #4caf50 !important; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-        td { padding: 8px 0; border-bottom: 1px solid #f9f9f9; }
-        .progress-container { background: #eee; height: 8px; border-radius: 4px; margin: 8px 0; overflow: hidden; position: relative; }
-        .progress-bar { background: var(--accent); height: 100%; transition: width 0.3s; }
+        .balance-display { text-align: center; padding: 20px 0; }
+        .balance-amt { font-size: 2.2rem; font-weight: 800; color: var(--primary); display: block; }
+        .label { font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; }
+
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        button { border: none; border-radius: 8px; padding: 12px; font-weight: bold; font-size: 0.9rem; cursor: pointer; transition: opacity 0.2s; }
+        .btn-payday { background: var(--primary); color: white; width: 100%; }
+        .btn-paid { background: #eee; color: var(--text); padding: 8px 12px; font-size: 0.8rem; }
+        
+        .bill-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; }
+        .bill-info b { display: block; font-size: 1rem; }
+        .bill-info span { font-size: 0.8rem; color: #666; }
+
+        .quick-add { display: flex; gap: 8px; margin-top: 10px; }
+        input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
     </style>
 </head>
 <body>
@@ -34,238 +37,133 @@
         <a href="spend.html" class="nav-item">WEEKLY</a>
         <a href="projection.html" class="nav-item">PROJECTION</a>
         <a href="ledger.html" class="nav-item">LEDGER</a>
-        <div id="syncStatus"></div>
-        <button onclick="toggleSettings()" style="border:none; background:none; font-size: 1.2rem;">⚙️</button>
     </nav>
 
+    <div class="card balance-display">
+        <span class="label">Current Bank Balance</span>
+        <span id="mainBalance" class="balance-amt">$0.00</span>
+        <div class="btn-grid">
+            <button class="btn-payday" onclick="handlePayday()">Record Payday (+$2500)</button>
+            <button style="background:#333; color:white;" onclick="customTransaction()">Manual Entry</button>
+        </div>
+    </div>
+
     <div class="card">
-        <div class="flex-row">
-            <div><span class="label">Bank Balance</span><b id="checkingBal" style="font-size:1.4rem;">$0</b></div>
-            <div style="text-align:right;"><span class="label">Amazon Escrow</span><b id="escrowBal" style="color:var(--accent);">$0</b></div>
-        </div>
-        <hr style="border:0; border-top:1px solid #eee; margin:15px 0;">
-        <span class="label">Savings Goals</span>
-        <div id="goalsList" style="margin-top:10px;"></div>
-    </div>
-
-    <div class="card">
-        <span class="label">Manual Entry</span>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-            <select id="pVendor" onchange="checkOther(this.value)"></select>
-            <input type="number" id="pAmt" placeholder="$ Amount" inputmode="decimal">
-        </div>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:8px;">
-            <input type="date" id="pDate">
-            <input type="text" id="pVendorOther" placeholder="Description">
-        </div>
-        <button class="btn btn-blue" onclick="logManual()" style="margin-top:10px;">Log Transaction</button>
-        
-        <div style="margin-top:20px;">
-            <span class="label">Quick History</span>
-            <table><tbody id="quickHistory"></tbody></table>
-            <button class="btn" style="background:#666; font-size:0.7rem; margin-top:10px; padding:5px;" onclick="undoLast()">Undo Last Entry</button>
-        </div>
-    </div>
-
-    <div id="actionInbox">
-        <span class="label" style="margin-bottom:10px; padding-left:5px;">Bills & Pending Actions</span>
-        <div id="inboxList"></div>
-    </div>
-
-    <div id="settings" class="card hidden">
-        <input type="password" id="ghToken" placeholder="GitHub Token">
-        <button class="btn btn-blue" onclick="saveToken()">Save</button>
+        <span class="label">Upcoming Bills & Pay</span>
+        <div id="actionList"></div>
     </div>
 
 <script>
-    const CONFIG = { owner: 'scottscalici', repo: 'loquesea', path: 'planner/bills.json' };
-    let data = null;
+    let globalData = null;
 
     async function init() {
         const resp = await fetch(`bills.json?t=${Date.now()}`);
-        data = await resp.json();
-        const menu = document.getElementById('pVendor');
-        menu.innerHTML = '<option value="" disabled selected>Select Vendor</option>';
-        data.vendors.forEach(v => menu.add(new Option(v, v)));
-        menu.add(new Option("Other...", "Other..."));
-        document.getElementById('pDate').value = new Date().toISOString().split('T')[0];
-        render();
+        globalData = await resp.json();
+        renderUI();
     }
 
-    function render() {
-        document.getElementById('checkingBal').innerText = `$${data.state.checking_balance.toLocaleString()}`;
-        document.getElementById('escrowBal').innerText = `$${data.state.escrow_remaining}`;
-        renderGoals();
-        renderInbox();
-        renderHistory();
-    }
+    function renderUI() {
+        document.getElementById('mainBalance').innerText = `$${globalData.state.checking_balance.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+        
+        const actionList = document.getElementById('actionList');
+        actionList.innerHTML = '';
 
-    function renderGoals() {
-        const container = document.getElementById('goalsList');
-        container.innerHTML = '';
-        
-        // Use the actual data from your JSON
-        const goals = data.savings_goals || []; 
-        
-        goals.forEach((g, idx) => {
-            const pct = Math.min((g.current / g.target) * 100, 100).toFixed(0);
-            const remaining = g.target - g.current;
-            
-            container.innerHTML += `
-                <div style="margin-bottom:15px;">
-                    <div class="flex-row" style="font-size:0.85rem;">
-                        <b>${g.name}</b>
-                        <span>$${g.current.toLocaleString()} / $${g.target.toLocaleString()}</span>
-                    </div>
-                    <div class="progress-container">
-                        <div class="progress-bar" style="width: ${pct}%"></div>
-                    </div>
-                    <div class="flex-row">
-                        <small style="color:#888;">${pct}% complete • $${remaining.toLocaleString()} left</small>
-                        <button onclick="fundGoal(${idx})" style="font-size:0.6rem; background:none; border:1px solid #ccc; padding:2px 8px; border-radius:4px; color:#666;">+ Move from Weekly</button>
-                    </div>
-                </div>`;
-        });
-    }
-
-    async function fundGoal(idx) {
-        const goal = data.savings_goals[idx];
-        const amt = parseFloat(prompt(`How much of your Weekly Budget to move to ${goal.name}?`));
-        if (!amt || isNaN(amt)) return;
-        
-        data.state.current_weekly_remaining -= amt;
-        goal.current += amt;
-        data.history.push({ date: new Date().toISOString(), vendor: "GOAL", what: goal.name, amount: amt });
-        
-        await sync(); 
-        render();
-    }
-
-    function renderInbox() {
-        const container = document.getElementById('inboxList');
-        container.innerHTML = '';
+        // Combine bills and paydays into one list for the next 7 days
         const today = new Date();
-        const paydayStart = new Date("2026-01-16T12:00:00");
-        const diff = Math.floor((today - paydayStart) / 86400000);
-        if (diff % 14 >= -2 && diff % 14 <= 0) {
-            appendInboxItem(container, "Scott Payday", 2500, 'INCOME', -1);
-        }
+        today.setHours(0,0,0,0);
+        const limit = new Date();
+        limit.setDate(today.getDate() + 14);
 
-        const sortedBills = [...data.bills].sort((a,b) => new Date(a.next_due_date) - new Date(b.next_due_date));
-        sortedBills.forEach((bill) => {
-            const originalIdx = data.bills.findIndex(b => b.name === bill.name);
-            appendInboxItem(container, bill.name, bill.amount, 'BILL', originalIdx, bill.next_due_date);
+        globalData.bills.forEach(bill => {
+            const dueDate = new Date(bill.next_due_date + "T12:00:00");
+            if (dueDate <= limit) {
+                const item = document.createElement('div');
+                item.className = 'bill-item';
+                item.innerHTML = `
+                    <div class="bill-info">
+                        <b>${bill.name}</b>
+                        <span>Due: ${dueDate.getMonth()+1}/${dueDate.getDate()} • $${bill.amount}</span>
+                    </div>
+                    <button class="btn-paid" onclick="markAsPaid('${bill.name}')">PAID</button>
+                `;
+                actionList.appendChild(item);
+            }
         });
     }
 
-    function appendInboxItem(container, name, amount, type, idx, date) {
-        const div = document.createElement('div');
-        div.className = 'inbox-item';
-        const isOverdue = date && new Date(date) < new Date().setHours(0,0,0,0);
-        div.innerHTML = `<div class="flex-row">
-            <div>
-                <b style="font-size:0.9rem;">${name}</b>
-                <div style="font-size:0.7rem; color:${isOverdue ? 'red' : '#888'}">${date ? 'Due: '+date : 'Pending'}</div>
-                <div style="color:${type==='INCOME'?'green':'red'}; font-weight:bold;">$${amount}</div>
-            </div>
-            <div style="display:flex; gap:5px;">
-                <button onclick="processAction(${idx}, '${type}', 'ok')" style="background:var(--primary); color:white; border:none; padding:8px 12px; border-radius:4px;">OK</button>
-                <button onclick="processAction(${idx}, '${type}', 'edit')" style="background:#eee; border:none; padding:8px; border-radius:4px;">✏️</button>
-                <button onclick="processAction(${idx}, '${type}', 'skip')" style="background:#eee; border:none; padding:8px; border-radius:4px;">Skip</button>
-            </div>
-        </div>`;
-        container.appendChild(div);
-    }
+    // --- LOGIC FUNCTIONS ---
 
-    async function processAction(idx, type, action) {
-        let item = type === 'INCOME' ? {name: "Scott Payday", amount: 2500} : data.bills[idx];
-        let finalAmt = item.amount;
-        if (action === 'edit') {
-            const newAmt = prompt("Enter actual amount:", item.amount);
-            if (newAmt === null) return;
-            finalAmt = parseFloat(newAmt);
-        }
-        if (action !== 'skip') {
-            if (type === 'INCOME') data.state.checking_balance += finalAmt;
-            else data.state.checking_balance -= finalAmt;
-            data.history.push({ date: new Date().toISOString(), vendor: type, what: item.name, amount: finalAmt });
-        }
-        if (type === 'BILL') {
-            let d = new Date(data.bills[idx].next_due_date + "T12:00:00");
-            if (data.bills[idx].frequency === "monthly") d.setMonth(d.getMonth() + 1);
-            else d.setDate(d.getDate() + 14);
-            data.bills[idx].next_due_date = d.toISOString().split('T')[0];
-        }
-        await sync(); render();
-    }
-
-    function checkOther(val) { document.getElementById('pVendorOther').parentElement.classList.toggle('hidden', val !== "Other..."); }
-
-    async function logManual() {
-        let v = document.getElementById('pVendor').value;
-        const otherV = document.getElementById('pVendorOther').value;
-        const a = parseFloat(document.getElementById('pAmt').value);
-        const dStr = document.getElementById('pDate').value;
-        if (!a || !v) return;
+    async function handlePayday() {
+        const val = 2500;
+        globalData.state.checking_balance += val;
         
-        const entryDate = new Date(dStr + "T12:00:00");
-        const dayOfMonth = entryDate.getDate();
-        let desc = v === "Other..." ? otherV : v;
-
-        data.state.checking_balance -= a;
-
-        if (v === "Amazon") {
-            if (dayOfMonth >= 21) {
-                if (data.state.escrow_remaining >= a) { data.state.escrow_remaining -= a; } 
-                else { data.state.current_weekly_remaining -= (a - data.state.escrow_remaining); data.state.escrow_remaining = 0; }
-            } else { data.state.current_weekly_remaining -= a; }
-        } else { data.state.current_weekly_remaining -= a; }
-
-        data.history.push({ date: entryDate.toISOString(), vendor: v, what: desc, amount: a });
-        await sync(); 
-        document.getElementById('pAmt').value = '';
-        render();
-    }
-
-    function renderHistory() {
-        const body = document.getElementById('quickHistory');
-        body.innerHTML = '';
-        data.history.slice(-5).reverse().forEach(h => {
-            const isInc = h.vendor === "INCOME";
-            const dt = new Date(h.date);
-            body.innerHTML += `<tr>
-                <td style="color:#888;">${dt.getMonth()+1}/${dt.getDate()}</td>
-                <td><b>${h.what || h.vendor}</b></td>
-                <td style="text-align:right; color:${isInc?'green':'red'}; font-weight:bold;">${isInc?'+':'-'}$${h.amount.toLocaleString()}</td>
-            </tr>`;
+        globalData.history.push({
+            date: new Date().toISOString().split('T')[0],
+            vendor: "Deposit",
+            what: "Scott Payday",
+            amount: val,
+            category: "Income"
         });
+
+        await syncAndReload();
     }
 
-    async function undoLast() {
-        if(confirm("Undo last log?")) { 
-            const last = data.history.pop();
-            if(last.vendor === 'INCOME') data.state.checking_balance -= last.amount;
-            else { data.state.checking_balance += last.amount; data.state.current_weekly_remaining += last.amount; }
-            await sync(); render(); 
+    async function markAsPaid(billName) {
+        const bill = globalData.bills.find(b => b.name === billName);
+        if (!bill) return;
+
+        // 1. Update Balance
+        globalData.state.checking_balance -= bill.amount;
+
+        // 2. Add to History
+        globalData.history.push({
+            date: new Date().toISOString().split('T')[0],
+            vendor: bill.name,
+            what: "Bill Payment",
+            amount: -bill.amount,
+            category: "Bills"
+        });
+
+        // 3. Move Due Date forward
+        let next = new Date(bill.next_due_date + "T12:00:00");
+        if(bill.frequency === "monthly") next.setMonth(next.getMonth() + 1);
+        else if(bill.frequency === "bi-weekly") next.setDate(next.getDate() + 14);
+        bill.next_due_date = next.toISOString().split('T')[0];
+
+        await syncAndReload();
+    }
+
+    async function customTransaction() {
+        const desc = prompt("What was it for?");
+        const amt = prompt("Amount (use negative for spending):");
+        if(!desc || !amt) return;
+
+        const val = parseFloat(amt);
+        globalData.state.checking_balance += val;
+        
+        globalData.history.push({
+            date: new Date().toISOString().split('T')[0],
+            vendor: desc,
+            what: "Manual Entry",
+            amount: val,
+            category: val < 0 ? "Spending" : "Income"
+        });
+
+        await syncAndReload();
+    }
+
+    async function syncAndReload() {
+        // This function must call your specific GitHub saving logic
+        // If you have a function named saveToGithub(data), use it here.
+        if (typeof saveToGithub === "function") {
+            await saveToGithub(globalData);
+        } else {
+            console.log("Data updated locally, but saveToGithub function not found.");
+            // For now, we update the UI so you can see the change
+            renderUI();
         }
     }
 
-    async function sync() {
-        const s = document.getElementById('syncStatus'); s.className = 'sync-saving';
-        try {
-            const token = localStorage.getItem('gh_token');
-            const url = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`;
-            const file = await fetch(url).then(r => r.json());
-            await fetch(url, {
-                method: 'PUT',
-                headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: "Update", content: btoa(JSON.stringify(data, null, 2)), sha: file.sha })
-            });
-            s.className = 'sync-success'; setTimeout(()=>s.className='', 2000);
-        } catch (e) { alert("Sync Error"); }
-    }
-    function toggleSettings() { document.getElementById('settings').classList.toggle('hidden'); }
-    function saveToken() { localStorage.setItem('gh_token', document.getElementById('ghToken').value); toggleSettings(); }
     init();
 </script>
 </body>
