@@ -1,31 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekly Budget</title>
-    <style>
-        body { font-family: sans-serif; background: #f4f4f9; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .card { background: white; padding: 40px; border-radius: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 80%; }
-        .label { color: #888; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; }
-        .big-num { font-size: 5rem; font-weight: bold; color: #2e7d32; margin: 20px 0; }
-    </style>
-</head>
-<body>
-    <div class="card">
-        <span class="label">Safe to spend today</span>
-        <div class="big-num" id="out">--</div>
-        <span class="label">Remaining for week: </span><b id="week">--</b>
+.progress-container { background: #eee; height: 20px; border-radius: 10px; margin: 15px 0; position: relative; overflow: hidden; border: 1px solid #ddd; }
+.progress-fill { height: 100%; background: var(--primary); transition: width 0.5s ease; }
+.target-marker { position: absolute; top: 0; width: 2px; height: 100%; background: #333; z-index: 2; }
+.progress-label { display: flex; justify-content: space-between; font-size: 0.7rem; color: #666; font-weight: bold; margin-top: -10px; margin-bottom: 10px; }
+
+<div class="card">
+    <span class="label">Weekly Budget Progress</span>
+    <div class="progress-container">
+        <div id="targetMarker" class="target-marker"></div>
+        <div id="spendFill" class="progress-fill"></div>
     </div>
-    <script>
-        async function load() {
-            const r = await fetch('bills.json?t=' + Date.now());
-            const d = await r.json();
-            const days = (8 - (new Date().getDay() || 7));
-            document.getElementById('out').innerText = '$' + (d.state.current_weekly_remaining / days).toFixed(2);
-            document.getElementById('week').innerText = '$' + d.state.current_weekly_remaining.toFixed(2);
-        }
-        load();
-    </script>
-</body>
-</html>
+    <div class="progress-label">
+        <span>Spent: <span id="amtSpent">$0</span></span>
+        <span>Target: <span id="amtTarget">$0</span></span>
+    </div>
+    <div id="pacingMsg" style="text-align:center; font-size:0.8rem; font-weight:bold;"></div>
+</div>
+
+function render() {
+    const totalWeekly = 1000;
+    const spent = totalWeekly - data.state.current_weekly_remaining;
+    const dayOfWeek = new Date().getDay() || 7; // 1 (Mon) to 7 (Sun)
+    const targetSpend = (totalWeekly / 7) * dayOfWeek;
+    
+    // Update Bar
+    const spendPct = Math.min((spent / totalWeekly) * 100, 100);
+    const targetPct = Math.min((targetSpend / totalWeekly) * 100, 100);
+    
+    document.getElementById('spendFill').style.width = spendPct + '%';
+    document.getElementById('targetMarker').style.left = targetPct + '%';
+    
+    // Update Labels
+    document.getElementById('amtSpent').innerText = '$' + Math.round(spent);
+    document.getElementById('amtTarget').innerText = '$' + Math.round(targetSpend);
+    
+    const diff = targetSpend - spent;
+    const msg = document.getElementById('pacingMsg');
+    if (diff >= 0) {
+        msg.innerText = `✅ $${Math.round(diff)} Under Budget`;
+        msg.style.color = "var(--primary)";
+        document.getElementById('spendFill').style.background = "var(--primary)";
+    } else {
+        msg.innerText = `⚠️ $${Math.round(Math.abs(diff))} Over Budget`;
+        msg.style.color = "var(--danger)";
+        document.getElementById('spendFill').style.background = "var(--danger)";
+    }
+}
