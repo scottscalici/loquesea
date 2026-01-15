@@ -105,13 +105,29 @@
 
     function renderAmazonEscrow() {
         const amzDiv = document.getElementById('amazonStatus');
-        const currentMonth = new Date().toISOString().slice(0, 7); 
+        const today = new Date();
+        const day = today.getDate();
+        const currentMonth = today.toISOString().slice(0, 7); 
+        
         const amzTotal = data.history.filter(h => h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon")).reduce((sum, h) => sum + Math.abs(h.amount), 0);
+        const shieldActive = (day >= 21 && day <= 27);
+        
         const shieldRemaining = Math.max(0, 500 - amzTotal);
         const overage = Math.max(0, amzTotal - 500);
-        amzDiv.innerHTML = `<div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #eee;"><span class="label">Amazon Shield ($500)</span><div style="display:flex; justify-content:space-between; font-size: 0.85rem;"><span>Spent: $${amzTotal.toLocaleString()}</span><span style="font-weight:bold; color:${overage > 0 ? 'var(--danger)' : 'var(--primary)'}">${overage > 0 ? 'Over: $'+overage.toLocaleString() : 'Shield Left: $'+shieldRemaining.toLocaleString()}</span></div></div>`;
+
+        amzDiv.innerHTML = `
+            <div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #eee;">
+                <span class="label">Amazon Shield ($500) - ${shieldActive ? 'ACTIVE' : 'INACTIVE'}</span>
+                <div style="display:flex; justify-content:space-between; font-size: 0.85rem;">
+                    <span>Spent: $${amzTotal.toLocaleString()}</span>
+                    <span style="font-weight:bold; color:${overage > 0 ? 'var(--danger)' : 'var(--primary)'}">
+                        ${overage > 0 ? 'Over: $'+overage.toLocaleString() : 'Shield Left: $'+shieldRemaining.toLocaleString()}
+                    </span>
+                </div>
+            </div>`;
     }
 
+    
     function toggleOtherVendor() {
         const select = document.getElementById('vendorSelect');
         document.getElementById('otherVendor').style.display = (select.value === 'OTHER') ? 'block' : 'none';
