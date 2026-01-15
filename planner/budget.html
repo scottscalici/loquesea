@@ -20,8 +20,8 @@
         .status-success { background-color: #4caf50; }
         .status-error { background-color: #f44336; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-        .btn-paid { background: #f0f0f0; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer; }
-        .inbox-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .btn-paid { background: #f0f0f0; border: none; padding: 8px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; cursor: pointer; }
+        .inbox-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; }
     </style>
 </head>
 <body>
@@ -44,7 +44,7 @@
 
     <div class="card">
         <span class="label">Log Transaction</span>
-        <select id="vendorSelect" onchange="toggleOtherVendor()" style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #ddd;">
+        <select id="vendorSelect" onchange="toggleOtherVendor()" style="width: 100%; padding: 12px; margin-top: 5px; border-radius: 8px; border: 1px solid #ddd;">
             <option value="Amazon">Amazon</option>
             <option value="Grocery">Grocery</option>
             <option value="Gas">Gas</option>
@@ -52,14 +52,14 @@
             <option value="Income">Income/Payday</option>
             <option value="OTHER">Other...</option>
         </select>
-        <input type="text" id="otherVendor" placeholder="Vendor Name" style="display:none; width: 100%; padding: 10px; margin-top: 10px; border-radius: 8px; border: 1px solid #ddd;">
+        <input type="text" id="otherVendor" placeholder="Vendor Name" style="display:none; width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: 1px solid #ddd;">
         <div style="display: flex; gap: 10px; margin-top: 10px;">
-            <input type="text" id="who" placeholder="Who" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
-            <input type="text" id="what" placeholder="What/Note" style="flex: 2; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+            <input type="text" id="who" placeholder="Who" style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #ddd;">
+            <input type="text" id="what" placeholder="What" style="flex: 2; padding: 12px; border-radius: 8px; border: 1px solid #ddd;">
         </div>
         <div style="display: flex; gap: 10px; margin-top: 10px;">
-            <input type="number" id="amt" placeholder="Amount" step="0.01" style="flex: 2; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
-            <button onclick="logTransaction()" class="btn-paid" style="flex: 1; background: var(--primary); color: white; padding: 12px;">Add</button>
+            <input type="number" id="amt" placeholder="Amount" step="0.01" style="flex: 2; padding: 12px; border-radius: 8px; border: 1px solid #ddd;">
+            <button onclick="logTransaction()" class="btn-paid" style="flex: 1; background: var(--primary); color: white;">Add</button>
         </div>
     </div>
 
@@ -89,22 +89,13 @@
         
         const budgetRemaining = data.state.weekly_budget_remaining || 0;
         const budgetDiv = document.getElementById('weeklyBudgetContainer');
-        if (budgetDiv) {
-            budgetDiv.innerHTML = `<div style="font-size: 1.1rem; font-weight: bold; color: ${budgetRemaining < 0 ? '#d32f2f' : '#2e7d32'};">Weekly Spend Left: $${budgetRemaining.toLocaleString()}</div>`;
-        }
+        budgetDiv.innerHTML = `<div style="font-size: 1.1rem; font-weight: bold; color: ${budgetRemaining < 0 ? 'var(--danger)' : 'var(--primary)'};">Weekly Spend Left: $${budgetRemaining.toLocaleString()}</div>`;
         
         const savDiv = document.getElementById('savingsContainer');
         savDiv.innerHTML = '';
         (data.savings_goals || []).forEach(g => {
             const pct = Math.min((g.current / g.target) * 100, 100);
-            savDiv.innerHTML += `
-                <div style="margin-top:10px;">
-                    <div style="display:flex; justify-content:space-between; font-size:0.75rem;">
-                        <span>${g.name}</span>
-                        <span>$${g.current.toLocaleString()} / $${g.target.toLocaleString()}</span>
-                    </div>
-                    <div class="progress-bg"><div class="progress-fill" style="width:${pct}%"></div></div>
-                </div>`;
+            savDiv.innerHTML += `<div style="margin-top:10px;"><div style="display:flex; justify-content:space-between; font-size:0.75rem;"><span>${g.name}</span><span>$${g.current.toLocaleString()} / $${g.target.toLocaleString()}</span></div><div class="progress-bg"><div class="progress-fill" style="width:${pct}%"></div></div></div>`;
         });
 
         renderAmazonEscrow();
@@ -115,20 +106,10 @@
     function renderAmazonEscrow() {
         const amzDiv = document.getElementById('amazonStatus');
         const currentMonth = new Date().toISOString().slice(0, 7); 
-        const amzTotal = data.history
-            .filter(h => h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon"))
-            .reduce((sum, h) => sum + Math.abs(h.amount), 0);
-
+        const amzTotal = data.history.filter(h => h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon")).reduce((sum, h) => sum + Math.abs(h.amount), 0);
         const shieldRemaining = Math.max(0, 500 - amzTotal);
         const overage = Math.max(0, amzTotal - 500);
-        amzDiv.innerHTML = `
-            <div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #eee;">
-                <span class="label">Amazon Shield ($500)</span>
-                <div style="display:flex; justify-content:space-between; font-size: 0.85rem;">
-                    <span>Spent: $${amzTotal.toLocaleString()}</span>
-                    <span style="font-weight:bold; color:${overage > 0 ? 'red' : 'green'}">${overage > 0 ? 'Limit Exceeded' : 'Left: $'+shieldRemaining.toLocaleString()}</span>
-                </div>
-            </div>`;
+        amzDiv.innerHTML = `<div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #eee;"><span class="label">Amazon Shield ($500)</span><div style="display:flex; justify-content:space-between; font-size: 0.85rem;"><span>Spent: $${amzTotal.toLocaleString()}</span><span style="font-weight:bold; color:${overage > 0 ? 'var(--danger)' : 'var(--primary)'}">${overage > 0 ? 'Over: $'+overage.toLocaleString() : 'Shield Left: $'+shieldRemaining.toLocaleString()}</span></div></div>`;
     }
 
     function toggleOtherVendor() {
@@ -143,8 +124,8 @@
         const what = document.getElementById('what').value;
         let amt = parseFloat(document.getElementById('amt').value);
         let vendor = (select.value === 'OTHER') ? otherInput.value : select.value;
-        
         if (!vendor || isNaN(amt)) return;
+
         const absAmt = Math.abs(amt);
         const isAmazon = vendor.toLowerCase().includes("amazon");
         const isIncome = vendor.toLowerCase().includes("income") || vendor.toLowerCase().includes("payday");
@@ -163,7 +144,6 @@
                 data.state.weekly_budget_remaining -= absAmt;
             }
         }
-
         data.history.push({ date: new Date().toISOString().split('T')[0], vendor, who, what, amount: isIncome ? absAmt : -absAmt });
         await sync();
     }
@@ -171,39 +151,73 @@
     function renderInbox() {
         const container = document.getElementById('inboxList');
         container.innerHTML = '';
-        const actionLimit = new Date();
-        actionLimit.setDate(new Date().getDate() + 31);
-
-        data.bills.forEach((bill, idx) => {
-            if (new Date(bill.next_due_date) <= actionLimit) {
-                const div = document.createElement('div');
-                div.className = 'inbox-item';
-                div.innerHTML = `<div><b>${bill.name}</b><br><small>${bill.next_due_date}</small></div>
-                    <div>$${bill.amount} <button class="btn-paid" onclick="processBill(${idx})">OK</button></div>`;
-                container.appendChild(div);
+        const today = new Date();
+        const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+        
+        // Scott Payday
+        if (today.getDate() === 15 || today.getDate() === lastDay) {
+            if (!data.history.some(h => h.date === today.toISOString().split('T')[0] && h.vendor === "Scott Payday")) {
+                appendInboxItem(container, "Scott Payday", 2500, 'INCOME', -1);
             }
+        }
+        // Wife Payday (Every 14 days from Jan 16, 2026)
+        const wifeRef = new Date("2026-01-16T12:00:00");
+        const diff = Math.floor((today - wifeRef) / 86400000);
+        if (diff >= 0 && diff % 14 === 0) {
+            if (!data.history.some(h => h.date === today.toISOString().split('T')[0] && h.vendor === "Wife Payday")) {
+                appendInboxItem(container, "Wife Payday", 2500, 'INCOME', -2);
+            }
+        }
+        // Bills (31 days)
+        const limit = new Date(); limit.setDate(today.getDate() + 31);
+        data.bills.forEach((bill, idx) => {
+            if (new Date(bill.next_due_date) <= limit) appendInboxItem(container, bill.name, bill.amount, 'BILL', idx, bill.next_due_date);
         });
     }
 
-    async function processBill(idx) {
-        const bill = data.bills[idx];
-        data.state.checking_balance -= bill.amount;
-        data.state.weekly_budget_remaining -= bill.amount;
-        data.history.push({ date: new Date().toISOString().split('T')[0], vendor: bill.name, amount: -bill.amount });
-        
-        let d = new Date(bill.next_due_date + "T12:00:00");
-        if (bill.frequency === "monthly") d.setMonth(d.getMonth() + 1);
+    function appendInboxItem(container, name, amt, type, idx, date = "Today") {
+        const div = document.createElement('div');
+        div.className = 'inbox-item';
+        div.innerHTML = `<div><b>${name}</b><br><small>${date}</small></div>
+            <div><span style="font-weight:bold; margin-right:10px; color:${type==='INCOME'?'green':'red'}">$${amt}</span>
+            <button class="btn-paid" onclick="processInbox(${idx}, '${type}')">OK</button>
+            <button class="btn-paid" style="color:var(--danger)" onclick="skipInbox(${idx}, '${type}')">SKIP</button></div>`;
+        container.appendChild(div);
+    }
+
+    async function processInbox(idx, type) {
+        if (type === 'INCOME') {
+            const name = idx === -1 ? "Scott Payday" : "Wife Payday";
+            data.state.checking_balance += 2500;
+            data.state.weekly_budget_remaining += 2500;
+            data.history.push({ date: new Date().toISOString().split('T')[0], vendor: name, amount: 2500 });
+        } else {
+            const bill = data.bills[idx];
+            data.state.checking_balance -= bill.amount;
+            data.state.weekly_budget_remaining -= bill.amount;
+            data.history.push({ date: new Date().toISOString().split('T')[0], vendor: bill.name, amount: -bill.amount });
+            advanceDate(idx);
+        }
+        await sync();
+    }
+
+    async function skipInbox(idx, type) {
+        if (type === 'BILL') advanceDate(idx);
+        await sync();
+    }
+
+    function advanceDate(idx) {
+        let d = new Date(data.bills[idx].next_due_date + "T12:00:00");
+        if (data.bills[idx].frequency === "monthly") d.setMonth(d.getMonth() + 1);
         else d.setDate(d.getDate() + 14);
         data.bills[idx].next_due_date = d.toISOString().split('T')[0];
-        
-        await sync();
     }
 
     function renderHistory() {
         const histDiv = document.getElementById('recentHistory');
         histDiv.innerHTML = '';
         data.history.slice(-5).reverse().forEach(h => {
-            histDiv.innerHTML += `<div class="inbox-item"><div><b>${h.vendor}</b><br><small>${h.what || ''}</small></div><div style="color:${h.amount < 0 ? 'red' : 'green'}">$${h.amount}</div></div>`;
+            histDiv.innerHTML += `<div class="inbox-item"><div><b>${h.vendor}</b> ${h.who?`(${h.who})`:''}<br><small>${h.what || ''}</small></div><div style="font-weight:bold; color:${h.amount < 0 ? 'red' : 'green'}">$${h.amount}</div></div>`;
         });
     }
 
@@ -222,7 +236,7 @@
         const response = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`, {
             method: "PUT",
             headers: { "Authorization": `token ${TOKEN}`, "Content-Type": "application/json" },
-            body: JSON.stringify({ message: "Update", content: btoa(JSON.stringify(updatedData, null, 2)), sha: fileData.sha })
+            body: JSON.stringify({ message: "Update", content: btoa(unescape(encodeURIComponent(JSON.stringify(updatedData, null, 2)))), sha: fileData.sha })
         });
         return response.ok;
     }
