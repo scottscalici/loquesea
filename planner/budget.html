@@ -163,28 +163,41 @@
         await sync();
     }
 
-    async function skipItem(idx, type) {
+        async function skipItem(idx, type) {
         let name = (idx === -1) ? "Scott Payday" : (idx === -2) ? "Wife Payday" : data.bills[idx].name;
         if (!confirm(`Skip ${name} and move to next due date?`)) return;
 
+        console.log("Skipping:", name); // Debug line
+
         if (type === 'BILL' && idx >= 0) {
             advanceBillDate(idx);
+            console.log("New Date set to:", data.bills[idx].next_due_date); // Debug line
         } else if (idx < 0) {
-            // For Paydays, log a 0 entry so the "alreadyLogged" check hides it
             data.history.push({
                 date: new Date().toISOString().split('T')[0],
                 vendor: name, what: "SKIPPED", amount: 0, category: "Skip"
             });
         }
+        
+        // Ensure we await the sync so the page doesn't refresh too early
         await sync();
     }
 
     function advanceBillDate(idx) {
-        let d = new Date(data.bills[idx].next_due_date + "T12:00:00");
-        if (data.bills[idx].frequency === "monthly") d.setMonth(d.getMonth() + 1);
-        else d.setDate(d.getDate() + 14);
+        // We use T12:00:00 to avoid timezone "day-shifting" issues
+        let currentStr = data.bills[idx].next_due_date;
+        let d = new Date(currentStr + "T12:00:00");
+        
+        if (data.bills[idx].frequency === "monthly") {
+            d.setMonth(d.getMonth() + 1);
+        } else {
+            d.setDate(d.getDate() + 14);
+        }
+        
+        // Update the actual data object
         data.bills[idx].next_due_date = d.toISOString().split('T')[0];
     }
+
 
     async function logTransaction() {
         const desc = document.getElementById('desc').value;
