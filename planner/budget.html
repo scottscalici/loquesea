@@ -6,91 +6,85 @@
     <title>Control Center</title>
     <style>
         :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; --danger: #d32f2f; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; color: var(--text); }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; color: var(--text); padding-top: 60px; }
+        
+        .nav-bar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: #fff; display: flex; align-items: center; justify-content: space-around; border-bottom: 1px solid #ddd; z-index: 1000; }
+        .nav-item { text-decoration: none; color: #666; font-size: 0.8rem; font-weight: bold; }
+        .nav-item.active { color: var(--accent); }
+
         .card { background: var(--card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
         .label { font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; }
-        .val-large { font-size: 2.5rem; font-weight: bold; color: var(--primary); text-align: center; }
         .flex-row { display: flex; justify-content: space-between; align-items: center; }
         .input-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
         select, input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; width: 100%; box-sizing: border-box; }
+        
         .btn { padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; width: 100%; margin-top: 10px; }
         .btn-blue { background: var(--accent); }
         .btn-green { background: var(--primary); }
-        .btn-orange { background: #ff9800; }
         .btn-red { background: var(--danger); }
-        .item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .warning-text { color: var(--danger); font-weight: bold; font-size: 0.85rem; margin-top: 10px; text-align: center; }
-        .progress-bg { background: #eee; height: 8px; border-radius: 4px; margin-top: 5px; overflow: hidden; width: 100%; }
-        .progress-fill { background: var(--primary); height: 100%; width: 0%; transition: 0.3s; }
-        .hidden { display: none; }
-        #syncStatus { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-left: 5px; background: #ccc; }
+        
+        .item-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        .warning-text { font-weight: bold; font-size: 0.85rem; margin-top: 10px; text-align: center; color: #ff9800; }
+        
+        #syncStatus { width: 10px; height: 10px; border-radius: 50%; background: #ccc; }
         .sync-saving { background: #ffeb3b !important; }
         .sync-success { background: #4caf50 !important; }
-        .sync-error { background: #f44336 !important; }
+        .hidden { display: none; }
+        
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 10px; }
+        th { text-align: left; color: #888; padding: 5px; border-bottom: 1px solid #eee; }
+        td { padding: 8px 5px; border-bottom: 1px solid #f9f9f9; }
     </style>
 </head>
 <body>
 
-    <div class="flex-row" style="margin-bottom:10px;">
-        <h3 style="margin:0;">Control Center <div id="syncStatus"></div></h3>
-        <button onclick="toggleSettings()" style="background:none; border:none; font-size: 1.2rem; cursor:pointer;">⚙️</button>
-    </div>
+    <nav class="nav-bar">
+        <a href="#" class="nav-item active">CONTROL CENTER</a>
+        <a href="spend.html" class="nav-item">WEEKLY BUDGET</a>
+        <div id="syncStatus"></div>
+        <button onclick="toggleSettings()" style="border:none; background:none;">⚙️</button>
+    </nav>
 
     <div class="card" style="background: #333; color: white;">
         <span class="label" style="color: #aaa;">Projected Checking</span>
         <div class="flex-row" style="margin:10px 0; text-align:center;">
-            <div>10 Days<br><b id="proj10" style="color:#4CAF50;">$0</b></div>
-            <div>30 Days<br><b id="proj30" style="color:#4CAF50;">$0</b></div>
-            <div>4 Months<br><b id="proj120" style="color:#4CAF50;">$0</b></div>
+            <div>10d<br><b id="proj10" style="color:#4CAF50;">$0</b></div>
+            <div>30d<br><b id="proj30" style="color:#4CAF50;">$0</b></div>
+            <div>4m<br><b id="proj120" style="color:#4CAF50;">$0</b></div>
         </div>
-        <div id="lowPointWarning" class="warning-text" style="color: #ff9800;"></div>
+        <div id="lowPointWarning" class="warning-text"></div>
     </div>
 
     <div class="card">
         <div class="flex-row">
-            <div><span class="label">Checking Balance</span><br><b id="checkingBal" style="color:var(--accent); font-size:1.2rem;">$0</b></div>
-            <div style="text-align:right;"><span class="label">Daily Safe Spend</span><br><b id="pacingDisplay" style="color:var(--primary); font-size:1.2rem;">$0</b></div>
+            <div><span class="label">Checking Balance</span><br><b id="checkingBal" style="color:var(--accent);">$0</b></div>
+            <button class="btn-red" style="padding:4px 10px; font-size:0.7rem; width:auto; margin:0;" onclick="undoLast()">Undo Last Entry</button>
         </div>
-    </div>
-
-    <div class="card">
-        <span class="label">Income & Savings</span>
-        <div id="incomeList"></div>
-        <div id="savingsList" style="margin-top:10px;"></div>
     </div>
 
     <div class="card">
         <span class="label">Log Purchase</span>
         <div class="input-group">
             <select id="pVendor"></select>
-            <input type="text" id="pWho" placeholder="Who">
-            <input type="text" id="pWhat" placeholder="What">
             <input type="number" id="pAmt" placeholder="$ Amount">
         </div>
         <button class="btn btn-blue" onclick="logTransaction()">Log Spend</button>
     </div>
 
     <div class="card">
-        <span class="label">Upcoming Bills</span>
-        <div id="billList"></div>
-        <hr style="margin:15px 0; border:0; border-top:1px solid #eee;">
-        <span class="label">Adjust Bill Settings (Amt/Freq)</span>
-        <div id="billEditorList" style="margin-top:10px;"></div>
-    </div>
-
-    <div class="card">
-        <span class="label">Sunday Rollover</span>
-        <div class="flex-row" style="gap:10px;">
-            <button class="btn btn-green" onclick="rollover('next')">To Next Week</button>
-            <select id="rollTarget" style="margin-top:10px;"></select>
-            <button class="btn btn-orange" onclick="rollover('goal')">To Goal</button>
-        </div>
+        <span class="label">30-Day Cash Flow Timeline</span>
+        <table id="projectionTable">
+            <thead>
+                <tr><th>Date</th><th>Event</th><th>Amount</th><th>Balance</th></tr>
+            </thead>
+            <tbody id="projectionBody"></tbody>
+        </table>
     </div>
 
     <div id="settings" class="card hidden">
-        <span class="label">Settings</span>
-        <input type="password" id="ghToken" placeholder="GitHub Token" style="margin-top:10px;">
-        <button class="btn btn-blue" onclick="saveToken()">Save Token</button>
+        <span class="label">GitHub Token</span>
+        <input type="password" id="ghToken" style="margin-top:10px;">
+        <button class="btn btn-blue" onclick="saveToken()">Save</button>
     </div>
 
 <script>
@@ -101,198 +95,109 @@
         const resp = await fetch(`bills.json?t=${Date.now()}`);
         data = await resp.json();
         const menu = document.getElementById('pVendor');
-        menu.innerHTML = '';
         data.vendors.forEach(v => menu.add(new Option(v, v)));
         render();
     }
 
-    function render() {
-        const days = (8 - (new Date().getDay() || 7));
-        document.getElementById('pacingDisplay').innerText = `$${(data.state.current_weekly_remaining / days).toFixed(2)}`;
-        document.getElementById('checkingBal').innerText = `$${data.state.checking_balance.toLocaleString()}`;
-
-        // Run Projections
-        document.getElementById('proj10').innerText = `$${calculateProjection(10).balance}`;
-        document.getElementById('proj30').innerText = `$${calculateProjection(30).balance}`;
-        const longTerm = calculateProjection(120);
-        document.getElementById('proj120').innerText = `$${longTerm.balance}`;
-        
-        const warning = document.getElementById('lowPointWarning');
-        if (longTerm.lowPointDate) {
-            warning.innerText = `⚠️ Balance drops below $500 on ${longTerm.lowPointDate}`;
-        } else {
-            warning.innerText = "✅ Projection clear above $500 for 4 months";
-            warning.style.color = "#4CAF50";
-        }
-
-        // Render Income
-        const iList = document.getElementById('incomeList');
-        iList.innerHTML = '';
-        data.paydays.forEach(pay => {
-            iList.innerHTML += `<div class="item-row"><span><b>${pay.name}</b></span><button class="btn btn-green" style="width:auto;margin:0;padding:5px 10px;" onclick="receivePay('${pay.id}')">Receive Pay</button></div>`;
-        });
-
-        // Render Savings
-        const sList = document.getElementById('savingsList');
-        const rollMenu = document.getElementById('rollTarget');
-        sList.innerHTML = ''; rollMenu.innerHTML = '';
-        data.savings_goals.forEach((goal, idx) => {
-            const pct = Math.min((goal.current / goal.target) * 100, 100);
-            sList.innerHTML += `
-                <div style="margin-bottom:10px;">
-                    <div class="flex-row"><span>${goal.name}</span><b>$${goal.current} / $${goal.target}</b></div>
-                    <div class="progress-bg"><div class="progress-fill" style="width:${pct}%"></div></div>
-                    <button class="btn btn-red" style="padding:2px 8px; font-size:0.7rem; width:auto; margin-top:5px;" onclick="withdrawFromGoal(${idx})">Withdraw</button>
-                </div>`;
-            rollMenu.add(new Option(goal.name, idx));
-        });
-
-        // Render Bills
-        const bList = document.getElementById('billList');
-        const bEditList = document.getElementById('billEditorList');
-        bList.innerHTML = ''; bEditList.innerHTML = '';
-        data.bills.sort((a,b) => new Date(a.next_due_date) - new Date(b.next_due_date)).forEach((bill, idx) => {
-            bList.innerHTML += `<div class="item-row"><div><b>${bill.name}</b><br><small>${bill.next_due_date}</small></div><button class="btn btn-blue" style="width:auto;margin:0;padding:5px 10px;" onclick="payBill('${bill.id}')">Pay $${bill.amount}</button></div>`;
-            bEditList.innerHTML += `
-                <div class="item-row" style="font-size:0.8rem; background:#f9f9f9; padding:5px; margin-bottom:5px; border-radius:4px;">
-                    <span>${bill.name}</span>
-                    <div style="display:flex; gap:5px;">
-                        <input type="number" style="width:70px; padding:2px;" value="${bill.amount}" onchange="updateBillData(${idx}, 'amount', this.value)">
-                        <select style="width:90px; padding:2px;" onchange="updateBillData(${idx}, 'frequency', this.value)">
-                            <option value="monthly" ${bill.frequency === 'monthly' ? 'selected' : ''}>Monthly</option>
-                            <option value="bi-weekly" ${bill.frequency === 'bi-weekly' ? 'selected' : ''}>Bi-Weekly</option>
-                            <option value="semi-annually" ${bill.frequency === 'semi-annually' ? 'selected' : ''}>6-Months</option>
-                        </select>
-                    </div>
-                </div>`;
-        });
-    }
-
     function calculateProjection(days) {
-    let bal = data.state.checking_balance;
-    let d = new Date();
-    const end = new Date(); 
-    end.setDate(end.getDate() + days);
-    
-    let lowPointDate = null;
-    let simBills = JSON.parse(JSON.stringify(data.bills));
-    
-    // Daily burn rate (1000 per week / 7 days)
-    const dailyBurn = 1000 / 7;
-
-    while(d <= end) {
-        const dateStr = d.toISOString().split('T')[0];
-        const dom = d.getDate();
+        let bal = data.state.checking_balance;
+        let d = new Date(); d.setHours(12,0,0,0); // Use High Noon to prevent date drift
+        const end = new Date(d); end.setDate(end.getDate() + days);
         
-        // 1. Daily Spend (Linear Burn like Excel)
-        bal -= dailyBurn;
+        let lowPointDate = null;
+        let simBills = JSON.parse(JSON.stringify(data.bills));
+        let events = [];
+        const dailyBurn = 1000 / 7;
 
-        // 2. Monthly Amazon Escrow (Spread out or hit on 1st)
-        if(dom === 1) bal -= 500; 
-        
-        // 3. Scott Pay (15th / EOM)
-        if(dom === 15) bal += 2500;
-        const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-        if(dom === lastDay) bal += 2500;
-        
-        // 4. Wife Pay (Bi-weekly Fridays)
-        const refDate = new Date("2026-01-16");
-        const diff = Math.floor((d - refDate) / 86400000);
-        if(diff >= 0 && diff % 14 === 0) bal += 2500;
+        while(d <= end) {
+            const dateStr = d.toLocaleDateString('en-CA');
+            const dom = d.getDate();
+            
+            // 1. Daily Burn
+            bal -= dailyBurn;
 
-        // 5. Bills (Specific Dates)
-        simBills.forEach(b => {
-            if(b.next_due_date === dateStr) {
-                bal -= b.amount;
-                let next = new Date(b.next_due_date);
-                if(b.frequency === "monthly") next.setMonth(next.getMonth()+1);
-                else if(b.frequency === "bi-weekly") next.setDate(next.getDate()+14);
-                else if(b.frequency === "semi-annually") next.setMonth(next.getMonth()+6);
-                b.next_due_date = next.toISOString().split('T')[0];
+            // 2. Paydays
+            if(dom === 15) { bal += 2500; events.push({date: dateStr, label: "Scott Pay", amt: 2500, current: bal}); }
+            if(dom === new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()) { 
+                bal += 2500; events.push({date: dateStr, label: "Scott Pay", amt: 2500, current: bal}); 
             }
-        });
+            
+            // Wife Pay
+            const refDate = new Date("2026-01-16T12:00:00");
+            const diff = Math.floor((d - refDate) / 86400000);
+            if(diff >= 0 && diff % 14 === 0) {
+                bal += 2500; events.push({date: dateStr, label: "Wife Pay", amt: 2500, current: bal});
+            }
 
-        // 6. Check for Low Point (Safety Floor $500)
-        if (bal < 500 && !lowPointDate) {
-            lowPointDate = d.toLocaleDateString(undefined, {month:'short', day:'numeric'});
+            // 3. Bills
+            simBills.forEach(b => {
+                if(b.next_due_date === dateStr) {
+                    bal -= b.amount;
+                    events.push({date: dateStr, label: b.name, amt: -b.amount, current: bal});
+                    let next = new Date(b.next_due_date + "T12:00:00");
+                    if(b.frequency === "monthly") next.setMonth(next.getMonth()+1);
+                    else if(b.frequency === "bi-weekly") next.setDate(next.getDate()+14);
+                    else if(b.frequency === "semi-annually") next.setMonth(next.getMonth()+6);
+                    b.next_due_date = next.toLocaleDateString('en-CA');
+                }
+            });
+
+            if (bal < 500 && !lowPointDate) lowPointDate = d.toLocaleDateString(undefined, {month:'short', day:'numeric'});
+            d.setDate(d.getDate() + 1);
         }
+        return { balance: Math.round(bal).toLocaleString(), lowPointDate, events };
+    }
+
+    function render() {
+        document.getElementById('checkingBal').innerText = `$${data.state.checking_balance.toLocaleString()}`;
         
-        d.setDate(d.getDate() + 1);
-    }
-    return { 
-        balance: Math.round(bal).toLocaleString(), 
-        lowPointDate 
-    };
-}
-    async function receivePay(id) {
-        const pay = data.paydays.find(p => p.id === id);
-        const amt = prompt(`Actual pay for ${pay.name}:`, pay.amount);
-        if(amt) {
-            data.state.checking_balance += parseFloat(amt);
-            data.history.push({ date: new Date().toISOString(), vendor: "INCOME", what: pay.name, amount: parseFloat(amt) });
-            await sync(); render();
-        }
-    }
+        const p10 = calculateProjection(10);
+        const p30 = calculateProjection(30);
+        const p120 = calculateProjection(120);
 
-    async function payBill(id) {
-        const bill = data.bills.find(b => b.id === id);
-        const actual = prompt(`Actual amount for ${bill.name}:`, bill.amount);
-        if(actual) {
-            const amt = parseFloat(actual);
-            data.state.checking_balance -= amt;
-            const date = new Date(bill.next_due_date);
-            if (bill.frequency === "monthly") date.setMonth(date.getMonth() + 1);
-            else if (bill.frequency === "bi-weekly") date.setDate(date.getDate() + 14);
-            else if (bill.frequency === "semi-annually") date.setMonth(date.getMonth() + 6);
-            bill.next_due_date = date.toISOString().split('T')[0];
-            data.history.push({ date: new Date().toISOString(), vendor: "BILL", what: bill.name, amount: amt });
-            await sync(); render();
-        }
-    }
+        document.getElementById('proj10').innerText = `$${p10.balance}`;
+        document.getElementById('proj30').innerText = `$${p30.balance}`;
+        document.getElementById('proj120').innerText = `$${p120.balance}`;
 
-    async function updateBillData(idx, field, value) {
-        if (field === 'amount') data.bills[idx].amount = parseFloat(value);
-        else data.bills[idx].frequency = value;
-        await sync(); render();
-    }
+        const warning = document.getElementById('lowPointWarning');
+        warning.innerText = p120.lowPointDate ? `⚠️ Dips below $500 on ${p120.lowPointDate}` : "✅ Safe for 4 Months";
+        warning.style.color = p120.lowPointDate ? "#ff9800" : "#4CAF50";
 
-    async function withdrawFromGoal(idx) {
-        const amt = prompt(`Withdraw from ${data.savings_goals[idx].name}:`);
-        if(amt && parseFloat(amt) <= data.savings_goals[idx].current) {
-            data.savings_goals[idx].current -= parseFloat(amt);
-            data.state.checking_balance += parseFloat(amt);
-            await sync(); render();
-        }
-    }
-
-    async function rollover(type) {
-        const left = data.state.current_weekly_remaining;
-        if(type === 'goal') {
-            const idx = document.getElementById('rollTarget').value;
-            data.savings_goals[idx].current += left;
-            data.state.current_weekly_remaining = 1000;
-        } else {
-            data.state.current_weekly_remaining += 1000;
-        }
-        await sync(); render();
+        // Render the Table
+        const body = document.getElementById('projectionBody');
+        body.innerHTML = '';
+        p30.events.forEach(ev => {
+            body.innerHTML += `<tr>
+                <td>${ev.date.split('-').slice(1).join('/')}</td>
+                <td>${ev.label}</td>
+                <td style="color:${ev.amt > 0 ? 'green' : 'red'}">${ev.amt > 0 ? '+' : ''}${ev.amt}</td>
+                <td><b>$${Math.round(ev.current)}</b></td>
+            </tr>`;
+        });
     }
 
     async function logTransaction() {
-        const vendor = document.getElementById('pVendor').value;
         const amt = parseFloat(document.getElementById('pAmt').value);
         if(!amt) return;
-        if(vendor === "Amazon" && data.state.escrow_remaining > 0) {
-            if(data.state.escrow_remaining >= amt) data.state.escrow_remaining -= amt;
-            else { data.state.current_weekly_remaining -= (amt - data.state.escrow_remaining); data.state.escrow_remaining = 0; }
-        } else { data.state.current_weekly_remaining -= amt; }
         data.state.checking_balance -= amt;
-        data.history.push({ date: new Date().toISOString(), vendor, who: document.getElementById('pWho').value, what: document.getElementById('pWhat').value, amount: amt });
+        data.state.current_weekly_remaining -= amt;
+        data.history.push({ date: new Date().toISOString(), vendor: document.getElementById('pVendor').value, amount: amt });
+        await sync(); render();
+    }
+
+    async function undoLast() {
+        const last = data.history.pop();
+        if(!last) return;
+        data.state.checking_balance += last.amount;
+        if(last.vendor !== "BILL" && last.vendor !== "INCOME") {
+            data.state.current_weekly_remaining += last.amount;
+        }
         await sync(); render();
     }
 
     async function sync() {
-        const indicator = document.getElementById('syncStatus');
-        indicator.className = 'sync-saving';
+        const status = document.getElementById('syncStatus');
+        status.className = 'sync-saving';
         try {
             const token = localStorage.getItem('gh_token');
             const url = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`;
@@ -302,9 +207,8 @@
                 headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: "Update", content: btoa(JSON.stringify(data, null, 2)), sha: file.sha })
             });
-            if (resp.ok) { indicator.className = 'sync-success'; setTimeout(()=>indicator.className='', 2000); }
-            else throw new Error();
-        } catch (e) { indicator.className = 'sync-error'; }
+            if(resp.ok) { status.className = 'sync-success'; setTimeout(()=>status.className='', 2000); }
+        } catch (e) { status.className = 'sync-error'; }
     }
 
     function toggleSettings() { document.getElementById('settings').classList.toggle('hidden'); }
