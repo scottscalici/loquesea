@@ -33,9 +33,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4678,
+    "checking_balance": 4573.4,
     "travel_savings": 0,
-    "weekly_budget_remaining": 4500
+    "weekly_budget_remaining": 4395.4
   },
   "vendors": [
     "Amazon",
@@ -109,6 +109,11 @@
       "date": "2026-01-15",
       "vendor": "Scott Payday",
       "amount": 4000
+    },
+    {
+      "date": "2026-01-15",
+      "vendor": "WEA",
+      "amount": -104.6
     }
   ],
   "bills": [
@@ -418,7 +423,7 @@
       "name": "WEA",
       "frequency": "monthly",
       "amount": 104.6,
-      "next_due_date": "2026-01-15"
+      "next_due_date": "2026-02-15"
     },
     {
       "id": "weather",
