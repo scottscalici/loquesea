@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Daily Spend Limit</title>
     <style>
-        :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; }
+        :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; --danger: #d32f2f; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; }
         
-        /* Nav removed as requested */
-
         .card { background: var(--card); border-radius: 20px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
         .label { font-size: 0.9rem; color: #888; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
         .big-amt { font-size: 3.5rem; font-weight: 900; margin: 15px 0; display: block; color: var(--primary); }
@@ -21,6 +19,7 @@
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
         .stat-box { text-align: center; }
         .stat-val { font-size: 1.2rem; font-weight: bold; display: block; }
+        .refresh-notice { font-size: 0.6rem; color: #ccc; margin-top: 15px; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -36,61 +35,77 @@
 
         <div class="stats-grid">
             <div class="stat-box">
-                <span class="label">Weekly Spent</span>
-                <span id="weeklySpent" class="stat-val" style="color:#d32f2f;">$0</span>
+                <span class="label">Weekly Budget</span>
+                <span id="totalBudget" class="stat-val" style="color:#666;">$0</span>
             </div>
             <div class="stat-box">
                 <span class="label">Left in Week</span>
                 <span id="weeklyRemaining" class="stat-val">$0</span>
             </div>
         </div>
+        <div class="refresh-notice" id="lastSync">Syncing...</div>
     </div>
 
 <script>
+    const CONFIG = { owner: 'scottscalici', repo: 'loquesea', path: 'planner/bills.json' };
+
     async function init() {
-        const resp = await fetch(`bills.json?t=${Date.now()}`);
-        const data = await resp.json();
-        updateUI(data);
+        try {
+            const TOKEN = localStorage.getItem('gh_token');
+            const resp = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, {
+                headers: { "Authorization": `token ${TOKEN}` },
+                cache: 'no-store'
+            });
+            const fileData = await resp.json();
+            const data = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+            updateUI(data);
+        } catch (e) {
+            console.error("Load failed", e);
+            document.getElementById('dailyLimit').innerText = "ERR";
+        }
     }
 
     function updateUI(data) {
         const now = new Date();
         
-        // 1. Calculate Monday of this week
-        const day = now.getDay();
-        const diffToMonday = now.getDate() - day + (day === 0 ? -6 : 1);
-        const monday = new Date(new Date().setDate(diffToMonday));
-        monday.setHours(0,0,0,0);
+        // 1. Calculate Days Remaining until Monday morning
+        // (0 = Sun, 1 = Mon... 6 = Sat)
+        const dayOfWeek = now.getDay(); 
+        const daysLeft = 7 - (dayOfWeek === 0 ? 7 : dayOfWeek) + 1; 
+        // Example: If today is Thursday (4), 7-4+1 = 4 days (Thu, Fri, Sat, Sun)
 
-        // 2. Calculate Days Remaining in Budget Week (until next Monday)
-        // If today is Thursday, days left = Thu, Fri, Sat, Sun (4 days)
-        const nextMonday = new Date(monday);
-        nextMonday.setDate(monday.getDate() + 7);
-        const msLeft = nextMonday - now;
-        const daysLeft = Math.ceil(msLeft / (1000 * 60 * 60 * 24));
-
-        // 3. Sum Weekly Spending from History
-        const thisWeeksItems = data.history.filter(h => {
-            const hDate = new Date(h.date);
-            return hDate >= monday;
-        });
-        const spent = thisWeeksItems.reduce((sum, item) => sum + Math.abs(item.amount), 0);
+        // 2. Pull remaining budget from real data
+        const remaining = data.state.weekly_budget_remaining || 0;
         
-        // 4. Calculate Remaining & Daily Limit
-        const weeklyBudget = 1000;
-        const remaining = Math.max(0, weeklyBudget - spent);
-        const dailyLimit = remaining / (daysLeft || 1);
-        const pct = Math.min((spent / weeklyBudget) * 100, 100);
+        // 3. Logic for Progress Bar
+        // We assume a standard week is 1000, but it could be more if rolled over
+        const baseBudget = 1000; 
+        const spent = Math.max(0, baseBudget - remaining);
+        const pct = Math.min((remaining / baseBudget) * 100, 100);
+
+        // 4. Calculate Daily Limit
+        const dailyLimit = remaining / daysLeft;
 
         // 5. Update UI
         document.getElementById('dailyLimit').innerText = `$${Math.floor(dailyLimit)}`;
         document.getElementById('daysLeftMsg').innerText = `to last us ${daysLeft} days`;
-        document.getElementById('weeklySpent').innerText = `$${spent.toLocaleString()}`;
-        document.getElementById('weeklyRemaining').innerText = `$${remaining.toLocaleString()}`;
+        document.getElementById('totalBudget').innerText = `$${baseBudget}`;
+        document.getElementById('weeklyRemaining').innerText = `$${Math.round(remaining).toLocaleString()}`;
+        
+        // Progress bar (shows how much of the $1000 is LEFT)
         document.getElementById('progressBar').style.width = pct + '%';
 
         // Color coding
-        if (dailyLimit < 50) document.getElementById('dailyLimit').style.color = '#d32f2f';
+        const dailyEl = document.getElementById('dailyLimit');
+        if (dailyLimit < 40) {
+            dailyEl.style.color = 'var(--danger)';
+        } else if (dailyLimit > 100) {
+            dailyEl.style.color = 'var(--primary)';
+        } else {
+            dailyEl.style.color = 'var(--accent)';
+        }
+
+        document.getElementById('lastSync').innerText = "Last Updated: " + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
     }
 
     init();
