@@ -33,7 +33,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4665.379999999999,
+    "checking_balance": 4560.679999999999,
     "travel_savings": 0,
     "weekly_budget_remaining": 383.4,
     "daily_allowance_locked": 0,
@@ -134,6 +134,12 @@
       "what": "",
       "amount": -500,
       "category": "SAVINGS"
+    },
+    {
+      "date": "2026-01-15",
+      "vendor": "WEA",
+      "amount": -104.7,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -443,7 +449,7 @@
       "name": "WEA",
       "frequency": "monthly",
       "amount": 104.6,
-      "next_due_date": "2026-01-15"
+      "next_due_date": "2026-02-15"
     },
     {
       "id": "weather",
