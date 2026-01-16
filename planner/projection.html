@@ -63,6 +63,8 @@
     async function init() {
         try {
             const TOKEN = localStorage.getItem('gh_token');
+            if (!TOKEN) return; // Wait for user to use the key button if missing
+
             const resp = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, {
                 headers: { "Authorization": `token ${TOKEN}` },
                 cache: 'no-store'
@@ -78,11 +80,8 @@
         body.innerHTML = ''; 
 
         let runningBal = data.state.checking_balance || 0;
-        
-        // Calculate the "Savings Goal" floor (the amount you shouldn't dip below)
         const savingsThreshold = (data.savings_goals || []).reduce((sum, g) => sum + (g.current || 0), 0);
         
-        // START TOMORROW to avoid double-counting today's entries
         let d = new Date(); 
         d.setDate(d.getDate() + 1); 
         d.setHours(0,0,0,0);
@@ -99,20 +98,20 @@
             const dow = d.getDay(); 
             let dailyEvents = [];
 
-            // 1. Income (15th and Last Day)
+            // 1. Income
             const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
             if(dom === 15 || dom === lastDay) dailyEvents.push({label: "Scott Pay", amt: 2500, type: 'pay'});
             
             const diff = Math.round((d - wifeRef) / (1000 * 60 * 60 * 24));
             if(diff >= 0 && diff % 14 === 0) dailyEvents.push({label: "Wife Pay", amt: 2500, type: 'pay'});
 
-            // 2. Weekly Allowance (Every Friday)
-            if(dow === 5) dailyEvents.push({label: "Weekly Allowance", amt: -1000, type: 'hit'});
+            // 2. Weekly Allowance (dow 1 = Monday)
+            if(dow === 1) dailyEvents.push({label: "Weekly Allowance", amt: -1000, type: 'hit'});
 
             // 3. Amazon Shield (21st)
             if(dom === 21) dailyEvents.push({label: "Amazon Escrow Hit", amt: -500, type: 'hit'});
 
-            // 4. Specific Bills
+            // 4. Bills
             simBills.forEach(b => {
                 if(b.next_due_date === dateISO) {
                     dailyEvents.push({label: b.name, amt: -b.amount, type: 'bill'});
@@ -140,7 +139,6 @@
                 body.appendChild(row);
             });
 
-            // Milestone Checks
             const daysOut = Math.round((d - new Date().setHours(0,0,0,0)) / 86400000);
             if(daysOut === 30) document.getElementById('m1').innerText = `$${Math.round(runningBal).toLocaleString()}`;
             if(daysOut === 90) document.getElementById('m3').innerText = `$${Math.round(runningBal).toLocaleString()}`;
@@ -149,6 +147,21 @@
             d.setDate(d.getDate() + 1);
         }
     }
+
+    // Universal Token Unlocker Logic
+    (function() {
+        if (!localStorage.getItem('gh_token')) {
+            const lockBtn = document.createElement('button');
+            lockBtn.innerHTML = "🔑 Setup";
+            lockBtn.style = "position:fixed; bottom:10px; right:10px; font-size:10px; padding:8px; opacity:0.4; background:#fff; border:1px solid #ccc; border-radius:5px; z-index:9999;";
+            lockBtn.onclick = () => {
+                const t = prompt("Paste your GitHub Token:");
+                if (t) { localStorage.setItem('gh_token', t); location.reload(); }
+            };
+            document.body.appendChild(lockBtn);
+        }
+    })();
+
     init();
 </script>
 </body>
