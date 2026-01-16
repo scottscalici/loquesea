@@ -98,15 +98,23 @@
         else if (dailyLimit > 100) dailyEl.style.color = 'var(--primary)';
         else dailyEl.style.color = 'var(--accent)';
 
-        // 2. Render 5 Recent Transactions
+// 2. Render 5 Recent SPENDING Transactions
         const historyList = document.getElementById('recentList');
         historyList.innerHTML = '';
         
+        // Filter out Bills, Income, and Savings transfers
+        // We only want the daily "Spending"
+        const spendingOnly = data.history.filter(item => {
+            const cat = (item.category || "").toUpperCase();
+            const vendor = (item.vendor || "").toUpperCase();
+            return cat !== "BILL" && cat !== "INCOME" && cat !== "SAVINGS" && vendor !== "INCOME";
+        });
+
         // Sort newest first and take top 5
-        const recent = data.history.slice().sort((a, b) => (b.date || "").localeCompare(a.date || "")).slice(0, 5);
+        const recent = spendingOnly.sort((a, b) => (b.date || "").localeCompare(a.date || "")).slice(0, 5);
 
         recent.forEach(item => {
-            const isPos = item.amount > 0;
+            const isPos = item.amount > 0; // In case of a refund
             let displayDate = "";
             try {
                 const parts = item.date.split('-');
@@ -121,7 +129,7 @@
             div.innerHTML = `
                 <div>
                     <span class="hist-desc">${item.vendor || 'Unknown'}</span>
-                    <span class="hist-date">${displayDate}</span>
+                    <span class="hist-date">${displayDate} ${item.who ? '• ' + item.who : ''}</span>
                 </div>
                 <span class="hist-amt ${isPos ? 'pos' : ''}">${isPos ? '+' : '-'}$${Math.abs(item.amount).toLocaleString()}</span>
             `;
