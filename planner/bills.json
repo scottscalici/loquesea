@@ -33,7 +33,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 561.4,
+    "checking_balance": 5235.379999999999,
     "travel_savings": 0,
     "weekly_budget_remaining": 383.4
   },
@@ -112,6 +112,12 @@
       "what": "",
       "amount": -116.6,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-01-15",
+      "vendor": "Scott Payday",
+      "amount": 4673.98,
+      "category": "INCOME"
     }
   ],
   "bills": [
