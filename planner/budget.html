@@ -79,7 +79,7 @@
     </div>
 
 <script>
-    const CONFIG = { owner: 'scottscalici', repo: 'loquesea', path: 'planner/bills.json' };
+        const CONFIG = { owner: 'scottscalici', repo: 'loquesea', path: 'planner/bills.json' };
     let data = null;
 
     async function init() {
@@ -156,10 +156,8 @@
         const isSavings = select.value === 'SAVINGS_XFER' || vendor.startsWith("TO SAVINGS:");
         const isBill = select.value === 'BILL';
 
-        // 1. Bank balance ALWAYS changes
         data.state.checking_balance += (isIncome ? absAmt : -absAmt);
 
-        // 2. Budget Logic: ONLY subtract if NOT Savings and NOT a Bill
         if (!isIncome && !isSavings && !isBill) {
             const day = new Date().getDate();
             const isAmazon = vendor.toLowerCase().includes("amazon");
@@ -176,7 +174,6 @@
             }
         }
 
-        // 3. Update Savings Goal
         if (isSavings) {
             const goalKey = vendor.replace("TO SAVINGS: ", "").trim();
             const goal = data.savings_goals.find(g => g.name.toLowerCase() === goalKey.toLowerCase());
@@ -196,6 +193,51 @@
         await sync();
     }
 
+    function renderInbox() {
+        const container = document.getElementById('inboxList');
+        if(!container) return;
+        container.innerHTML = '';
+        const today = new Date();
+        const lookahead = 31;
+        let allItems = [];
+
+        for (let i = 0; i <= lookahead; i++) {
+            let d = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
+            let dateStr = d.toISOString().split('T')[0];
+            if (d.getDate() === 15 || d.getDate() === new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()) {
+                if (!data.history.some(h => h.date === dateStr && h.vendor.includes("Payday"))) {
+                    allItems.push({ name: (d.getDate() === 15 ? "Scott Payday" : "Scott Payday"), amount: 2500, type: 'INCOME', idx: -1, date: dateStr });
+                }
+            }
+            const wifeStart = new Date("2026-01-16T12:00:00");
+            const diff = Math.round((d - wifeStart) / (1000 * 60 * 60 * 24));
+            if (diff >= 0 && diff % 14 === 0) {
+                if (!data.history.some(h => h.date === dateStr && h.vendor === "Wife Payday")) {
+                    allItems.push({ name: "Wife Payday", amount: 2500, type: 'INCOME', idx: -2, date: dateStr });
+                }
+            }
+        }
+
+        data.bills.forEach((bill, originalIdx) => {
+            const billDate = new Date(bill.next_due_date + "T12:00:00");
+            const limit = new Date(); limit.setDate(today.getDate() + lookahead);
+            if (billDate <= limit) {
+                allItems.push({ name: bill.name, amount: bill.amount, type: 'BILL', idx: originalIdx, date: bill.next_due_date });
+            }
+        });
+
+        allItems.sort((a, b) => new Date(a.date) - new Date(b.date));
+        allItems.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'inbox-item';
+            div.innerHTML = `<div><b>${item.name}</b><br><small>${item.date}</small></div>
+                <div><span style="font-weight:bold; margin-right:10px; color:${item.type==='INCOME'?'green':'red'}">$${item.amount}</span>
+                <button class="btn-paid" onclick="processInbox(${item.idx}, '${item.type}', '${item.date}')">OK</button>
+                <button class="btn-paid" style="color:var(--danger)" onclick="skipInbox(${item.idx}, '${item.type}')">SKIP</button></div>`;
+            container.appendChild(div);
+        });
+    }
+
     async function processInbox(idx, type, date) {
         let name, defaultAmt;
         if (type === 'INCOME') {
@@ -209,43 +251,55 @@
         const val = parseFloat(input);
         if (isNaN(val)) return;
 
-        // Bank balance updates
         data.state.checking_balance += (type === 'INCOME' ? val : -val);
-        
-        // Logic: Paydays and Bills do NOT touch the weekly spend budget.
-        
         if (type === 'BILL') advanceDate(idx);
         data.history.push({ date: date, vendor: name, amount: (type === 'INCOME' ? val : -val), category: type });
         await sync();
+    }
+
+    async function skipInbox(idx, type) {
+        if (type === 'BILL') advanceDate(idx);
+        await sync();
+    }
+
+    function advanceDate(idx) {
+        let d = new Date(data.bills[idx].next_due_date + "T12:00:00");
+        if (data.bills[idx].frequency === "monthly") d.setMonth(d.getMonth() + 1);
+        else d.setDate(d.getDate() + 14);
+        data.bills[idx].next_due_date = d.toISOString().split('T')[0];
+    }
+
+    function renderAmazonEscrow() {
+        const amzDiv = document.getElementById('amazonEscrowContainer');
+        const today = new Date();
+        const currentMonth = today.toISOString().slice(0, 7); 
+        const amzTotal = data.history.filter(h => {
+            const hDate = new Date(h.date + "T12:00:00");
+            return h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon") && hDate.getDate() >= 21 && hDate.getDate() <= 27;
+        }).reduce((sum, h) => sum + Math.abs(h.amount), 0);
+        const shieldActive = (today.getDate() >= 21 && today.getDate() <= 27);
+        const rem = Math.max(0, 500 - amzTotal);
+        const over = Math.max(0, amzTotal - 500);
+        amzDiv.innerHTML = `<div style="margin-top: 10px; padding: 10px; background: #f9f9f9; border-radius: 8px;"><span class="label">Amazon Escrow ($500) - ${shieldActive ? 'ACTIVE' : 'INACTIVE'}</span><div style="display:flex; justify-content:space-between; font-size: 0.85rem;"><span>Used: $${amzTotal.toLocaleString()}</span><span style="font-weight:bold; color:${over > 0 ? 'var(--danger)' : 'var(--primary)'}">${over > 0 ? 'Over: $'+over : 'Left: $'+rem}</span></div></div>`;
+    }
+
+    function renderHistory() {
+        const histDiv = document.getElementById('recentHistory');
+        if(!histDiv) return;
+        histDiv.innerHTML = '';
+        data.history.slice(-5).reverse().forEach(h => {
+            histDiv.innerHTML += `<div class="inbox-item"><div><b>${h.vendor}</b> ${h.who?`(${h.who})`:''}<br><small>${h.what || ''}</small></div><div style="font-weight:bold; color:${h.amount < 0 ? 'red' : 'green'}">$${Math.abs(h.amount).toLocaleString()}</div></div>`;
+        });
     }
 
     async function undoLast() {
         if (!data.history.length || !confirm("Undo last transaction?")) return;
         const last = data.history.pop();
         const amount = Math.abs(last.amount);
-
-        if (last.amount > 0) { 
-            // Undo Income
-            data.state.checking_balance -= amount; 
-        } else {
-            // Undo Expense
+        if (last.amount > 0) { data.state.checking_balance -= amount; } 
+        else {
             data.state.checking_balance += amount;
-            
-            // Only restore weekly budget if the category was a manual daily spend
-            // (If it was a BILL or SAVINGS, budget was never touched, so don't add back)
-            if (last.category === 'MANUAL') {
-                // Special check for Amazon Shield window logic (approximate restore)
-                const hDate = new Date(last.date + "T12:00:00");
-                const day = hDate.getDate();
-                if (last.vendor.toLowerCase().includes("amazon") && day >= 21 && day <= 27) {
-                    // Logic here is complex to reverse exactly, usually safest to restore 
-                    // the difference that was actually subtracted.
-                    data.state.weekly_budget_remaining += amount; 
-                } else {
-                    data.state.weekly_budget_remaining += amount;
-                }
-            }
-
+            if (last.category === 'MANUAL') data.state.weekly_budget_remaining += amount;
             if (last.category === 'SAVINGS') {
                 const goalKey = last.vendor.replace("TO SAVINGS: ", "").trim();
                 const goal = data.savings_goals.find(g => g.name.toLowerCase() === goalKey.toLowerCase());
@@ -273,36 +327,6 @@
             body: JSON.stringify({ message: "Update", content: btoa(unescape(encodeURIComponent(JSON.stringify(updatedData, null, 2)))), sha: fileData.sha })
         });
         return response.ok;
-    }
-
-    // Helper functions from original
-    function advanceDate(idx) {
-        let d = new Date(data.bills[idx].next_due_date + "T12:00:00");
-        if (data.bills[idx].frequency === "monthly") d.setMonth(d.getMonth() + 1);
-        else d.setDate(d.getDate() + 14);
-        data.bills[idx].next_due_date = d.toISOString().split('T')[0];
-    }
-
-    function renderAmazonEscrow() {
-        const amzDiv = document.getElementById('amazonEscrowContainer');
-        const today = new Date();
-        const currentMonth = today.toISOString().slice(0, 7); 
-        const amzTotal = data.history.filter(h => {
-            const hDate = new Date(h.date + "T12:00:00");
-            return h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon") && hDate.getDate() >= 21 && hDate.getDate() <= 27;
-        }).reduce((sum, h) => sum + Math.abs(h.amount), 0);
-        const shieldActive = (today.getDate() >= 21 && today.getDate() <= 27);
-        const rem = Math.max(0, 500 - amzTotal);
-        const over = Math.max(0, amzTotal - 500);
-        amzDiv.innerHTML = `<div style="margin-top: 10px; padding: 10px; background: #f9f9f9; border-radius: 8px;"><span class="label">Amazon Escrow ($500) - ${shieldActive ? 'ACTIVE' : 'INACTIVE'}</span><div style="display:flex; justify-content:space-between; font-size: 0.85rem;"><span>Used: $${amzTotal.toLocaleString()}</span><span style="font-weight:bold; color:${over > 0 ? 'var(--danger)' : 'var(--primary)'}">${over > 0 ? 'Over: $'+over : 'Left: $'+rem}</span></div></div>`;
-    }
-
-    function renderHistory() {
-        const histDiv = document.getElementById('recentHistory');
-        histDiv.innerHTML = '';
-        data.history.slice(-5).reverse().forEach(h => {
-            histDiv.innerHTML += `<div class="inbox-item"><div><b>${h.vendor}</b> ${h.who?`(${h.who})`:''}<br><small>${h.what || ''}</small></div><div style="font-weight:bold; color:${h.amount < 0 ? 'red' : 'green'}">$${Math.abs(h.amount).toLocaleString()}</div></div>`;
-        });
     }
 
     init();
