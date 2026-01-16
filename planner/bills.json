@@ -7,7 +7,7 @@
     {
       "name": "Emergency Fund",
       "target": 1000,
-      "current": 1
+      "current": 0
     },
     {
       "name": "Travel",
@@ -33,9 +33,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 670,
+    "checking_balance": 671,
     "travel_savings": 0,
-    "weekly_budget_remaining": 492
+    "weekly_budget_remaining": 493
   },
   "vendors": [
     "Amazon",
@@ -124,14 +124,6 @@
     {
       "date": "2026-01-16",
       "vendor": "TO SAVINGS: Emergency Plan",
-      "who": "",
-      "what": "",
-      "amount": -1,
-      "category": "SAVINGS"
-    },
-    {
-      "date": "2026-01-16",
-      "vendor": "TO SAVINGS: Emergency Fund",
       "who": "",
       "what": "",
       "amount": -1,
