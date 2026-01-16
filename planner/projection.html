@@ -73,16 +73,22 @@
         } catch (e) { console.error("Load failed", e); }
     }
 
-    function runProjection(data) {
-        const body = document.getElementById('projectionBody');
-        body.innerHTML = ''; 
+function runProjection(data) {
+    const body = document.getElementById('ledgerBody'); // or projectionBody
+    body.innerHTML = ''; 
 
-        // Start with current bank balance
-        let runningBal = data.state.checking_balance || 0;
-        const savingsThreshold = (data.savings_goals || []).reduce((sum, g) => sum + (g.current || 0), 0);
+    let runningBal = data.state.checking_balance || 0;
+    
+    // THE FIX: Start the simulation tomorrow
+    let d = new Date(); 
+    d.setDate(d.getDate() + 1); // <--- Add this line
+    d.setHours(0,0,0,0);
 
-        let d = new Date(); d.setHours(0,0,0,0);
-        const end = new Date(); end.setDate(end.getDate() + 180);
+    const end = new Date(); 
+    end.setDate(end.getDate() + 180);
+    
+    // ... rest of the code remains the same ...
+
         
         let simBills = JSON.parse(JSON.stringify(data.bills));
         const wifeRef = new Date("2026-01-16T12:00:00"); 
