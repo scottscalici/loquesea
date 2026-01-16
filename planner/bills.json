@@ -12,7 +12,7 @@
     {
       "name": "Travel",
       "target": 2000,
-      "current": 101
+      "current": 100
     }
   ],
   "paydays": [
@@ -33,7 +33,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5164.379999999999,
+    "checking_balance": 5165.379999999999,
     "travel_savings": 0,
     "weekly_budget_remaining": 383.4,
     "daily_allowance_locked": 0,
@@ -126,14 +126,6 @@
       "vendor": "Rec Center",
       "amount": -70,
       "category": "BILL"
-    },
-    {
-      "date": "2026-01-16",
-      "vendor": "TO SAVINGS: Travel",
-      "who": "",
-      "what": "",
-      "amount": -1,
-      "category": "SAVINGS"
     }
   ],
   "bills": [
