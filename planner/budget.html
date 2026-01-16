@@ -54,6 +54,7 @@
             <option value="Gas">Gas</option>
             <option value="Dining">Dining</option>
             <option value="Income">Income/Payday</option>
+            <option value="SAVINGS_XFER">Transfer to Savings...</option>
             <option value="OTHER">Other...</option>
         </select>
         <input type="text" id="otherVendor" placeholder="Vendor Name" style="display:none; width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: 1px solid #ddd;">
@@ -91,85 +92,59 @@
             const fileData = await resp.json();
             data = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
 
-            // 1. WEEKLY ROLLOVER LOGIC (Monday Reset)
-            const lastReset = new Date(data.state.last_weekly_reset || "2026-01-12T00:00:00");
+            // 1. WEEKLY ROLLOVER (Monday Reset)
+            const lastResetStr = data.state.last_weekly_reset || "2026-01-12T00:00:00";
+            const lastReset = new Date(lastResetStr);
             const now = new Date();
-            
-            // Get the most recent Monday at midnight
             const currentMonday = new Date();
             currentMonday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
             currentMonday.setHours(0,0,0,0);
 
             if (lastReset < currentMonday) {
-                // It's a new week! Add $1000 to the current remaining balance (Rollover)
                 data.state.weekly_budget_remaining = (data.state.weekly_budget_remaining || 0) + 1000;
                 data.state.last_weekly_reset = currentMonday.toISOString();
                 await saveToGithub(data); 
             }
 
             renderUI();
-            populateSavingsDropdown(); // New function for the UI
         } catch (e) { console.error("Load failed", e); }
     }
-    
+
     function renderUI() {
         if (!data) return;
         document.getElementById('mainBalance').innerText = `$${(data.state.checking_balance || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
         const budgetRemaining = data.state.weekly_budget_remaining || 0;
         document.getElementById('weeklyBudgetContainer').innerHTML = `<div style="font-size: 1.1rem; font-weight: bold; color: ${budgetRemaining < 0 ? 'var(--danger)' : 'var(--primary)'};">Weekly Spend Left: $${budgetRemaining.toLocaleString()}</div>`;
+        
         const savDiv = document.getElementById('savingsContainer');
         savDiv.innerHTML = '';
         (data.savings_goals || []).forEach(g => {
             const pct = Math.min((g.current / g.target) * 100, 100);
             savDiv.innerHTML += `<div style="margin-top:10px;"><div style="display:flex; justify-content:space-between; font-size:0.75rem;"><span>${g.name}</span><span>$${g.current.toLocaleString()} / $${g.target.toLocaleString()}</span></div><div class="progress-bg"><div class="progress-fill" style="width:${pct}%"></div></div></div>`;
         });
+
         renderAmazonEscrow();
         renderInbox();
         renderHistory();
     }
-function populateSavingsDropdown() {
-        const select = document.getElementById('vendorSelect');
-        // Check if Savings option already exists to prevent duplicates
-        if (![...select.options].some(o => o.value === 'SAVINGS_XFER')) {
-            const opt = document.createElement('option');
-            opt.value = 'SAVINGS_XFER';
-            opt.text = 'Transfer to Savings...';
-            select.add(opt);
-        }
-    }
+
     function toggleOtherVendor() {
         const select = document.getElementById('vendorSelect');
-        document.getElementById('otherVendor').style.display = (select.value === 'OTHER') ? 'block' : 'none';
+        const otherInput = document.getElementById('otherVendor');
         
-        // Show savings selector if Transfer is picked
-        const isSavings = select.value === 'SAVINGS_XFER';
-        if (isSavings) {
+        if (select.value === 'SAVINGS_XFER') {
             const goalName = prompt("Which Savings Goal? (e.g., Vacation, Emergency)");
-            if (goalName) document.getElementById('otherVendor').value = "TO SAVINGS: " + goalName;
-            document.getElementById('otherVendor').style.display = 'block';
+            if (goalName) otherInput.value = "TO SAVINGS: " + goalName;
+            otherInput.style.display = 'block';
+        } else if (select.value === 'OTHER') {
+            otherInput.value = '';
+            otherInput.style.display = 'block';
+        } else {
+            otherInput.style.display = 'none';
         }
     }
-    
-    function renderAmazonEscrow() {
-        const amzDiv = document.getElementById('amazonEscrowContainer');
-        const today = new Date();
-        const currentMonth = today.toISOString().slice(0, 7); 
-        const amzTotalInWindow = data.history.filter(h => {
-            const hDate = new Date(h.date + "T12:00:00");
-            return h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon") && hDate.getDate() >= 21 && hDate.getDate() <= 27;
-        }).reduce((sum, h) => sum + Math.abs(h.amount), 0);
-        const shieldActive = (today.getDate() >= 21 && today.getDate() <= 27);
-        const shieldRemaining = Math.max(0, 500 - amzTotalInWindow);
-        const overage = Math.max(0, amzTotalInWindow - 500);
-        amzDiv.innerHTML = `<div style="margin-top: 10px; padding: 10px; background: #f9f9f9; border-radius: 8px;"><span class="label">Amazon Escrow ($500) - ${shieldActive ? 'ACTIVE' : 'INACTIVE'}</span><div style="display:flex; justify-content:space-between; font-size: 0.85rem;"><span>Escrow Used: $${amzTotalInWindow.toLocaleString()}</span><span style="font-weight:bold; color:${overage > 0 ? 'var(--danger)' : 'var(--primary)'}">${overage > 0 ? 'Over: $'+overage.toLocaleString() : 'Escrow Left: $'+shieldRemaining.toLocaleString()}</span></div></div>`;
-    }
 
-    function toggleOtherVendor() {
-        const select = document.getElementById('vendorSelect');
-        document.getElementById('otherVendor').style.display = (select.value === 'OTHER') ? 'block' : 'none';
-    }
-
-   async function logTransaction() {
+    async function logTransaction() {
         const select = document.getElementById('vendorSelect');
         const amtInput = document.getElementById('amt');
         let amt = parseFloat(amtInput.value);
@@ -178,78 +153,60 @@ function populateSavingsDropdown() {
         if (!vendor || isNaN(amt)) return;
         const absAmt = Math.abs(amt);
         const isIncome = select.value === 'Income';
-        const isSavings = select.value === 'SAVINGS_XFER';
+        const isSavings = select.value === 'SAVINGS_XFER' || vendor.startsWith("TO SAVINGS:");
 
-        // Update Checking
         data.state.checking_balance += (isIncome ? absAmt : -absAmt);
 
-        // Update Weekly Budget (Subtract if it's spending OR a savings transfer)
         if (!isIncome) {
-            data.state.weekly_budget_remaining -= absAmt;
+            const day = new Date().getDate();
+            const isAmazon = vendor.toLowerCase().includes("amazon");
+            if (isAmazon && day >= 21 && day <= 27) {
+                const currentMonth = new Date().toISOString().slice(0, 7);
+                const amzTotal = data.history.filter(h => {
+                    const hDate = new Date(h.date + "T12:00:00");
+                    return h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon") && hDate.getDate() >= 21 && hDate.getDate() <= 27;
+                }).reduce((sum, h) => sum + Math.abs(h.amount), 0);
+                const rem = Math.max(0, 500 - amzTotal);
+                data.state.weekly_budget_remaining -= Math.max(0, absAmt - rem);
+            } else {
+                data.state.weekly_budget_remaining -= absAmt;
+            }
         }
 
-        // Update Savings Goal if applicable
         if (isSavings) {
             const goalKey = vendor.replace("TO SAVINGS: ", "").trim();
             const goal = data.savings_goals.find(g => g.name.toLowerCase() === goalKey.toLowerCase());
-            if (goal) {
-                goal.current += absAmt;
-            } else {
-                alert("Goal not found in JSON. Money moved from budget but not added to a specific goal bar.");
-            }
+            if (goal) goal.current += absAmt;
         }
 
         data.history.push({ 
             date: new Date().toISOString().split('T')[0], 
             vendor, 
             who: document.getElementById('who').value, 
+            what: document.getElementById('what').value,
             amount: (isIncome ? absAmt : -absAmt), 
             category: isSavings ? 'SAVINGS' : 'MANUAL' 
         });
 
-        await sync();
-    }
-    
-    async function undoLast() {
-        if (!data.history.length || !confirm("Undo last transaction?")) return;
-        const last = data.history.pop();
-        const amount = Math.abs(last.amount);
-        const billIndex = data.bills.findIndex(b => b.name === last.vendor);
-        if (billIndex !== -1 && last.amount < 0) {
-            let d = new Date(data.bills[billIndex].next_due_date + "T12:00:00");
-            if (data.bills[billIndex].frequency === "monthly") d.setMonth(d.getMonth() - 1);
-            else d.setDate(d.getDate() - 14);
-            data.bills[billIndex].next_due_date = d.toISOString().split('T')[0];
-        }
-        if (last.amount > 0) { data.state.checking_balance -= amount; } 
-        else {
-            data.state.checking_balance += amount;
-            if (last.category === 'MANUAL') data.state.weekly_budget_remaining += amount;
-        }
+        amtInput.value = ''; document.getElementById('who').value = ''; document.getElementById('what').value = '';
         await sync();
     }
 
-   function renderInbox() {
+    function renderInbox() {
         const container = document.getElementById('inboxList');
         container.innerHTML = '';
         const today = new Date();
         const lookahead = 31;
         let allItems = [];
 
-        // 1. Generate dynamic Paydays for the next 31 days
         for (let i = 0; i <= lookahead; i++) {
             let d = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
             let dateStr = d.toISOString().split('T')[0];
-            let day = d.getDate();
-            let lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-
-            // Scott Payday (15th or Last Day)
-            if (day === 15 || day === lastDay) {
+            if (d.getDate() === 15 || d.getDate() === new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()) {
                 if (!data.history.some(h => h.date === dateStr && h.vendor === "Scott Payday")) {
                     allItems.push({ name: "Scott Payday", amount: 2500, type: 'INCOME', idx: -1, date: dateStr });
                 }
             }
-            // Wife Payday (Bi-weekly from Jan 16, 2026)
             const wifeStart = new Date("2026-01-16T12:00:00");
             const diff = Math.round((d - wifeStart) / (1000 * 60 * 60 * 24));
             if (diff >= 0 && diff % 14 === 0) {
@@ -259,30 +216,18 @@ function populateSavingsDropdown() {
             }
         }
 
-        // 2. Add Bills
-        const limit = new Date(); limit.setDate(today.getDate() + lookahead);
         data.bills.forEach((bill, originalIdx) => {
             const billDate = new Date(bill.next_due_date + "T12:00:00");
+            const limit = new Date(); limit.setDate(today.getDate() + lookahead);
             if (billDate <= limit) {
-                allItems.push({ 
-                    name: bill.name, 
-                    amount: bill.amount, 
-                    type: 'BILL', 
-                    idx: originalIdx, 
-                    date: bill.next_due_date 
-                });
+                allItems.push({ name: bill.name, amount: bill.amount, type: 'BILL', idx: originalIdx, date: bill.next_due_date });
             }
         });
 
-        // 3. Sort everything by Date
         allItems.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-        // 4. Render the sorted list
-        allItems.forEach(item => {
-            appendInboxItem(container, item.name, item.amount, item.type, item.idx, item.date);
-        });
+        allItems.forEach(item => appendInboxItem(container, item.name, item.amount, item.type, item.idx, item.date));
     }
-    
+
     function appendInboxItem(container, name, amt, type, idx, date) {
         const div = document.createElement('div');
         div.className = 'inbox-item';
@@ -305,7 +250,6 @@ function populateSavingsDropdown() {
         if (input === null) return;
         const val = parseFloat(input);
         if (isNaN(val)) return;
-
         data.state.checking_balance += (type === 'INCOME' ? val : -val);
         if (type === 'BILL') advanceDate(idx);
         data.history.push({ date: date, vendor: name, amount: (type === 'INCOME' ? val : -val), category: type });
@@ -324,12 +268,44 @@ function populateSavingsDropdown() {
         data.bills[idx].next_due_date = d.toISOString().split('T')[0];
     }
 
+    function renderAmazonEscrow() {
+        const amzDiv = document.getElementById('amazonEscrowContainer');
+        const today = new Date();
+        const currentMonth = today.toISOString().slice(0, 7); 
+        const amzTotal = data.history.filter(h => {
+            const hDate = new Date(h.date + "T12:00:00");
+            return h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon") && hDate.getDate() >= 21 && hDate.getDate() <= 27;
+        }).reduce((sum, h) => sum + Math.abs(h.amount), 0);
+        const shieldActive = (today.getDate() >= 21 && today.getDate() <= 27);
+        const rem = Math.max(0, 500 - amzTotal);
+        const over = Math.max(0, amzTotal - 500);
+        amzDiv.innerHTML = `<div style="margin-top: 10px; padding: 10px; background: #f9f9f9; border-radius: 8px;"><span class="label">Amazon Escrow ($500) - ${shieldActive ? 'ACTIVE' : 'INACTIVE'}</span><div style="display:flex; justify-content:space-between; font-size: 0.85rem;"><span>Used: $${amzTotal.toLocaleString()}</span><span style="font-weight:bold; color:${over > 0 ? 'var(--danger)' : 'var(--primary)'}">${over > 0 ? 'Over: $'+over : 'Left: $'+rem}</span></div></div>`;
+    }
+
     function renderHistory() {
         const histDiv = document.getElementById('recentHistory');
         histDiv.innerHTML = '';
         data.history.slice(-5).reverse().forEach(h => {
             histDiv.innerHTML += `<div class="inbox-item"><div><b>${h.vendor}</b> ${h.who?`(${h.who})`:''}<br><small>${h.what || ''}</small></div><div style="font-weight:bold; color:${h.amount < 0 ? 'red' : 'green'}">$${Math.abs(h.amount).toLocaleString()}</div></div>`;
         });
+    }
+
+    async function undoLast() {
+        if (!data.history.length || !confirm("Undo last transaction?")) return;
+        const last = data.history.pop();
+        const amount = Math.abs(last.amount);
+        if (last.amount > 0) { data.state.checking_balance -= amount; } 
+        else {
+            data.state.checking_balance += amount;
+            if (last.category === 'MANUAL') data.state.weekly_budget_remaining += amount;
+            if (last.category === 'SAVINGS') {
+                data.state.weekly_budget_remaining += amount;
+                const goalKey = last.vendor.replace("TO SAVINGS: ", "").trim();
+                const goal = data.savings_goals.find(g => g.name.toLowerCase() === goalKey.toLowerCase());
+                if (goal) goal.current -= amount;
+            }
+        }
+        await sync();
     }
 
     async function sync() {
@@ -342,9 +318,7 @@ function populateSavingsDropdown() {
 
     async function saveToGithub(updatedData) {
         const TOKEN = localStorage.getItem('gh_token');
-        const getFile = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, { 
-            headers: { "Authorization": `token ${TOKEN}` }, cache: 'no-store'
-        });
+        const getFile = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, { headers: { "Authorization": `token ${TOKEN}` }, cache: 'no-store' });
         const fileData = await getFile.json();
         const response = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`, {
             method: "PUT",
