@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>6-Month Projection</title>
+    <title>Financial Forecast</title>
     <style>
         :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; --danger: #d32f2f; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-top: 60px; color: var(--text); }
@@ -19,9 +19,9 @@
         td { padding: 10px 8px; border-bottom: 1px solid #f0f0f0; }
         .income { color: var(--primary); font-weight: bold; }
         .expense { color: var(--danger); }
-        .low-balance { background-color: #fff3f3; }
         .pay-row { background-color: #f1f8e9; }
         .hit-row { background-color: #f9f9f9; font-style: italic; }
+        .warning { color: var(--danger); font-weight: bold; }
     </style>
 </head>
 <body>
@@ -34,7 +34,7 @@
     </nav>
 
     <div class="card" style="background: #333; color: white;">
-        <span class="label" style="color: #aaa;">Spendable Liquid Cash</span>
+        <span class="label" style="color: #aaa;">Projected Bank Balance</span>
         <div class="summary-grid">
             <div><span class="label">30 Days</span><span id="m1" class="summary-val">$0</span></div>
             <div><span class="label">90 Days</span><span id="m3" class="summary-val">$0</span></div>
@@ -43,7 +43,7 @@
     </div>
 
     <div class="card">
-        <span class="label">Financial Forecast</span>
+        <span class="label">Forecast (Next 6 Months)</span>
         <table>
             <thead>
                 <tr>
@@ -58,19 +58,28 @@
     </div>
 
 <script>
+    const CONFIG = { owner: 'scottscalici', repo: 'loquesea', path: 'planner/bills.json' };
+
     async function init() {
-        const resp = await fetch(`bills.json?t=${Date.now()}`);
-        const data = await resp.json();
-        runProjection(data);
+        try {
+            const TOKEN = localStorage.getItem('gh_token');
+            const resp = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, {
+                headers: { "Authorization": `token ${TOKEN}` },
+                cache: 'no-store'
+            });
+            const fileData = await resp.json();
+            const data = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+            runProjection(data);
+        } catch (e) { console.error("Load failed", e); }
     }
 
     function runProjection(data) {
-        // 1. Initial Math: Bank Balance - Savings Goals
-        const goalsTotal = (data.savings_goals || []).reduce((sum, g) => sum + (g.current || 0), 0);
-        let runningBal = (data.state.checking_balance || 0) - goalsTotal;
-        
         const body = document.getElementById('projectionBody');
         body.innerHTML = ''; 
+
+        // Start with current bank balance
+        let runningBal = data.state.checking_balance || 0;
+        const savingsThreshold = (data.savings_goals || []).reduce((sum, g) => sum + (g.current || 0), 0);
 
         let d = new Date(); d.setHours(0,0,0,0);
         const end = new Date(); end.setDate(end.getDate() + 180);
@@ -82,36 +91,35 @@
             const dateISO = d.toISOString().split('T')[0];
             const dom = d.getDate();
             const dow = d.getDay(); 
-
-            // Create a temporary list of things happening TODAY
             let dailyEvents = [];
 
-            // A. Income
+            // 1. Income
             const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
             if(dom === 15 || dom === lastDay) dailyEvents.push({label: "Scott Pay", amt: 2500, type: 'pay'});
             
             const diff = Math.round((d - wifeRef) / (1000 * 60 * 60 * 24));
             if(diff >= 0 && diff % 14 === 0) dailyEvents.push({label: "Wife Pay", amt: 2500, type: 'pay'});
 
-            // B. Mandatory Spending Deductions
+            // 2. Weekly Allowance (Every Friday)
             if(dow === 5) dailyEvents.push({label: "Weekly Allowance", amt: -1000, type: 'hit'});
-            if(dom === 21) dailyEvents.push({label: "Amazon Escrow", amt: -500, type: 'hit'});
 
-            // C. Specific Bills
+            // 3. Amazon Shield (21st)
+            if(dom === 21) dailyEvents.push({label: "Amazon Escrow Hit", amt: -500, type: 'hit'});
+
+            // 4. Specific Bills
             simBills.forEach(b => {
                 if(b.next_due_date === dateISO) {
                     dailyEvents.push({label: b.name, amt: -b.amount, type: 'bill'});
                     let next = new Date(b.next_due_date + "T12:00:00");
                     if(b.frequency === "monthly") next.setMonth(next.getMonth()+1);
-                    else if(b.frequency === "bi-weekly") next.setDate(next.getDate()+14);
+                    else next.setDate(next.getDate()+14);
                     b.next_due_date = next.toISOString().split('T')[0];
                 }
             });
 
-            // STEP 2: The Critical Fix. 
-            // Loop through today's events, update the math, THEN render the row.
             dailyEvents.forEach(ev => {
-                runningBal += ev.amt; // Update the math FIRST
+                runningBal += ev.amt;
+                const isDipping = runningBal < savingsThreshold;
 
                 const row = document.createElement('tr');
                 if(ev.type === 'pay') row.className = 'pay-row';
@@ -121,7 +129,7 @@
                     <td>${d.getMonth()+1}/${d.getDate()}</td>
                     <td>${ev.label}</td>
                     <td class="${ev.amt > 0 ? 'income' : 'expense'}">${ev.amt > 0 ? '+' : ''}${ev.amt.toLocaleString()}</td>
-                    <td><b>$${Math.round(runningBal).toLocaleString()}</b></td>
+                    <td class="${isDipping ? 'warning' : ''}">$${Math.round(runningBal).toLocaleString()}</td>
                 `;
                 body.appendChild(row);
             });
