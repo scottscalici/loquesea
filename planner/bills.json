@@ -204,7 +204,7 @@
       "id": "comcast",
       "name": "Comcast",
       "frequency": "monthly",
-      "amount": 272.15,
+      "amount": 310,
       "next_due_date": "2026-01-28"
     },
     {
@@ -316,7 +316,7 @@
       "id": "mi-sos",
       "name": "Michigan SOS",
       "frequency": "annually",
-      "amount": 400,
+      "amount": 500,
       "next_due_date": "2026-03-01"
     },
     {
@@ -352,7 +352,7 @@
       "name": "Rec Center",
       "frequency": "monthly",
       "amount": 70,
-      "next_due_date": "2026-02-15"
+      "next_due_date": "2026-01-15"
     },
     {
       "id": "salt-stone",
