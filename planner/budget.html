@@ -90,10 +90,28 @@
             });
             const fileData = await resp.json();
             data = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+
+            // 1. WEEKLY ROLLOVER LOGIC (Monday Reset)
+            const lastReset = new Date(data.state.last_weekly_reset || "2026-01-12T00:00:00");
+            const now = new Date();
+            
+            // Get the most recent Monday at midnight
+            const currentMonday = new Date();
+            currentMonday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+            currentMonday.setHours(0,0,0,0);
+
+            if (lastReset < currentMonday) {
+                // It's a new week! Add $1000 to the current remaining balance (Rollover)
+                data.state.weekly_budget_remaining = (data.state.weekly_budget_remaining || 0) + 1000;
+                data.state.last_weekly_reset = currentMonday.toISOString();
+                await saveToGithub(data); 
+            }
+
             renderUI();
+            populateSavingsDropdown(); // New function for the UI
         } catch (e) { console.error("Load failed", e); }
     }
-
+    
     function renderUI() {
         if (!data) return;
         document.getElementById('mainBalance').innerText = `$${(data.state.checking_balance || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
@@ -109,7 +127,29 @@
         renderInbox();
         renderHistory();
     }
-
+function populateSavingsDropdown() {
+        const select = document.getElementById('vendorSelect');
+        // Check if Savings option already exists to prevent duplicates
+        if (![...select.options].some(o => o.value === 'SAVINGS_XFER')) {
+            const opt = document.createElement('option');
+            opt.value = 'SAVINGS_XFER';
+            opt.text = 'Transfer to Savings...';
+            select.add(opt);
+        }
+    }
+    function toggleOtherVendor() {
+        const select = document.getElementById('vendorSelect');
+        document.getElementById('otherVendor').style.display = (select.value === 'OTHER') ? 'block' : 'none';
+        
+        // Show savings selector if Transfer is picked
+        const isSavings = select.value === 'SAVINGS_XFER';
+        if (isSavings) {
+            const goalName = prompt("Which Savings Goal? (e.g., Vacation, Emergency)");
+            if (goalName) document.getElementById('otherVendor').value = "TO SAVINGS: " + goalName;
+            document.getElementById('otherVendor').style.display = 'block';
+        }
+    }
+    
     function renderAmazonEscrow() {
         const amzDiv = document.getElementById('amazonEscrowContainer');
         const today = new Date();
@@ -129,36 +169,47 @@
         document.getElementById('otherVendor').style.display = (select.value === 'OTHER') ? 'block' : 'none';
     }
 
-    async function logTransaction() {
+   async function logTransaction() {
         const select = document.getElementById('vendorSelect');
         const amtInput = document.getElementById('amt');
         let amt = parseFloat(amtInput.value);
-        let vendor = (select.value === 'OTHER') ? document.getElementById('otherVendor').value : select.value;
+        let vendor = (select.value === 'OTHER' || select.value === 'SAVINGS_XFER') ? document.getElementById('otherVendor').value : select.value;
+        
         if (!vendor || isNaN(amt)) return;
         const absAmt = Math.abs(amt);
-        const isAmazon = vendor.toLowerCase().includes("amazon");
-        const isIncome = vendor.toLowerCase().includes("income") || vendor.toLowerCase().includes("payday");
+        const isIncome = select.value === 'Income';
+        const isSavings = select.value === 'SAVINGS_XFER';
 
+        // Update Checking
         data.state.checking_balance += (isIncome ? absAmt : -absAmt);
+
+        // Update Weekly Budget (Subtract if it's spending OR a savings transfer)
         if (!isIncome) {
-            const day = new Date().getDate();
-            if (isAmazon && day >= 21 && day <= 27) {
-                const currentMonth = new Date().toISOString().slice(0, 7);
-                const amzTotal = data.history.filter(h => {
-                    const hDate = new Date(h.date + "T12:00:00");
-                    return h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon") && hDate.getDate() >= 21 && hDate.getDate() <= 27;
-                }).reduce((sum, h) => sum + Math.abs(h.amount), 0);
-                const rem = Math.max(0, 500 - amzTotal);
-                data.state.weekly_budget_remaining -= Math.max(0, absAmt - rem);
+            data.state.weekly_budget_remaining -= absAmt;
+        }
+
+        // Update Savings Goal if applicable
+        if (isSavings) {
+            const goalKey = vendor.replace("TO SAVINGS: ", "").trim();
+            const goal = data.savings_goals.find(g => g.name.toLowerCase() === goalKey.toLowerCase());
+            if (goal) {
+                goal.current += absAmt;
             } else {
-                data.state.weekly_budget_remaining -= absAmt;
+                alert("Goal not found in JSON. Money moved from budget but not added to a specific goal bar.");
             }
         }
-        data.history.push({ date: new Date().toISOString().split('T')[0], vendor, who: document.getElementById('who').value, what: document.getElementById('what').value, amount: (isIncome ? absAmt : -absAmt), category: 'MANUAL' });
-        amtInput.value = ''; document.getElementById('who').value = ''; document.getElementById('what').value = '';
+
+        data.history.push({ 
+            date: new Date().toISOString().split('T')[0], 
+            vendor, 
+            who: document.getElementById('who').value, 
+            amount: (isIncome ? absAmt : -absAmt), 
+            category: isSavings ? 'SAVINGS' : 'MANUAL' 
+        });
+
         await sync();
     }
-
+    
     async function undoLast() {
         if (!data.history.length || !confirm("Undo last transaction?")) return;
         const last = data.history.pop();
