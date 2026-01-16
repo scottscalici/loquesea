@@ -154,10 +154,13 @@
         const absAmt = Math.abs(amt);
         const isIncome = select.value === 'Income';
         const isSavings = select.value === 'SAVINGS_XFER' || vendor.startsWith("TO SAVINGS:");
+        const isBill = select.value === 'BILL';
 
+        // 1. Bank balance ALWAYS changes
         data.state.checking_balance += (isIncome ? absAmt : -absAmt);
 
-        if (!isIncome) {
+        // 2. Budget Logic: ONLY subtract if NOT Savings and NOT a Bill
+        if (!isIncome && !isSavings && !isBill) {
             const day = new Date().getDate();
             const isAmazon = vendor.toLowerCase().includes("amazon");
             if (isAmazon && day >= 21 && day <= 27) {
@@ -173,6 +176,7 @@
             }
         }
 
+        // 3. Update Savings Goal
         if (isSavings) {
             const goalKey = vendor.replace("TO SAVINGS: ", "").trim();
             const goal = data.savings_goals.find(g => g.name.toLowerCase() === goalKey.toLowerCase());
@@ -185,57 +189,11 @@
             who: document.getElementById('who').value, 
             what: document.getElementById('what').value,
             amount: (isIncome ? absAmt : -absAmt), 
-            category: isSavings ? 'SAVINGS' : 'MANUAL' 
+            category: isSavings ? 'SAVINGS' : (isBill ? 'BILL' : 'MANUAL') 
         });
 
         amtInput.value = ''; document.getElementById('who').value = ''; document.getElementById('what').value = '';
         await sync();
-    }
-
-    function renderInbox() {
-        const container = document.getElementById('inboxList');
-        container.innerHTML = '';
-        const today = new Date();
-        const lookahead = 31;
-        let allItems = [];
-
-        for (let i = 0; i <= lookahead; i++) {
-            let d = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
-            let dateStr = d.toISOString().split('T')[0];
-            if (d.getDate() === 15 || d.getDate() === new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()) {
-                if (!data.history.some(h => h.date === dateStr && h.vendor === "Scott Payday")) {
-                    allItems.push({ name: "Scott Payday", amount: 2500, type: 'INCOME', idx: -1, date: dateStr });
-                }
-            }
-            const wifeStart = new Date("2026-01-16T12:00:00");
-            const diff = Math.round((d - wifeStart) / (1000 * 60 * 60 * 24));
-            if (diff >= 0 && diff % 14 === 0) {
-                if (!data.history.some(h => h.date === dateStr && h.vendor === "Wife Payday")) {
-                    allItems.push({ name: "Wife Payday", amount: 2500, type: 'INCOME', idx: -2, date: dateStr });
-                }
-            }
-        }
-
-        data.bills.forEach((bill, originalIdx) => {
-            const billDate = new Date(bill.next_due_date + "T12:00:00");
-            const limit = new Date(); limit.setDate(today.getDate() + lookahead);
-            if (billDate <= limit) {
-                allItems.push({ name: bill.name, amount: bill.amount, type: 'BILL', idx: originalIdx, date: bill.next_due_date });
-            }
-        });
-
-        allItems.sort((a, b) => new Date(a.date) - new Date(b.date));
-        allItems.forEach(item => appendInboxItem(container, item.name, item.amount, item.type, item.idx, item.date));
-    }
-
-    function appendInboxItem(container, name, amt, type, idx, date) {
-        const div = document.createElement('div');
-        div.className = 'inbox-item';
-        div.innerHTML = `<div><b>${name}</b><br><small>${date}</small></div>
-            <div><span style="font-weight:bold; margin-right:10px; color:${type==='INCOME'?'green':'red'}">$${amt}</span>
-            <button class="btn-paid" onclick="processInbox(${idx}, '${type}', '${date}')">OK</button>
-            <button class="btn-paid" style="color:var(--danger)" onclick="skipInbox(${idx}, '${type}')">SKIP</button></div>`;
-        container.appendChild(div);
     }
 
     async function processInbox(idx, type, date) {
@@ -250,17 +208,74 @@
         if (input === null) return;
         const val = parseFloat(input);
         if (isNaN(val)) return;
+
+        // Bank balance updates
         data.state.checking_balance += (type === 'INCOME' ? val : -val);
+        
+        // Logic: Paydays and Bills do NOT touch the weekly spend budget.
+        
         if (type === 'BILL') advanceDate(idx);
         data.history.push({ date: date, vendor: name, amount: (type === 'INCOME' ? val : -val), category: type });
         await sync();
     }
 
-    async function skipInbox(idx, type) {
-        if (type === 'BILL') advanceDate(idx);
+    async function undoLast() {
+        if (!data.history.length || !confirm("Undo last transaction?")) return;
+        const last = data.history.pop();
+        const amount = Math.abs(last.amount);
+
+        if (last.amount > 0) { 
+            // Undo Income
+            data.state.checking_balance -= amount; 
+        } else {
+            // Undo Expense
+            data.state.checking_balance += amount;
+            
+            // Only restore weekly budget if the category was a manual daily spend
+            // (If it was a BILL or SAVINGS, budget was never touched, so don't add back)
+            if (last.category === 'MANUAL') {
+                // Special check for Amazon Shield window logic (approximate restore)
+                const hDate = new Date(last.date + "T12:00:00");
+                const day = hDate.getDate();
+                if (last.vendor.toLowerCase().includes("amazon") && day >= 21 && day <= 27) {
+                    // Logic here is complex to reverse exactly, usually safest to restore 
+                    // the difference that was actually subtracted.
+                    data.state.weekly_budget_remaining += amount; 
+                } else {
+                    data.state.weekly_budget_remaining += amount;
+                }
+            }
+
+            if (last.category === 'SAVINGS') {
+                const goalKey = last.vendor.replace("TO SAVINGS: ", "").trim();
+                const goal = data.savings_goals.find(g => g.name.toLowerCase() === goalKey.toLowerCase());
+                if (goal) goal.current -= amount;
+            }
+        }
         await sync();
     }
 
+    async function sync() {
+        const dot = document.getElementById('syncStatus');
+        if (dot) dot.className = 'status-dot status-saving';
+        const success = await saveToGithub(data);
+        if (success) { if (dot) dot.className = 'status-dot status-success'; await init(); }
+        else { if (dot) dot.className = 'status-dot status-error'; }
+    }
+
+    async function saveToGithub(updatedData) {
+        const TOKEN = localStorage.getItem('gh_token');
+        const getFile = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, { headers: { "Authorization": `token ${TOKEN}` }, cache: 'no-store' });
+        const fileData = await getFile.json();
+        const response = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`, {
+            method: "PUT",
+            headers: { "Authorization": `token ${TOKEN}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ message: "Update", content: btoa(unescape(encodeURIComponent(JSON.stringify(updatedData, null, 2)))), sha: fileData.sha })
+        });
+        return response.ok;
+    }
+
+    // Helper functions from original
     function advanceDate(idx) {
         let d = new Date(data.bills[idx].next_due_date + "T12:00:00");
         if (data.bills[idx].frequency === "monthly") d.setMonth(d.getMonth() + 1);
@@ -290,45 +305,8 @@
         });
     }
 
-    async function undoLast() {
-        if (!data.history.length || !confirm("Undo last transaction?")) return;
-        const last = data.history.pop();
-        const amount = Math.abs(last.amount);
-        if (last.amount > 0) { data.state.checking_balance -= amount; } 
-        else {
-            data.state.checking_balance += amount;
-            if (last.category === 'MANUAL') data.state.weekly_budget_remaining += amount;
-            if (last.category === 'SAVINGS') {
-                data.state.weekly_budget_remaining += amount;
-                const goalKey = last.vendor.replace("TO SAVINGS: ", "").trim();
-                const goal = data.savings_goals.find(g => g.name.toLowerCase() === goalKey.toLowerCase());
-                if (goal) goal.current -= amount;
-            }
-        }
-        await sync();
-    }
-
-    async function sync() {
-        const dot = document.getElementById('syncStatus');
-        if (dot) dot.className = 'status-dot status-saving';
-        const success = await saveToGithub(data);
-        if (success) { if (dot) dot.className = 'status-dot status-success'; await init(); }
-        else { if (dot) dot.className = 'status-dot status-error'; }
-    }
-
-    async function saveToGithub(updatedData) {
-        const TOKEN = localStorage.getItem('gh_token');
-        const getFile = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, { headers: { "Authorization": `token ${TOKEN}` }, cache: 'no-store' });
-        const fileData = await getFile.json();
-        const response = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`, {
-            method: "PUT",
-            headers: { "Authorization": `token ${TOKEN}`, "Content-Type": "application/json" },
-            body: JSON.stringify({ message: "Update", content: btoa(unescape(encodeURIComponent(JSON.stringify(updatedData, null, 2)))), sha: fileData.sha })
-        });
-        return response.ok;
-    }
-
     init();
+
 </script>
 </body>
 </html>
