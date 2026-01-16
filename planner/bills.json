@@ -218,6 +218,13 @@
       "next_due_date": "2026-02-18"
     },
     {
+      "id": "fallbrooke",
+      "name": "Fallbrooke HOA",
+      "frequency": "anually",
+      "amount": 275,
+      "next_due_date": "2026-01-31"
+    },
+    {
       "id": "firstmark",
       "name": "Firstmark",
       "frequency": "monthly",
