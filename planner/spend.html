@@ -7,32 +7,28 @@
     <style>
         :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; --danger: #d32f2f; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text); display: flex; flex-direction: column; align-items: center; min-height: 90vh; }
-        
-        .card { background: var(--card); border-radius: 20px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; }
+        .card { background: var(--card); border-radius: 20px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; position: relative;}
         .label { font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600; }
         .big-amt { font-size: 3.5rem; font-weight: 900; margin: 10px 0; display: block; color: var(--primary); }
         .sub-label { font-size: 1rem; color: #555; margin-bottom: 15px; display: block; }
-        
         .progress-container { background: #eee; height: 12px; border-radius: 6px; margin: 20px 0; overflow: hidden; }
         .progress-bar { background: var(--primary); height: 100%; transition: width 0.5s ease; }
-        
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; }
         .stat-val { font-size: 1.1rem; font-weight: bold; display: block; }
-
-        /* History List Styles */
         .history-card { background: var(--card); border-radius: 15px; padding: 20px; width: 100%; max-width: 400px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .history-title { font-size: 0.75rem; color: #aaa; text-transform: uppercase; font-weight: bold; margin-bottom: 15px; display: block; text-align: left; }
         .history-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.85rem; }
-        .history-item:last-child { border-bottom: none; }
         .hist-desc { font-weight: 600; color: #444; }
         .hist-date { font-size: 0.7rem; color: #999; display: block; }
         .hist-amt { font-weight: bold; color: var(--danger); }
         .hist-amt.pos { color: var(--primary); }
+        .allowance-badge { position: absolute; top: 15px; right: 15px; font-size: 0.65rem; background: #eee; padding: 4px 8px; border-radius: 10px; color: #666; }
     </style>
 </head>
 <body>
 
     <div class="card">
+        <div class="allowance-badge" id="dayStartBadge">Goal: $0/day</div>
         <span class="label">Available Today</span>
         <span id="dailyLimit" class="big-amt">$0</span>
         <span id="daysLeftMsg" class="sub-label">...</span>
@@ -43,20 +39,19 @@
 
         <div class="stats-grid">
             <div class="stat-box">
-                <span class="label">Allowance</span>
-                <span id="totalBudget" class="stat-val" style="color:#666;">$1,000</span>
+                <span class="label">Remaining Total</span>
+                <span id="weeklyRemaining" class="stat-val">$0</span>
             </div>
             <div class="stat-box">
-                <span class="label">Weekly Left</span>
-                <span id="weeklyRemaining" class="stat-val">$0</span>
+                <span class="label">Today's Spend</span>
+                <span id="todaySpend" class="stat-val" style="color:#d32f2f;">$0</span>
             </div>
         </div>
     </div>
 
     <div class="history-card">
-        <span class="history-title">Recent Activity</span>
-        <div id="recentList">
-            </div>
+        <span class="history-title">Recent Spending</span>
+        <div id="recentList"></div>
     </div>
 
 <script>
@@ -72,71 +67,68 @@
             const fileData = await resp.json();
             const data = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
             updateUI(data);
-        } catch (e) {
-            console.error("Load failed", e);
-        }
+        } catch (e) { console.error(e); }
     }
 
     function updateUI(data) {
         const now = new Date();
+        const todayStr = now.toISOString().split('T')[0];
+        
+        // 1. Calculate Days Remaining (including today)
         const dayOfWeek = now.getDay(); 
         const daysLeft = 7 - (dayOfWeek === 0 ? 7 : dayOfWeek) + 1; 
 
-        const remaining = data.state.weekly_budget_remaining || 0;
-        const baseBudget = 1000; 
-        const pct = Math.min((remaining / baseBudget) * 100, 100);
-        const dailyLimit = remaining / daysLeft;
+        // 2. Calculate Today's Spending so far (filtered for variable spend only)
+        const todayItems = data.history.filter(item => {
+            const isToday = item.date === todayStr;
+            const cat = (item.category || "").toUpperCase();
+            const vend = (item.vendor || "").toUpperCase();
+            return isToday && cat !== "BILL" && cat !== "INCOME" && cat !== "SAVINGS" && vend !== "INCOME";
+        });
+        const spentToday = todayItems.reduce((sum, item) => sum + Math.abs(item.amount), 0);
 
-        document.getElementById('dailyLimit').innerText = `$${Math.floor(dailyLimit)}`;
+        // 3. GET THE "STATIC" DAILY ALLOWANCE
+        // This calculates what your allowance WAS at the start of today.
+        // It takes (Weekly Remaining + Today's Spending) / Days Left
+        const weeklyRemaining = data.state.weekly_budget_remaining || 0;
+        const startOfWeekBalance = weeklyRemaining + spentToday;
+        const dailyAllowanceGoal = startOfWeekBalance / daysLeft;
+
+        // 4. AVAILABLE TODAY = Goal - Spent Today
+        const availableToday = dailyAllowanceGoal - spentToday;
+        
+        // 5. Progress Bar: Percentage of your DAILY goal left
+        const pct = Math.max(0, Math.min((availableToday / dailyAllowanceGoal) * 100, 100));
+
+        // UI Updates
+        document.getElementById('dailyLimit').innerText = `$${Math.round(availableToday)}`;
+        document.getElementById('dayStartBadge').innerText = `Goal: $${Math.round(dailyAllowanceGoal)}/day`;
         document.getElementById('daysLeftMsg').innerText = `to last us ${daysLeft} days`;
-        document.getElementById('weeklyRemaining').innerText = `$${Math.round(remaining).toLocaleString()}`;
+        document.getElementById('weeklyRemaining').innerText = `$${Math.round(weeklyRemaining).toLocaleString()}`;
+        document.getElementById('todaySpend').innerText = `$${Math.round(spentToday)}`;
         document.getElementById('progressBar').style.width = pct + '%';
 
-        // 1. Color Logic
+        // Color Logic
         const dailyEl = document.getElementById('dailyLimit');
-        if (dailyLimit < 40) dailyEl.style.color = 'var(--danger)';
-        else if (dailyLimit > 100) dailyEl.style.color = 'var(--primary)';
-        else dailyEl.style.color = 'var(--accent)';
+        if (availableToday <= 0) dailyEl.style.color = 'var(--danger)';
+        else dailyEl.style.color = 'var(--primary)';
 
-// 2. Render 5 Recent SPENDING Transactions
-        const historyList = document.getElementById('recentList');
-        historyList.innerHTML = '';
-        
-        // Filter out Bills, Income, and Savings transfers
-        // We only want the daily "Spending"
+        // Render Recent (Filtered)
         const spendingOnly = data.history.filter(item => {
             const cat = (item.category || "").toUpperCase();
-            const vendor = (item.vendor || "").toUpperCase();
-            return cat !== "BILL" && cat !== "INCOME" && cat !== "SAVINGS" && vendor !== "INCOME";
-        });
+            return cat !== "BILL" && cat !== "INCOME" && cat !== "SAVINGS" && item.vendor !== "INCOME";
+        }).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
 
-        // Sort newest first and take top 5
-        const recent = spendingOnly.sort((a, b) => (b.date || "").localeCompare(a.date || "")).slice(0, 5);
-
-        recent.forEach(item => {
-            const isPos = item.amount > 0; // In case of a refund
-            let displayDate = "";
-            try {
-                const parts = item.date.split('-');
-                if (parts.length === 3) {
-                    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-                    displayDate = months[parseInt(parts[1]) - 1] + " " + parseInt(parts[2]);
-                }
-            } catch(e) { displayDate = item.date; }
-
-            const div = document.createElement('div');
-            div.className = 'history-item';
-            div.innerHTML = `
-                <div>
-                    <span class="hist-desc">${item.vendor || 'Unknown'}</span>
-                    <span class="hist-date">${displayDate} ${item.who ? '• ' + item.who : ''}</span>
-                </div>
-                <span class="hist-amt ${isPos ? 'pos' : ''}">${isPos ? '+' : '-'}$${Math.abs(item.amount).toLocaleString()}</span>
-            `;
-            historyList.appendChild(div);
-        });
+        const list = document.getElementById('recentList');
+        list.innerHTML = spendingOnly.map(item => {
+            const parts = item.date.split('-');
+            const dStr = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][parts[1]-1] + " " + parseInt(parts[2]);
+            return `<div class="history-item">
+                <div><span class="hist-desc">${item.vendor}</span><span class="hist-date">${dStr} ${item.who?'• '+item.who:''}</span></div>
+                <span class="hist-amt">-$${Math.abs(item.amount)}</span>
+            </div>`;
+        }).join('');
     }
-
     init();
 </script>
 </body>
