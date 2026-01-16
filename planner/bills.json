@@ -33,7 +33,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4453.78,
+    "checking_balance": 8695.82,
     "travel_savings": 0,
     "weekly_budget_remaining": 383.4,
     "daily_allowance_locked": 0,
@@ -146,6 +146,12 @@
       "vendor": "UEA",
       "amount": -106.9,
       "category": "BILL"
+    },
+    {
+      "date": "2026-01-16",
+      "vendor": "Wife Payday",
+      "amount": 4242.04,
+      "category": "INCOME"
     }
   ],
   "bills": [
