@@ -33,9 +33,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 561.3999999999996,
+    "checking_balance": 677.9999999999997,
     "travel_savings": 0,
-    "weekly_budget_remaining": 383.4
+    "weekly_budget_remaining": 500
   },
   "vendors": [
     "Amazon",
@@ -104,14 +104,6 @@
       "vendor": "Other...",
       "what": "restaurant",
       "amount": 15.65
-    },
-    {
-      "date": "2026-01-16",
-      "vendor": "Anthropologie",
-      "who": "Abbi",
-      "what": "",
-      "amount": -116.6,
-      "category": "MANUAL"
     }
   ],
   "bills": [
