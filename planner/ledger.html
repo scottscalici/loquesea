@@ -7,17 +7,13 @@
     <style>
         :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; --danger: #d32f2f; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-top: 60px; color: var(--text); }
-        
         .nav-bar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: #fff; display: flex; align-items: center; justify-content: space-around; border-bottom: 1px solid #ddd; z-index: 1000; }
         .nav-item { text-decoration: none; color: #666; font-size: 0.75rem; font-weight: bold; }
         .nav-item.active { color: var(--accent); }
-
         .card { background: var(--card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         th { text-align: left; color: #888; padding: 10px 5px; border-bottom: 2px solid #eee; }
         td { padding: 12px 5px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
-        
         .amt-pos { color: var(--primary); font-weight: bold; }
         .amt-neg { color: var(--danger); font-weight: bold; }
         .meta { font-size: 0.7rem; color: #999; display: block; margin-top: 2px; }
@@ -51,14 +47,22 @@
     </div>
 
 <script>
+    const CONFIG = { owner: 'scottscalici', repo: 'loquesea', path: 'planner/bills.json' };
+
     async function init() {
         try {
-            // Adding a timestamp prevents the browser from showing "old" cached data
-            const resp = await fetch(`bills.json?t=${Date.now()}`);
-            const data = await resp.json();
+            const TOKEN = localStorage.getItem('gh_token');
+            if (!TOKEN) throw new Error("No token found");
+
+            const resp = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, {
+                headers: { "Authorization": `token ${TOKEN}` },
+                cache: 'no-store'
+            });
+            const fileData = await resp.json();
+            const data = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
             renderLedger(data);
         } catch (e) {
-            document.getElementById('ledgerBody').innerHTML = '<tr><td colspan="3" style="color:red;">Error loading file. Check if bills.json exists.</td></tr>';
+            document.getElementById('ledgerBody').innerHTML = `<tr><td colspan="3" style="color:red; text-align:center; padding:20px;">Error: ${e.message}</td></tr>`;
         }
     }
 
@@ -71,24 +75,30 @@
             return;
         }
 
-        // Show all history, reversed so newest is at the top
-        data.history.slice().reverse().forEach(item => {
-            const isPos = item.vendor === "INCOME";
-            const dateObj = new Date(item.date);
+        // Sort by date descending (newest first)
+        const sortedHistory = data.history.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        sortedHistory.forEach(item => {
+            const isPos = item.amount > 0;
+            const dateObj = new Date(item.date + "T12:00:00"); // Midday to avoid timezone shifts
             const dateStr = dateObj.toLocaleDateString(undefined, {month: 'short', day: 'numeric'});
             
-            // Determine the label: Use "what" if available, otherwise "vendor"
-            const label = item.what || item.vendor;
-            
+            // Primary label is the Vendor/Store
+            // Meta label includes Who and What if they exist
+            let metaInfo = [];
+            if (item.who) metaInfo.push(item.who);
+            if (item.what) metaInfo.push(item.what);
+            if (item.category === 'SAVINGS') metaInfo.push("Savings Transfer");
+
             const row = `
                 <tr>
                     <td>${dateStr}</td>
                     <td>
-                        <b>${label}</b>
-                        <span class="meta">${item.vendor !== label ? item.vendor : ''}</span>
+                        <b>${item.vendor}</b>
+                        <span class="meta">${metaInfo.join(' • ')}</span>
                     </td>
                     <td style="text-align:right;" class="${isPos ? 'amt-pos' : 'amt-neg'}">
-                        ${isPos ? '+' : '-'}$${parseFloat(item.amount).toLocaleString(undefined, {minimumFractionDigits: 2})}
+                        ${isPos ? '+' : ''}$${Math.abs(parseFloat(item.amount)).toLocaleString(undefined, {minimumFractionDigits: 2})}
                     </td>
                 </tr>
             `;
