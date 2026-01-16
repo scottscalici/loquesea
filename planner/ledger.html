@@ -1,4 +1,76 @@
-function renderLedger(data) {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Ledger</title>
+    <style>
+        :root { --primary: #2e7d32; --accent: #2196F3; --bg: #f4f4f9; --card: #ffffff; --text: #333; --danger: #d32f2f; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-top: 60px; color: var(--text); }
+        
+        .nav-bar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: #fff; display: flex; align-items: center; justify-content: space-around; border-bottom: 1px solid #ddd; z-index: 1000; }
+        .nav-item { text-decoration: none; color: #666; font-size: 0.75rem; font-weight: bold; }
+        .nav-item.active { color: var(--accent); }
+
+        .card { background: var(--card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th { text-align: left; color: #888; padding: 10px 5px; border-bottom: 2px solid #eee; }
+        td { padding: 12px 5px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+        
+        .amt-pos { color: var(--primary); font-weight: bold; }
+        .amt-neg { color: var(--danger); font-weight: bold; }
+        .meta { font-size: 0.7rem; color: #999; display: block; margin-top: 2px; }
+        .refresh-btn { background: none; border: 1px solid #ddd; padding: 5px 10px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; float: right; margin-top: -5px; }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-bar">
+        <a href="budget.html" class="nav-item">CONTROL</a>
+        <a href="spend.html" class="nav-item">WEEKLY</a>
+        <a href="projection.html" class="nav-item">PROJECTION</a>
+        <a href="ledger.html" class="nav-item active">LEDGER</a>
+    </nav>
+
+    <div class="card">
+        <button class="refresh-btn" onclick="init()">🔄 Refresh</button>
+        <span class="label">Full Transaction History</span>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th style="text-align:right;">Amount</th>
+                </tr>
+            </thead>
+            <tbody id="ledgerBody">
+                <tr><td colspan="3" style="text-align:center; padding:20px;">Loading checkbook...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+<script>
+    const CONFIG = { owner: 'scottscalici', repo: 'loquesea', path: 'planner/bills.json' };
+
+    async function init() {
+        try {
+            const TOKEN = localStorage.getItem('gh_token');
+            if (!TOKEN) throw new Error("Missing GitHub Token in LocalStorage");
+
+            const resp = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, {
+                headers: { "Authorization": `token ${TOKEN}` },
+                cache: 'no-store'
+            });
+            const fileData = await resp.json();
+            const data = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+            renderLedger(data);
+        } catch (e) {
+            document.getElementById('ledgerBody').innerHTML = `<tr><td colspan="3" style="color:red; text-align:center; padding:20px;">Error: ${e.message}</td></tr>`;
+        }
+    }
+
+    function renderLedger(data) {
         const body = document.getElementById('ledgerBody');
         body.innerHTML = '';
         
@@ -7,29 +79,28 @@ function renderLedger(data) {
             return;
         }
 
-        // 1. Better sorting logic that handles potential bad date strings
+        // Sort by date YYYY-MM-DD descending (lexicographical sort works for this format)
         const sortedHistory = data.history.slice().sort((a, b) => {
-            return new Date(b.date.replace(/-/g, '/')) - new Date(a.date.replace(/-/g, '/'));
+            return (b.date || "").localeCompare(a.date || "");
         });
 
         sortedHistory.forEach(item => {
             const isPos = item.amount > 0;
             
-            // 2. Robust Date Parsing: Replaces dashes with slashes for Safari/iOS compatibility
-            let dateStr;
+            // Ultra-Safe Date Parsing (Avoids Safari "Invalid Date" errors)
+            let displayDate = item.date; 
             try {
-                const dateParts = item.date.split('-');
-                if (dateParts.length === 3) {
-                    // Manually creating a date to avoid timezone shifting
-                    const d = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-                    dateStr = d.toLocaleDateString(undefined, {month: 'short', day: 'numeric'});
-                } else {
-                    dateStr = item.date; // Fallback to raw text
+                const parts = item.date.split('-');
+                if (parts.length === 3) {
+                    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+                    const monthIdx = parseInt(parts[1]) - 1;
+                    displayDate = months[monthIdx] + " " + parseInt(parts[2]);
                 }
             } catch (e) {
-                dateStr = "---";
+                displayDate = item.date || "---";
             }
             
+            // Collect metadata (Who, What, Category)
             let metaInfo = [];
             if (item.who) metaInfo.push(item.who);
             if (item.what) metaInfo.push(item.what);
@@ -37,16 +108,21 @@ function renderLedger(data) {
 
             const row = `
                 <tr>
-                    <td>${dateStr}</td>
+                    <td style="white-space: nowrap;">${displayDate}</td>
                     <td>
-                        <b>${item.vendor}</b>
+                        <b>${item.vendor || 'Unknown'}</b>
                         <span class="meta">${metaInfo.join(' • ')}</span>
                     </td>
                     <td style="text-align:right;" class="${isPos ? 'amt-pos' : 'amt-neg'}">
-                        ${isPos ? '+' : ''}$${Math.abs(parseFloat(item.amount)).toLocaleString(undefined, {minimumFractionDigits: 2})}
+                        ${isPos ? '+' : ''}$${Math.abs(parseFloat(item.amount || 0)).toLocaleString(undefined, {minimumFractionDigits: 2})}
                     </td>
                 </tr>
             `;
             body.innerHTML += row;
         });
     }
+
+    init();
+</script>
+</body>
+</html>
