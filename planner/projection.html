@@ -73,22 +73,22 @@
         } catch (e) { console.error("Load failed", e); }
     }
 
-function runProjection(data) {
-    const body = document.getElementById('ledgerBody'); // or projectionBody
-    body.innerHTML = ''; 
+    function runProjection(data) {
+        const body = document.getElementById('projectionBody'); 
+        body.innerHTML = ''; 
 
-    let runningBal = data.state.checking_balance || 0;
-    
-    // THE FIX: Start the simulation tomorrow
-    let d = new Date(); 
-    d.setDate(d.getDate() + 1); // <--- Add this line
-    d.setHours(0,0,0,0);
+        let runningBal = data.state.checking_balance || 0;
+        
+        // Calculate the "Savings Goal" floor (the amount you shouldn't dip below)
+        const savingsThreshold = (data.savings_goals || []).reduce((sum, g) => sum + (g.current || 0), 0);
+        
+        // START TOMORROW to avoid double-counting today's entries
+        let d = new Date(); 
+        d.setDate(d.getDate() + 1); 
+        d.setHours(0,0,0,0);
 
-    const end = new Date(); 
-    end.setDate(end.getDate() + 180);
-    
-    // ... rest of the code remains the same ...
-
+        const end = new Date(); 
+        end.setDate(end.getDate() + 180);
         
         let simBills = JSON.parse(JSON.stringify(data.bills));
         const wifeRef = new Date("2026-01-16T12:00:00"); 
@@ -99,7 +99,7 @@ function runProjection(data) {
             const dow = d.getDay(); 
             let dailyEvents = [];
 
-            // 1. Income
+            // 1. Income (15th and Last Day)
             const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
             if(dom === 15 || dom === lastDay) dailyEvents.push({label: "Scott Pay", amt: 2500, type: 'pay'});
             
