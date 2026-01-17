@@ -116,10 +116,23 @@
                 if(b.next_due_date === dateISO) {
                     dailyEvents.push({label: b.name, amt: -b.amount, type: 'bill'});
                     let next = new Date(b.next_due_date + "T12:00:00");
-                    if(b.frequency === "monthly") next.setMonth(next.getMonth()+1);
-                    else next.setDate(next.getDate()+14);
-                    b.next_due_date = next.toISOString().split('T')[0];
-                }
+                    const freq = (b.frequency || "").toLowerCase();
+let next = new Date(b.next_due_date + "T12:00:00");
+
+if (freq === "monthly") {
+    next.setMonth(next.getMonth() + 1);
+} else if (freq === "annually" || freq === "annual" || freq === "yearly") {
+    next.setFullYear(next.getFullYear() + 1);
+} else if (freq === "quarterly") {
+    next.setMonth(next.getMonth() + 3); // Jumps 3 months forward
+} else if (freq === "bi-weekly" || freq === "biweekly") {
+    next.setDate(next.getDate() + 14);
+} else if (freq === "weekly") {
+    next.setDate(next.getDate() + 7);
+} else {
+    // Safety fallback: if unknown, default to monthly
+    next.setMonth(next.getMonth() + 1);
+}
             });
 
             dailyEvents.forEach(ev => {
