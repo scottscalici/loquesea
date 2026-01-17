@@ -14,7 +14,7 @@
       "target": 2000,
       "current": 600
     },
-     {
+    {
       "name": "Renovation",
       "target": 10000,
       "current": 0
@@ -243,6 +243,12 @@
       "vendor": "HP Instant Ink",
       "amount": -8.47,
       "category": "BILL"
+    },
+    {
+      "date": "2026-01-17",
+      "vendor": "Put money aside",
+      "amount": 0,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -358,7 +364,6 @@
       "amount": 275,
       "next_due_date": "2026-01-31"
     },
-
     {
       "id": "firstmark",
       "name": "Firstmark",
@@ -499,14 +504,13 @@
       "amount": 26.02,
       "next_due_date": "2026-01-27"
     },
-        {
+    {
       "id": "savings",
       "name": "Put money aside",
       "frequency": "weekly",
-      "amount": 1.00,
-      "next_due_date": "2026-01-17"
+      "amount": 1,
+      "next_due_date": "2026-01-24"
     },
-
     {
       "id": "secondary-mortgage",
       "name": "Secondary Mortgage",
