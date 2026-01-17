@@ -499,6 +499,14 @@
       "amount": 26.02,
       "next_due_date": "2026-01-27"
     },
+        {
+      "id": "savings",
+      "name": "Put money aside",
+      "frequency": "weekly",
+      "amount": 00.00,
+      "next_due_date": "2026-01-23"
+    },
+
     {
       "id": "secondary-mortgage",
       "name": "Secondary Mortgage",
