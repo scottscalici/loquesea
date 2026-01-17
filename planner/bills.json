@@ -33,9 +33,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 7792.369999999999,
+    "checking_balance": 7791.369999999999,
     "travel_savings": 0,
-    "weekly_budget_remaining": 284.15999999999997,
+    "weekly_budget_remaining": 283.15999999999997,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15"
   },
@@ -238,6 +238,14 @@
       "vendor": "HP Instant Ink",
       "amount": -8.47,
       "category": "BILL"
+    },
+    {
+      "date": "2026-01-17",
+      "vendor": "Amazon",
+      "who": "",
+      "what": "",
+      "amount": -1,
+      "category": "MANUAL"
     }
   ],
   "bills": [
