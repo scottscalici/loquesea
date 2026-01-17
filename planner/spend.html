@@ -114,20 +114,33 @@
         else dailyEl.style.color = 'var(--primary)';
 
         // Render Recent (Filtered)
-        const spendingOnly = data.history.filter(item => {
+                // Render Recent (Filtered)
+        // .reverse() puts the newest entry in the file at the very top
+        const spendingOnly = data.history.slice().reverse().filter(item => {
             const cat = (item.category || "").toUpperCase();
-            return cat !== "BILL" && cat !== "INCOME" && cat !== "SAVINGS" && item.vendor !== "INCOME";
-        }).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
+            const vend = (item.vendor || "").toUpperCase();
+            // Ignore Bills, Income, and Savings transfers
+            return cat !== "BILL" && cat !== "INCOME" && cat !== "SAVINGS" && vend !== "INCOME";
+        }).slice(0, 5); // Take the top 5 after reversing
 
         const list = document.getElementById('recentList');
         list.innerHTML = spendingOnly.map(item => {
-            const parts = item.date.split('-');
-            const dStr = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][parts[1]-1] + " " + parseInt(parts[2]);
+            // Safe Date Parsing for mobile
+            let dStr = item.date;
+            try {
+                const parts = item.date.split('-');
+                dStr = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][parts[1]-1] + " " + parseInt(parts[2]);
+            } catch(e) {}
+
             return `<div class="history-item">
-                <div><span class="hist-desc">${item.vendor}</span><span class="hist-date">${dStr} ${item.who?'• '+item.who:''}</span></div>
-                <span class="hist-amt">-$${Math.abs(item.amount)}</span>
+                <div>
+                    <span class="hist-desc">${item.vendor}</span>
+                    <span class="hist-date">${dStr} ${item.who ? '• ' + item.who : ''}</span>
+                </div>
+                <span class="hist-amt">-$${Math.abs(item.amount).toLocaleString()}</span>
             </div>`;
         }).join('');
+
     }
     init();
 </script>
