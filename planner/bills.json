@@ -503,7 +503,7 @@
       "id": "savings",
       "name": "Put money aside",
       "frequency": "weekly",
-      "amount": 00.00,
+      "amount": 1.00,
       "next_due_date": "2026-01-17"
     },
 
