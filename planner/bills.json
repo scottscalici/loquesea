@@ -5,14 +5,19 @@
   },
   "savings_goals": [
     {
-      "name": "Emergency Fund",
-      "target": 1000,
+      "name": "Cedar Point Tournament",
+      "target": 1500,
       "current": 0
     },
     {
-      "name": "Travel",
+      "name": "Pigeon Forge Tournament",
       "target": 2000,
       "current": 600
+    },
+     {
+      "name": "Renovation",
+      "target": 10000,
+      "current": 0
     }
   ],
   "paydays": [
