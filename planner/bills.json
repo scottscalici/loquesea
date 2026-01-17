@@ -396,6 +396,14 @@
       "amount": 16.99,
       "next_due_date": "2026-02-02"
     },
+    
+    {
+      "id": "hp-ink-2",
+      "name": "HP Instant Ink",
+      "frequency": "monthly",
+      "amount": 8.47,
+      "next_due_date": "2026-01-17"
+    },
     {
       "id": "jax-a",
       "name": "Jax A",
