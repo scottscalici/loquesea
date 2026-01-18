@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 7679.429999999999,
+    "checking_balance": 7675.429999999999,
     "travel_savings": 0,
-    "weekly_budget_remaining": 184.20999999999995,
+    "weekly_budget_remaining": 180.20999999999995,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15"
   },
@@ -278,6 +278,14 @@
       "who": "Abbi",
       "what": "Drinks",
       "amount": -25,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-01-18",
+      "vendor": "ACE Hardware",
+      "who": "Scott",
+      "what": "Plumber’s putty",
+      "amount": -4,
       "category": "MANUAL"
     }
   ],
