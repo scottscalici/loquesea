@@ -71,33 +71,42 @@
     }
 
     function updateUI(data) {
+        // --- FIX 1: LOCAL DATE INSTEAD OF ISO/UTC ---
         const now = new Date();
-        const todayStr = now.toISOString().split('T')[0];
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const d = String(now.getDate()).padStart(2, '0');
+        const todayStr = `${y}-${m}-${d}`; 
         
-        // 1. Calculate Days Remaining (including today)
-        const dayOfWeek = now.getDay(); 
-        const daysLeft = 7 - (dayOfWeek === 0 ? 7 : dayOfWeek) + 1; 
+        // --- FIX 2: STABLE DAYS REMAINING ---
+        // We want to know how many days are left until the NEXT Monday reset.
+        const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon... 6=Sat
+        // This calculates days remaining including today:
+        // If Monday(1): 7 days left. If Saturday(6): 2 days left. If Sunday(0): 1 day left.
+        const daysLeft = (dayOfWeek === 0) ? 1 : (8 - dayOfWeek);
 
-        // 2. Calculate Today's Spending so far (filtered for variable spend only)
+        // 2. Calculate Today's Spending (Manual Transactions Only)
         const todayItems = data.history.filter(item => {
             const isToday = item.date === todayStr;
             const cat = (item.category || "").toUpperCase();
             const vend = (item.vendor || "").toUpperCase();
+            // We ignore Bills/Savings because they don't count toward your "daily pocket money"
             return isToday && cat !== "BILL" && cat !== "INCOME" && cat !== "SAVINGS" && vend !== "INCOME";
         });
         const spentToday = todayItems.reduce((sum, item) => sum + Math.abs(item.amount), 0);
 
-        // 3. GET THE "STATIC" DAILY ALLOWANCE
-        // This calculates what your allowance WAS at the start of today.
-        // It takes (Weekly Remaining + Today's Spending) / Days Left
+        // 3. CALCULATE DAILY ALLOWANCE
         const weeklyRemaining = data.state.weekly_budget_remaining || 0;
-        const startOfWeekBalance = weeklyRemaining + spentToday;
-        const dailyAllowanceGoal = startOfWeekBalance / daysLeft;
+        
+        // Logic: (Total Budget Left + What you already spent today) / Days remaining
+        // This gives you your "Starting Goal" for this morning.
+        const startOfDayTotal = weeklyRemaining + spentToday;
+        const dailyAllowanceGoal = startOfDayTotal / daysLeft;
 
         // 4. AVAILABLE TODAY = Goal - Spent Today
         const availableToday = dailyAllowanceGoal - spentToday;
         
-        // 5. Progress Bar: Percentage of your DAILY goal left
+        // 5. Progress Bar
         const pct = Math.max(0, Math.min((availableToday / dailyAllowanceGoal) * 100, 100));
 
         // UI Updates
@@ -113,19 +122,15 @@
         if (availableToday <= 0) dailyEl.style.color = 'var(--danger)';
         else dailyEl.style.color = 'var(--primary)';
 
-        // Render Recent (Filtered)
-                // Render Recent (Filtered)
-        // .reverse() puts the newest entry in the file at the very top
+        // Render Recent Spending (Newest at the top)
         const spendingOnly = data.history.slice().reverse().filter(item => {
             const cat = (item.category || "").toUpperCase();
             const vend = (item.vendor || "").toUpperCase();
-            // Ignore Bills, Income, and Savings transfers
             return cat !== "BILL" && cat !== "INCOME" && cat !== "SAVINGS" && vend !== "INCOME";
-        }).slice(0, 5); // Take the top 5 after reversing
+        }).slice(0, 5);
 
         const list = document.getElementById('recentList');
         list.innerHTML = spendingOnly.map(item => {
-            // Safe Date Parsing for mobile
             let dStr = item.date;
             try {
                 const parts = item.date.split('-');
@@ -140,10 +145,10 @@
                 <span class="hist-amt">-$${Math.abs(item.amount).toLocaleString()}</span>
             </div>`;
         }).join('');
-
     }
     init();
 </script>
+
 
 </body>
 </html>
