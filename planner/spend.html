@@ -112,7 +112,7 @@
         // UI Updates
         document.getElementById('dailyLimit').innerText = `$${Math.round(availableToday)}`;
         document.getElementById('dayStartBadge').innerText = `Goal: $${Math.round(dailyAllowanceGoal)}/day`;
-        document.getElementById('daysLeftMsg').innerText = `to last us ${daysLeft} days`;
+        document.getElementById('daysLeftMsg').innerText = `resets in ${daysLeft} days`;
         document.getElementById('weeklyRemaining').innerText = `$${Math.round(weeklyRemaining).toLocaleString()}`;
         document.getElementById('todaySpend').innerText = `$${Math.round(spentToday)}`;
         document.getElementById('progressBar').style.width = pct + '%';
