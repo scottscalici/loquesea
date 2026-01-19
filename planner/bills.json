@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 7644.7,
+    "checking_balance": 7633.07,
     "travel_savings": 0,
-    "weekly_budget_remaining": 149.47999999999996,
+    "weekly_budget_remaining": 137.84999999999997,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15"
   },
@@ -294,6 +294,14 @@
       "who": "Abbi",
       "what": "Shirts",
       "amount": -30.73,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-01-19",
+      "vendor": "Amazon",
+      "who": "Abbi",
+      "what": "Downt",
+      "amount": -11.63,
       "category": "MANUAL"
     }
   ],
