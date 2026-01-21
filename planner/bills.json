@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 7291.589999999999,
+    "checking_balance": 7264.599999999999,
     "travel_savings": 0,
     "weekly_budget_remaining": 864.3699999999999,
     "daily_allowance_locked": 0,
@@ -358,6 +358,12 @@
       "what": "Oil",
       "amount": -18.01,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-01-21",
+      "vendor": "Jax A",
+      "amount": -26.99,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -541,7 +547,7 @@
       "name": "Jax A",
       "frequency": "monthly",
       "amount": 26.99,
-      "next_due_date": "2026-01-21"
+      "next_due_date": "2026-02-21"
     },
     {
       "id": "jax-s",
