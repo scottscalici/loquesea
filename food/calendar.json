@@ -155,5 +155,14 @@
       "Main Dish",
       "Caesar salad"
     ]
+  },
+  {
+    "date": "2026-01-26",
+    "meal": "Cajun Shrimp & Sausage Skillet",
+    "sides_included": [
+      "Main Dish",
+      "Rice",
+      "Cornbread"
+    ]
   }
 ]
