@@ -7,11 +7,11 @@
     {
       "name": "Cedar Point Tournament",
       "target": 1500,
-      "current": 0
+      "current": 50
     },
     {
       "name": "Pigeon Forge Tournament",
-      "target": 2000,
+      "target": 2500,
       "current": 600
     },
     {
