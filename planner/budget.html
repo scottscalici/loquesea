@@ -150,7 +150,7 @@
         }
     }
 
-    async function logTransaction() {
+        async function logTransaction() {
         const select = document.getElementById('vendorSelect');
         const amtInput = document.getElementById('amt');
         let amt = parseFloat(amtInput.value);
@@ -162,23 +162,47 @@
         const isSavings = select.value === 'SAVINGS_XFER' || vendor.startsWith("TO SAVINGS:");
         const isBill = select.value === 'BILL';
 
+        // 1. Bank balance ALWAYS changes
         data.state.checking_balance += (isIncome ? absAmt : -absAmt);
 
+        // 2. Budget Logic: ONLY subtract if NOT Income, Savings, or a Bill
         if (!isIncome && !isSavings && !isBill) {
             const day = new Date().getDate();
-            const isAmazon = vendor.toLowerCase().includes("amazon");
-            if (isAmazon && day >= 21 && day <= 27) {
+            const vendorLower = vendor.toLowerCase();
+            // This catches "Amazon", "Amzn", "Amazon.com", etc.
+            const isAmazon = vendorLower.includes("amazon") || vendorLower.includes("amzn");
+
+            // Shield Window: 21st to the end of the month
+            if (isAmazon && day >= 21) {
                 const currentMonth = new Date().toISOString().slice(0, 7);
-                const amzTotal = data.history.filter(h => {
+                
+                // Calculate how much Amazon has ALREADY been shielded this month
+                const amzAlreadyShielded = data.history.filter(h => {
                     const hDate = new Date(h.date + "T12:00:00");
-                    return h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon") && hDate.getDate() >= 21 && hDate.getDate() <= 27;
+                    const hVend = h.vendor.toLowerCase();
+                    return h.date.startsWith(currentMonth) && 
+                           (hVend.includes("amazon") || hVend.includes("amzn")) && 
+                           hDate.getDate() >= 21;
                 }).reduce((sum, h) => sum + Math.abs(h.amount), 0);
-                const rem = Math.max(0, 500 - amzTotal);
-                data.state.weekly_budget_remaining -= Math.max(0, absAmt - rem);
+
+                // How much of the $500 is left?
+                const remainingShield = Math.max(0, 500 - amzAlreadyShielded);
+                
+                // If the purchase is $60 and shield is $100, we subtract $0 from budget.
+                // If the purchase is $60 and shield is $20, we subtract $40 from budget.
+                const overShieldAmount = Math.max(0, absAmt - remainingShield);
+                data.state.weekly_budget_remaining -= overShieldAmount;
             } else {
+                // Not Amazon or not in the window? Full hit to the budget.
                 data.state.weekly_budget_remaining -= absAmt;
             }
         }
+        
+
+
+
+
+                        
 
         if (isSavings) {
             const goalKey = vendor.replace("TO SAVINGS: ", "").trim();
