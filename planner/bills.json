@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 6738.589999999999,
+    "checking_balance": 6442.239999999999,
     "travel_savings": 0,
     "weekly_budget_remaining": 864.3699999999999,
     "daily_allowance_locked": 0,
@@ -378,6 +378,12 @@
       "what": "Return",
       "amount": 88,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-01-21",
+      "vendor": "T-Mobile",
+      "amount": -296.35,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -687,7 +693,7 @@
       "name": "T-Mobile",
       "frequency": "monthly",
       "amount": 300,
-      "next_due_date": "2026-01-21"
+      "next_due_date": "2026-02-21"
     },
     {
       "id": "uea",
