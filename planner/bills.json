@@ -529,6 +529,13 @@
       "amount": 32.99,
       "next_due_date": "2026-01-25"
     },
+          {
+      "id": "doghuman",
+      "name": "Dog is Human",
+      "frequency": "monthly",
+      "amount": 41.45,
+      "next_due_date": "2026-01-22"
+    },
     {
       "id": "dte",
       "name": "DTE",
