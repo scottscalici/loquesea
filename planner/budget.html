@@ -328,22 +328,37 @@
         });
     }
 
-    async function undoLast() {
-        if (!data.history.length || !confirm("Undo last transaction?")) return;
-        const last = data.history.pop();
-        const amount = Math.abs(last.amount);
-        if (last.amount > 0) { data.state.checking_balance -= amount; } 
-        else {
-            data.state.checking_balance += amount;
-            if (last.category === 'MANUAL') data.state.weekly_budget_remaining += amount;
-            if (last.category === 'SAVINGS') {
-                const goalKey = last.vendor.replace("TO SAVINGS: ", "").trim();
-                const goal = data.savings_goals.find(g => g.name.toLowerCase() === goalKey.toLowerCase());
-                if (goal) goal.current -= amount;
-            }
+   async function undoLast() {
+    if (!data.history.length || !confirm("Undo last transaction?")) return;
+    const last = data.history.pop();
+    const amount = Math.abs(last.amount);
+    
+    // 1. Always fix the bank balance
+    if (last.amount > 0) { 
+        data.state.checking_balance -= amount; 
+    } else {
+        data.state.checking_balance += amount;
+
+        // 2. ONLY refund the weekly budget if it wasn't a Bill, Savings, or Shielded Amazon
+        const v = (last.vendor || "").toLowerCase();
+        const isAmazon = v.includes("amazon") || v.includes("amzn");
+        const hDate = new Date(last.date + "T12:00:00");
+        const isShielded = isAmazon && hDate.getDate() >= 21;
+
+        if (last.category === 'MANUAL' && !isShielded) {
+            data.state.weekly_budget_remaining += amount;
         }
-        await sync();
+
+        // 3. Fix Savings if it was a transfer
+        if (last.category === 'SAVINGS') {
+            const goalKey = last.vendor.replace("TO SAVINGS: ", "").trim();
+            const goal = data.savings_goals.find(g => g.name.toLowerCase() === goalKey.toLowerCase());
+            if (goal) goal.current -= amount;
+        }
     }
+    await sync();
+}
+ 
 
     async function sync() {
         const dot = document.getElementById('syncStatus');
