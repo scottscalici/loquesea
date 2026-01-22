@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 6213.919999999998,
+    "checking_balance": 6172.469999999998,
     "travel_savings": 0,
     "weekly_budget_remaining": 882.5799999999999,
     "daily_allowance_locked": 0,
@@ -428,6 +428,12 @@
       "what": "",
       "amount": -6.3,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-01-22",
+      "vendor": "Dog is Human",
+      "amount": -41.45,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -529,12 +535,12 @@
       "amount": 32.99,
       "next_due_date": "2026-01-25"
     },
-          {
+    {
       "id": "doghuman",
       "name": "Dog is Human",
       "frequency": "monthly",
       "amount": 41.45,
-      "next_due_date": "2026-01-22"
+      "next_due_date": "2026-02-22"
     },
     {
       "id": "dte",
