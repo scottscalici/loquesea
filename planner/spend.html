@@ -87,12 +87,24 @@
 
         // 2. Calculate Today's Spending (Manual Transactions Only)
         const todayItems = data.history.filter(item => {
-            const isToday = item.date === todayStr;
-            const cat = (item.category || "").toUpperCase();
-            const vend = (item.vendor || "").toUpperCase();
-            // We ignore Bills/Savings because they don't count toward your "daily pocket money"
-            return isToday && cat !== "BILL" && cat !== "INCOME" && cat !== "SAVINGS" && vend !== "INCOME";
-        });
+    const isToday = item.date === todayStr;
+    const cat = (item.category || "").toUpperCase();
+    const vend = (item.vendor || "").toUpperCase();
+    
+    // NEW: Check if it's a shielded Amazon purchase
+    const isAmazon = vend.includes("AMAZON") || vend.includes("AMZN");
+    const isShieldWindow = now.getDate() >= 21;
+    const isShielded = isAmazon && isShieldWindow;
+
+    // Only count it if it's NOT a Bill, Income, Savings, OR a shielded Amazon purchase
+    return isToday && 
+           cat !== "BILL" && 
+           cat !== "INCOME" && 
+           cat !== "SAVINGS" && 
+           vend !== "INCOME" && 
+           !isShielded;
+});
+
         const spentToday = todayItems.reduce((sum, item) => sum + Math.abs(item.amount), 0);
 
         // 3. CALCULATE DAILY ALLOWANCE
