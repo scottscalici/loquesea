@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 6650.589999999999,
+    "checking_balance": 6738.589999999999,
     "travel_savings": 0,
     "weekly_budget_remaining": 864.3699999999999,
     "daily_allowance_locked": 0,
@@ -370,6 +370,14 @@
       "vendor": "Mortgage",
       "amount": -614.01,
       "category": "BILL"
+    },
+    {
+      "date": "2026-01-22",
+      "vendor": "Income",
+      "who": "Old Navy",
+      "what": "Return",
+      "amount": 88,
+      "category": "MANUAL"
     }
   ],
   "bills": [
