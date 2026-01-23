@@ -43,106 +43,138 @@
 
     <div id="dashboard" class="timeline"></div>
 </div>
-
 <script>
-    // YOUR CURRENT BLOCKS
-    let dailyBlocks = [
-        { name: "Morning Routine", start: "07:00", end: "09:00" },
+/**
+ * SECTION: DATA & CONFIGURATION
+ * This mimics your JSON structure. 
+ */
+let scheduleState = {
+    dailyBlocks: [
+        { name: "Morning Routine", start: "07:00", end: "09:00", checklist: ["Feed Dog", "Coffee"] },
         { name: "Deep Work", start: "09:00", end: "12:00" },
         { name: "Admin/Prep", start: "13:00", end: "15:00" },
         { name: "PM Cleanup", start: "19:00", end: "20:30" }
-    ];
+    ],
+    meetings: [] // Stored here so it doesn't disappear on refresh
+};
 
-    const PROXY = "https://corsproxy.io/?";
+const PROXY = "https://corsproxy.io/?";
 
-    // STEP 1: FETCH THE USER URI
-    async function findMyUri() {
-        const token = document.getElementById('cal-token').value.trim();
-        if (!token) return alert("Paste token first!");
-        
-        try {
-            const target = "https://api.calendly.com/users/me";
-            const res = await fetch(PROXY + encodeURIComponent(target), {
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-            });
-            const data = await res.json();
-            if (data.resource) {
-                document.getElementById('user-uri').value = data.resource.uri;
-                alert("URI Found! Now click Sync.");
-            } else {
-                alert("Could not find URI. Check token.");
-            }
-        } catch (e) {
-            alert("Security Error: " + e.message);
-        }
+/**
+ * SECTION: THE ENGINE (Logic)
+ * Handles time calculations and gap finding.
+ */
+const TimeEngine = {
+    // Converts "07:30" to 450 (minutes) for easy math
+    toMins: (timeStr) => {
+        const [hrs, mins] = timeStr.split(':').map(Number);
+        return hrs * 60 + mins;
+    },
+
+    sortBlocks: (blocks) => {
+        return [...blocks].sort((a, b) => TimeEngine.toMins(a.start) - TimeEngine.toMins(b.start));
     }
+};
 
-    // STEP 2: FETCH MEETINGS AND DRAW DASHBOARD
-    async function refreshDashboard() {
-        const token = document.getElementById('cal-token').value.trim();
-        const userUri = document.getElementById('user-uri').value.trim();
-        
-        if (!token || !userUri) return alert("Need Token and URI!");
-
-        try {
-            const target = `https://api.calendly.com/scheduled_events?user=${userUri}&status=active`;
-            const response = await fetch(PROXY + encodeURIComponent(target), {
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-            });
-            const data = await response.json();
-            renderDashboard(data.collection || []);
-        } catch (e) {
-            alert("Sync Failed: " + e.message);
-        }
-    }
-
-    function renderDashboard(meetings) {
+/**
+ * SECTION: THE PAINTER (UI Rendering)
+ * Only responsible for putting things on the screen.
+ */
+const UIRenderer = {
+    render: () => {
         const container = document.getElementById('dashboard');
         container.innerHTML = "";
         
-        dailyBlocks.sort((a,b) => a.start.localeCompare(b.start));
+        const sorted = TimeEngine.sortBlocks(scheduleState.dailyBlocks);
 
-        dailyBlocks.forEach((block, index) => {
-            // Add Ghost Blocks for gaps
+        sorted.forEach((block, index) => {
+            // 1. Check for Gaps (Ghost Blocks)
             if (index > 0) {
-                const prevEnd = dailyBlocks[index-1].end;
-                if (prevEnd < block.start) {
-                    container.appendChild(createGhostBlock(prevEnd, block.start));
+                const prevEnd = sorted[index - 1].end;
+                if (TimeEngine.toMins(prevEnd) < TimeEngine.toMins(block.start)) {
+                    container.appendChild(UIRenderer.createGhost(prevEnd, block.start));
                 }
             }
 
-            // Create Lego Brick
+            // 2. Build the Brick
             const brick = document.createElement('div');
             brick.className = 'brick';
-            brick.innerHTML = `<span class="time-label">${block.start} - ${block.end}</span><strong>${block.name}</strong>`;
+            
+            // Checkbox logic for blocks with lists
+            let checklistHtml = '';
+            if (block.checklist) {
+                checklistHtml = `<ul style="list-style:none; padding:0; margin-top:10px;">` + 
+                    block.checklist.map(item => `<li><input type="checkbox"> ${item}</li>`).join('') + 
+                    `</ul>`;
+            }
 
-            // Nest Calendly Meetings
-            meetings.forEach(m => {
-                const mTime = new Date(m.start_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
+            brick.innerHTML = `
+                <span class="time-label">${block.start} - ${block.end}</span>
+                <strong>${block.name}</strong>
+                ${checklistHtml}
+            `;
+
+            // 3. Nest Meetings
+            scheduleState.meetings.forEach(m => {
+                const mTime = new Date(m.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
                 if (mTime >= block.start && mTime < block.end) {
                     brick.classList.add('meeting-nested');
                     brick.innerHTML += `<div class="nested-event"><strong>📅 ${m.name}</strong> at ${mTime}</div>`;
                 }
             });
+
             container.appendChild(brick);
         });
-    }
+    },
 
-    function createGhostBlock(start, end) {
-        const ghost = document.createElement('div');
-        ghost.className = 'ghost-brick';
-        ghost.innerHTML = `+ Add Task to Gap (${start} - ${end})`;
-        ghost.onclick = () => {
-            const taskName = prompt(`New task for ${start} - ${end}?`);
-            if (taskName) {
-                dailyBlocks.push({ name: taskName, start, end });
-                renderDashboard([]);
+    createGhost: (start, end) => {
+        const div = document.createElement('div');
+        div.className = 'ghost-brick';
+        div.innerHTML = `+ Add Task (${start} - ${end})`;
+        div.onclick = () => {
+            const name = prompt("What's happening in this gap?");
+            if (name) {
+                scheduleState.dailyBlocks.push({ name, start, end });
+                UIRenderer.render();
             }
         };
-        return ghost;
+        return div;
     }
+};
 
-    renderDashboard([]);
+/**
+ * SECTION: EXTERNAL INTEGRATIONS
+ * Calendly, Cozy, etc.
+ */
+async function findMyUri() {
+    const token = document.getElementById('cal-token').value.trim();
+    if (!token) return alert("Paste token!");
+    try {
+        const target = "https://api.calendly.com/users/me";
+        const res = await fetch(PROXY + encodeURIComponent(target), {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        document.getElementById('user-uri').value = data.resource.uri;
+    } catch (e) { console.error(e); }
+}
+
+async function refreshDashboard() {
+    const token = document.getElementById('cal-token').value.trim();
+    const userUri = document.getElementById('user-uri').value.trim();
+    try {
+        const target = `https://api.scheduled_events?user=${userUri}&status=active`;
+        const res = await fetch(PROXY + encodeURIComponent(target), {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        scheduleState.meetings = data.collection || [];
+        UIRenderer.render();
+    } catch (e) { alert("Sync failed."); }
+}
+
+// Initial Boot
+UIRenderer.render();
 </script>
 </body>
 </html>
