@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 6135.959999999998,
+    "checking_balance": 6132.959999999998,
     "travel_savings": 0,
-    "weekly_budget_remaining": 846.0699999999999,
+    "weekly_budget_remaining": 843.0699999999999,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-01-19T05:00:00.000Z"
@@ -441,6 +441,14 @@
       "who": "Abbi",
       "what": "Jimmy John’s",
       "amount": -36.51,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-01-23",
+      "vendor": "Dakota concessions",
+      "who": "Abbi",
+      "what": "Water",
+      "amount": -3,
       "category": "MANUAL"
     }
   ],
