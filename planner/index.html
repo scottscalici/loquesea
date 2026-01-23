@@ -46,37 +46,87 @@
 <script>
 /**
  * SECTION: DATA & CONFIGURATION
- * This mimics your JSON structure. 
+ * This is where we define what's inside the "A" and "B" buckets.
  */
 let scheduleState = {
-    dailyBlocks: [
-        { name: "Morning Routine", start: "07:00", end: "09:00", checklist: ["Feed Dog", "Coffee"] },
-        { name: "Deep Work", start: "09:00", end: "12:00" },
-        { name: "Admin/Prep", start: "13:00", end: "15:00" },
-        { name: "PM Cleanup", start: "19:00", end: "20:30" }
-    ],
-    meetings: [] // Stored here so it doesn't disappear on refresh
+    currentCycle: null, 
+    note: "",           
+    dailyBlocks: [],    
+    meetings: []
 };
 
-const PROXY = "https://corsproxy.io/?";
+// Templates: Edit these once, and they update every time that day cycles back.
+const templates = {
+    base: [
+        { name: "Morning Routine", start: "07:00", end: "08:15", checklist: ["Feed Dog", "Eat Breakfast", "Get Ready"] },
+        { name: "Travel", start: "08:15", end: "08:45" },
+        { name: "After School", start: "15:00", end: "17:00" },
+        { name: "Evening Routine", start: "18:00", end: "21:00" }
+    ],
+    cicloA: [
+        { name: "Block 1A", start: "08:45", end: "10:15" },
+        { name: "Block 2A", start: "10:20", end: "11:50" },
+        { name: "Block 3A", start: "12:30", end: "13:30" },
+        { name: "Block 4A", start: "13:35", end: "15:00" }
+    ],
+    cicloB: [
+        { name: "Block 1B", start: "08:45", end: "10:15" },
+        { name: "Block 2B", start: "10:20", end: "11:50" },
+        { name: "Block 3B", start: "12:30", end: "13:30" },
+        { name: "Block 4B", start: "13:35", end: "15:00" }
+    ]
+};
 
 /**
- * SECTION: THE ENGINE (Logic)
- * Handles time calculations and gap finding.
+ * SECTION: SCHEDULE MANAGER
+ * Fetches your GitHub JSON and picks the right template.
  */
-const TimeEngine = {
-    // Converts "07:30" to 450 (minutes) for easy math
-    toMins: (timeStr) => {
-        const [hrs, mins] = timeStr.split(':').map(Number);
-        return hrs * 60 + mins;
+const ScheduleManager = {
+    jsonUrl: "https://raw.githubusercontent.com/scottscalici/imagenes/refs/heads/main/planes/calendario.json",
+
+    init: async () => {
+        try {
+            const response = await fetch(ScheduleManager.jsonUrl);
+            const data = await response.json();
+            
+            // Get today's date in YYYY-MM-DD format
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Find today's entry in your JSON map
+            const dayInfo = data.map.find(item => item.fecha === today);
+
+            if (dayInfo) {
+                scheduleState.currentCycle = dayInfo.ciclo;
+                scheduleState.note = dayInfo.note || "";
+                ScheduleManager.buildDailySchedule(dayInfo.ciclo);
+            } else {
+                // If weekend or not found, just show base routine
+                scheduleState.dailyBlocks = [...templates.base];
+            }
+            
+            UIRenderer.render();
+        } catch (e) {
+            console.error("Error loading calendar:", e);
+            // Fallback so the app doesn't break if GitHub is down
+            scheduleState.dailyBlocks = [...templates.base];
+            UIRenderer.render();
+        }
     },
 
-    sortBlocks: (blocks) => {
-        return [...blocks].sort((a, b) => TimeEngine.toMins(a.start) - TimeEngine.toMins(b.start));
+    buildDailySchedule: (ciclo) => {
+        let blocks = [...templates.base];
+        
+        if (ciclo === "A") {
+            blocks = [...blocks, ...templates.cicloA];
+        } else if (ciclo === "B") {
+            blocks = [...blocks, ...templates.cicloB];
+        }
+
+        scheduleState.dailyBlocks = blocks;
     }
 };
 
-/**
+    /**
  * SECTION: THE PAINTER (UI Rendering)
  * Only responsible for putting things on the screen.
  */
@@ -175,6 +225,8 @@ async function refreshDashboard() {
 
 // Initial Boot
 UIRenderer.render();
+ScheduleManager.init();
+
 </script>
 </body>
 </html>
