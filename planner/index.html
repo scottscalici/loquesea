@@ -2,70 +2,108 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Lego Dashboard</title>
+    <title>Lego Dashboard & House Hub</title>
     <style>
-        :root { --brick-gap: 10px; }
-        body { font-family: 'Segoe UI', sans-serif; background: #1a1a1a; color: white; padding: 20px; }
-        .timeline { display: flex; flex-direction: column; gap: var(--brick-gap); max-width: 600px; margin: auto; }
+        :root {
+            --bg: #121212;
+            --brick-blue: #3498db;
+            --brick-purple: #9b59b6;
+            --ghost-border: #444;
+            --text: #ffffff;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
         
-        /* Real Lego Bricks */
-        .brick { background: #3498db; border-radius: 8px; padding: 15px; position: relative; border-left: 10px solid #2980b9; }
-        .brick.meeting-nested { background: #9b59b6; border-left-color: #8e44ad; }
+        .config-bar { background: #222; padding: 15px; border-radius: 10px; margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 10px; }
+        input { background: #fff; color: #000; border: 1px solid #555; padding: 10px; border-radius: 5px; flex: 1; min-width: 200px; }
+        button { cursor: pointer; padding: 10px 15px; border-radius: 5px; border: none; font-weight: bold; }
+        .btn-uri { background: #f1c40f; color: black; }
+        .btn-sync { background: var(--brick-blue); color: white; }
         
-        /* Ghost Blocks for Gaps */
-        .ghost-brick { border: 2px dashed #444; border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; color: #666; transition: 0.3s; }
-        .ghost-brick:hover { border-color: #3498db; color: #3498db; background: rgba(52, 152, 219, 0.1); }
+        .timeline { display: flex; flex-direction: column; gap: 12px; }
+        .brick { background: var(--brick-blue); border-radius: 8px; padding: 20px; border-left: 12px solid rgba(0,0,0,0.3); position: relative; }
+        .brick.meeting-nested { background: var(--brick-purple); }
+        
+        .ghost-brick { border: 2px dashed var(--ghost-border); border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; color: #888; }
+        .ghost-brick:hover { border-color: var(--brick-blue); color: var(--brick-blue); background: rgba(52, 152, 219, 0.05); }
 
-        .nested-event { background: rgba(255,255,255,0.2); margin-top: 10px; padding: 5px; border-radius: 4px; font-size: 0.85em; }
-        .config-bar { background: #333; padding: 10px; margin-bottom: 20px; border-radius: 8px; }
+        .nested-event { background: rgba(0,0,0,0.2); margin-top: 10px; padding: 10px; border-radius: 6px; font-size: 0.9em; border-left: 3px solid #fff; }
+        .time-label { font-size: 0.8em; opacity: 0.7; display: block; }
     </style>
 </head>
 <body>
 
-<div class="config-bar">
-    <input type="text" id="cal-token" placeholder="1. Paste Token Here" style="background: #fff; color: #000;">
-    <input type="text" id="user-uri" placeholder="2. URI will appear here" style="background: #eee; color: #000;" readonly>
-    <button class="btn-uri" onclick="findMyUri()">Step 1: Get URI</button>
-    <button class="btn-sync" onclick="refreshDashboard()">Step 2: Sync Dashboard</button>
-    <button onclick="document.querySelectorAll('input').forEach(i => i.readOnly = false); alert('Unlocked!')" style="font-size: 10px;">Unlock Fields</button>
-</div>
-<div class="timeline" id="dashboard">
+<div class="container">
+    <div class="config-bar">
+        <input type="text" id="cal-token" placeholder="1. Paste Token Here">
+        <input type="text" id="user-uri" placeholder="2. User URI will appear here">
+        <button class="btn-uri" onclick="findMyUri()">Step 1: Get URI</button>
+        <button class="btn-sync" onclick="refreshDashboard()">Step 2: Sync Dashboard</button>
     </div>
 
+    <div id="dashboard" class="timeline"></div>
+</div>
+
 <script>
-    // Example Block Schedule (This will eventually come from your house.json)
+    // YOUR CURRENT BLOCKS
     let dailyBlocks = [
         { name: "Morning Routine", start: "07:00", end: "09:00" },
         { name: "Deep Work", start: "09:00", end: "12:00" },
-        { name: "Admin/Prep", start: "13:00", end: "15:00" }
+        { name: "Admin/Prep", start: "13:00", end: "15:00" },
+        { name: "PM Cleanup", start: "19:00", end: "20:30" }
     ];
 
-    async function fetchCalendlyMeetings(token) {
-        if (!token) return [];
+    const PROXY = "https://corsproxy.io/?";
+
+    // STEP 1: FETCH THE USER URI
+    async function findMyUri() {
+        const token = document.getElementById('cal-token').value.trim();
+        if (!token) return alert("Paste token first!");
+        
         try {
-            const response = await fetch('https://api.calendly.com/scheduled_events?user=https://api.calendly.com/users/me', {
-                headers: { 'Authorization': `Bearer ${token}` }
+            const target = "https://api.calendly.com/users/me";
+            const res = await fetch(PROXY + encodeURIComponent(target), {
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
             });
-            const data = await response.json();
-            return data.collection || [];
-        } catch (e) { console.error("Calendly error", e); return []; }
+            const data = await res.json();
+            if (data.resource) {
+                document.getElementById('user-uri').value = data.resource.uri;
+                alert("URI Found! Now click Sync.");
+            } else {
+                alert("Could not find URI. Check token.");
+            }
+        } catch (e) {
+            alert("Security Error: " + e.message);
+        }
     }
 
+    // STEP 2: FETCH MEETINGS AND DRAW DASHBOARD
     async function refreshDashboard() {
-        const token = document.getElementById('cal-token').value;
-        const meetings = await fetchCalendlyMeetings(token);
-        renderDashboard(meetings);
+        const token = document.getElementById('cal-token').value.trim();
+        const userUri = document.getElementById('user-uri').value.trim();
+        
+        if (!token || !userUri) return alert("Need Token and URI!");
+
+        try {
+            const target = `https://api.calendly.com/scheduled_events?user=${userUri}&status=active`;
+            const response = await fetch(PROXY + encodeURIComponent(target), {
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            });
+            const data = await response.json();
+            renderDashboard(data.collection || []);
+        } catch (e) {
+            alert("Sync Failed: " + e.message);
+        }
     }
 
     function renderDashboard(meetings) {
         const container = document.getElementById('dashboard');
         container.innerHTML = "";
-
-        // Sort blocks by time
+        
         dailyBlocks.sort((a,b) => a.start.localeCompare(b.start));
 
         dailyBlocks.forEach((block, index) => {
-            // 1. Check for Gaps (Ghost Blocks) before this block
+            // Add Ghost Blocks for gaps
             if (index > 0) {
                 const prevEnd = dailyBlocks[index-1].end;
                 if (prevEnd < block.start) {
@@ -73,20 +111,19 @@
                 }
             }
 
-            // 2. Create the Real Brick
+            // Create Lego Brick
             const brick = document.createElement('div');
             brick.className = 'brick';
-            brick.innerHTML = `<strong>${block.name}</strong> <small>(${block.start} - ${block.end})</small>`;
+            brick.innerHTML = `<span class="time-label">${block.start} - ${block.end}</span><strong>${block.name}</strong>`;
 
-            // 3. Nest Calendly Meetings
+            // Nest Calendly Meetings
             meetings.forEach(m => {
-                const mStart = new Date(m.start_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
-                if (mStart >= block.start && mStart < block.end) {
+                const mTime = new Date(m.start_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
+                if (mTime >= block.start && mTime < block.end) {
                     brick.classList.add('meeting-nested');
-                    brick.innerHTML += `<div class="nested-event">📅 ${m.name} at ${mStart}</div>`;
+                    brick.innerHTML += `<div class="nested-event"><strong>📅 ${m.name}</strong> at ${mTime}</div>`;
                 }
             });
-
             container.appendChild(brick);
         });
     }
@@ -94,9 +131,9 @@
     function createGhostBlock(start, end) {
         const ghost = document.createElement('div');
         ghost.className = 'ghost-brick';
-        ghost.innerHTML = `+ Add Task (${start} - ${end})`;
+        ghost.innerHTML = `+ Add Task to Gap (${start} - ${end})`;
         ghost.onclick = () => {
-            const taskName = prompt(`What are we doing between ${start} and ${end}?`);
+            const taskName = prompt(`New task for ${start} - ${end}?`);
             if (taskName) {
                 dailyBlocks.push({ name: taskName, start, end });
                 renderDashboard([]);
