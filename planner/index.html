@@ -91,10 +91,11 @@ const TimeEngine = {
         const [h, m] = t.split(':').map(Number);
         return h * 60 + m;
     },
-    // NEW: Extracts raw hours/minutes to avoid 5-hour UTC shifts
     parseIcsDate: (icsStr) => {
         if(!icsStr) return null;
-        const cleanStr = icsStr.includes(':') ? icsStr.split(':')[1] : icsStr;
+        // Strip everything before the colon (like DTSTART;VALUE=DATE:)
+        const val = icsStr.includes(':') ? icsStr.split(':').pop() : icsStr;
+        const cleanStr = val.trim();
         
         const y = cleanStr.substring(0,4);
         const m = cleanStr.substring(4,6);
@@ -105,7 +106,6 @@ const TimeEngine = {
             return { dateStr, isAllDay: true };
         }
 
-        // Just pull the HH:mm directly from the string
         const h = cleanStr.substring(9,11);
         const min = cleanStr.substring(11,13);
         
@@ -116,6 +116,115 @@ const TimeEngine = {
         };
     }
 };
+
+const UIRenderer = {
+    render: () => {
+        const container = document.getElementById('dashboard');
+        const head = document.getElementById('current-day-display');
+        if(!container) return;
+        container.innerHTML = "";
+
+        head.innerText = `View: ${ScheduleManager.selectedDate} ${scheduleState.currentCycle ? '(Cycle ' + scheduleState.currentCycle + ')' : ''}`;
+
+        // 1. Render All-Day Events
+        const allDayZone = document.createElement('div');
+        allDayZone.style = "display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;";
+        container.appendChild(allDayZone);
+
+        scheduleState.coziEvents.forEach(e => {
+            if (e.dateStr === ScheduleManager.selectedDate && e.isAllDay) {
+                const tag = document.createElement('div');
+                tag.className = 'all-day-tag';
+                tag.innerText = `🌟 ${e.summary}`;
+                allDayZone.appendChild(tag);
+            }
+        });
+
+        // 2. Render Time Bricks
+        const sorted = [...scheduleState.dailyBlocks].sort((a, b) => 
+            TimeEngine.toMins(a.start) - TimeEngine.toMins(b.start)
+        );
+
+        sorted.forEach((block) => {
+            const brick = document.createElement('div');
+            brick.className = 'brick';
+            let content = `<span class="time-label">${block.start} - ${block.end}</span><strong>${block.name}</strong>`;
+
+            if (block.tasks) {
+                content += `<ul style="margin: 10px 0 0 20px; font-size: 0.85em; list-style: circle;">`;
+                block.tasks.forEach(t => content += `<li>${t}</li>`);
+                content += `</ul>`;
+            }
+
+            brick.innerHTML = content;
+            const bStart = TimeEngine.toMins(block.start);
+            const bEnd = TimeEngine.toMins(block.end);
+
+            // Nest Calendly
+            scheduleState.meetings.forEach(m => {
+                const mDate = new Date(m.start_time);
+                const mTime = mDate.getHours().toString().padStart(2,'0') + ":" + mDate.getMinutes().toString().padStart(2,'0');
+                if (mDate.toISOString().split('T')[0] === ScheduleManager.selectedDate) {
+                    if (TimeEngine.toMins(mTime) >= bStart && TimeEngine.toMins(mTime) < bEnd) {
+                        brick.classList.add('meeting-nested');
+                        brick.innerHTML += `<div class="nested-event"><strong>📅 ${m.name}</strong> at ${mTime}</div>`;
+                    }
+                }
+            });
+
+            // Nest Cozi (Timed) - Aggressive catch
+            scheduleState.coziEvents.forEach(e => {
+                if (e.dateStr === ScheduleManager.selectedDate && !e.isAllDay) {
+                    const eMins = TimeEngine.toMins(e.timeStr);
+                    if (eMins >= bStart && eMins < bEnd) {
+                        brick.classList.add('meeting-nested');
+                        brick.style.borderLeftColor = "#27ae60"; 
+                        brick.innerHTML += `<div class="nested-event" style="border-left: 3px solid #2ecc71;"><strong>🏠 ${e.summary}</strong> at ${e.timeStr}</div>`;
+                    }
+                }
+            });
+
+            container.appendChild(brick);
+        });
+    }
+};
+
+async function syncCozi() {
+    try {
+        const res = await fetch(PROXY + encodeURIComponent(ScheduleManager.coziUrl));
+        let text = await res.text();
+        
+        // FIX 1: "Unfold" the ICS file (remove line breaks that split words)
+        text = text.replace(/\r\n /g, ''); 
+        
+        const events = [];
+        const vevents = text.split("BEGIN:VEVENT");
+        
+        // Skip the first chunk (it's the header)
+        for (let i = 1; i < vevents.length; i++) {
+            const chunk = vevents[i];
+            
+            // FIX 2: Better matching for summaries and dates
+            const summaryMatch = chunk.match(/SUMMARY:(.*)/);
+            const dtStartMatch = chunk.match(/DTSTART[^:]*:(.*)/);
+            
+            if (summaryMatch && dtStartMatch) {
+                const info = TimeEngine.parseIcsDate(dtStartMatch[1].trim());
+                if (info) {
+                    events.push({
+                        summary: summaryMatch[1].trim().replace(/\\,/g, ','), // fix commas
+                        dateStr: info.dateStr,
+                        timeStr: info.timeStr,
+                        isAllDay: info.isAllDay
+                    });
+                }
+            }
+        }
+
+        scheduleState.coziEvents = events;
+        UIRenderer.render();
+    } catch (e) { console.error("Sync error", e); }
+}
 
 const ScheduleManager = {
     jsonUrl: "https://raw.githubusercontent.com/scottscalici/imagenes/refs/heads/main/planes/calendario.json",
