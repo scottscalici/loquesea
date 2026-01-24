@@ -55,61 +55,74 @@
 </div>
 <script>
 /**
- * SECTION: DATA & CONFIG
+ * 1. DATA & TEMPLATES
  */
 let scheduleState = {
-    currentCycle: null,
-    note: "",
-    dailyBlocks: [],
+    dailyBlocks: [
+        { name: "Morning Routine", start: "07:00", end: "09:00", checklist: ["Feed Dog", "Coffee"] },
+        { name: "Deep Work", start: "09:00", end: "12:00" },
+        { name: "Admin/Prep", start: "13:00", end: "15:00" },
+        { name: "PM Cleanup", start: "19:00", end: "20:30" }
+    ],
     meetings: []
 };
 
-// ... keep your 'templates' object here ...
+const PROXY = "https://corsproxy.io/?";
 
 /**
- * SECTION: THE FIX - Independent Init
+ * 2. THE ENGINE (Time & Logic)
  */
-const ScheduleManager = {
-    jsonUrl: "https://raw.githubusercontent.com/scottscalici/imagenes/refs/heads/main/planes/calendario.json",
-    
-    init: async () => {
-        // 1. Force the UI to show the Base Bricks immediately
-        scheduleState.dailyBlocks = [...templates.base];
-        UIRenderer.render();
-
-        // 2. Try to fetch the A/B cycle from your GitHub JSON
-        try {
-            const response = await fetch(ScheduleManager.jsonUrl);
-            const data = await response.json();
-            const today = new Date().toISOString().split('T')[0];
-            const dayInfo = data.map.find(item => item.fecha === today);
-
-            if (dayInfo) {
-                scheduleState.currentCycle = dayInfo.ciclo;
-                scheduleState.note = dayInfo.note || "";
-                
-                // Add the Cycle blocks to the base blocks
-                let cycleBlocks = (dayInfo.ciclo === "A") ? templates.cicloA : templates.cicloB;
-                scheduleState.dailyBlocks = [...templates.base, ...(cycleBlocks || [])];
-            }
-            // Update UI with the new A/B data
-            UIRenderer.render();
-        } catch (e) {
-            console.warn("Could not load A/B cycle, staying on Base blocks.");
-        }
+const TimeEngine = {
+    toMins: (t) => {
+        const [h, m] = t.split(':').map(Number);
+        return h * 60 + m;
     }
 };
 
 /**
- * SECTION: CALENDLY SYNC (Step 1 & 2)
+ * 3. THE PAINTER (UI)
+ */
+const UIRenderer = {
+    render: () => {
+        const container = document.getElementById('dashboard');
+        if (!container) return;
+        container.innerHTML = "";
+
+        // Sort blocks by time
+        const sorted = [...scheduleState.dailyBlocks].sort((a, b) => 
+            TimeEngine.toMins(a.start) - TimeEngine.toMins(b.start)
+        );
+
+        sorted.forEach((block, index) => {
+            // Create the Brick
+            const brick = document.createElement('div');
+            brick.className = 'brick';
+            brick.innerHTML = `
+                <span class="time-label">${block.start} - ${block.end}</span>
+                <strong>${block.name}</strong>
+            `;
+
+            // Check for Calendly meetings that fit inside this block
+            scheduleState.meetings.forEach(m => {
+                const mStart = new Date(m.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+                if (mStart >= block.start && mStart < block.end) {
+                    brick.classList.add('meeting-nested');
+                    brick.innerHTML += `<div class="nested-event"><strong>📅 ${m.name}</strong> at ${mStart}</div>`;
+                }
+            });
+
+            container.appendChild(brick);
+        });
+        console.log("Dashboard Rendered with", sorted.length, "bricks.");
+    }
+};
+
+/**
+ * 4. THE INTEGRATIONS (API Calls)
  */
 async function findMyUri() {
     const token = document.getElementById('cal-token').value.trim();
-    if (!token) return alert("Please paste the token first!");
-    
-    const PROXY = "https://corsproxy.io/?";
     const target = "https://api.calendly.com/users/me";
-
     try {
         const res = await fetch(PROXY + encodeURIComponent(target), {
             headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
@@ -117,18 +130,35 @@ async function findMyUri() {
         const data = await res.json();
         if (data.resource) {
             document.getElementById('user-uri').value = data.resource.uri;
-            alert("Success! URI Found. Now click Sync Dashboard.");
-        } else {
-            alert("Token accepted, but Calendly didn't return a User URI. Check token permissions.");
+            alert("URI Saved!");
         }
+    } catch (e) { alert("URI Fetch Failed"); }
+}
+
+async function refreshDashboard() {
+    const token = document.getElementById('cal-token').value.trim();
+    const uri = document.getElementById('user-uri').value.trim();
+    if (!token || !uri) return alert("Need Token and URI!");
+
+    try {
+        const target = `https://api.calendly.com/scheduled_events?user=${uri}&status=active`;
+        const res = await fetch(PROXY + encodeURIComponent(target), {
+            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+        });
+        const data = await res.json();
+        scheduleState.meetings = data.collection || [];
+        UIRenderer.render(); // Redraw with meetings
+        alert("Sync Complete!");
     } catch (e) {
-        alert("Network error. The proxy might be down or the token is invalid.");
+        console.error(e);
+        alert("Sync Failed, but bricks should remain.");
     }
 }
 
-// Kick off the app
-ScheduleManager.init();
-
+// BOOT UP
+window.onload = () => {
+    UIRenderer.render();
+};
 
 </script>
 </body>
