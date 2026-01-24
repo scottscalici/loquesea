@@ -40,6 +40,12 @@
         <button class="btn-uri" onclick="findMyUri()">Step 1: Get URI</button>
         <button class="btn-sync" onclick="refreshDashboard()">Step 2: Sync Dashboard</button>
     </div>
+    <div class="config-bar" style="background: #333; justify-content: center;">
+    <label for="date-select">📅 View Date: </label>
+    <input type="date" id="date-select" onchange="ScheduleManager.changeDate(this.value)">
+    <button onclick="ScheduleManager.init()" style="background: #555; color: white;">Reset to Today</button>
+</div>
+
 <div id="status-header" style="text-align: center; margin-bottom: 20px;">
     <h2 id="current-day-display">Loading Schedule...</h2>
     <p id="day-note" style="color: #f1c40f; font-weight: bold;"></p>
@@ -85,50 +91,60 @@ const templates = {
  * SECTION: SCHEDULE MANAGER
  * Fetches your GitHub JSON and picks the right template.
  */
-    
-ScheduleManager
-    const ScheduleManager = {
+  const ScheduleManager = {
     jsonUrl: "https://raw.githubusercontent.com/scottscalici/imagenes/refs/heads/main/planes/calendario.json",
+    selectedDate: null, // Holds the date we are currently viewing
 
     init: async () => {
-        // 1. First, load the base routine so the screen isn't empty
-        scheduleState.dailyBlocks = [...templates.base];
-        UIRenderer.render();
+        // Default to today's date if nothing is selected
+        if (!ScheduleManager.selectedDate) {
+            const now = new Date();
+            ScheduleManager.selectedDate = now.toISOString().split('T')[0];
+            document.getElementById('date-select').value = ScheduleManager.selectedDate;
+        }
+        await ScheduleManager.loadSchedule();
+    },
 
+    changeDate: async (newDate) => {
+        ScheduleManager.selectedDate = newDate;
+        await ScheduleManager.loadSchedule();
+    },
+
+    loadSchedule: async () => {
         try {
             const response = await fetch(ScheduleManager.jsonUrl);
             const data = await response.json();
             
-            // Get today's date (Correcting for local timezone)
-            const now = new Date();
-            const today = now.getFullYear() + '-' + 
-                          String(now.getMonth() + 1).padStart(2, '0') + '-' + 
-                          String(now.getDate()).padStart(2, '0');
-            
-            const dayInfo = data.map.find(item => item.fecha === today);
+            const dayInfo = data.map.find(item => item.fecha === ScheduleManager.selectedDate);
+
+            // Reset state for the new date
+            scheduleState.currentCycle = null;
+            scheduleState.note = "";
 
             if (dayInfo && dayInfo.ciclo) {
                 scheduleState.currentCycle = dayInfo.ciclo;
                 scheduleState.note = dayInfo.note || "";
                 ScheduleManager.buildDailySchedule(dayInfo.ciclo);
-            } else if (dayInfo && dayInfo.note) {
-                // It's a school day but no cycle (like a Snow Day)
-                scheduleState.note = dayInfo.note;
+            } else {
+                // If no school cycle (weekend/break), show base routine + any notes
+                scheduleState.note = dayInfo ? dayInfo.note : "No school scheduled";
+                scheduleState.dailyBlocks = [...templates.base];
             }
             
-            // 2. Re-render now that we have the specific A/B data
             UIRenderer.render();
         } catch (e) {
-            console.error("Connection to GitHub failed, staying on Base Routine.");
+            console.error("Error loading future date:", e);
         }
     },
 
     buildDailySchedule: (ciclo) => {
-        // Combine base routine with the specific cycle
         let schoolBlocks = (ciclo === "A") ? templates.cicloA : templates.cicloB;
+        // Combine your base routine with the school blocks
         scheduleState.dailyBlocks = [...templates.base, ...schoolBlocks];
     }
 };
+  
+
 
     /**
  * SECTION: THE PAINTER (UI Rendering)
