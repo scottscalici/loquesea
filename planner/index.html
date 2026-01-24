@@ -198,6 +198,7 @@ async function syncCozi() {
         const res = await fetch(PROXY + encodeURIComponent(ScheduleManager.coziUrl));
         const raw = await res.text();
         const events = [];
+        // Clean up formatting and split into individual events
         const blocks = raw.replace(/\r\n /g, '').split("BEGIN:VEVENT");
 
         blocks.forEach(block => {
@@ -208,35 +209,49 @@ async function syncCozi() {
             const startInfo = TimeEngine.parseIcsLine(dtStartLine);
 
             if (startInfo) {
-                // Expansion logic: Only add if it's not a birthday spamming every day
+                const eventDatePart = startInfo.dateStr; // e.g., "2025-01-16"
+                const selectedDatePart = ScheduleManager.selectedDate; // e.g., "2026-01-24"
+
+                // 1. Handle YEARLY (Birthdays)
                 if (rrule.includes("FREQ=YEARLY")) {
-                    if (startInfo.dateStr.slice(5) === ScheduleManager.selectedDate.slice(5)) {
-                        events.push({ ...startInfo, summary, dateStr: ScheduleManager.selectedDate });
+                    // Match MM-DD only, but only if the person was born on or before this year
+                    if (eventDatePart.slice(5) === selectedDatePart.slice(5) && eventDatePart.split('-')[0] <= selectedDatePart.split('-')[0]) {
+                        events.push({ ...startInfo, summary, dateStr: selectedDatePart });
                     }
-                } else if (rrule.includes("FREQ=DAILY") || rrule.includes("FREQ=WEEKLY")) {
-                    // Check if TODAY falls within the recurrence
-                    let curr = new Date(startInfo.dateStr + "T12:00:00");
-                    let limit = new Date(ScheduleManager.selectedDate + "T12:00:00");
-                    // Optimization: If the start is after today, skip.
-                    if (curr <= limit) {
-                        while (curr <= limit) {
-                            if (curr.toISOString().split('T')[0] === ScheduleManager.selectedDate) {
-                                events.push({ ...startInfo, summary, dateStr: ScheduleManager.selectedDate });
-                                break;
+                } 
+                // 2. Handle DAILY/WEEKLY (Recurring)
+                else if (rrule.includes("FREQ=DAILY") || rrule.includes("FREQ=WEEKLY")) {
+                    const untilMatch = rrule.match(/UNTIL=(\d{8})/);
+                    let startObj = new Date(eventDatePart + "T12:00:00");
+                    let viewObj = new Date(selectedDatePart + "T12:00:00");
+                    
+                    if (startObj <= viewObj) {
+                        let endLimit = untilMatch ? 
+                            new Date(`${untilMatch[1].substring(0,4)}-${untilMatch[1].substring(4,6)}-${untilMatch[1].substring(6,8)}T23:59:59`) : 
+                            new Date("2099-12-31"); 
+
+                        if (viewObj <= endLimit) {
+                            const daysDiff = Math.floor((viewObj - startObj) / (1000 * 60 * 60 * 24));
+                            if (rrule.includes("FREQ=DAILY") || (rrule.includes("FREQ=WEEKLY") && daysDiff % 7 === 0)) {
+                                events.push({ ...startInfo, summary, dateStr: selectedDatePart });
                             }
-                            curr.setDate(curr.getDate() + (rrule.includes("WEEKLY") ? 7 : 1));
                         }
                     }
-                } else {
-                    // Single event
-                    events.push({ ...startInfo, summary });
+                } 
+                // 3. SINGLE EVENTS (The Fix)
+                else {
+                    // STRICTOR CHECK: The full YYYY-MM-DD must match exactly.
+                    if (eventDatePart === selectedDatePart) {
+                        events.push({ ...startInfo, summary });
+                    }
                 }
             }
         });
         scheduleState.coziEvents = events;
         UIRenderer.render();
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error("Cozi Sync Error:", e); }
 }
+
 
 async function findMyUri() {
     const token = document.getElementById('cal-token').value.trim();
