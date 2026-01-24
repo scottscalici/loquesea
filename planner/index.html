@@ -48,7 +48,9 @@
 
     <div id="dashboard" class="timeline"></div>
 </div>
+
 <script>
+    
 /**
  * 1. DATA & TEMPLATES
  */
@@ -57,11 +59,10 @@ let scheduleState = {
     note: "",
     dailyBlocks: [],
     meetings: [],
-    coziEvents: [] // Placeholder for Cozi data
+    coziEvents: [] 
 };
 
 const templates = {
-    // RESTORED: Checklists added back to base blocks
     base: [
         { 
             name: "Morning Routine", 
@@ -89,58 +90,237 @@ const templates = {
     ]
 };
 
+const PROXY = "https://corsproxy.io/?";
+
 /**
- * 4. THE PAINTER (Updated for Checklists)
+ * 2. THE ENGINE
+ */
+const TimeEngine = {
+    toMins: (t) => {
+        if(!t || !t.includes(':')) return 0;
+        const [h, m] = t.split(':').map(Number);
+        return h * 60 + m;
+    },
+    parseIcsDate: (icsStr) => {
+        if(!icsStr) return null;
+        // Basic parser for YYYYMMDDTHHMMSSZ
+        const y = icsStr.substring(0,4);
+        const m = parseInt(icsStr.substring(4,6)) - 1;
+        const d = icsStr.substring(6,8);
+        const h = icsStr.substring(9,11);
+        const min = icsStr.substring(11,13);
+        return new Date(Date.UTC(y, m, d, h, min));
+    }
+};
+
+/**
+ * 3. THE MANAGER
+ */
+const ScheduleManager = {
+    jsonUrl: "https://raw.githubusercontent.com/scottscalici/imagenes/refs/heads/main/planes/calendario.json",
+    coziUrl: "https://rest.cozi.com/api/ext/1103/f9f7020d-05c9-4720-b813-2155b4485be7/icalendar/feed/feed.ics",
+    selectedDate: new Date().toISOString().split('T')[0],
+
+    init: async () => {
+        const dateInput = document.getElementById('date-select');
+        if(dateInput) dateInput.value = ScheduleManager.selectedDate;
+        await ScheduleManager.loadFromGitHub();
+        
+        // Auto-run syncs if token exists
+        if(localStorage.getItem('saved_cal_token')) {
+            refreshDashboard();
+            syncCozi();
+        }
+    },
+
+    resetToday: () => {
+        ScheduleManager.selectedDate = new Date().toISOString().split('T')[0];
+        document.getElementById('date-select').value = ScheduleManager.selectedDate;
+        ScheduleManager.loadFromGitHub();
+        refreshDashboard();
+        syncCozi();
+    },
+
+    changeDate: (val) => {
+        ScheduleManager.selectedDate = val;
+        ScheduleManager.loadFromGitHub();
+        refreshDashboard();
+        syncCozi();
+    },
+
+    loadFromGitHub: async () => {
+        try {
+            const res = await fetch(ScheduleManager.jsonUrl);
+            const data = await res.json();
+            const dayInfo = data.map.find(item => item.fecha === ScheduleManager.selectedDate);
+            scheduleState.currentCycle = dayInfo?.ciclo || null;
+            scheduleState.note = dayInfo?.note || "";
+            let blocks = [...templates.base];
+            if (scheduleState.currentCycle === "A") blocks = [...blocks, ...templates.cicloA];
+            if (scheduleState.currentCycle === "B") blocks = [...blocks, ...templates.cicloB];
+            scheduleState.dailyBlocks = blocks;
+            UIRenderer.render();
+        } catch (e) {
+            scheduleState.dailyBlocks = [...templates.base];
+            UIRenderer.render();
+        }
+    }
+};
+
+/**
+ * 4. THE PAINTER
  */
 const UIRenderer = {
     render: () => {
         const container = document.getElementById('dashboard');
+        const header = document.getElementById('current-day-display');
+        const note = document.getElementById('day-note');
+        
         if(!container) return;
         container.innerHTML = "";
         
-        // ... (Header logic stays the same) ...
+        const cycleLabel = scheduleState.currentCycle ? `Cycle ${scheduleState.currentCycle}` : "No Cycle";
+        if(header) header.innerText = `View: ${ScheduleManager.selectedDate} (${cycleLabel})`;
+        if(note) note.innerText = scheduleState.note;
 
         const sorted = [...scheduleState.dailyBlocks].sort((a, b) => 
             TimeEngine.toMins(a.start) - TimeEngine.toMins(b.start)
         );
 
-        const globalAddedMeetings = new Set();
+        const globalUsedUris = new Set();
 
         sorted.forEach((block) => {
             const brick = document.createElement('div');
             brick.className = 'brick';
-            
-            // Build the Brick content
-            let content = `<span class="time-label">${block.start} - ${block.end}</span>`;
-            content += `<strong>${block.name}</strong>`;
-            
-            // NEW: Render the Task Checklist if it exists
-            if (block.tasks && block.tasks.length > 0) {
-                content += `<ul class="task-list" style="margin-top:10px; padding-left:20px; font-size:0.85em;">`;
-                block.tasks.forEach(task => {
-                    content += `<li>${task}</li>`;
-                });
+            let content = `<span class="time-label">${block.start} - ${block.end}</span><strong>${block.name}</strong>`;
+
+            if (block.tasks) {
+                content += `<ul style="margin: 10px 0 0 20px; font-size: 0.85em; list-style: circle;">`;
+                block.tasks.forEach(t => content += `<li>${t}</li>`);
                 content += `</ul>`;
             }
 
             brick.innerHTML = content;
+            const bStart = TimeEngine.toMins(block.start);
+            const bEnd = TimeEngine.toMins(block.end);
 
-            // ... (Meeting nesting logic stays the same) ...
-            
+            // Nest Calendly
+            scheduleState.meetings.forEach(m => {
+                const mDate = new Date(m.start_time);
+                if (mDate.toISOString().split('T')[0] === ScheduleManager.selectedDate) {
+                    const mTime = mDate.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', hour12:false});
+                    const mMins = TimeEngine.toMins(mTime);
+                    if (mMins >= bStart && mMins < bEnd && !globalUsedUris.has(m.uri)) {
+                        brick.classList.add('meeting-nested');
+                        brick.innerHTML += `<div class="nested-event"><strong>📅 ${m.name}</strong> at ${mTime}</div>`;
+                        globalUsedUris.add(m.uri);
+                    }
+                }
+            });
+
+            // Nest Cozi
+            scheduleState.coziEvents.forEach(e => {
+                if (e.dateStr === ScheduleManager.selectedDate) {
+                    const eMins = TimeEngine.toMins(e.timeStr);
+                    if (eMins >= bStart && eMins < bEnd && !globalUsedUris.has(e.summary + e.timeStr)) {
+                        brick.classList.add('meeting-nested');
+                        brick.style.borderLeftColor = "#27ae60"; 
+                        brick.innerHTML += `<div class="nested-event" style="border-left: 3px solid #2ecc71;"><strong>🏠 ${e.summary}</strong> at ${e.timeStr}</div>`;
+                        globalUsedUris.add(e.summary + e.timeStr);
+                    }
+                }
+            });
+
             container.appendChild(brick);
         });
     }
 };
 
 /**
- * 6. COZI INTEGRATION (The Strategy)
+ * 5. INTEGRATIONS (Calendly)
+ */
+async function findMyUri() {
+    const token = document.getElementById('cal-token').value.trim();
+    if (!token) return alert("Paste token first!");
+    localStorage.setItem('saved_cal_token', token);
+    
+    try {
+        const target = "https://api.calendly.com/users/me";
+        const res = await fetch(PROXY + encodeURIComponent(target), {
+            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+        });
+        const data = await res.json();
+        if (data.resource) {
+            document.getElementById('user-uri').value = data.resource.uri;
+            localStorage.setItem('saved_cal_uri', data.resource.uri);
+            alert("URI Saved!");
+        }
+    } catch (e) { alert("Error: " + e.message); }
+}
+
+async function refreshDashboard() {
+    const token = document.getElementById('cal-token').value.trim();
+    const uri = document.getElementById('user-uri').value.trim();
+    if (!token || !uri) return;
+
+    try {
+        const startTime = `${ScheduleManager.selectedDate}T00:00:00Z`;
+        const endTime = `${ScheduleManager.selectedDate}T23:59:59Z`;
+        const target = `https://api.calendly.com/scheduled_events?user=${uri}&status=active&min_start_time=${startTime}&max_start_time=${endTime}`;
+        
+        const res = await fetch(PROXY + encodeURIComponent(target), {
+            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+        });
+        const data = await res.json();
+        scheduleState.meetings = data.collection || [];
+        UIRenderer.render();
+    } catch (e) { console.error("Calendly Sync Failed", e); }
+}
+
+/**
+ * 6. INTEGRATIONS (Cozi)
  */
 async function syncCozi() {
-    // Strategy: Cozi provides a "Shared Calendar" URL ending in .ics
-    // We will need to fetch that URL and parse it.
-    console.log("Cozi Sync initiated. Awaiting .ics URL.");
-    // In the next step, we'll add an input for your Cozi ICS link.
+    try {
+        const res = await fetch(PROXY + encodeURIComponent(ScheduleManager.coziUrl));
+        const text = await res.text();
+        const events = [];
+        const lines = text.split(/\r?\n/);
+        let currentEvent = null;
+
+        lines.forEach(line => {
+            if (line.startsWith("BEGIN:VEVENT")) currentEvent = {};
+            if (currentEvent) {
+                if (line.startsWith("SUMMARY:")) currentEvent.summary = line.replace("SUMMARY:", "");
+                if (line.startsWith("DTSTART")) {
+                    const val = line.split(":")[1] || line.split(";")[1]?.split(":")[1];
+                    const d = TimeEngine.parseIcsDate(val);
+                    if (d) {
+                        currentEvent.dateStr = d.toISOString().split('T')[0];
+                        currentEvent.timeStr = d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', hour12:false});
+                    }
+                }
+            }
+            if (line.startsWith("END:VEVENT")) {
+                if(currentEvent.summary) events.push(currentEvent);
+                currentEvent = null;
+            }
+        });
+
+        scheduleState.coziEvents = events;
+        UIRenderer.render();
+    } catch (e) { console.error("Cozi Sync Failed", e); }
 }
+
+window.onload = () => {
+    const sToken = localStorage.getItem('saved_cal_token');
+    const sUri = localStorage.getItem('saved_cal_uri');
+    if (sToken) document.getElementById('cal-token').value = sToken;
+    if (sUri) document.getElementById('user-uri').value = sUri;
+    ScheduleManager.init();
+};
+                        
 </script>
+    
 </body>
 </html>
