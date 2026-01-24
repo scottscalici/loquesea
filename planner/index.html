@@ -85,55 +85,55 @@ const templates = {
  * SECTION: SCHEDULE MANAGER
  * Fetches your GitHub JSON and picks the right template.
  */
-const ScheduleManager = {
+    
+ScheduleManager
+    const ScheduleManager = {
     jsonUrl: "https://raw.githubusercontent.com/scottscalici/imagenes/refs/heads/main/planes/calendario.json",
 
     init: async () => {
+        // 1. First, load the base routine so the screen isn't empty
+        scheduleState.dailyBlocks = [...templates.base];
+        UIRenderer.render();
+
         try {
             const response = await fetch(ScheduleManager.jsonUrl);
             const data = await response.json();
             
-            // Get today's date in YYYY-MM-DD format
-            const today = new Date().toISOString().split('T')[0];
+            // Get today's date (Correcting for local timezone)
+            const now = new Date();
+            const today = now.getFullYear() + '-' + 
+                          String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                          String(now.getDate()).padStart(2, '0');
             
-            // Find today's entry in your JSON map
             const dayInfo = data.map.find(item => item.fecha === today);
 
-            if (dayInfo) {
+            if (dayInfo && dayInfo.ciclo) {
                 scheduleState.currentCycle = dayInfo.ciclo;
                 scheduleState.note = dayInfo.note || "";
                 ScheduleManager.buildDailySchedule(dayInfo.ciclo);
-            } else {
-                // If weekend or not found, just show base routine
-                scheduleState.dailyBlocks = [...templates.base];
+            } else if (dayInfo && dayInfo.note) {
+                // It's a school day but no cycle (like a Snow Day)
+                scheduleState.note = dayInfo.note;
             }
             
+            // 2. Re-render now that we have the specific A/B data
             UIRenderer.render();
         } catch (e) {
-            console.error("Error loading calendar:", e);
-            // Fallback so the app doesn't break if GitHub is down
-            scheduleState.dailyBlocks = [...templates.base];
-            UIRenderer.render();
+            console.error("Connection to GitHub failed, staying on Base Routine.");
         }
     },
 
     buildDailySchedule: (ciclo) => {
-        let blocks = [...templates.base];
-        
-        if (ciclo === "A") {
-            blocks = [...blocks, ...templates.cicloA];
-        } else if (ciclo === "B") {
-            blocks = [...blocks, ...templates.cicloB];
-        }
-
-        scheduleState.dailyBlocks = blocks;
+        // Combine base routine with the specific cycle
+        let schoolBlocks = (ciclo === "A") ? templates.cicloA : templates.cicloB;
+        scheduleState.dailyBlocks = [...templates.base, ...schoolBlocks];
     }
 };
 
     /**
  * SECTION: THE PAINTER (UI Rendering)
  * Only responsible for putting things on the screen.
- */
+ */ 
 const UIRenderer = {
     render: () => {
         const container = document.getElementById('dashboard');
