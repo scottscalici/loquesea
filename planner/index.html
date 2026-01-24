@@ -223,58 +223,71 @@ async function syncCozi() {
         const res = await fetch(PROXY + encodeURIComponent(ScheduleManager.coziUrl));
         const raw = await res.text();
         const events = [];
-        // Clean up formatting and split into individual events
+        // Clean up line breaks and split by event
         const blocks = raw.replace(/\r\n /g, '').split("BEGIN:VEVENT");
+
+        const viewDateStr = ScheduleManager.selectedDate; // The date you are looking at
+        const viewDateObj = new Date(viewDateStr + "T00:00:00");
 
         blocks.forEach(block => {
             if (!block.includes("SUMMARY")) return;
+            
             const summary = block.match(/SUMMARY:(.*)/)?.[1]?.trim().replace(/\\,/g, ',') || "Untitled";
             const dtStartLine = block.match(/DTSTART[^:]*:(.*)/)?.[0];
+            const dtEndLine = block.match(/DTEND[^:]*:(.*)/)?.[1]; // For multi-day spans
             const rrule = block.match(/RRULE:(.*)/)?.[1] || "";
             const startInfo = TimeEngine.parseIcsLine(dtStartLine);
 
             if (startInfo) {
-                const eventDatePart = startInfo.dateStr; // e.g., "2025-01-16"
-                const selectedDatePart = ScheduleManager.selectedDate; // e.g., "2026-01-24"
+                const eventStartStr = startInfo.dateStr;
+                const eventStartObj = new Date(eventStartStr + "T00:00:00");
 
-                // 1. Handle YEARLY (Birthdays)
-                if (rrule.includes("FREQ=YEARLY")) {
-                    // Match MM-DD only, but only if the person was born on or before this year
-                    if (eventDatePart.slice(5) === selectedDatePart.slice(5) && eventDatePart.split('-')[0] <= selectedDatePart.split('-')[0]) {
-                        events.push({ ...startInfo, summary, dateStr: selectedDatePart });
-                    }
-                } 
-                // 2. Handle DAILY/WEEKLY (Recurring)
-                else if (rrule.includes("FREQ=DAILY") || rrule.includes("FREQ=WEEKLY")) {
-                    const untilMatch = rrule.match(/UNTIL=(\d{8})/);
-                    let startObj = new Date(eventDatePart + "T12:00:00");
-                    let viewObj = new Date(selectedDatePart + "T12:00:00");
-                    
-                    if (startObj <= viewObj) {
-                        let endLimit = untilMatch ? 
-                            new Date(`${untilMatch[1].substring(0,4)}-${untilMatch[1].substring(4,6)}-${untilMatch[1].substring(6,8)}T23:59:59`) : 
-                            new Date("2099-12-31"); 
+                // 1. RECURRING EVENTS (Daily/Weekly/Yearly)
+                if (rrule !== "") {
+                    // Birthdays: Match month/day regardless of birth year
+                    if (rrule.includes("FREQ=YEARLY")) {
+                        if (eventStartStr.slice(5) === viewDateStr.slice(5)) {
+                            events.push({ ...startInfo, summary, dateStr: viewDateStr });
+                        }
+                    } 
+                    // Daily/Weekly: Check if start <= now and (no end OR until >= now)
+                    else {
+                        const untilMatch = rrule.match(/UNTIL=(\d{8})/);
+                        const untilDate = untilMatch ? new Date(`${untilMatch[1].substring(0,4)}-${untilMatch[1].substring(4,6)}-${untilMatch[1].substring(6,8)}T23:59:59`) : new Date("2099-12-31");
 
-                        if (viewObj <= endLimit) {
-                            const daysDiff = Math.floor((viewObj - startObj) / (1000 * 60 * 60 * 24));
-                            if (rrule.includes("FREQ=DAILY") || (rrule.includes("FREQ=WEEKLY") && daysDiff % 7 === 0)) {
-                                events.push({ ...startInfo, summary, dateStr: selectedDatePart });
+                        if (viewDateObj >= eventStartObj && viewDateObj <= untilDate) {
+                            const daysDiff = Math.floor((viewDateObj - eventStartObj) / (1000 * 60 * 60 * 24));
+                            const isWeeklyMatch = rrule.includes("FREQ=WEEKLY") && (daysDiff % 7 === 0);
+                            const isDailyMatch = rrule.includes("FREQ=DAILY");
+
+                            if (isDailyMatch || isWeeklyMatch) {
+                                events.push({ ...startInfo, summary, dateStr: viewDateStr });
                             }
                         }
                     }
                 } 
-                // 3. SINGLE EVENTS (The Fix)
+                // 2. SPAN EVENTS (Multi-day like "No School")
+                else if (dtEndLine) {
+                    const endInfo = TimeEngine.parseIcsLine("DTEND:" + dtEndLine);
+                    const eventEndObj = new Date(endInfo.dateStr + "T00:00:00");
+                    
+                    // If the view date falls between start and end
+                    if (viewDateObj >= eventStartObj && viewDateObj < eventEndObj) {
+                        events.push({ ...startInfo, summary, dateStr: viewDateStr, isAllDay: true });
+                    }
+                }
+                // 3. SINGLE EVENTS
                 else {
-                    // STRICTOR CHECK: The full YYYY-MM-DD must match exactly.
-                    if (eventDatePart === selectedDatePart) {
+                    if (eventStartStr === viewDateStr) {
                         events.push({ ...startInfo, summary });
                     }
                 }
             }
         });
+
         scheduleState.coziEvents = events;
         UIRenderer.render();
-    } catch (e) { console.error("Cozi Sync Error:", e); }
+    } catch (e) { console.error("Sync error", e); }
 }
 
 
