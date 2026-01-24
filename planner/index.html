@@ -86,19 +86,44 @@ const templates = {
 const PROXY = "https://corsproxy.io/?";
 
 const TimeEngine = {
+    // Converts "14:30" to 870 for brick nesting
     toMins: (t) => {
         if(!t || !t.includes(':')) return -1;
         const [h, m] = t.split(':').map(Number);
         return h * 60 + m;
     },
+
+    // Handles "DTSTART;TZID=America/Detroit:20250116T143000" 
+    // or "DTSTART;VALUE=DATE:20250120"
     parseIcsLine: (line) => {
         if(!line) return null;
-        const val = line.split(':').pop().trim();
-        const dateStr = `${val.substring(0,4)}-${val.substring(4,6)}-${val.substring(6,8)}`;
-        if (!val.includes('T')) return { dateStr, isAllDay: true };
-        return { dateStr, timeStr: `${val.substring(9,11)}:${val.substring(11,13)}`, isAllDay: false };
+        
+        // This splits by colon and takes the very last part (the date/time string)
+        const val = line.split(':').pop().trim(); 
+        
+        // Extract YYYY-MM-DD
+        const y = val.substring(0,4);
+        const m = val.substring(4,6);
+        const d = val.substring(6,8);
+        const dateStr = `${y}-${m}-${d}`;
+
+        // If there's no "T", it's an All-Day event (like "No School")
+        if (!val.includes('T')) {
+            return { dateStr, isAllDay: true };
+        }
+
+        // Extract HH:MM (Cozi uses 24hr time in the ICS)
+        const h = val.substring(9,11);
+        const min = val.substring(11,13);
+        
+        return { 
+            dateStr, 
+            timeStr: `${h}:${min}`, 
+            isAllDay: false 
+        };
     }
 };
+
 
 const ScheduleManager = {
     jsonUrl: "https://raw.githubusercontent.com/scottscalici/imagenes/refs/heads/main/planes/calendario.json",
