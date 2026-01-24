@@ -13,20 +13,14 @@
         }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
         .container { max-width: 800px; margin: auto; }
-        
         .config-bar { background: #222; padding: 15px; border-radius: 10px; margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 10px; }
         input { background: #fff; color: #000; border: 1px solid #555; padding: 10px; border-radius: 5px; flex: 1; min-width: 200px; }
         button { cursor: pointer; padding: 10px 15px; border-radius: 5px; border: none; font-weight: bold; }
         .btn-uri { background: #f1c40f; color: black; }
         .btn-sync { background: var(--brick-blue); color: white; }
-        
         .timeline { display: flex; flex-direction: column; gap: 12px; }
         .brick { background: var(--brick-blue); border-radius: 8px; padding: 20px; border-left: 12px solid rgba(0,0,0,0.3); position: relative; }
         .brick.meeting-nested { background: var(--brick-purple); }
-        
-        .ghost-brick { border: 2px dashed var(--ghost-border); border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; color: #888; }
-        .ghost-brick:hover { border-color: var(--brick-blue); color: var(--brick-blue); background: rgba(52, 152, 219, 0.05); }
-
         .nested-event { background: rgba(0,0,0,0.2); margin-top: 10px; padding: 10px; border-radius: 6px; font-size: 0.9em; border-left: 3px solid #fff; }
         .time-label { font-size: 0.8em; opacity: 0.7; display: block; }
     </style>
@@ -40,75 +34,140 @@
         <button class="btn-uri" onclick="findMyUri()">Step 1: Get URI</button>
         <button class="btn-sync" onclick="refreshDashboard()">Step 2: Sync Dashboard</button>
     </div>
-    <div class="config-bar" style="background: #333; justify-content: center;">
-    <label for="date-select">📅 View Date: </label>
-    <input type="date" id="date-select" onchange="ScheduleManager.changeDate(this.value)">
-    <button onclick="ScheduleManager.init()" style="background: #555; color: white;">Reset to Today</button>
-</div>
 
-<div id="status-header" style="text-align: center; margin-bottom: 20px;">
-    <h2 id="current-day-display">Loading Schedule...</h2>
-    <p id="day-note" style="color: #f1c40f; font-weight: bold;"></p>
-</div>
+    <div class="config-bar" style="background: #333; justify-content: center;">
+        <label for="date-select">📅 View Date: </label>
+        <input type="date" id="date-select" onchange="ScheduleManager.changeDate(this.value)">
+        <button onclick="ScheduleManager.resetToday()" style="background: #555; color: white;">Reset to Today</button>
+    </div>
+
+    <div id="status-header" style="text-align: center; margin-bottom: 20px;">
+        <h2 id="current-day-display">Loading...</h2>
+        <p id="day-note" style="color: #f1c40f; font-weight: bold;"></p>
+    </div>
 
     <div id="dashboard" class="timeline"></div>
 </div>
+
 <script>
 /**
  * 1. DATA & TEMPLATES
  */
 let scheduleState = {
-    dailyBlocks: [
-        { name: "Morning Routine", start: "05:30", end: "06:30", checklist: ["Feed Dog", "Breakfast", "Coffee", "Water", "Get Ready"] },
-        { name: "Travel", start: "06:30", end: "7:15" },
-        { name: "Admin/Prep", start: "13:00", end: "15:00" },
+    currentCycle: null,
+    note: "",
+    dailyBlocks: [],
+    meetings: []
+};
+
+const templates = {
+    base: [
+        { name: "Morning Routine", start: "05:30", end: "06:30" },
+        { name: "Travel", start: "06:30", end: "07:15" },
+        { name: "After School Admin", start: "15:00", end: "17:00" },
         { name: "PM Cleanup", start: "19:00", end: "20:30" }
     ],
-    meetings: []
+    cicloA: [
+        { name: "Block 1A", start: "08:45", end: "10:15" },
+        { name: "Block 2A", start: "10:20", end: "11:50" },
+        { name: "Block 3A", start: "12:30", end: "13:30" }
+    ],
+    cicloB: [
+        { name: "Block 1B", start: "08:45", end: "10:15" },
+        { name: "Block 2B", start: "10:20", end: "11:50" },
+        { name: "Block 3B", start: "12:30", end: "13:30" }
+    ]
 };
 
 const PROXY = "https://corsproxy.io/?";
 
 /**
- * 2. THE ENGINE (Time & Logic)
+ * 2. THE ENGINE
  */
 const TimeEngine = {
     toMins: (t) => {
+        if(!t) return 0;
         const [h, m] = t.split(':').map(Number);
         return h * 60 + m;
     }
 };
 
 /**
- * 3. THE PAINTER (UI)
+ * 3. THE MANAGER (A/B & Dates)
  */
+const ScheduleManager = {
+    jsonUrl: "https://raw.githubusercontent.com/scottscalici/imagenes/refs/heads/main/planes/calendario.json",
+    selectedDate: new Date().toISOString().split('T')[0],
+
+    init: async () => {
+        document.getElementById('date-select').value = ScheduleManager.selectedDate;
+        await ScheduleManager.loadFromGitHub();
+    },
+
+    resetToday: () => {
+        ScheduleManager.selectedDate = new Date().toISOString().split('T')[0];
+        ScheduleManager.init();
+    },
+
+    changeDate: (val) => {
+        ScheduleManager.selectedDate = val;
+        ScheduleManager.loadFromGitHub();
+    },
+
+    loadFromGitHub: async () => {
+        try {
+            const res = await fetch(ScheduleManager.jsonUrl);
+            const data = await res.json();
+            const dayInfo = data.map.find(item => item.fecha === ScheduleManager.selectedDate);
+
+            scheduleState.currentCycle = dayInfo?.ciclo || null;
+            scheduleState.note = dayInfo?.note || "";
+
+            let blocks = [...templates.base];
+            if (scheduleState.currentCycle === "A") blocks = [...blocks, ...templates.cicloA];
+            if (scheduleState.currentCycle === "B") blocks = [...blocks, ...templates.cicloB];
+            
+            scheduleState.dailyBlocks = blocks;
+            UIRenderer.render();
+        } catch (e) {
+            console.error("GitHub Fetch Failed", e);
+            scheduleState.dailyBlocks = [...templates.base];
+            UIRenderer.render();
+        }
+    }
+};
+
 /**
- * SECTION: UPDATED PAINTER
- * Prevents the "Meeting Flood"
+ * 4. THE PAINTER
  */
 const UIRenderer = {
     render: () => {
         const container = document.getElementById('dashboard');
+        const header = document.getElementById('current-day-display');
+        const note = document.getElementById('day-note');
+        
         container.innerHTML = "";
         
-        const sorted = TimeEngine.sortBlocks(scheduleState.dailyBlocks);
+        // Update Header
+        const cycleLabel = scheduleState.currentCycle ? `Cycle ${scheduleState.currentCycle}` : "No Cycle";
+        header.innerText = `${ScheduleManager.selectedDate} (${cycleLabel})`;
+        note.innerText = scheduleState.note;
+
+        // Sort and Draw
+        const sorted = [...scheduleState.dailyBlocks].sort((a, b) => TimeEngine.toMins(a.start) - TimeEngine.toMins(b.start));
 
         sorted.forEach((block) => {
             const brick = document.createElement('div');
             brick.className = 'brick';
             brick.innerHTML = `<span class="time-label">${block.start} - ${block.end}</span><strong>${block.name}</strong>`;
 
-            // Use a Set to track IDs so we don't double-post meetings
             const addedMeetings = new Set();
-
             scheduleState.meetings.forEach(m => {
                 const mTime = new Date(m.start_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
-                
-                // Only add if it's within the block time AND we haven't added this specific meeting yet
                 if (mTime >= block.start && mTime < block.end && !addedMeetings.has(m.uri)) {
                     brick.classList.add('meeting-nested');
                     brick.innerHTML += `<div class="nested-event"><strong>📅 ${m.name}</strong> at ${mTime}</div>`;
-                    addedMeetings.add(m.uri); // Mark as added
+                    addedMeetings.add(m.uri);
                 }
             });
             container.appendChild(brick);
@@ -116,19 +175,12 @@ const UIRenderer = {
     }
 };
 
-    
 /**
- * 4. THE INTEGRATIONS (API Calls)
- */
-/**
- * SECTION: UPDATED INTEGRATIONS
- * Now saves your credentials so you don't have to re-type them.
+ * 5. INTEGRATIONS
  */
 async function findMyUri() {
     const token = document.getElementById('cal-token').value.trim();
     if (!token) return alert("Paste token first!");
-    
-    // SAVE TOKEN for next time
     localStorage.setItem('saved_cal_token', token);
     
     try {
@@ -138,22 +190,12 @@ async function findMyUri() {
         });
         const data = await res.json();
         if (data.resource) {
-            const uri = data.resource.uri;
-            document.getElementById('user-uri').value = uri;
-            localStorage.setItem('saved_cal_uri', uri); // Save URI too
-            alert("URI Found & Saved!");
+            document.getElementById('user-uri').value = data.resource.uri;
+            localStorage.setItem('saved_cal_uri', data.resource.uri);
+            alert("URI Saved!");
         }
     } catch (e) { alert("Error: " + e.message); }
 }
-
-// Auto-load credentials on refresh
-window.addEventListener('DOMContentLoaded', () => {
-    const savedToken = localStorage.getItem('saved_cal_token');
-    const savedUri = localStorage.getItem('saved_cal_uri');
-    if (savedToken) document.getElementById('cal-token').value = savedToken;
-    if (savedUri) document.getElementById('user-uri').value = savedUri;
-});
-
 
 async function refreshDashboard() {
     const token = document.getElementById('cal-token').value.trim();
@@ -167,19 +209,20 @@ async function refreshDashboard() {
         });
         const data = await res.json();
         scheduleState.meetings = data.collection || [];
-        UIRenderer.render(); // Redraw with meetings
+        UIRenderer.render();
         alert("Sync Complete!");
-    } catch (e) {
-        console.error(e);
-        alert("Sync Failed, but bricks should remain.");
-    }
+    } catch (e) { alert("Sync Failed"); }
 }
 
-// BOOT UP
+// AUTO-FILL AND START
 window.onload = () => {
-    UIRenderer.render();
+    const sToken = localStorage.getItem('saved_cal_token');
+    const sUri = localStorage.getItem('saved_cal_uri');
+    if (sToken) document.getElementById('cal-token').value = sToken;
+    if (sUri) document.getElementById('user-uri').value = sUri;
+    
+    ScheduleManager.init();
 };
-
 </script>
 </body>
 </html>
