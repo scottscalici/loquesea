@@ -51,6 +51,7 @@
 </div>
 
 <script>
+
 let scheduleState = {
     currentCycle: null,
     note: "",
@@ -90,21 +91,21 @@ const TimeEngine = {
         const [h, m] = t.split(':').map(Number);
         return h * 60 + m;
     },
-    parseIcsDate: (icsStr) => {
-        if(!icsStr) return null;
-        // Strip out the label (e.g., DTSTART;VALUE=DATE:)
-        const cleanStr = icsStr.includes(':') ? icsStr.split(':').pop().trim() : icsStr.trim();
+    // Enhanced parser to handle TZID and various formats
+    parseIcsDate: (icsLine) => {
+        if(!icsLine) return null;
+        const parts = icsLine.split(':');
+        const val = parts.length > 1 ? parts[1].trim() : parts[0].trim();
         
-        const y = cleanStr.substring(0,4);
-        const m = cleanStr.substring(4,6);
-        const d = cleanStr.substring(6,8);
+        const y = val.substring(0,4);
+        const m = val.substring(4,6);
+        const d = val.substring(6,8);
         const dateStr = `${y}-${m}-${d}`;
 
-        if (!cleanStr.includes('T')) return { dateStr, isAllDay: true };
+        if (!val.includes('T')) return { dateStr, isAllDay: true };
 
-        const h = cleanStr.substring(9,11);
-        const min = cleanStr.substring(11,13);
-        
+        const h = val.substring(9,11);
+        const min = val.substring(11,13);
         return { dateStr, timeStr: `${h}:${min}`, isAllDay: false };
     }
 };
@@ -117,12 +118,10 @@ const ScheduleManager = {
     init: async () => {
         const dateInput = document.getElementById('date-select');
         if(dateInput) dateInput.value = ScheduleManager.selectedDate;
-
         const sToken = localStorage.getItem('saved_cal_token');
         const sUri = localStorage.getItem('saved_cal_uri');
         if (sToken) document.getElementById('cal-token').value = sToken;
         if (sUri) document.getElementById('user-uri').value = sUri;
-
         await ScheduleManager.loadFromGitHub();
         if (sToken && sUri) refreshDashboard();
         syncCozi();
@@ -234,8 +233,6 @@ async function syncCozi() {
     try {
         const res = await fetch(PROXY + encodeURIComponent(ScheduleManager.coziUrl));
         let text = await res.text();
-        
-        // FIX: Remove line-folding breaks
         text = text.replace(/\r\n /g, ''); 
         
         const events = [];
@@ -243,18 +240,41 @@ async function syncCozi() {
         
         for (let i = 1; i < vevents.length; i++) {
             const chunk = vevents[i];
-            const summaryMatch = chunk.match(/SUMMARY:(.*)/);
-            const dtStartMatch = chunk.match(/DTSTART[^:]*:(.*)/);
+            const summary = chunk.match(/SUMMARY:(.*)/)?.[1]?.trim().replace(/\\,/g, ',') || "Untitled";
+            const dtStartLine = chunk.match(/DTSTART[^:]*:(.*)/)?.[0];
+            const rrule = chunk.match(/RRULE:(.*)/)?.[1];
             
-            if (summaryMatch && dtStartMatch) {
-                const info = TimeEngine.parseIcsDate(dtStartMatch[1].trim());
+            if (dtStartLine) {
+                const info = TimeEngine.parseIcsDate(dtStartLine);
                 if (info) {
-                    events.push({
-                        summary: summaryMatch[1].trim().replace(/\\,/g, ','),
-                        dateStr: info.dateStr,
-                        timeStr: info.timeStr,
-                        isAllDay: info.isAllDay
-                    });
+                    // Logic for Daily Recurrence (like Tryouts/Conferences)
+                    if (rrule && rrule.includes("FREQ=DAILY")) {
+                        const untilMatch = rrule.match(/UNTIL=(\d{8})/);
+                        if (untilMatch) {
+                            let current = new Date(info.dateStr + "T12:00:00");
+                            const endYear = untilMatch[1].substring(0,4);
+                            const endMonth = untilMatch[1].substring(4,6);
+                            const endDay = untilMatch[1].substring(6,8);
+                            const endDate = new Date(`${endYear}-${endMonth}-${endDay}T23:59:59`);
+                            
+                            while (current <= endDate) {
+                                events.push({
+                                    summary: summary,
+                                    dateStr: current.toISOString().split('T')[0],
+                                    timeStr: info.timeStr,
+                                    isAllDay: info.isAllDay
+                                });
+                                current.setDate(current.getDate() + 1);
+                            }
+                        }
+                    } else {
+                        events.push({
+                            summary: summary,
+                            dateStr: info.dateStr,
+                            timeStr: info.timeStr,
+                            isAllDay: info.isAllDay
+                        });
+                    }
                 }
             }
         }
@@ -298,6 +318,7 @@ async function refreshDashboard() {
 window.onload = () => {
     ScheduleManager.init();
 };
+
 </script>
 </body>
 </html>
