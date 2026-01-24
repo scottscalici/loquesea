@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5842.79,
+    "checking_balance": 5834.8,
     "travel_savings": 0,
-    "weekly_budget_remaining": 763.1999999999999,
+    "weekly_budget_remaining": 755.2099999999999,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-01-19T05:00:00.000Z"
@@ -543,6 +543,14 @@
       "who": "Sub",
       "what": "",
       "amount": -5.82,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-01-24",
+      "vendor": "Ankored (Pigeon Forge)",
+      "who": "Grayson",
+      "what": "Age verification ",
+      "amount": -7.99,
       "category": "MANUAL"
     }
   ],
