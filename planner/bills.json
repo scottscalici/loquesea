@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5869.15,
+    "checking_balance": 5848.61,
     "travel_savings": 0,
     "weekly_budget_remaining": 763.1999999999999,
     "daily_allowance_locked": 0,
@@ -527,6 +527,14 @@
       "who": "Sub",
       "what": "",
       "amount": -13.65,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-01-24",
+      "vendor": "Amazon",
+      "who": "Sub",
+      "what": "",
+      "amount": -20.54,
       "category": "MANUAL"
     }
   ],
