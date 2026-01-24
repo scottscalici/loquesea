@@ -8,7 +8,7 @@
             --bg: #121212;
             --brick-blue: #3498db;
             --brick-purple: #9b59b6;
-            --ghost-border: #444;
+            --brick-green: #27ae60;
             --text: #ffffff;
         }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
@@ -23,6 +23,7 @@
         .brick.meeting-nested { background: var(--brick-purple); }
         .nested-event { background: rgba(0,0,0,0.2); margin-top: 10px; padding: 10px; border-radius: 6px; font-size: 0.9em; border-left: 3px solid #fff; }
         .time-label { font-size: 0.8em; opacity: 0.7; display: block; }
+        .all-day-tag { background: var(--brick-green); padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 0.85em; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
@@ -42,7 +43,7 @@
     </div>
 
     <div id="status-header" style="text-align: center; margin-bottom: 20px;">
-        <h2 id="current-day-display">Loading...</h2>
+        <h2 id="current-day-display">Initialing...</h2>
         <p id="day-note" style="color: #f1c40f; font-weight: bold;"></p>
     </div>
 
@@ -50,10 +51,6 @@
 </div>
 
 <script>
-    
-/**
- * 1. DATA & TEMPLATES
- */
 let scheduleState = {
     currentCycle: null,
     note: "",
@@ -92,30 +89,26 @@ const templates = {
 
 const PROXY = "https://corsproxy.io/?";
 
-/**
- * 2. THE ENGINE (Improved for All-Day & Timezones)
- */
 const TimeEngine = {
     toMins: (t) => {
-        if(!t || !t.includes(':')) return -1; // -1 for All-Day events
+        if(!t || !t.includes(':')) return -1;
         const [h, m] = t.split(':').map(Number);
         return h * 60 + m;
     },
     parseIcsDate: (icsStr) => {
         if(!icsStr) return null;
-        // Handle All-Day (YYYYMMDD) vs Time (YYYYMMDDTHHMMSSZ)
-        const isAllDay = !icsStr.includes('T');
-        const y = icsStr.substring(0,4);
-        const m = parseInt(icsStr.substring(4,6)) - 1;
-        const d = icsStr.substring(6,8);
+        const cleanStr = icsStr.split(':')[1] || icsStr;
+        const isAllDay = !cleanStr.includes('T');
+        const y = cleanStr.substring(0,4);
+        const m = parseInt(cleanStr.substring(4,6)) - 1;
+        const d = cleanStr.substring(6,8);
         
         if (isAllDay) {
-            return { dateStr: `${y}-${icsStr.substring(4,6)}-${d}`, isAllDay: true };
+            return { dateStr: `${y}-${cleanStr.substring(4,6)}-${d}`, isAllDay: true };
         }
 
-        const h = icsStr.substring(9,11);
-        const min = icsStr.substring(11,13);
-        // Create local date object
+        const h = cleanStr.substring(9,11);
+        const min = cleanStr.substring(11,13);
         const dateObj = new Date(Date.UTC(y, m, d, h, min));
         return {
             dateStr: dateObj.toISOString().split('T')[0],
@@ -125,32 +118,21 @@ const TimeEngine = {
     }
 };
 
-    
-/**
- * 3. THE MANAGER
- */
 const ScheduleManager = {
     jsonUrl: "https://raw.githubusercontent.com/scottscalici/imagenes/refs/heads/main/planes/calendario.json",
     coziUrl: "https://rest.cozi.com/api/ext/1103/f9f7020d-05c9-4720-b813-2155b4485be7/icalendar/feed/feed.ics",
     selectedDate: new Date().toISOString().split('T')[0],
 
     init: async () => {
-        const dateInput = document.getElementById('date-select');
-        if(dateInput) dateInput.value = ScheduleManager.selectedDate;
+        document.getElementById('date-select').value = ScheduleManager.selectedDate;
         await ScheduleManager.loadFromGitHub();
         
-        // Auto-run syncs if token exists
-        if(localStorage.getItem('saved_cal_token')) {
-            refreshDashboard();
-            syncCozi();
-        }
-    },
+        const sToken = localStorage.getItem('saved_cal_token');
+        const sUri = localStorage.getItem('saved_cal_uri');
+        if (sToken) document.getElementById('cal-token').value = sToken;
+        if (sUri) document.getElementById('user-uri').value = sUri;
 
-    resetToday: () => {
-        ScheduleManager.selectedDate = new Date().toISOString().split('T')[0];
-        document.getElementById('date-select').value = ScheduleManager.selectedDate;
-        ScheduleManager.loadFromGitHub();
-        refreshDashboard();
+        if (sToken && sUri) refreshDashboard();
         syncCozi();
     },
 
@@ -159,6 +141,12 @@ const ScheduleManager = {
         ScheduleManager.loadFromGitHub();
         refreshDashboard();
         syncCozi();
+    },
+
+    resetToday: () => {
+        ScheduleManager.selectedDate = new Date().toISOString().split('T')[0];
+        document.getElementById('date-select').value = ScheduleManager.selectedDate;
+        ScheduleManager.changeDate(ScheduleManager.selectedDate);
     },
 
     loadFromGitHub: async () => {
@@ -180,36 +168,35 @@ const ScheduleManager = {
     }
 };
 
-/**
- * 4. THE PAINTER (With All-Day "Status Bar")
- */
 const UIRenderer = {
     render: () => {
         const container = document.getElementById('dashboard');
+        const head = document.getElementById('current-day-display');
+        const note = document.getElementById('day-note');
         if(!container) return;
         container.innerHTML = "";
 
-        // NEW: Create an "All-Day" section at the top
-        const allDayContainer = document.createElement('div');
-        allDayContainer.className = 'all-day-zone';
-        allDayContainer.style = "margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px;";
-        container.appendChild(allDayContainer);
+        const cycleText = scheduleState.currentCycle ? `(Cycle ${scheduleState.currentCycle})` : "";
+        head.innerText = `View: ${ScheduleManager.selectedDate} ${cycleText}`;
+        note.innerText = scheduleState.note;
 
-        // Filter for All-Day Cozi events
+        // All Day Section
+        const allDayZone = document.createElement('div');
+        allDayZone.style = "display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;";
+        container.appendChild(allDayZone);
+
         scheduleState.coziEvents.forEach(e => {
             if (e.dateStr === ScheduleManager.selectedDate && e.isAllDay) {
                 const tag = document.createElement('div');
-                tag.style = "background: #27ae60; padding: 10px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9em;";
+                tag.className = 'all-day-tag';
                 tag.innerText = `🌟 ${e.summary}`;
-                allDayContainer.appendChild(tag);
+                allDayZone.appendChild(tag);
             }
         });
 
         const sorted = [...scheduleState.dailyBlocks].sort((a, b) => 
             TimeEngine.toMins(a.start) - TimeEngine.toMins(b.start)
         );
-
-        const globalUsedUris = new Set();
 
         sorted.forEach((block) => {
             const brick = document.createElement('div');
@@ -239,7 +226,7 @@ const UIRenderer = {
                 }
             });
 
-            // Nest Cozi (Timed events only)
+            // Nest Cozi
             scheduleState.coziEvents.forEach(e => {
                 if (e.dateStr === ScheduleManager.selectedDate && !e.isAllDay) {
                     const eMins = TimeEngine.toMins(e.timeStr);
@@ -256,18 +243,12 @@ const UIRenderer = {
     }
 };
 
-    
-/**
- * 5. INTEGRATIONS (Calendly)
- */
 async function findMyUri() {
     const token = document.getElementById('cal-token').value.trim();
     if (!token) return alert("Paste token first!");
     localStorage.setItem('saved_cal_token', token);
-    
     try {
-        const target = "https://api.calendly.com/users/me";
-        const res = await fetch(PROXY + encodeURIComponent(target), {
+        const res = await fetch(PROXY + encodeURIComponent("https://api.calendly.com/users/me"), {
             headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
         });
         const data = await res.json();
@@ -283,35 +264,26 @@ async function refreshDashboard() {
     const token = document.getElementById('cal-token').value.trim();
     const uri = document.getElementById('user-uri').value.trim();
     if (!token || !uri) return;
-
     try {
-        const startTime = `${ScheduleManager.selectedDate}T00:00:00Z`;
-        const endTime = `${ScheduleManager.selectedDate}T23:59:59Z`;
-        const target = `https://api.calendly.com/scheduled_events?user=${uri}&status=active&min_start_time=${startTime}&max_start_time=${endTime}`;
-        
+        const target = `https://api.calendly.com/scheduled_events?user=${uri}&status=active&min_start_time=${ScheduleManager.selectedDate}T00:00:00Z&max_start_time=${ScheduleManager.selectedDate}T23:59:59Z`;
         const res = await fetch(PROXY + encodeURIComponent(target), {
             headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
         });
         const data = await res.json();
         scheduleState.meetings = data.collection || [];
         UIRenderer.render();
-    } catch (e) { console.error("Calendly Sync Failed", e); }
+    } catch (e) { console.error(e); }
 }
 
-/**
- * 6. COZI SYNC (Updated Parser)
- */
 async function syncCozi() {
     try {
         const res = await fetch(PROXY + encodeURIComponent(ScheduleManager.coziUrl));
         const text = await res.text();
         const events = [];
         const chunks = text.split("BEGIN:VEVENT");
-        
         chunks.forEach(chunk => {
             const summaryMatch = chunk.match(/SUMMARY:(.*)/);
             const dtStartMatch = chunk.match(/DTSTART;?[^:]*:(.*)/);
-            
             if (summaryMatch && dtStartMatch) {
                 const info = TimeEngine.parseIcsDate(dtStartMatch[1].trim());
                 if (info) {
@@ -324,13 +296,15 @@ async function syncCozi() {
                 }
             }
         });
-
         scheduleState.coziEvents = events;
         UIRenderer.render();
-    } catch (e) { console.error("Cozi Sync Failed", e); }
+    } catch (e) { console.error(e); }
 }
-    
+
+// THE STARTER MOTOR
+window.onload = () => {
+    ScheduleManager.init();
+};
 </script>
-    
 </body>
 </html>
