@@ -175,6 +175,7 @@ async function syncCozi() {
     try {
         const res = await fetch(PROXY + encodeURIComponent(ScheduleManager.coziUrl));
         let text = await res.text();
+        // Remove line breaks that Cozi adds to long summaries
         text = text.replace(/\r\n /g, ''); 
         
         const events = [];
@@ -183,42 +184,53 @@ async function syncCozi() {
         for (let i = 1; i < vevents.length; i++) {
             const chunk = vevents[i];
             const summary = chunk.match(/SUMMARY:(.*)/)?.[1]?.trim().replace(/\\,/g, ',') || "Untitled";
-            const startLine = chunk.match(/DTSTART[^:]*:(.*)/)?.[0];
-            const endLine = chunk.match(/DTEND[^:]*:(.*)/)?.[0];
-            const rrule = chunk.match(/RRULE:(.*)/)?.[1];
             
-            if (startLine) {
-                const startInfo = TimeEngine.parseIcsDate(startLine);
-                const endInfo = endLine ? TimeEngine.parseIcsDate(endLine) : startInfo;
+            // This regex finds the date regardless of TZID or VALUE=DATE strings
+            const startMatch = chunk.match(/DTSTART.*:(\d{8})/);
+            const endMatch = chunk.match(/DTEND.*:(\d{8})/);
+            const rrule = chunk.match(/RRULE:(.*)/)?.[1];
 
-                // Handle Multi-day Spans (Like No School or Tournaments)
-                let current = new Date(startInfo.dateStr + "T12:00:00");
-                let lastDate = new Date(endInfo.dateStr + "T12:00:00");
+            if (startMatch) {
+                const startDateStr = `${startMatch[1].substring(0,4)}-${startMatch[1].substring(4,6)}-${startMatch[1].substring(6,8)}`;
+                const isAllDay = !chunk.includes('T');
+                let timeStr = "";
                 
-                // If it's All Day, the DTEND is non-inclusive (subtract one day)
-                if (startInfo.isAllDay && startInfo.dateStr !== endInfo.dateStr) {
-                    lastDate.setDate(lastDate.getDate() - 1);
-                }
-
-                // Handle RRULE (Recurrence)
-                if (rrule && rrule.includes("UNTIL=")) {
-                    const until = rrule.match(/UNTIL=(\d{8})/)?.[1];
-                    if (until) {
-                        lastDate = new Date(`${until.substring(0,4)}-${until.substring(4,6)}-${until.substring(6,8)}T23:59:59`);
+                if (!isAllDay) {
+                    const timeMatch = chunk.match(/DTSTART.*:(\d{8})T(\d{4})/);
+                    if (timeMatch) {
+                        timeStr = `${timeMatch[2].substring(0,2)}:${timeMatch[2].substring(2,4)}`;
                     }
                 }
 
-                // Expand event into the list for every day it occurs
+                // Determine the "Life Span" of the event
+                let firstDate = new Date(startDateStr + "T12:00:00");
+                let lastDate = new Date(startDateStr + "T12:00:00");
+
+                if (rrule && rrule.includes("UNTIL=")) {
+                    const until = rrule.match(/UNTIL=(\d{8})/)?.[1];
+                    lastDate = new Date(`${until.substring(0,4)}-${until.substring(4,6)}-${until.substring(6,8)}T23:59:59`);
+                } else if (endMatch) {
+                    const endDateStr = `${endMatch[1].substring(0,4)}-${endMatch[1].substring(4,6)}-${endMatch[1].substring(6,8)}`;
+                    lastDate = new Date(endDateStr + "T12:00:00");
+                    // All-day end dates are exclusive, so subtract one day
+                    if (isAllDay) lastDate.setDate(lastDate.getDate() - 1);
+                }
+
+                // EXPAND: If today is within the range, add it
+                let current = new Date(firstDate);
                 while (current <= lastDate) {
                     events.push({
                         summary: summary,
-                        dateStr: TimeEngine.formatDate(current),
-                        timeStr: startInfo.timeStr,
-                        isAllDay: startInfo.isAllDay
+                        dateStr: current.toISOString().split('T')[0],
+                        timeStr: timeStr,
+                        isAllDay: isAllDay
                     });
+                    
+                    // If not a recurring event and not a multi-day span, stop after one
+                    if (!rrule && (!endMatch || startMatch[1] === endMatch[1])) break;
+                    
                     current.setDate(current.getDate() + 1);
-                    // Prevent infinite loops on bad data
-                    if (events.length > 2000) break; 
+                    if (events.length > 5000) break; // Safety break
                 }
             }
         }
@@ -226,7 +238,7 @@ async function syncCozi() {
         UIRenderer.render();
     } catch (e) { console.error("Cozi Sync Error", e); }
 }
-
+    
 const ScheduleManager = {
     jsonUrl: "https://raw.githubusercontent.com/scottscalici/imagenes/refs/heads/main/planes/calendario.json",
     coziUrl: "https://rest.cozi.com/api/ext/1103/f9f7020d-05c9-4720-b813-2155b4485be7/icalendar/feed/feed.ics",
