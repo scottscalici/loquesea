@@ -222,73 +222,78 @@ async function syncCozi() {
     try {
         const res = await fetch(PROXY + encodeURIComponent(ScheduleManager.coziUrl));
         const raw = await res.text();
+        
+        // 1. "UNFOLD" THE TEXT (Crucial for Cozi)
+        // Cozi splits long lines with a newline and a space. This puts them back together.
+        const unfolded = raw.replace(/\r\n /g, '');
+        
         const events = [];
-        // Clean up line breaks and split by event
-        const blocks = raw.replace(/\r\n /g, '').split("BEGIN:VEVENT");
-
-        const viewDateStr = ScheduleManager.selectedDate; // The date you are looking at
-        const viewDateObj = new Date(viewDateStr + "T00:00:00");
+        const blocks = unfolded.split("BEGIN:VEVENT");
+        const targetDate = ScheduleManager.selectedDate.replace(/-/g, ''); // "20260124"
 
         blocks.forEach(block => {
             if (!block.includes("SUMMARY")) return;
             
             const summary = block.match(/SUMMARY:(.*)/)?.[1]?.trim().replace(/\\,/g, ',') || "Untitled";
-            const dtStartLine = block.match(/DTSTART[^:]*:(.*)/)?.[0];
-            const dtEndLine = block.match(/DTEND[^:]*:(.*)/)?.[1]; // For multi-day spans
+            const dtStartMatch = block.match(/DTSTART[^:]*:(.*)/);
             const rrule = block.match(/RRULE:(.*)/)?.[1] || "";
-            const startInfo = TimeEngine.parseIcsLine(dtStartLine);
+            
+            if (dtStartMatch) {
+                const val = dtStartMatch[1].trim();
+                const eventDate = val.substring(0, 8); // "20250116"
+                const isAllDay = !val.includes('T');
+                const timeStr = isAllDay ? "" : `${val.substring(9,11)}:${val.substring(11,13)}`;
 
-            if (startInfo) {
-                const eventStartStr = startInfo.dateStr;
-                const eventStartObj = new Date(eventStartStr + "T00:00:00");
+                let shouldShow = false;
 
-                // 1. RECURRING EVENTS (Daily/Weekly/Yearly)
-                if (rrule !== "") {
-                    // Birthdays: Match month/day regardless of birth year
-                    if (rrule.includes("FREQ=YEARLY")) {
-                        if (eventStartStr.slice(5) === viewDateStr.slice(5)) {
-                            events.push({ ...startInfo, summary, dateStr: viewDateStr });
-                        }
-                    } 
-                    // Daily/Weekly: Check if start <= now and (no end OR until >= now)
-                    else {
-                        const untilMatch = rrule.match(/UNTIL=(\d{8})/);
-                        const untilDate = untilMatch ? new Date(`${untilMatch[1].substring(0,4)}-${untilMatch[1].substring(4,6)}-${untilMatch[1].substring(6,8)}T23:59:59`) : new Date("2099-12-31");
-
-                        if (viewDateObj >= eventStartObj && viewDateObj <= untilDate) {
-                            const daysDiff = Math.floor((viewDateObj - eventStartObj) / (1000 * 60 * 60 * 24));
-                            const isWeeklyMatch = rrule.includes("FREQ=WEEKLY") && (daysDiff % 7 === 0);
-                            const isDailyMatch = rrule.includes("FREQ=DAILY");
-
-                            if (isDailyMatch || isWeeklyMatch) {
-                                events.push({ ...startInfo, summary, dateStr: viewDateStr });
+                // LOGIC 1: Exact Date Match (Single Events)
+                if (eventDate === targetDate) {
+                    shouldShow = true;
+                }
+                // LOGIC 2: Yearly Match (Birthdays/Anniversaries)
+                else if (rrule.includes("FREQ=YEARLY")) {
+                    if (eventDate.substring(4) === targetDate.substring(4)) {
+                        shouldShow = true;
+                    }
+                }
+                // LOGIC 3: Recurring (Daily/Weekly)
+                else if (rrule.includes("FREQ=DAILY") || rrule.includes("FREQ=WEEKLY")) {
+                    const untilMatch = rrule.match(/UNTIL=(\d{8})/);
+                    const untilDate = untilMatch ? untilMatch[1] : "20991231";
+                    
+                    // If the target date is between start and end
+                    if (targetDate >= eventDate && targetDate <= untilDate) {
+                        if (rrule.includes("FREQ=DAILY")) {
+                            shouldShow = true;
+                        } else {
+                            // Weekly check: compare day of week
+                            const startD = new Date(eventDate.substring(0,4), eventDate.substring(4,6)-1, eventDate.substring(6,8));
+                            const targetD = new Date(ScheduleManager.selectedDate + "T12:00:00");
+                            if (startD.getDay() === targetD.getDay()) {
+                                shouldShow = true;
                             }
                         }
                     }
-                } 
-                // 2. SPAN EVENTS (Multi-day like "No School")
-                else if (dtEndLine) {
-                    const endInfo = TimeEngine.parseIcsLine("DTEND:" + dtEndLine);
-                    const eventEndObj = new Date(endInfo.dateStr + "T00:00:00");
-                    
-                    // If the view date falls between start and end
-                    if (viewDateObj >= eventStartObj && viewDateObj < eventEndObj) {
-                        events.push({ ...startInfo, summary, dateStr: viewDateStr, isAllDay: true });
-                    }
                 }
-                // 3. SINGLE EVENTS
-                else {
-                    if (eventStartStr === viewDateStr) {
-                        events.push({ ...startInfo, summary });
-                    }
+
+                if (shouldShow) {
+                    events.push({
+                        summary,
+                        dateStr: ScheduleManager.selectedDate,
+                        timeStr,
+                        isAllDay
+                    });
                 }
             }
         });
 
         scheduleState.coziEvents = events;
         UIRenderer.render();
-    } catch (e) { console.error("Sync error", e); }
+    } catch (e) {
+        console.error("Cozi Sync Error:", e);
+    }
 }
+
 
 
 async function findMyUri() {
