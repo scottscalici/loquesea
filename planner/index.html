@@ -49,7 +49,6 @@
     <div id="dashboard" class="timeline"></div>
 </div>
 
-<script>
 /**
  * 1. DATA & TEMPLATES
  */
@@ -70,12 +69,14 @@ const templates = {
     cicloA: [
         { name: "Block 1A", start: "08:45", end: "10:15" },
         { name: "Block 2A", start: "10:20", end: "11:50" },
-        { name: "Block 3A", start: "12:30", end: "13:30" }
+        { name: "Block 3A", start: "12:30", end: "13:30" },
+        { name: "Block 4A", start: "13:35", end: "15:00" }
     ],
     cicloB: [
         { name: "Block 1B", start: "08:45", end: "10:15" },
         { name: "Block 2B", start: "10:20", end: "11:50" },
-        { name: "Block 3B", start: "12:30", end: "13:30" }
+        { name: "Block 3B", start: "12:30", end: "13:30" },
+        { name: "Block 4B", start: "13:35", end: "15:00" }
     ]
 };
 
@@ -86,7 +87,7 @@ const PROXY = "https://corsproxy.io/?";
  */
 const TimeEngine = {
     toMins: (t) => {
-        if(!t) return 0;
+        if(!t || !t.includes(':')) return 0;
         const [h, m] = t.split(':').map(Number);
         return h * 60 + m;
     }
@@ -100,7 +101,8 @@ const ScheduleManager = {
     selectedDate: new Date().toISOString().split('T')[0],
 
     init: async () => {
-        document.getElementById('date-select').value = ScheduleManager.selectedDate;
+        const dateInput = document.getElementById('date-select');
+        if(dateInput) dateInput.value = ScheduleManager.selectedDate;
         await ScheduleManager.loadFromGitHub();
     },
 
@@ -146,28 +148,39 @@ const UIRenderer = {
         const header = document.getElementById('current-day-display');
         const note = document.getElementById('day-note');
         
+        if(!container) return;
         container.innerHTML = "";
         
-        // Update Header
         const cycleLabel = scheduleState.currentCycle ? `Cycle ${scheduleState.currentCycle}` : "No Cycle";
-        header.innerText = `${ScheduleManager.selectedDate} (${cycleLabel})`;
-        note.innerText = scheduleState.note;
+        if(header) header.innerText = `Today: ${ScheduleManager.selectedDate} (${cycleLabel})`;
+        if(note) note.innerText = scheduleState.note;
 
-        // Sort and Draw
-        const sorted = [...scheduleState.dailyBlocks].sort((a, b) => TimeEngine.toMins(a.start) - TimeEngine.toMins(b.start));
+        // Sort blocks by start time
+        const sorted = [...scheduleState.dailyBlocks].sort((a, b) => 
+            TimeEngine.toMins(a.start) - TimeEngine.toMins(b.start)
+        );
+
+        // Track meetings already shown to prevent duplicates
+        const globalAddedMeetings = new Set();
 
         sorted.forEach((block) => {
             const brick = document.createElement('div');
             brick.className = 'brick';
             brick.innerHTML = `<span class="time-label">${block.start} - ${block.end}</span><strong>${block.name}</strong>`;
 
-            const addedMeetings = new Set();
             scheduleState.meetings.forEach(m => {
-                const mTime = new Date(m.start_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
-                if (mTime >= block.start && mTime < block.end && !addedMeetings.has(m.uri)) {
+                const startTime = new Date(m.start_time);
+                const mTimeStr = startTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
+                const mMins = TimeEngine.toMins(mTimeStr);
+                
+                const blockStart = TimeEngine.toMins(block.start);
+                const blockEnd = TimeEngine.toMins(block.end);
+
+                // Check if meeting falls within this block and hasn't been added elsewhere
+                if (mMins >= blockStart && mMins < blockEnd && !globalAddedMeetings.has(m.uri)) {
                     brick.classList.add('meeting-nested');
-                    brick.innerHTML += `<div class="nested-event"><strong>📅 ${m.name}</strong> at ${mTime}</div>`;
-                    addedMeetings.add(m.uri);
+                    brick.innerHTML += `<div class="nested-event"><strong>📅 ${m.name}</strong> at ${mTimeStr}</div>`;
+                    globalAddedMeetings.add(m.uri);
                 }
             });
             container.appendChild(brick);
@@ -208,13 +221,13 @@ async function refreshDashboard() {
             headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
         });
         const data = await res.json();
+        // The API returns meetings in 'collection'
         scheduleState.meetings = data.collection || [];
         UIRenderer.render();
         alert("Sync Complete!");
     } catch (e) { alert("Sync Failed"); }
 }
 
-// AUTO-FILL AND START
 window.onload = () => {
     const sToken = localStorage.getItem('saved_cal_token');
     const sUri = localStorage.getItem('saved_cal_uri');
