@@ -96,7 +96,7 @@ const TimeEngine = {
 };
 
 /**
- * 3. THE MANAGER (A/B & Dates)
+ * 3. THE MANAGER
  */
 const ScheduleManager = {
     jsonUrl: "https://raw.githubusercontent.com/scottscalici/imagenes/refs/heads/main/planes/calendario.json",
@@ -106,16 +106,21 @@ const ScheduleManager = {
         const dateInput = document.getElementById('date-select');
         if(dateInput) dateInput.value = ScheduleManager.selectedDate;
         await ScheduleManager.loadFromGitHub();
+        // Auto-sync meetings if credentials exist
+        if(localStorage.getItem('saved_cal_token')) refreshDashboard();
     },
 
     resetToday: () => {
         ScheduleManager.selectedDate = new Date().toISOString().split('T')[0];
-        ScheduleManager.init();
+        document.getElementById('date-select').value = ScheduleManager.selectedDate;
+        ScheduleManager.loadFromGitHub();
+        refreshDashboard();
     },
 
     changeDate: (val) => {
         ScheduleManager.selectedDate = val;
         ScheduleManager.loadFromGitHub();
+        refreshDashboard();
     },
 
     loadFromGitHub: async () => {
@@ -134,7 +139,6 @@ const ScheduleManager = {
             scheduleState.dailyBlocks = blocks;
             UIRenderer.render();
         } catch (e) {
-            console.error("GitHub Fetch Failed", e);
             scheduleState.dailyBlocks = [...templates.base];
             UIRenderer.render();
         }
@@ -154,15 +158,13 @@ const UIRenderer = {
         container.innerHTML = "";
         
         const cycleLabel = scheduleState.currentCycle ? `Cycle ${scheduleState.currentCycle}` : "No Cycle";
-        if(header) header.innerText = `Today: ${ScheduleManager.selectedDate} (${cycleLabel})`;
+        if(header) header.innerText = `View: ${ScheduleManager.selectedDate} (${cycleLabel})`;
         if(note) note.innerText = scheduleState.note;
 
-        // Sort blocks by start time
         const sorted = [...scheduleState.dailyBlocks].sort((a, b) => 
             TimeEngine.toMins(a.start) - TimeEngine.toMins(b.start)
         );
 
-        // Track meetings already shown to prevent duplicates
         const globalAddedMeetings = new Set();
 
         sorted.forEach((block) => {
@@ -171,18 +173,21 @@ const UIRenderer = {
             brick.innerHTML = `<span class="time-label">${block.start} - ${block.end}</span><strong>${block.name}</strong>`;
 
             scheduleState.meetings.forEach(m => {
-                const startTime = new Date(m.start_time);
-                const mTimeStr = startTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
-                const mMins = TimeEngine.toMins(mTimeStr);
+                const mDateFull = new Date(m.start_time);
+                const mDateStr = mDateFull.toISOString().split('T')[0];
+                const mTimeStr = mDateFull.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
                 
-                const blockStart = TimeEngine.toMins(block.start);
-                const blockEnd = TimeEngine.toMins(block.end);
+                // CRITICAL FIX: Only show meeting if it matches the SELECTED DATE
+                if (mDateStr === ScheduleManager.selectedDate) {
+                    const mMins = TimeEngine.toMins(mTimeStr);
+                    const blockStart = TimeEngine.toMins(block.start);
+                    const blockEnd = TimeEngine.toMins(block.end);
 
-                // Check if meeting falls within this block and hasn't been added elsewhere
-                if (mMins >= blockStart && mMins < blockEnd && !globalAddedMeetings.has(m.uri)) {
-                    brick.classList.add('meeting-nested');
-                    brick.innerHTML += `<div class="nested-event"><strong>📅 ${m.name}</strong> at ${mTimeStr}</div>`;
-                    globalAddedMeetings.add(m.uri);
+                    if (mMins >= blockStart && mMins < blockEnd && !globalAddedMeetings.has(m.uri)) {
+                        brick.classList.add('meeting-nested');
+                        brick.innerHTML += `<div class="nested-event"><strong>📅 ${m.name}</strong> at ${mTimeStr}</div>`;
+                        globalAddedMeetings.add(m.uri);
+                    }
                 }
             });
             container.appendChild(brick);
@@ -215,19 +220,22 @@ async function findMyUri() {
 async function refreshDashboard() {
     const token = document.getElementById('cal-token').value.trim();
     const uri = document.getElementById('user-uri').value.trim();
-    if (!token || !uri) return alert("Need Token and URI!");
+    if (!token || !uri) return;
 
     try {
-        const target = `https://api.calendly.com/scheduled_events?user=${uri}&status=active`;
+        // FILTER API: Only request meetings for the date currently in view
+        const startTime = `${ScheduleManager.selectedDate}T00:00:00Z`;
+        const endTime = `${ScheduleManager.selectedDate}T23:59:59Z`;
+        
+        const target = `https://api.calendly.com/scheduled_events?user=${uri}&status=active&min_start_time=${startTime}&max_start_time=${endTime}`;
+        
         const res = await fetch(PROXY + encodeURIComponent(target), {
             headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
         });
         const data = await res.json();
-        // The API returns meetings in 'collection'
         scheduleState.meetings = data.collection || [];
         UIRenderer.render();
-        alert("Sync Complete!");
-    } catch (e) { alert("Sync Failed"); }
+    } catch (e) { console.error("Sync Failed", e); }
 }
 
 window.onload = () => {
@@ -235,7 +243,6 @@ window.onload = () => {
     const sUri = localStorage.getItem('saved_cal_uri');
     if (sToken) document.getElementById('cal-token').value = sToken;
     if (sUri) document.getElementById('user-uri').value = sUri;
-    
     ScheduleManager.init();
 };
 </script>
