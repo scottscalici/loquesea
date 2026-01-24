@@ -40,6 +40,10 @@
         <button class="btn-uri" onclick="findMyUri()">Step 1: Get URI</button>
         <button class="btn-sync" onclick="refreshDashboard()">Step 2: Sync Dashboard</button>
     </div>
+<div id="status-header" style="text-align: center; margin-bottom: 20px;">
+    <h2 id="current-day-display">Loading Schedule...</h2>
+    <p id="day-note" style="color: #f1c40f; font-weight: bold;"></p>
+</div>
 
     <div id="dashboard" class="timeline"></div>
 </div>
@@ -133,7 +137,15 @@ const ScheduleManager = {
 const UIRenderer = {
     render: () => {
         const container = document.getElementById('dashboard');
+        const dayDisplay = document.getElementById('current-day-display');
+        const noteDisplay = document.getElementById('day-note');
+        
         container.innerHTML = "";
+        
+        // Update the Header
+        const cycleText = scheduleState.currentCycle ? `Cycle ${scheduleState.currentCycle}` : "Weekend / Break";
+        dayDisplay.innerText = `Today: ${new Date().toLocaleDateString()} (${cycleText})`;
+        noteDisplay.innerText = scheduleState.note;
         
         const sorted = TimeEngine.sortBlocks(scheduleState.dailyBlocks);
 
