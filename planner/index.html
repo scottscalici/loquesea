@@ -55,205 +55,80 @@
 </div>
 <script>
 /**
- * SECTION: DATA & CONFIGURATION
- * This is where we define what's inside the "A" and "B" buckets.
+ * SECTION: DATA & CONFIG
  */
 let scheduleState = {
-    currentCycle: null, 
-    note: "",           
-    dailyBlocks: [],    
+    currentCycle: null,
+    note: "",
+    dailyBlocks: [],
     meetings: []
 };
 
-// Templates: Edit these once, and they update every time that day cycles back.
-const templates = {
-    base: [
-        { name: "Morning Routine", start: "07:00", end: "08:15", checklist: ["Feed Dog", "Eat Breakfast", "Get Ready"] },
-        { name: "Travel", start: "08:15", end: "08:45" },
-        { name: "After School", start: "15:00", end: "17:00" },
-        { name: "Evening Routine", start: "18:00", end: "21:00" }
-    ],
-    cicloA: [
-        { name: "Block 1A", start: "08:45", end: "10:15" },
-        { name: "Block 2A", start: "10:20", end: "11:50" },
-        { name: "Block 3A", start: "12:30", end: "13:30" },
-        { name: "Block 4A", start: "13:35", end: "15:00" }
-    ],
-    cicloB: [
-        { name: "Block 1B", start: "08:45", end: "10:15" },
-        { name: "Block 2B", start: "10:20", end: "11:50" },
-        { name: "Block 3B", start: "12:30", end: "13:30" },
-        { name: "Block 4B", start: "13:35", end: "15:00" }
-    ]
-};
+// ... keep your 'templates' object here ...
 
 /**
- * SECTION: SCHEDULE MANAGER
- * Fetches your GitHub JSON and picks the right template.
+ * SECTION: THE FIX - Independent Init
  */
-  const ScheduleManager = {
+const ScheduleManager = {
     jsonUrl: "https://raw.githubusercontent.com/scottscalici/imagenes/refs/heads/main/planes/calendario.json",
-    selectedDate: null, // Holds the date we are currently viewing
-
+    
     init: async () => {
-        // Default to today's date if nothing is selected
-        if (!ScheduleManager.selectedDate) {
-            const now = new Date();
-            ScheduleManager.selectedDate = now.toISOString().split('T')[0];
-            document.getElementById('date-select').value = ScheduleManager.selectedDate;
-        }
-        await ScheduleManager.loadSchedule();
-    },
+        // 1. Force the UI to show the Base Bricks immediately
+        scheduleState.dailyBlocks = [...templates.base];
+        UIRenderer.render();
 
-    changeDate: async (newDate) => {
-        ScheduleManager.selectedDate = newDate;
-        await ScheduleManager.loadSchedule();
-    },
-
-    loadSchedule: async () => {
+        // 2. Try to fetch the A/B cycle from your GitHub JSON
         try {
             const response = await fetch(ScheduleManager.jsonUrl);
             const data = await response.json();
-            
-            const dayInfo = data.map.find(item => item.fecha === ScheduleManager.selectedDate);
+            const today = new Date().toISOString().split('T')[0];
+            const dayInfo = data.map.find(item => item.fecha === today);
 
-            // Reset state for the new date
-            scheduleState.currentCycle = null;
-            scheduleState.note = "";
-
-            if (dayInfo && dayInfo.ciclo) {
+            if (dayInfo) {
                 scheduleState.currentCycle = dayInfo.ciclo;
                 scheduleState.note = dayInfo.note || "";
-                ScheduleManager.buildDailySchedule(dayInfo.ciclo);
-            } else {
-                // If no school cycle (weekend/break), show base routine + any notes
-                scheduleState.note = dayInfo ? dayInfo.note : "No school scheduled";
-                scheduleState.dailyBlocks = [...templates.base];
+                
+                // Add the Cycle blocks to the base blocks
+                let cycleBlocks = (dayInfo.ciclo === "A") ? templates.cicloA : templates.cicloB;
+                scheduleState.dailyBlocks = [...templates.base, ...(cycleBlocks || [])];
             }
-            
+            // Update UI with the new A/B data
             UIRenderer.render();
         } catch (e) {
-            console.error("Error loading future date:", e);
+            console.warn("Could not load A/B cycle, staying on Base blocks.");
         }
-    },
-
-    buildDailySchedule: (ciclo) => {
-        let schoolBlocks = (ciclo === "A") ? templates.cicloA : templates.cicloB;
-        // Combine your base routine with the school blocks
-        scheduleState.dailyBlocks = [...templates.base, ...schoolBlocks];
-    }
-};
-  
-
-
-    /**
- * SECTION: THE PAINTER (UI Rendering)
- * Only responsible for putting things on the screen.
- */ 
-const UIRenderer = {
-    render: () => {
-        const container = document.getElementById('dashboard');
-        const dayDisplay = document.getElementById('current-day-display');
-        const noteDisplay = document.getElementById('day-note');
-        
-        container.innerHTML = "";
-        
-        // Update the Header
-        const cycleText = scheduleState.currentCycle ? `Cycle ${scheduleState.currentCycle}` : "Weekend / Break";
-        dayDisplay.innerText = `Today: ${new Date().toLocaleDateString()} (${cycleText})`;
-        noteDisplay.innerText = scheduleState.note;
-        
-        const sorted = TimeEngine.sortBlocks(scheduleState.dailyBlocks);
-
-        sorted.forEach((block, index) => {
-            // 1. Check for Gaps (Ghost Blocks)
-            if (index > 0) {
-                const prevEnd = sorted[index - 1].end;
-                if (TimeEngine.toMins(prevEnd) < TimeEngine.toMins(block.start)) {
-                    container.appendChild(UIRenderer.createGhost(prevEnd, block.start));
-                }
-            }
-
-            // 2. Build the Brick
-            const brick = document.createElement('div');
-            brick.className = 'brick';
-            
-            // Checkbox logic for blocks with lists
-            let checklistHtml = '';
-            if (block.checklist) {
-                checklistHtml = `<ul style="list-style:none; padding:0; margin-top:10px;">` + 
-                    block.checklist.map(item => `<li><input type="checkbox"> ${item}</li>`).join('') + 
-                    `</ul>`;
-            }
-
-            brick.innerHTML = `
-                <span class="time-label">${block.start} - ${block.end}</span>
-                <strong>${block.name}</strong>
-                ${checklistHtml}
-            `;
-
-            // 3. Nest Meetings
-            scheduleState.meetings.forEach(m => {
-                const mTime = new Date(m.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-                if (mTime >= block.start && mTime < block.end) {
-                    brick.classList.add('meeting-nested');
-                    brick.innerHTML += `<div class="nested-event"><strong>📅 ${m.name}</strong> at ${mTime}</div>`;
-                }
-            });
-
-            container.appendChild(brick);
-        });
-    },
-
-    createGhost: (start, end) => {
-        const div = document.createElement('div');
-        div.className = 'ghost-brick';
-        div.innerHTML = `+ Add Task (${start} - ${end})`;
-        div.onclick = () => {
-            const name = prompt("What's happening in this gap?");
-            if (name) {
-                scheduleState.dailyBlocks.push({ name, start, end });
-                UIRenderer.render();
-            }
-        };
-        return div;
     }
 };
 
 /**
- * SECTION: EXTERNAL INTEGRATIONS
- * Calendly, Cozy, etc.
+ * SECTION: CALENDLY SYNC (Step 1 & 2)
  */
 async function findMyUri() {
     const token = document.getElementById('cal-token').value.trim();
-    if (!token) return alert("Paste token!");
+    if (!token) return alert("Please paste the token first!");
+    
+    const PROXY = "https://corsproxy.io/?";
+    const target = "https://api.calendly.com/users/me";
+
     try {
-        const target = "https://api.calendly.com/users/me";
         const res = await fetch(PROXY + encodeURIComponent(target), {
-            headers: { 'Authorization': `Bearer ${token}` }
+            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
         });
         const data = await res.json();
-        document.getElementById('user-uri').value = data.resource.uri;
-    } catch (e) { console.error(e); }
+        if (data.resource) {
+            document.getElementById('user-uri').value = data.resource.uri;
+            alert("Success! URI Found. Now click Sync Dashboard.");
+        } else {
+            alert("Token accepted, but Calendly didn't return a User URI. Check token permissions.");
+        }
+    } catch (e) {
+        alert("Network error. The proxy might be down or the token is invalid.");
+    }
 }
 
-async function refreshDashboard() {
-    const token = document.getElementById('cal-token').value.trim();
-    const userUri = document.getElementById('user-uri').value.trim();
-    try {
-        const target = `https://api.scheduled_events?user=${userUri}&status=active`;
-        const res = await fetch(PROXY + encodeURIComponent(target), {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await res.json();
-        scheduleState.meetings = data.collection || [];
-        UIRenderer.render();
-    } catch (e) { alert("Sync failed."); }
-}
-
-// Initial Boot
-UIRenderer.render();
+// Kick off the app
 ScheduleManager.init();
+
 
 </script>
 </body>
