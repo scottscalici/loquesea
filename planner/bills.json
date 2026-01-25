@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5277.74,
+    "checking_balance": 5269.74,
     "travel_savings": 0,
-    "weekly_budget_remaining": 412.4799999999999,
+    "weekly_budget_remaining": 404.4799999999999,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-01-19T05:00:00.000Z"
@@ -605,6 +605,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -0.71,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-01-25",
+      "vendor": "House Chores LLC",
+      "who": "Scott",
+      "what": "Kinley chores",
+      "amount": -8,
       "category": "MANUAL"
     }
   ],
