@@ -33,14 +33,14 @@
       { "label": "2A Prep", "start": "08:51", "duration": 90, "template": "prep" },
       { "label": "Lunch", "start": "10:27", "duration": 30, "template": "routine" },
       { "label": "Team Sports", "start": "11:03", "duration":89, "template": "class" },
-      { "label": "Spanish IV", "start": "12:38", "duration": 91, "template": class" }
+      { "label": "Spanish IV", "start": "12:38", "duration": 91, "template": "class" }
     ],
         "B_Day": [
       { "label": "1B Prep", "start": "07:15", "duration": 90, "template": "prep" },
       { "label": "Spanish II", "start": "08:51", "duration": 90, "template": "class" },
       { "label": "Lunch", "start": "10:27", "duration": 30, "template": "routine" },
       { "label": "Team Sports", "start": "11:03", "duration":89, "template": "class" },
-      { "label": "Spanish IV", "start": "12:38", "duration": 91, "template": class" }
+      { "label": "Spanish IV", "start": "12:38", "duration": 91, "template": "class" }
     ],
     "PD_Day": [
       { "label": "PD Session", "start": "08:00", "duration": 420, "template": "work" }
