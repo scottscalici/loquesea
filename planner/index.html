@@ -48,7 +48,17 @@
     </style>
 </head>
 <body>
-
+<div class="container">
+    <div style="display: flex; gap: 10px; align-items: center; background: #222; padding: 10px; border-radius: 8px;">
+        <label for="date-picker">Navigate to:</label>
+        <input type="date" id="date-picker" style="padding: 5px; border-radius: 4px;">
+        <button onclick="changeDay(-1)">◀ Prev</button>
+        <button onclick="changeDay(1)">Next ▶</button>
+    </div>
+    <h2 id="day-header">Loading...</h2>
+    <div id="timeline"></div>
+</div>
+    
 <div class="container">
     <h2 id="day-header">Loading Schedule...</h2>
     <div id="timeline"></div>
@@ -108,11 +118,36 @@
     }
 
     // 3. Main Launch
-    async function init() {
-        const now = new Date();
-        const todayStr = now.toISOString().split('T')[0];
-        const todayMatch = todayStr.replace(/-/g, '');
-        
+    // Replace your existing init() and variables with this
+let currentSelectedDate = new Date("2026-01-24"); // Start on your specific test date
+
+function updateUI() {
+    const todayStr = currentSelectedDate.toISOString().split('T')[0];
+    const todayMatch = todayStr.replace(/-/g, '');
+    
+    // Reset Timeline
+    document.getElementById('timeline').innerHTML = '';
+    document.getElementById('date-picker').value = todayStr;
+    document.getElementById('day-header').innerText = `Schedule for ${todayStr}`;
+
+    // Re-run the Brain
+    initSchedule(todayStr, todayMatch);
+}
+
+function changeDay(offset) {
+    currentSelectedDate.setDate(currentSelectedDate.getDate() + offset);
+    updateUI();
+}
+
+// Add listener to the date picker
+document.getElementById('date-picker').addEventListener('change', (e) => {
+    currentSelectedDate = new Date(e.target.value);
+    updateUI();
+});
+
+// Run once on load
+updateUI();
+    
         document.getElementById('day-header').innerText = `Schedule for ${todayStr}`;
         document.getElementById('timeline').style.height = `${(22 - CONFIG.dayStartHour) * 60 * CONFIG.pixelsPerMinute}px`;
 
