@@ -56,6 +56,7 @@
 
 <script>
     const CONFIG = {
+        scheduleUrl: 'https://raw.githubusercontent.com/scottscalici/loquesea/main/planner/schedule.json',
         calendarUrl: 'https://raw.githubusercontent.com/scottscalici/imagenes/main/planes/calendario.json',
         coziUrl: 'https://rest.cozi.com/api/ext/1103/f9f7020d-05c9-4720-b813-2155b4485be7/icalendar/feed/feed.ics',
         proxy: 'https://corsproxy.io/?',
@@ -63,9 +64,9 @@
         dayStartHour: 5 
     };
 
-    // Use Michigan local time to avoid the "Tomorrow" bug
     let currentSelectedDate = new Date();
 
+    // --- 1. CORE RENDERING ENGINE ---
     function renderBrick(start, end, title, colorClass) {
         const timeline = document.getElementById('timeline');
         const brick = document.createElement('div');
@@ -82,59 +83,74 @@
         timeline.appendChild(brick);
     }
 
-    async function updateUI() {
-        // Format date string correctly for Swedish locale (YYYY-MM-DD)
-        const todayStr = currentSelectedDate.toLocaleDateString('sv');
-        const todayMatch = todayStr.replace(/-/g, '');
-        const daysMap = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
-        const currentDayOfWeek = daysMap[currentSelectedDate.getDay()];
-
-        const timeline = document.getElementById('timeline');
-        timeline.innerHTML = ''; // Clear old bricks
-        timeline.style.height = `${(22 - CONFIG.dayStartHour) * 60 * CONFIG.pixelsPerMinute}px`;
-        
-        document.getElementById('date-picker').value = todayStr;
-        document.getElementById('day-header').innerText = `Schedule for ${todayStr}`;
-
+    // --- 2. SCHOOL CYCLE MODULE (Step 4) ---
+    async function syncSchoolCycle(todayStr) {
         try {
-            // 1. Fetch Cycle A/B
-            const calRes = await fetch(CONFIG.calendarUrl);
-            const calData = await calRes.json();
-            const cycle = calData.map?.find(d => d.fecha === todayStr)?.ciclo || "A";
+            const res = await fetch(CONFIG.calendarUrl);
+            const data = await res.json();
+            // Find the cycle for today or default to "A"
+            const cycle = data.map?.find(d => d.fecha === todayStr)?.ciclo || "A";
             
-            // 2. Base Bricks (Purple/Blue)
+            // Hardcoded Foundation Bricks
             renderBrick("05:30", "06:30", "Morning Routine", "purple");
             renderBrick("09:00", "12:00", `Work Block (Cycle ${cycle})`, "blue");
+        } catch (e) { console.error("School Cycle Error", e); }
+    }
 
-            // 3. Fetch Cozi (Orange)
-            const coziRes = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
-            const coziText = (await coziRes.text()).replace(/\r\n /g, '');
-            const vevents = coziText.split("BEGIN:VEVENT");
+    // --- 3. COZI MODULE (Step 5) ---
+    async function syncCozi(todayMatch, currentDayOfWeek) {
+        try {
+            const res = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
+            const text = (await res.text()).replace(/\r\n /g, '');
+            const vevents = text.split("BEGIN:VEVENT");
             let takenTimes = new Set();
 
             vevents.forEach(block => {
-                const rrule = block.match(/RRULE:(.*)/)?.[1];
-                const dayMatch = rrule ? rrule.includes(`BYDAY=${currentDayOfWeek}`) : false;
-                const isTodayMatch = block.includes(todayMatch);
+                const summary = block.match(/SUMMARY:(.*)/)?.[1]?.trim() || "Event";
+                const rrule = block.match(/RRULE:(.*)/)?.[1] || "";
                 
-                let showToday = isTodayMatch || (rrule && dayMatch);
-                if (block.includes(`EXDATE:${todayMatch}`)) showToday = false;
+                // Logic: Match exact date OR match the Day of Week (e.g. BYDAY=SA)
+                const isTodayMatch = block.includes(todayMatch);
+                const isDayMatch = rrule.includes(`BYDAY=${currentDayOfWeek}`);
+                const isDeleted = block.includes(`EXDATE:${todayMatch}`);
 
-                if (showToday) {
+                if ((isTodayMatch || isDayMatch) && !isDeleted) {
                     const sMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
                     if (sMatch) {
                         const sTime = `${sMatch[1]}:${sMatch[2]}`;
                         if (!takenTimes.has(sTime)) {
-                            renderBrick(sTime, addMinutes(sTime, 90), `🏠 ${block.match(/SUMMARY:(.*)/)?.[1]?.trim()}`, "orange");
+                            renderBrick(sTime, addMinutes(sTime, 90), `🏠 ${summary}`, "orange");
                             takenTimes.add(sTime);
                         }
                     }
                 }
             });
-        } catch (e) { console.error("Update Error:", e); }
+        } catch (e) { console.error("Cozi Sync Error", e); }
+    }
+
+    // --- 4. THE CONDUCTOR ---
+    async function updateUI() {
+        const todayStr = currentSelectedDate.toLocaleDateString('sv'); // Local YYYY-MM-DD
+        const todayMatch = todayStr.replace(/-/g, '');
+        const daysMap = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+        const currentDayOfWeek = daysMap[currentSelectedDate.getDay()];
+
+        // Reset Timeline
+        const timeline = document.getElementById('timeline');
+        timeline.innerHTML = '';
+        timeline.style.height = `${(22 - CONFIG.dayStartHour) * 60 * CONFIG.pixelsPerMinute}px`;
+        
+        document.getElementById('date-picker').value = todayStr;
+        document.getElementById('day-header').innerText = `Schedule for ${todayStr} (${currentDayOfWeek})`;
+
+        // Run Modules
+        await syncSchoolCycle(todayStr);
+        await syncCozi(todayMatch, currentDayOfWeek);
+        
         renderRedLine();
     }
 
+    // --- HELPERS ---
     function changeDay(offset) {
         currentSelectedDate.setDate(currentSelectedDate.getDate() + offset);
         updateUI();
@@ -145,21 +161,20 @@
         updateUI();
     }
 
+    function addMinutes(t, m) {
+        const [h, min] = t.split(':').map(Number);
+        const d = new Date(); d.setHours(h, min + m);
+        return d.toTimeString().slice(0, 5);
+    }
+
     function renderRedLine() {
         const now = new Date();
         if (now.toLocaleDateString('sv') !== currentSelectedDate.toLocaleDateString('sv')) return;
-        
         const elapsed = (now.getHours() - CONFIG.dayStartHour) * 60 + now.getMinutes();
         let marker = document.getElementById('time-marker') || document.createElement('div');
         marker.id = 'time-marker';
         document.getElementById('timeline').appendChild(marker);
         marker.style.top = `${elapsed * CONFIG.pixelsPerMinute}px`;
-    }
-
-    function addMinutes(t, m) {
-        const [h, min] = t.split(':').map(Number);
-        const d = new Date(); d.setHours(h, min + m);
-        return d.toTimeString().slice(0, 5);
     }
 
     document.getElementById('date-picker').addEventListener('change', (e) => {
