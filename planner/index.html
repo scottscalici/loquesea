@@ -185,6 +185,21 @@ function getEndTime(block) {
 
     return null;
 }
+function occursWithinDateRange(startDate, endDate, today) {
+    // endDate in ICS is exclusive for all-day events
+    return today >= startDate && today < endDate;
+}
+function getDateRange(block) {
+    const startMatch = block.match(/DTSTART.*:(\d{8})/);
+    const endMatch = block.match(/DTEND.*:(\d{8})/);
+
+    if (!startMatch) return null;
+
+    return {
+        start: startMatch[1],
+        end: endMatch ? endMatch[1] : startMatch[1]
+    };
+}
 
         function isExcluded(block) {
             return [...block.matchAll(/EXDATE[^:]*:(\d{8})/g)]
@@ -231,46 +246,40 @@ function getEndTime(block) {
             if (!summaryMatch) return;
             const summary = summaryMatch[1].trim();
 
-            if (!occursToday(block)) return;
+            // Determine date span
+const range = getDateRange(block);
+if (!range) return;
 
-            // Timed vs all-day
-            const timeMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
-
-            if (timeMatch) {
-                const sTime = `${timeMatch[1]}:${timeMatch[2]}`;
-                const end = getEndTime(block);
-
-if (typeof end === "string") {
-    // DTEND-based
-    renderBrick(
-        sTime,
-        end,
-        `🏠 ${summary}`,
-        "orange"
-    );
-} else if (end && typeof end === "object") {
-    // DURATION-based
-    const totalMins = end.hours * 60 + end.mins;
-    renderBrick(
-        sTime,
-        addMinutes(sTime, totalMins),
-        `🏠 ${summary}`,
-        "orange"
-    );
-} else {
-    // Final fallback (only if calendar data is bad)
-    renderBrick(
-        sTime,
-        addMinutes(sTime, 60),
-        `🏠 ${summary}`,
-        "orange"
-    );
+// MULTI-DAY EVENT → banner on every day
+if (range.start !== range.end &&
+    occursWithinDateRange(range.start, range.end, todayMatch)) {
+    renderAllDayBrick(`🏠 ${summary}`);
+    return;
 }
 
-                
-            } else {
-                renderAllDayBrick(`🏠 ${summary}`);
-            }
+// SINGLE-DAY all-day event
+const timeMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
+if (!timeMatch && range.start === todayMatch) {
+    renderAllDayBrick(`🏠 ${summary}`);
+    return;
+}
+
+// NORMAL timed event (only if it actually occurs today)
+if (!occursToday(block)) return;
+
+// Timed rendering
+const sTime = `${timeMatch[1]}:${timeMatch[2]}`;
+const end = getEndTime(block);
+
+if (typeof end === "string") {
+    renderBrick(sTime, end, `🏠 ${summary}`, "orange");
+} else if (end && typeof end === "object") {
+    const mins = end.hours * 60 + end.mins;
+    renderBrick(sTime, addMinutes(sTime, mins), `🏠 ${summary}`, "orange");
+} else {
+    renderBrick(sTime, addMinutes(sTime, 60), `🏠 ${summary}`, "orange");
+}
+
         });
 
     } catch (e) {
