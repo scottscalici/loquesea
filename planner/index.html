@@ -226,42 +226,37 @@ async function buildMyDay() {
             renderBrick(brick.start, end, brick.label, temp.color, []);
         });
 
-        // --- STEP 5: COZI BRICKS (The New 2026 Brain) ---
-        const vevents = coziText.replace(/\r\n /g, '').split("BEGIN:VEVENT");
-        let takenTimes = new Set(); 
+// --- STEP 5: COZI BRICKS (The Day-of-Week Filter) ---
+const daysMap = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+const currentDayOfWeek = daysMap[currentSelectedDate.getDay()]; // e.g., "SA"
 
-        vevents.forEach(block => {
-            const summary = block.match(/SUMMARY:(.*)/)?.[1]?.trim() || "Event";
-            const startLine = block.match(/DTSTART[^:]*:(.*)/)?.[1];
-            const rrule = block.match(/RRULE:(.*)/)?.[1];
-            
-            if (startLine) {
-                const eventDate = startLine.substring(0, 8); 
-                const isTodayMatch = block.includes(todayMatch);
-                const isRecurring = !!rrule;
-                
-                let showToday = isTodayMatch;
-                if (isRecurring && eventDate < todayMatch) {
-                    const untilMatch = rrule.match(/UNTIL=(\d{8})/);
-                    if (!untilMatch || untilMatch[1] >= todayMatch) showToday = true;
-                }
+vevents.forEach(block => {
+    const summary = block.match(/SUMMARY:(.*)/)?.[1]?.trim() || "Event";
+    const rrule = block.match(/RRULE:(.*)/)?.[1];
+    const isTodayMatch = block.includes(todayMatch);
+    
+    // Check if the recurrence rule actually includes TODAY's day of the week
+    const dayMatch = rrule ? rrule.includes(`BYDAY=${currentDayOfWeek}`) : false;
+    
+    // THE LOGIC: Show if it's explicitly for today OR if it's a recurrence that lands on this specific day
+    let showToday = isTodayMatch || (rrule && dayMatch);
 
-                // Exception check for deleted practices
-                if (block.includes(`EXDATE:${todayMatch}`)) showToday = false;
+    // Exception check: If you deleted it in Cozi, don't show it!
+    if (block.includes(`EXDATE:${todayMatch}`)) showToday = false;
 
-                if (showToday) {
-                    const sMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
-                    if (sMatch) {
-                        const sTime = `${sMatch[1]}:${sMatch[2]}`;
-                        if (!takenTimes.has(sTime)) {
-                            renderBrick(sTime, addMinutes(sTime, 90), `🏠 ${summary}`, "orange", []);
-                            takenTimes.add(sTime);
-                        }
-                    }
-                }
+    if (showToday) {
+        const sMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
+        if (sMatch) {
+            const sTime = `${sMatch[1]}:${sMatch[2]}`;
+            if (!takenTimes.has(sTime)) {
+                // Use a default 90-min duration for sports if DTEND is missing
+                renderBrick(sTime, addMinutes(sTime, 90), `🏠 ${summary}`, "orange", []);
+                takenTimes.add(sTime);
             }
-        });
-
+        }
+    }
+});
+        
         renderCurrentTimeLine();
 
     } catch (error) {
