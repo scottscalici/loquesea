@@ -13,7 +13,8 @@
         }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
         .container { max-width: 800px; margin: auto; }
-        #timeline { position: relative; width: 100%; border-left: 2px solid #333; margin-top: 20px; }
+        .nav-bar { display: flex; gap: 10px; align-items: center; background: #222; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        #timeline { position: relative; width: 100%; border-left: 2px solid #333; }
         
         .brick { 
             position: absolute; 
@@ -24,6 +25,7 @@
             border-left: 8px solid rgba(0,0,0,0.3);
             box-sizing: border-box;
             font-size: 0.9em;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
         .blue { background: var(--brick-blue); }
         .purple { background: var(--brick-purple); }
@@ -48,18 +50,15 @@
     </style>
 </head>
 <body>
+
 <div class="container">
-    <div style="display: flex; gap: 10px; align-items: center; background: #222; padding: 10px; border-radius: 8px;">
-        <label for="date-picker">Navigate to:</label>
-        <input type="date" id="date-picker" style="padding: 5px; border-radius: 4px;">
+    <div class="nav-bar">
+        <label for="date-picker">Navigate:</label>
+        <input type="date" id="date-picker">
         <button onclick="changeDay(-1)">◀ Prev</button>
         <button onclick="changeDay(1)">Next ▶</button>
+        <button onclick="goToToday()">Today</button>
     </div>
-    <h2 id="day-header">Loading...</h2>
-    <div id="timeline"></div>
-</div>
-    
-<div class="container">
     <h2 id="day-header">Loading Schedule...</h2>
     <div id="timeline"></div>
 </div>
@@ -73,7 +72,9 @@
         dayStartHour: 5 
     };
 
-    // 1. Version 1.6 Math: Position bricks exactly on the clock
+    let currentSelectedDate = new Date("2026-01-24T12:00:00");
+
+    // 1. Position bricks exactly on the clock
     function renderBrick(start, end, title, colorClass) {
         const timeline = document.getElementById('timeline');
         const brick = document.createElement('div');
@@ -92,8 +93,8 @@
         timeline.appendChild(brick);
     }
 
-    // 2. The "New Brain" for Cozi: String-match 2026 and skip deleted practices
-    async function syncCozi(todayMatch, todayStr) {
+    // 2. Cozi Brain
+    async function syncCozi(todayMatch) {
         try {
             const res = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
             const text = (await res.text()).replace(/\r\n /g, '');
@@ -109,7 +110,7 @@
                     
                     if (startMatch) {
                         const sTime = `${startMatch[1]}:${startMatch[2]}`;
-                        const eTime = addMinutes(sTime, 60); // Default 1hr if not specified
+                        const eTime = addMinutes(sTime, 60); 
                         renderBrick(sTime, eTime, `🏠 ${title}`, "orange");
                     }
                 }
@@ -117,76 +118,20 @@
         } catch (e) { console.error("Cozi Error", e); }
     }
 
-    // 3. Main Launch
-    // Replace your existing init() and variables with this
-let currentSelectedDate = new Date("2026-01-24"); // Start on your specific test date
-
-function updateUI() {
-    const todayStr = currentSelectedDate.toISOString().split('T')[0];
-    const todayMatch = todayStr.replace(/-/g, '');
-    
-    // Reset Timeline
-    document.getElementById('timeline').innerHTML = '';
-    document.getElementById('date-picker').value = todayStr;
-    document.getElementById('day-header').innerText = `Schedule for ${todayStr}`;
-
-    // Re-run the Brain
-    initSchedule(todayStr, todayMatch);
-}
-
-function changeDay(offset) {
-    currentSelectedDate.setDate(currentSelectedDate.getDate() + offset);
-    updateUI();
-}
-
-// Add listener to the date picker
-document.getElementById('date-picker').addEventListener('change', (e) => {
-    currentSelectedDate = new Date(e.target.value);
-    updateUI();
-});
-
-// Run once on load
-updateUI();
-    
-        document.getElementById('day-header').innerText = `Schedule for ${todayStr}`;
-        document.getElementById('timeline').style.height = `${(22 - CONFIG.dayStartHour) * 60 * CONFIG.pixelsPerMinute}px`;
-
-        // Fetch Cycle (A/B) from GitHub
-        const calRes = await fetch(CONFIG.calendarUrl);
-        const calData = await calRes.json();
-        const cycle = calData.map.find(d => d.fecha === todayStr)?.ciclo || "A";
-
-        // Draw Foundation Bricks (Simplified for now)
-        renderBrick("05:30", "06:30", "Morning Routine", "purple");
-        renderBrick("09:00", "12:00", `Work Block (Cycle ${cycle})`, "blue");
-
-        // Sync Cozi
-        await syncCozi(todayMatch, todayStr);
+    // 3. Main Update Logic
+    async function updateUI() {
+        const todayStr = currentSelectedDate.toISOString().split('T')[0];
+        const todayMatch = todayStr.replace(/-/g, '');
         
-        // Start Red Line
-        renderRedLine();
-        setInterval(renderRedLine, 60000);
-    }
+        const timeline = document.getElementById('timeline');
+        timeline.innerHTML = '';
+        timeline.style.height = `${(22 - CONFIG.dayStartHour) * 60 * CONFIG.pixelsPerMinute}px`;
+        
+        document.getElementById('date-picker').value = todayStr;
+        document.getElementById('day-header').innerText = `Schedule for ${todayStr}`;
 
-    function renderRedLine() {
-        const now = new Date();
-        const elapsed = (now.getHours() - CONFIG.dayStartHour) * 60 + now.getMinutes();
-        let marker = document.getElementById('time-marker');
-        if (!marker) {
-            marker = document.createElement('div');
-            marker.id = 'time-marker';
-            document.getElementById('timeline').appendChild(marker);
-        }
-        marker.style.top = `${elapsed * CONFIG.pixelsPerMinute}px`;
-    }
-
-    function addMinutes(t, m) {
-        const [h, min] = t.split(':').map(Number);
-        const d = new Date(); d.setHours(h, min + m);
-        return d.toTimeString().slice(0, 5);
-    }
-
-    init();
-</script>
-</body>
-</html>
+        // Fetch School Cycle
+        try {
+            const calRes = await fetch(CONFIG.calendarUrl);
+            const calData = await calRes.json();
+            const cycle =
