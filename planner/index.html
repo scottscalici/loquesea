@@ -142,10 +142,12 @@
         } catch (e) { console.error("School Cycle Error:", e); }
     }
 
-     async function syncCozi(todayMatch, dow) {
+async function syncCozi(todayMatch, dow) {
     try {
         const res = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
-        let text = (await res.text()).replace(/\r\n /g, "");
+        let text = await res.text();
+        // Cozi often breaks lines in the middle of data; this joins them back up
+        text = text.replace(/\r\n /g, ""); 
         const vevents = text.split("BEGIN:VEVENT");
         
         vevents.forEach(block => {
@@ -153,40 +155,43 @@
             if (!summaryMatch) return;
             const summary = summaryMatch[1].trim();
 
-            const startMatch = block.match(/DTSTART[:;](?:.*T)?(\d{8})/);
+            // Find any DTSTART date in the block
+            const startMatch = block.match(/DTSTART[:;](?:.*=.*:)?(\d{8})/);
             if (!startMatch) return;
             const startDate = startMatch[1];
 
-            // 1. Is it a direct match for today?
-            const isToday = (startDate === todayMatch);
+            const isRecurring = block.includes("RRULE");
+            let shouldShow = false;
 
-            // 2. Is it a recurring event that applies today?
-            let isRecurringToday = false;
-            const rruleMatch = block.match(/RRULE:(.*)/);
-            if (rruleMatch) {
-                const rrule = rruleMatch[1];
-                // Check if it's a daily event OR if today's code (MO, TU, etc) is in the BYDAY section
-                if (rrule.includes("FREQ=DAILY") || rrule.includes(dow)) {
-                    // Only show if the recurring series has already started
-                    if (startDate <= todayMatch) {
-                        isRecurringToday = true;
-                    }
+            if (isRecurring) {
+                // If it repeats, check if today's day code (SU, MO, etc.) is in the rule
+                // AND check that the series didn't start in the future
+                if (block.includes(dow) && startDate <= todayMatch) {
+                    shouldShow = true;
+                }
+            } else {
+                // If it's a one-off, it must match today exactly
+                if (startDate === todayMatch) {
+                    shouldShow = true;
                 }
             }
 
-            if (isToday || isRecurringToday) {
-                // Try to find a time (e.g., T113000)
+            if (shouldShow) {
                 const timeMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
                 if (timeMatch) {
                     const sTime = `${timeMatch[1]}:${timeMatch[2]}`;
-                    renderBrick(sTime, addMinutes(sTime, 90), `🏠 ${summary}`, "orange");
+                    // Defaulting to 60 mins for a cleaner look
+                    renderBrick(sTime, addMinutes(sTime, 60), `🏠 ${summary}`, "orange");
                 } else {
                     renderAllDayBrick(`🏠 ${summary}`);
                 }
             }
         });
-    } catch (e) { console.error("Cozi Error:", e); }
+    } catch (e) { 
+        console.error("Cozi Fetch/Parse Error:", e); 
+    }
 }
+
 
 
 
