@@ -168,6 +168,23 @@ async function syncCozi(todayMatch, dow) {
             });
             return obj;
         }
+function getEndTime(block) {
+    // DTEND with time
+    const endMatch = block.match(/DTEND[:;](?:.*T)?(\d{2})(\d{2})/);
+    if (endMatch) {
+        return `${endMatch[1]}:${endMatch[2]}`;
+    }
+
+    // Fallback: DURATION (PT1H30M, PT45M, etc.)
+    const durMatch = block.match(/DURATION:PT(?:(\d+)H)?(?:(\d+)M)?/);
+    if (durMatch) {
+        const hours = parseInt(durMatch[1] || 0, 10);
+        const mins = parseInt(durMatch[2] || 0, 10);
+        return { hours, mins };
+    }
+
+    return null;
+}
 
         function isExcluded(block) {
             return [...block.matchAll(/EXDATE[^:]*:(\d{8})/g)]
@@ -221,12 +238,36 @@ async function syncCozi(todayMatch, dow) {
 
             if (timeMatch) {
                 const sTime = `${timeMatch[1]}:${timeMatch[2]}`;
-                renderBrick(
-                    sTime,
-                    addMinutes(sTime, 60),
-                    `🏠 ${summary}`,
-                    "orange"
-                );
+                const end = getEndTime(block);
+
+if (typeof end === "string") {
+    // DTEND-based
+    renderBrick(
+        sTime,
+        end,
+        `🏠 ${summary}`,
+        "orange"
+    );
+} else if (end && typeof end === "object") {
+    // DURATION-based
+    const totalMins = end.hours * 60 + end.mins;
+    renderBrick(
+        sTime,
+        addMinutes(sTime, totalMins),
+        `🏠 ${summary}`,
+        "orange"
+    );
+} else {
+    // Final fallback (only if calendar data is bad)
+    renderBrick(
+        sTime,
+        addMinutes(sTime, 60),
+        `🏠 ${summary}`,
+        "orange"
+    );
+}
+
+                
             } else {
                 renderAllDayBrick(`🏠 ${summary}`);
             }
