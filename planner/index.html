@@ -39,6 +39,20 @@
             top: -9px;
             font-size: 18px;
         }
+.teaching {
+    background: #e74c3c;
+    border-left: 8px solid #c0392b;
+}
+
+.prep {
+    background: #3498db;
+    border-left: 8px solid #21618c;
+}
+
+.lunch {
+    background: #000000;
+    opacity: 0.85;
+}
 
         /* Checklists & Reminders */
         .task-list { margin-top: 8px; padding-left: 0; list-style: none; font-size: 0.85em; }
@@ -75,6 +89,8 @@
         dayStartHour: 5 
     };
 
+
+    
     let currentSelectedDate = new Date();
 
     function format12Hour(timeStr) {
@@ -134,10 +150,19 @@
             const dayKey = cycle === "A" ? "A_Day" : (cycle === "B" ? "B_Day" : null);
             if (dayKey && schedule.days[dayKey]) {
                 schedule.days[dayKey].forEach(brick => {
-                    const temp = schedule.definitions.brick_templates[brick.template];
-                    const endTime = brick.end || addMinutes(brick.start, brick.duration || 60);
-                    renderBrick(brick.start, endTime, brick.label, temp?.color || "blue", brick.tasks || []);
-                });
+    const endTime = brick.end || addMinutes(brick.start, brick.duration || 60);
+
+    const roleClass =
+        TEMPLATE_ROLE_MAP[brick.template] || "teaching";
+
+    renderBrick(
+        brick.start,
+        endTime,
+        brick.label,
+        roleClass,
+        brick.tasks || []
+    );
+        });
             }
         } catch (e) { console.error("School Cycle Error:", e); }
     }
@@ -200,6 +225,13 @@ function getDateRange(block) {
         end: endMatch ? endMatch[1] : startMatch[1]
     };
 }
+
+        const TEMPLATE_ROLE_MAP = {
+    class: "teaching",
+    prep: "prep",
+    routine: "lunch",
+    work: "prep" // optional fallback
+};
 
         function isExcluded(block) {
             return [...block.matchAll(/EXDATE[^:]*:(\d{8})/g)]
