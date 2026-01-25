@@ -79,93 +79,85 @@
 </div>
 
 <script>
-       const CONFIG = {
-        scheduleUrl: 'https://raw.githubusercontent.com/scottscalici/loquesea/main/planner/schedule.json',
-        calendarUrl: 'https://raw.githubusercontent.com/scottscalici/imagenes/main/planes/calendario.json',
-        coziUrl: 'https://rest.cozi.com/api/ext/1103/f9f7020d-05c9-4720-b813-2155b4485be7/icalendar/feed/feed.ics',
-        calendlyToken: 'eyJraWQiOiIxY2UxZTEzNjE3ZGNmNzY2YjNjZWJjY2Y4ZGM1YmFmYThhNjVlNjg0MDIzZjdjMzJiZTgzNDliMjM4MDEzNWI0IiwidHlwIjoiUEFUIiwiYWxnIjoiRVMyNTYifQ.eyJpc3MiOiJodHRwczovL2F1dGguY2FsZW5kbHkuY29tIiwiaWF0IjoxNzY5MjMzNzU5LCJqdGkiOiJlODY1MTVlYS1hOGRiLTQ5YjMtYmI5Ny1lOWU5ZWIzYTI1NmQiLCJ1c2VyX3V1aWQiOiIzMGZkMzdhYS1kMGUyLTQxODYtOTVkNi04MjU2NTYxMDczMWIifQ.lF3v1MUuFxrttIsaDu5yNCWI0UTN9Z7NvQI78IPyxnR3D5scFL7iCIyormTQdu9_GHp_pnnTJ5lGPiXtGKLWtg', 
-        proxy: 'https://corsproxy.io/?',
-        pixelsPerMinute: 1.5, 
-        dayStartHour: 5 
-    };
+/* =========================
+   GLOBAL CONFIG & MAPS
+========================= */
 
+const CONFIG = {
+    scheduleUrl: 'https://raw.githubusercontent.com/scottscalici/loquesea/main/planner/schedule.json',
+    calendarUrl: 'https://raw.githubusercontent.com/scottscalici/imagenes/main/planes/calendario.json',
+    coziUrl: 'https://rest.cozi.com/api/ext/1103/f9f7020d-05c9-4720-b813-2155b4485be7/icalendar/feed/feed.ics',
+    calendlyToken: 'PASTE_IF_NEEDED',
+    proxy: 'https://corsproxy.io/?',
+    pixelsPerMinute: 1.5,
+    dayStartHour: 5
+};
 
-    
-    let currentSelectedDate = new Date();
+const TEMPLATE_ROLE_MAP = {
+    class: "teaching",
+    prep: "prep",
+    routine: "lunch",
+    work: "prep"
+};
 
-    function format12Hour(timeStr) {
-        if (!timeStr) return "";
-        let [h, m] = timeStr.split(':').map(Number);
-        const ampm = h >= 12 ? 'PM' : 'AM';
-        h = h % 12 || 12;
-        return `${h}:${m.toString().padStart(2, '0')} ${ampm}`;
-    }
+let currentSelectedDate = new Date();
 
-    function renderBrick(start, end, title, colorClass, tasks = []) {
-        const timeline = document.getElementById('timeline');
-        const brick = document.createElement('div');
-        const [hS, mS] = start.split(':').map(Number);
-        const [hE, mE] = end.split(':').map(Number);
-        const startMins = (hS - CONFIG.dayStartHour) * 60 + mS;
-        const durationMins = (hE * 60 + mE) - (hS * 60 + mS);
+/* =========================
+   TIME HELPERS
+========================= */
 
-        brick.className = `brick ${colorClass}`;
-        brick.style.top = `${startMins * CONFIG.pixelsPerMinute}px`;
-        brick.style.height = `${durationMins * CONFIG.pixelsPerMinute}px`;
+function addMinutes(t, m) {
+    const [h, min] = t.split(':').map(Number);
+    const d = new Date();
+    d.setHours(h, min + m);
+    return d.toTimeString().slice(0, 5);
+}
 
-        let html = `<strong>${format12Hour(start)} - ${format12Hour(end)}</strong><br>${title}`;
+function subtractMinutes(t, m) {
+    const [h, min] = t.split(':').map(Number);
+    const d = new Date();
+    d.setHours(h, min - m);
+    return d.toTimeString().slice(0, 5);
+}
+
+function format12Hour(timeStr) {
+    if (!timeStr) return "";
+    let [h, m] = timeStr.split(':').map(Number);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    return `${h}:${m.toString().padStart(2, '0')} ${ampm}`;
+}
+
+/* =========================
+   RENDERING
+========================= */
+
+function renderBrick(start, end, title, colorClass, tasks = []) {
+    const timeline = document.getElementById('timeline');
+    const brick = document.createElement('div');
+
+    const [hS, mS] = start.split(':').map(Number);
+    const [hE, mE] = end.split(':').map(Number);
+
+    const startMins = (hS - CONFIG.dayStartHour) * 60 + mS;
+    const durationMins = (hE * 60 + mE) - (hS * 60 + mS);
+
+    brick.className = `brick ${colorClass}`;
+    brick.style.top = `${startMins * CONFIG.pixelsPerMinute}px`;
+    brick.style.height = `${durationMins * CONFIG.pixelsPerMinute}px`;
+
+    let html = `<strong>${format12Hour(start)} – ${format12Hour(end)}</strong><br>${title}`;
+    if (tasks.length) {
         html += `<ul class="task-list">`;
-        if (tasks && tasks.length > 0) {
-            tasks.forEach(task => {
-                html += `<li class="task-item"><input type="checkbox"> <label>${task}</label></li>`;
-            });
-        }
-        html += `</ul><button class="add-reminder-btn" onclick="addManualReminder(this)">+ Reminder</button>`;
-        brick.innerHTML = html;
-        timeline.appendChild(brick);
-    }
-
-    async function syncSchoolCycle(todayStr) {
-        try {
-            const isWeekend = currentSelectedDate.getDay() === 0 || currentSelectedDate.getDay() === 6;
-            if (isWeekend) return; // Exit early ONLY for school blocks
-
-            const [calRes, schedRes] = await Promise.all([
-                fetch(CONFIG.calendarUrl),
-                fetch(CONFIG.scheduleUrl)
-            ]);
-            const calData = await calRes.json();
-            const schedule = await schedRes.json();
-            const dayInfo = calData.map?.find(d => d.fecha === todayStr);
-            const cycle = dayInfo?.ciclo; 
-
-            if (schedule.hard_stops?.school_dropoff) {
-                const dropoff = schedule.hard_stops.school_dropoff;
-                const routine = schedule.definitions.routines[dropoff.trigger_routine];
-                const wheelsUp = subtractMinutes(dropoff.time, dropoff.commute_minutes);
-                const wakeUp = subtractMinutes(wheelsUp, routine.duration);
-                renderBrick(wakeUp, wheelsUp, `🚀 ${routine.label}`, "purple", routine.tasks || []);
-            }
-
-            const dayKey = cycle === "A" ? "A_Day" : (cycle === "B" ? "B_Day" : null);
-            if (dayKey && schedule.days[dayKey]) {
-                schedule.days[dayKey].forEach(brick => {
-    const endTime = brick.end || addMinutes(brick.start, brick.duration || 60);
-
-    const roleClass =
-        TEMPLATE_ROLE_MAP[brick.template] || "teaching";
-
-    renderBrick(
-        brick.start,
-        endTime,
-        brick.label,
-        roleClass,
-        brick.tasks || []
-    );
+        tasks.forEach(t => {
+            html += `<li class="task-item"><input type="checkbox"> ${t}</li>`;
         });
-            }
-        } catch (e) { console.error("School Cycle Error:", e); }
+        html += `</ul>`;
     }
+
+    brick.innerHTML = html;
+    timeline.appendChild(brick);
+}
 
 function renderAllDayBrick(title) {
     const container = document.getElementById('all-day-container');
@@ -174,218 +166,168 @@ function renderAllDayBrick(title) {
     div.innerHTML = `<strong>All Day</strong><br>${title}`;
     container.appendChild(div);
 }
-    
+
+/* =========================
+   SCHOOL SCHEDULE
+========================= */
+
+async function syncSchoolCycle(todayStr) {
+    try {
+        const isWeekend = [0, 6].includes(currentSelectedDate.getDay());
+        if (isWeekend) return;
+
+        const [calRes, schedRes] = await Promise.all([
+            fetch(CONFIG.calendarUrl),
+            fetch(CONFIG.scheduleUrl)
+        ]);
+
+        const calData = await calRes.json();
+        const schedule = await schedRes.json();
+
+        const dayInfo = calData.map?.find(d => d.fecha === todayStr);
+        const cycle = dayInfo?.ciclo;
+
+        const dayKey = cycle === "A" ? "A_Day" : cycle === "B" ? "B_Day" : null;
+        if (!dayKey) return;
+
+        schedule.days[dayKey].forEach(b => {
+            const endTime = b.end || addMinutes(b.start, b.duration || 60);
+            const role = TEMPLATE_ROLE_MAP[b.template] || "teaching";
+            renderBrick(b.start, endTime, b.label, role, b.tasks || []);
+        });
+
+    } catch (e) {
+        console.error("School cycle error", e);
+    }
+}
+
+/* =========================
+   COZI CALENDAR
+========================= */
+
 async function syncCozi(todayMatch, dow) {
     try {
         const res = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
-        let text = await res.text();
-
-        // Unfold ICS line breaks
-        text = text.replace(/\r\n /g, "");
+        let text = (await res.text()).replace(/\r\n /g, "");
 
         const vevents = text.split("BEGIN:VEVENT");
 
-        function parseRRule(rrule) {
-            const obj = {};
-            rrule.split(";").forEach(p => {
+        function parseRRule(rr) {
+            const o = {};
+            rr.split(";").forEach(p => {
                 const [k, v] = p.split("=");
-                obj[k] = v;
+                o[k] = v;
             });
-            return obj;
-        }
-function getEndTime(block) {
-    // DTEND with time
-    const endMatch = block.match(/DTEND[:;](?:.*T)?(\d{2})(\d{2})/);
-    if (endMatch) {
-        return `${endMatch[1]}:${endMatch[2]}`;
-    }
-
-    // Fallback: DURATION (PT1H30M, PT45M, etc.)
-    const durMatch = block.match(/DURATION:PT(?:(\d+)H)?(?:(\d+)M)?/);
-    if (durMatch) {
-        const hours = parseInt(durMatch[1] || 0, 10);
-        const mins = parseInt(durMatch[2] || 0, 10);
-        return { hours, mins };
-    }
-
-    return null;
-}
-function occursWithinDateRange(startDate, endDate, today) {
-    // endDate in ICS is exclusive for all-day events
-    return today >= startDate && today < endDate;
-}
-function getDateRange(block) {
-    const startMatch = block.match(/DTSTART.*:(\d{8})/);
-    const endMatch = block.match(/DTEND.*:(\d{8})/);
-
-    if (!startMatch) return null;
-
-    return {
-        start: startMatch[1],
-        end: endMatch ? endMatch[1] : startMatch[1]
-    };
-}
-
-        const TEMPLATE_ROLE_MAP = {
-    class: "teaching",
-    prep: "prep",
-    routine: "lunch",
-    work: "prep" // optional fallback
-};
-
-        function isExcluded(block) {
-            return [...block.matchAll(/EXDATE[^:]*:(\d{8})/g)]
-                .some(m => m[1] === todayMatch);
+            return o;
         }
 
         function occursToday(block) {
-            const startDateMatch = block.match(/DTSTART.*:(\d{8})/);
-            if (!startDateMatch) return false;
-            const startDate = startDateMatch[1];
+            const startMatch = block.match(/DTSTART.*:(\d{8})/);
+            if (!startMatch) return false;
 
-            if (isExcluded(block)) return false;
-
+            const startDate = startMatch[1];
             const rruleMatch = block.match(/RRULE:(.*)/);
-            if (!rruleMatch) {
-                // one-time event
-                return startDate === todayMatch;
+
+            if (!rruleMatch) return startDate === todayMatch;
+
+            const r = parseRRule(rruleMatch[1]);
+            if (r.UNTIL && r.UNTIL.slice(0, 8) < todayMatch) return false;
+
+            if (r.FREQ === "DAILY") return todayMatch >= startDate;
+            if (r.FREQ === "WEEKLY" && r.BYDAY?.includes(dow)) return todayMatch >= startDate;
+
+            return false;
+        }
+
+        function getEnd(block, start) {
+            const dtEnd = block.match(/DTEND[:;](?:.*T)?(\d{2})(\d{2})/);
+            if (dtEnd) return `${dtEnd[1]}:${dtEnd[2]}`;
+
+            const dur = block.match(/DURATION:PT(?:(\d+)H)?(?:(\d+)M)?/);
+            if (dur) {
+                const mins = (parseInt(dur[1] || 0) * 60) + parseInt(dur[2] || 0);
+                return addMinutes(start, mins);
             }
 
-            const rrule = parseRRule(rruleMatch[1]);
-
-            // UNTIL cutoff
-            if (rrule.UNTIL && rrule.UNTIL.slice(0, 8) < todayMatch) return false;
-
-            switch (rrule.FREQ) {
-                case "DAILY":
-                    return todayMatch >= startDate;
-
-                case "WEEKLY":
-                    if (!rrule.BYDAY) return false;
-                    if (!rrule.BYDAY.split(",").includes(dow)) return false;
-                    return todayMatch >= startDate;
-
-                case "YEARLY":
-                    return todayMatch.slice(4) === startDate.slice(4);
-
-                default:
-                    return false;
-            }
+            return addMinutes(start, 60);
         }
 
         vevents.forEach(block => {
             const summaryMatch = block.match(/SUMMARY:(.*)/);
             if (!summaryMatch) return;
+
             const summary = summaryMatch[1].trim();
+            const dateRange = block.match(/DTSTART.*:(\d{8}).*DTEND.*:(\d{8})/);
 
-            // Determine date span
-const range = getDateRange(block);
-if (!range) return;
+            if (dateRange) {
+                if (todayMatch >= dateRange[1] && todayMatch < dateRange[2]) {
+                    renderAllDayBrick(`🏠 ${summary}`);
+                }
+                return;
+            }
 
-// MULTI-DAY EVENT → banner on every day
-if (range.start !== range.end &&
-    occursWithinDateRange(range.start, range.end, todayMatch)) {
-    renderAllDayBrick(`🏠 ${summary}`);
-    return;
-}
+            if (!occursToday(block)) return;
 
-// SINGLE-DAY all-day event
-const timeMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
-if (!timeMatch && range.start === todayMatch) {
-    renderAllDayBrick(`🏠 ${summary}`);
-    return;
-}
+            const timeMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
+            if (!timeMatch) {
+                renderAllDayBrick(`🏠 ${summary}`);
+                return;
+            }
 
-// NORMAL timed event (only if it actually occurs today)
-if (!occursToday(block)) return;
-
-// Timed rendering
-const sTime = `${timeMatch[1]}:${timeMatch[2]}`;
-const end = getEndTime(block);
-
-if (typeof end === "string") {
-    renderBrick(sTime, end, `🏠 ${summary}`, "orange");
-} else if (end && typeof end === "object") {
-    const mins = end.hours * 60 + end.mins;
-    renderBrick(sTime, addMinutes(sTime, mins), `🏠 ${summary}`, "orange");
-} else {
-    renderBrick(sTime, addMinutes(sTime, 60), `🏠 ${summary}`, "orange");
-}
-
+            const start = `${timeMatch[1]}:${timeMatch[2]}`;
+            const end = getEnd(block, start);
+            renderBrick(start, end, `🏠 ${summary}`, "orange");
         });
 
     } catch (e) {
-        console.error("Cozi Fetch/Parse Error:", e);
+        console.error("Cozi error", e);
     }
 }
 
+/* =========================
+   UI / NAV
+========================= */
 
+function renderRedLine() {
+    const now = new Date();
+    if (now.toDateString() !== currentSelectedDate.toDateString()) return;
 
+    const elapsed = (now.getHours() - CONFIG.dayStartHour) * 60 + now.getMinutes();
+    if (elapsed < 0) return;
 
-
-    async function syncCalendly(todayStr) {
-        if (!CONFIG.calendlyToken || CONFIG.calendlyToken.includes('PASTE')) return;
-        try {
-            const userRes = await fetch('https://api.calendly.com/users/me', { headers: { 'Authorization': `Bearer ${CONFIG.calendlyToken}` } });
-            const userData = await userRes.json();
-            const eventsRes = await fetch(`https://api.calendly.com/scheduled_events?user=${userData.resource.uri}&min_start_time=${todayStr}T00:00:00Z&max_start_time=${todayStr}T23:59:59Z`, {
-                headers: { 'Authorization': `Bearer ${CONFIG.calendlyToken}` }
-            });
-            const eventsData = await eventsRes.json();
-            eventsData.collection.forEach(event => {
-                const s = new Date(event.start_time);
-                if (s.toLocaleDateString('sv') === todayStr) {
-                    const sTime = s.toLocaleTimeString('en-GB').slice(0,5);
-                    const eTime = new Date(event.end_time).toLocaleTimeString('en-GB').slice(0,5);
-                    renderBrick(sTime, eTime, `📅 ${event.name}`, "blue-meeting");
-                }
-            });
-        } catch (e) { console.error("Calendly Error"); }
+    let line = document.getElementById('time-marker');
+    if (!line) {
+        line = document.createElement('div');
+        line.id = 'time-marker';
+        document.getElementById('timeline').appendChild(line);
     }
 
-    async function updateUI() {
-        const todayStr = currentSelectedDate.toLocaleDateString('sv');
-        const todayMatch = todayStr.replace(/-/g, '');
-        const daysMap = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
-        const currentDayOfWeek = daysMap[currentSelectedDate.getDay()];
-        
-        document.getElementById('timeline').innerHTML = '';
-        document.getElementById('all-day-container').innerHTML = '';
-        document.getElementById('date-picker').value = todayStr;
-        document.getElementById('day-header').innerText = `Schedule for ${todayStr} (${currentDayOfWeek})`;
+    line.style.top = `${elapsed * CONFIG.pixelsPerMinute}px`;
+}
 
-        // Run all three independently
-        await syncSchoolCycle(todayStr); 
-        await syncCozi(todayMatch, currentDayOfWeek);
-        await syncCalendly(todayStr);
+async function updateUI() {
+    const todayStr = currentSelectedDate.toLocaleDateString('sv');
+    const todayMatch = todayStr.replace(/-/g, '');
+    const dowMap = ['SU','MO','TU','WE','TH','FR','SA'];
+    const dow = dowMap[currentSelectedDate.getDay()];
 
-        renderRedLine();
-    }
+    document.getElementById('timeline').innerHTML = '';
+    document.getElementById('all-day-container').innerHTML = '';
+    document.getElementById('date-picker').value = todayStr;
 
-    function changeDay(offset) { currentSelectedDate.setDate(currentSelectedDate.getDate() + offset); updateUI(); }
-    function goToToday() { currentSelectedDate = new Date(); updateUI(); }
-    function addMinutes(t, m) { const [h, min] = t.split(':').map(Number); const d = new Date(); d.setHours(h, min + m); return d.toTimeString().slice(0, 5); }
-    function subtractMinutes(t, m) { const [h, min] = t.split(':').map(Number); const d = new Date(); d.setHours(h, min - m); return d.toTimeString().slice(0, 5); }
+    await syncSchoolCycle(todayStr);
+    await syncCozi(todayMatch, dow);
 
-    function renderRedLine() {
-        const now = new Date();
-        if (now.toLocaleDateString('sv') !== currentSelectedDate.toLocaleDateString('sv')) return;
-        const elapsedMins = (now.getHours() - CONFIG.dayStartHour) * 60 + now.getMinutes();
-        if (elapsedMins < 0 || now.getHours() >= 22) return;
-        let marker = document.getElementById('time-marker') || document.createElement('div');
-        marker.id = 'time-marker';
-        document.getElementById('timeline').appendChild(marker);
-        marker.style.top = `${elapsedMins * CONFIG.pixelsPerMinute}px`;
-    }
+    renderRedLine();
+}
 
-    document.getElementById('date-picker').addEventListener('change', (e) => {
-        currentSelectedDate = new Date(e.target.value + "T12:00:00");
-        updateUI();
-    });
-
+document.getElementById('date-picker').addEventListener('change', e => {
+    currentSelectedDate = new Date(e.target.value + "T12:00");
     updateUI();
-    setInterval(renderRedLine, 60000);
+});
 
+updateUI();
+setInterval(renderRedLine, 60000);
 </script>
 </body>
 </html>
