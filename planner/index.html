@@ -158,7 +158,11 @@
     }
 
     function renderRedLine() {
-        const now = new Date();
+        // 1. DATE LOGIC (Today: 2026-01-24)
+const now = new Date();
+// This replaces toISOString() to keep it in your local Michigan time
+const todayStr = now.toLocaleDateString('sv'); 
+const todayMatch = todayStr.replace(/-/g, '');
         const elapsed = (now.getHours() - CONFIG.dayStartHour) * 60 + now.getMinutes();
         const timeline = document.getElementById('timeline');
         
