@@ -99,48 +99,103 @@
 
     // --- 3. COZI MODULE (Step 5) ---
 async function syncCozi(todayMatch, currentDayOfWeek) {
-    try {
-        const res = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
-        const text = (await res.text()).replace(/\r\n /g, ''); // Fix Cozi word-breaks
-        const vevents = text.split("BEGIN:VEVENT");
-        let takenTimes = new Set();
+  try {
+    const res = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
+    const text = (await res.text()).replace(/\r\n /g, ""); // unfold ICS lines
+    const vevents = text.split("BEGIN:VEVENT");
+    let takenTimes = new Set();
 
-        vevents.forEach(block => {
-            const summary = block.match(/SUMMARY:(.*)/)?.[1]?.trim() || "Event";
-            const rrule = block.match(/RRULE:(.*)/)?.[1] || "";
-            
-            // 1. THE GHOST HUNTER: Check for expired events (UNTIL=2025...)
-            const untilMatch = rrule.match(/UNTIL=(\d{8})/);
-            if (untilMatch && untilMatch[1] < todayMatch) return; // Ignore if expired
+    // ---------- helpers ----------
 
-            // 2. FREQUENCY CHECK
-            const isDaily = rrule.includes("FREQ=DAILY");
-            const isWeeklyToday = rrule.includes(`BYDAY=${currentDayOfWeek}`);
-            
-            // 3. DATE MATCH (Check if today's date "20260124" is in this block)
-            const isToday = block.includes(`:${todayMatch}`) || 
-                            block.includes(`VALUE=DATE:${todayMatch}`);
-            
-            // 4. DELETION CHECK (EXDATE)
-            const isDeleted = block.includes(`EXDATE:${todayMatch}`) || 
-                             block.includes(`EXDATE;VALUE=DATE:${todayMatch}`);
+    function getStartDate(block) {
+      const m = block.match(/DTSTART.*:(\d{8})/);
+      return m ? m[1] : null;
+    }
 
-            // LOGIC: Show if (Today OR Recurring Pattern) AND Not Expired AND Not Deleted
-            let showToday = (isToday || isDaily || isWeeklyToday) && !isDeleted;
+    function getStartTime(block) {
+      const m = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
+      return m ? `${m[1]}:${m[2]}` : null;
+    }
 
-            if (showToday) {
-                const sMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
-                if (sMatch) {
-                    const sTime = `${sMatch[1]}:${sMatch[2]}`;
-                    const key = sTime + summary;
-                    if (!takenTimes.has(key)) {
-                        renderBrick(sTime, addMinutes(sTime, 90), `🏠 ${summary}`, "orange");
-                        takenTimes.add(key);
-                    }
-                }
-            }
-        });
-    } catch (e) { console.error("Cozi Sync Error", e); }
+    function parseRRule(rrule) {
+      const obj = {};
+      rrule.split(";").forEach(p => {
+        const [k, v] = p.split("=");
+        obj[k] = v;
+      });
+      return obj;
+    }
+
+    function isExcluded(block, today) {
+      const matches = [...block.matchAll(/EXDATE[^:]*:(\d{8})/g)];
+      return matches.some(m => m[1] === today);
+    }
+
+    function occursToday(block, today, dow) {
+      const startDate = getStartDate(block);
+      if (!startDate) return false;
+
+      // EXDATE always wins
+      if (isExcluded(block, today)) return false;
+
+      const rruleMatch = block.match(/RRULE:(.*)/);
+      if (!rruleMatch) {
+        // one-time event
+        return startDate === today;
+      }
+
+      const rrule = parseRRule(rruleMatch[1]);
+
+      // UNTIL cutoff
+      if (rrule.UNTIL && rrule.UNTIL.slice(0, 8) < today) return false;
+
+      // recurrence logic
+      switch (rrule.FREQ) {
+        case "DAILY":
+          return today >= startDate;
+
+        case "WEEKLY":
+          if (!rrule.BYDAY) return false;
+          if (!rrule.BYDAY.includes(dow)) return false;
+          return today >= startDate;
+
+        case "YEARLY": {
+          const m = block.match(/DTSTART.*:(\d{4})(\d{2})(\d{2})/);
+          return m && today.slice(4) === m[2] + m[3];
+        }
+
+        default:
+          return false;
+      }
+    }
+
+    // ---------- main loop ----------
+
+    vevents.forEach(block => {
+      const summary =
+        block.match(/SUMMARY:(.*)/)?.[1]?.trim() || "Event";
+
+      if (!occursToday(block, todayMatch, currentDayOfWeek)) return;
+
+      const startTime = getStartTime(block);
+      if (!startTime) return; // skip all-day events for planner grid
+
+      const key = startTime + summary;
+      if (takenTimes.has(key)) return;
+
+      renderBrick(
+        startTime,
+        addMinutes(startTime, 90),
+        `🏠 ${summary}`,
+        "orange"
+      );
+
+      takenTimes.add(key);
+    });
+
+  } catch (e) {
+    console.error("Cozi Sync Error", e);
+  }
 }
     
     // --- 4. THE CONDUCTOR ---
