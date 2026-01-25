@@ -210,8 +210,8 @@
             if (goal) goal.current += absAmt;
         }
 
-        data.history.push({ 
-            date: new Date().toISOString().split('T')[0], 
+        data.history.push({ date: new Date().toLocaleDateString('en-CA'), 
+
             vendor, 
             who: document.getElementById('who').value, 
             what: document.getElementById('what').value,
