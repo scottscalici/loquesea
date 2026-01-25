@@ -324,26 +324,44 @@ async function syncCalendly(todayStr) {
 
         const { min, max } = localDayToUTCWindow(todayStr);
 
-const eventsRes = await fetch(
+    const eventsRes = await fetch(
   `https://api.calendly.com/scheduled_events?user=${userData.resource.uri}&min_start_time=${min}&max_start_time=${max}`,
   { headers: { Authorization: `Bearer ${CONFIG.calendlyToken}` } }
 );
 
-        const eventsData = await eventsRes.json();
+    const eventsData = await eventsRes.json();
+
+// 🔒 HARD local-date match to prevent UTC bleed
+const [year, month, day] = todayStr.split('-').map(Number);
 
 eventsData.collection.forEach(ev => {
-    // HARD DEDUPE — Calendly bug guard
-    if (renderedCalendlyEvents.has(ev.uri)) return;
-    renderedCalendlyEvents.add(ev.uri);
-
     const start = new Date(ev.start_time);
-    const localDate = start.toLocaleDateString('sv');
 
-    // FINAL authority: local date match only
-    if (localDate !== todayStr) return;
+// 🔍 DEBUG — log every Calendly event
+    console.log(
+  ev.name,
+  ev.start_time,
+  new Date(ev.start_time).toString()
+);
 
-    const sTime = start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-    const eTime = new Date(ev.end_time).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    // Authoritative local date check
+    if (
+        start.getFullYear() !== year ||
+        start.getMonth() + 1 !== month ||
+        start.getDate() !== day
+    ) {
+        return;
+    }
+
+    const sTime = start.toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+    const eTime = new Date(ev.end_time).toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
 
     renderBrick(sTime, eTime, `📅 ${ev.name}`, "blue-meeting");
 });
