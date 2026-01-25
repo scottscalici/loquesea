@@ -224,14 +224,22 @@ async function syncCozi(todayMatch, dow) {
             return o;
         }
 
+        function isExcluded(block) {
+    const exDates = [...block.matchAll(/EXDATE[^:]*:(\d{8})/g)]
+        .map(m => m[1]);
+    return exDates.includes(todayMatch);
+}
+
         function occursToday(block) {
-            const startMatch = block.match(/DTSTART.*:(\d{8})/);
-            if (!startMatch) return false;
+    if (isExcluded(block)) return false;
 
-            const startDate = startMatch[1];
-            const rruleMatch = block.match(/RRULE:(.*)/);
+    const startMatch = block.match(/DTSTART.*:(\d{8})/);
+    if (!startMatch) return false;
 
-            if (!rruleMatch) return startDate === todayMatch;
+    const startDate = startMatch[1];
+    const rruleMatch = block.match(/RRULE:(.*)/);
+
+    if (!rruleMatch) return startDate === todayMatch;
 
             const r = parseRRule(rruleMatch[1]);
             if (r.UNTIL && r.UNTIL.slice(0, 8) < todayMatch) return false;
@@ -287,6 +295,44 @@ async function syncCozi(todayMatch, dow) {
     }
 }
 
+    /* =========================
+   CALENDLY
+========================= */
+
+
+async function syncCalendly(todayStr) {
+    if (!CONFIG.calendlyToken || CONFIG.calendlyToken === 'PASTE_IF_NEEDED') return;
+
+    try {
+        const userRes = await fetch(
+            'https://api.calendly.com/users/me',
+            { headers: { Authorization: `Bearer ${CONFIG.calendlyToken}` } }
+        );
+        const userData = await userRes.json();
+
+        const eventsRes = await fetch(
+            `https://api.calendly.com/scheduled_events?user=${userData.resource.uri}&min_start_time=${todayStr}T00:00:00Z&max_start_time=${todayStr}T23:59:59Z`,
+            { headers: { Authorization: `Bearer ${CONFIG.calendlyToken}` } }
+        );
+
+        const eventsData = await eventsRes.json();
+
+        eventsData.collection.forEach(ev => {
+            const start = new Date(ev.start_time);
+            if (start.toLocaleDateString('sv') !== todayStr) return;
+
+            const sTime = start.toLocaleTimeString('en-GB').slice(0,5);
+            const eTime = new Date(ev.end_time).toLocaleTimeString('en-GB').slice(0,5);
+
+            renderBrick(sTime, eTime, `📅 ${ev.name}`, "blue-meeting");
+        });
+
+    } catch (e) {
+        console.error("Calendly error", e);
+    }
+}
+
+    
 /* =========================
    UI / NAV
 ========================= */
@@ -323,6 +369,7 @@ async function updateUI() {
 
     await syncSchoolCycle(todayStr);
     await syncCozi(todayMatch, dow);
+    await syncCalendly(todayStr);
 
     renderRedLine();
 }
