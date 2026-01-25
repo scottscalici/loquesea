@@ -90,7 +90,8 @@
         brick.className = `brick ${colorClass}`;
         brick.style.top = `${startMins * CONFIG.pixelsPerMinute}px`;
         brick.style.height = `${durationMins * CONFIG.pixelsPerMinute}px`;
-        brick.innerHTML = `<strong>${start} - ${end}</strong><br>${title}`;
+brick.innerHTML = `<strong>${format12Hour(start)} - ${format12Hour(end)}</strong><br>${title}`;
+
         timeline.appendChild(brick);
     }
 
@@ -272,6 +273,14 @@
 
     updateUI();
     setInterval(renderRedLine, 60000);
+function format12Hour(timeStr) {
+    if (!timeStr) return "";
+    let [h, m] = timeStr.split(':').map(Number);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12; // Converts 0 to 12 and 13 to 1
+    return `${h}:${m.toString().padStart(2, '0')} ${ampm}`;
+}
+
 </script>
 </body>
 </html>
