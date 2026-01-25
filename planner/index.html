@@ -30,6 +30,33 @@
     pointer-events: none;
     transition: top 0.3s linear;
 }
+.task-list {
+    margin-top: 8px;
+    padding-left: 0;
+    list-style: none;
+    font-size: 0.85em;
+}
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+.task-item input[type="checkbox"] {
+    cursor: pointer;
+    accent-color: #2ecc71;
+}
+.add-reminder-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    font-size: 0.7em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+.add-reminder-btn:hover { background: rgba(255,255,255,0.4); }
 
 #time-marker::after {
     content: '●';
@@ -80,20 +107,53 @@
     let currentSelectedDate = new Date();
 
     // --- 1. CORE RENDERING ENGINE ---
-    function renderBrick(start, end, title, colorClass) {
-        const timeline = document.getElementById('timeline');
-        const brick = document.createElement('div');
-        const [hS, mS] = start.split(':').map(Number);
-        const [hE, mE] = end.split(':').map(Number);
-        const startMins = (hS - CONFIG.dayStartHour) * 60 + mS;
-        const durationMins = (hE * 60 + mE) - (hS * 60 + mS);
-        brick.className = `brick ${colorClass}`;
-        brick.style.top = `${startMins * CONFIG.pixelsPerMinute}px`;
-        brick.style.height = `${durationMins * CONFIG.pixelsPerMinute}px`;
-brick.innerHTML = `<strong>${format12Hour(start)} - ${format12Hour(end)}</strong><br>${title}`;
+    function renderBrick(start, end, title, colorClass, tasks = []) {
+    const timeline = document.getElementById('timeline');
+    const brick = document.createElement('div');
+    
+    const [hS, mS] = start.split(':').map(Number);
+    const [hE, mE] = end.split(':').map(Number);
+    const startMins = (hS - CONFIG.dayStartHour) * 60 + mS;
+    const durationMins = (hE * 60 + mE) - (hS * 60 + mS);
 
-        timeline.appendChild(brick);
+    brick.className = `brick ${colorClass}`;
+    brick.style.top = `${startMins * CONFIG.pixelsPerMinute}px`;
+    brick.style.height = `${durationMins * CONFIG.pixelsPerMinute}px`;
+
+    // 1. Header with 12-Hour Time
+    let html = `<strong>${format12Hour(start)} - ${format12Hour(end)}</strong><br>${title}`;
+
+    // 2. Add JSON tasks if they exist
+    if (tasks && tasks.length > 0) {
+        html += `<ul class="task-list">`;
+        tasks.forEach((task, idx) => {
+            html += `
+                <li class="task-item">
+                    <input type="checkbox" id="task-${start}-${idx}">
+                    <label for="task-${start}-${idx}">${task}</label>
+                </li>`;
+        });
+        html += `</ul>`;
     }
+
+    // 3. The "Add Reminder" option for all bricks
+    html += `<button class="add-reminder-btn" onclick="addManualReminder(this)">+ Reminder</button>`;
+
+    brick.innerHTML = html;
+    timeline.appendChild(brick);
+}
+
+// Helper for manual reminders
+function addManualReminder(btn) {
+    const reminder = prompt("What's the reminder?");
+    if (reminder) {
+        const li = document.createElement('li');
+        li.className = 'task-item';
+        li.innerHTML = `<input type="checkbox"> <label>${reminder}</label>`;
+        btn.previousElementSibling.insertAdjacentElement('beforeend', li);
+    }
+}
+
 
     function renderAllDayBrick(title) {
         const container = document.getElementById('all-day-container');
@@ -114,6 +174,10 @@ brick.innerHTML = `<strong>${format12Hour(start)} - ${format12Hour(end)}</strong
             const schedule = await schedRes.json();
             const dayInfo = calData.map?.find(d => d.fecha === todayStr);
             const cycle = dayInfo?.ciclo; 
+            // Inside your loop in syncSchoolCycle:
+const brickTasks = brick.tasks || []; // Grabs tasks from your JSON if they exist
+renderBrick(brick.start, endTime, brick.label, temp?.color || "blue", brickTasks);
+
             if (currentSelectedDate.getDay() === 0 || currentSelectedDate.getDay() === 6) return; 
 
             if (schedule.hard_stops?.school_dropoff) {
