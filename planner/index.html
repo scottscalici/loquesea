@@ -108,30 +108,56 @@ function renderAllDayBrick(title) {
 
     
     // --- 2. SCHOOL CYCLE MODULE (Step 4) ---
-    async function syncSchoolCycle(todayStr) {
+   async function syncSchoolCycle(todayStr) {
     try {
-        const res = await fetch(CONFIG.calendarUrl);
-        const data = await res.json();
-        
-        // 1. Find today's data in your calendar.json
-        const dayData = data.map?.find(d => d.fecha === todayStr);
-        const cycle = dayData?.ciclo; // e.g., "A", "B", or "No School"
-        
-        // 2. Check if it's a Weekend
-        const dayNum = currentSelectedDate.getDay(); // 0 is Sunday, 6 is Saturday
-        const isWeekend = (dayNum === 0 || dayNum === 6);
+        // Fetch both the Calendar (A/B) and the Schedule Blueprint
+        const [calRes, schedRes] = await Promise.all([
+            fetch(CONFIG.calendarUrl),
+            fetch(CONFIG.scheduleUrl)
+        ]);
+        const calData = await calRes.json();
+        const schedule = await schedRes.json();
 
-        // 3. LOGIC: Only render if it's NOT a weekend AND it's a valid cycle (A or B)
-        if (!isWeekend && (cycle === "A" || cycle === "B")) {
-            renderBrick("05:30", "06:30", "Morning Routine", "purple");
-            renderBrick("09:00", "12:00", `Work Block (Cycle ${cycle})`, "blue");
-        } else if (dayData && (cycle === "No School" || cycle === "Holiday")) {
-            // Optional: Show a "Day Off" brick at the top instead of a work block
-            renderAllDayBrick(`🎉 ${cycle}: Enjoy the break!`);
+        // 1. Determine what "Type" of day today is
+        // We check the calendar for the cycle (A, B, PD, etc.)
+        const cycle = calData.map?.find(d => d.fecha === todayStr)?.ciclo;
+        const dayTypeMap = { "A": "A_Day", "B": "B_Day", "PD": "PD_Day" };
+        const dayKey = dayTypeMap[cycle];
+
+        // 2. Weekend Check
+        const dayNum = currentSelectedDate.getDay();
+        if (dayNum === 0 || dayNum === 6) return; // Exit if Saturday/Sunday
+
+        // 3. Render Routine (Step 3: The Morning Launch)
+        if (schedule.hard_stops?.school_dropoff) {
+            const stop = schedule.hard_stops.school_dropoff;
+            const routine = schedule.definitions.routines[stop.trigger_routine];
+            // Math: Dropoff (8:00) - Commute (15m) - Routine (45m) = Wake up time
+            const wheelsUp = subtractMinutes(stop.time, stop.commute_minutes);
+            const wakeUp = subtractMinutes(wheelsUp, routine.duration);
+            renderBrick(wakeUp, wheelsUp, `🚀 ${routine.label}`, "purple");
         }
-        
-    } catch (e) { console.error("School Cycle Error", e); }
+
+        // 4. Render Day Bricks (Step 4: The Work/School Blocks)
+        const dayBricks = schedule.days[dayKey] || [];
+        dayBricks.forEach(brick => {
+            const template = schedule.definitions.brick_templates[brick.template];
+            const startTime = brick.start;
+            const endTime = brick.end || addMinutes(startTime, brick.duration || 60);
+            
+            renderBrick(startTime, endTime, brick.label, template?.color || "blue");
+        });
+
+    } catch (e) { console.error("Schedule Integration Error", e); }
 }
+
+// Helper needed for the "Reverse Math" of Morning Launch
+function subtractMinutes(t, m) {
+    const [h, min] = t.split(':').map(Number);
+    const d = new Date(); d.setHours(h, min - m);
+    return d.toTimeString().slice(0, 5);
+}
+ 
 
 
     // --- 3. COZI MODULE (Step 5) ---
