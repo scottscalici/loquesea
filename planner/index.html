@@ -134,4 +134,57 @@
         try {
             const calRes = await fetch(CONFIG.calendarUrl);
             const calData = await calRes.json();
-            const cycle =
+            const cycle = calData.map?.find(d => d.fecha === todayStr)?.ciclo || "A";
+            
+            // Render Base Blocks
+            renderBrick("05:30", "06:30", "Morning Routine", "purple");
+            renderBrick("09:00", "12:00", `Work Block (Cycle ${cycle})`, "blue");
+        } catch (e) { console.error("Cal Fetch Error"); }
+
+        // Sync Cozi
+        await syncCozi(todayMatch);
+        
+        renderRedLine();
+    }
+
+    function changeDay(offset) {
+        currentSelectedDate.setDate(currentSelectedDate.getDate() + offset);
+        updateUI();
+    }
+
+    function goToToday() {
+        currentSelectedDate = new Date();
+        updateUI();
+    }
+
+    function renderRedLine() {
+        const now = new Date();
+        const elapsed = (now.getHours() - CONFIG.dayStartHour) * 60 + now.getMinutes();
+        const timeline = document.getElementById('timeline');
+        
+        let marker = document.getElementById('time-marker');
+        if (!marker) {
+            marker = document.createElement('div');
+            marker.id = 'time-marker';
+            timeline.appendChild(marker);
+        }
+        marker.style.top = `${elapsed * CONFIG.pixelsPerMinute}px`;
+    }
+
+    function addMinutes(t, m) {
+        const [h, min] = t.split(':').map(Number);
+        const d = new Date(); d.setHours(h, min + m);
+        return d.toTimeString().slice(0, 5);
+    }
+
+    document.getElementById('date-picker').addEventListener('change', (e) => {
+        currentSelectedDate = new Date(e.target.value + "T12:00:00");
+        updateUI();
+    });
+
+    // Initial Load
+    updateUI();
+    setInterval(renderRedLine, 60000);
+</script>
+</body>
+</html>
