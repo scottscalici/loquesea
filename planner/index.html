@@ -175,7 +175,6 @@ async function syncCozi() {
     try {
         const res = await fetch(PROXY + encodeURIComponent(ScheduleManager.coziUrl));
         let text = await res.text();
-        // Remove line breaks that Cozi adds to long summaries
         text = text.replace(/\r\n /g, ''); 
         
         const events = [];
@@ -185,10 +184,19 @@ async function syncCozi() {
             const chunk = vevents[i];
             const summary = chunk.match(/SUMMARY:(.*)/)?.[1]?.trim().replace(/\\,/g, ',') || "Untitled";
             
-            // This regex finds the date regardless of TZID or VALUE=DATE strings
             const startMatch = chunk.match(/DTSTART.*:(\d{8})/);
             const endMatch = chunk.match(/DTEND.*:(\d{8})/);
             const rrule = chunk.match(/RRULE:(.*)/)?.[1];
+            
+            // Look for EXDATEs (Days where the recurring event was deleted/moved)
+            const exdates = [];
+            const exdateMatches = chunk.match(/EXDATE.*:(\d{8})/g);
+            if (exdateMatches) {
+                exdateMatches.forEach(ex => {
+                    const d = ex.split(':').pop().substring(0,8);
+                    exdates.push(`${d.substring(0,4)}-${d.substring(4,6)}-${d.substring(6,8)}`);
+                });
+            }
 
             if (startMatch) {
                 const startDateStr = `${startMatch[1].substring(0,4)}-${startMatch[1].substring(4,6)}-${startMatch[1].substring(6,8)}`;
@@ -202,7 +210,6 @@ async function syncCozi() {
                     }
                 }
 
-                // Determine the "Life Span" of the event
                 let firstDate = new Date(startDateStr + "T12:00:00");
                 let lastDate = new Date(startDateStr + "T12:00:00");
 
@@ -212,25 +219,26 @@ async function syncCozi() {
                 } else if (endMatch) {
                     const endDateStr = `${endMatch[1].substring(0,4)}-${endMatch[1].substring(4,6)}-${endMatch[1].substring(6,8)}`;
                     lastDate = new Date(endDateStr + "T12:00:00");
-                    // All-day end dates are exclusive, so subtract one day
                     if (isAllDay) lastDate.setDate(lastDate.getDate() - 1);
                 }
 
-                // EXPAND: If today is within the range, add it
                 let current = new Date(firstDate);
                 while (current <= lastDate) {
-                    events.push({
-                        summary: summary,
-                        dateStr: current.toISOString().split('T')[0],
-                        timeStr: timeStr,
-                        isAllDay: isAllDay
-                    });
+                    const currentStr = current.toISOString().split('T')[0];
                     
-                    // If not a recurring event and not a multi-day span, stop after one
+                    // ONLY add the event if it's NOT on the exception list
+                    if (!exdates.includes(currentStr)) {
+                        events.push({
+                            summary: summary,
+                            dateStr: currentStr,
+                            timeStr: timeStr,
+                            isAllDay: isAllDay
+                        });
+                    }
+                    
                     if (!rrule && (!endMatch || startMatch[1] === endMatch[1])) break;
-                    
                     current.setDate(current.getDate() + 1);
-                    if (events.length > 5000) break; // Safety break
+                    if (events.length > 5000) break; 
                 }
             }
         }
@@ -238,52 +246,6 @@ async function syncCozi() {
         UIRenderer.render();
     } catch (e) { console.error("Cozi Sync Error", e); }
 }
-    
-const ScheduleManager = {
-    jsonUrl: "https://raw.githubusercontent.com/scottscalici/imagenes/refs/heads/main/planes/calendario.json",
-    coziUrl: "https://rest.cozi.com/api/ext/1103/f9f7020d-05c9-4720-b813-2155b4485be7/icalendar/feed/feed.ics",
-    selectedDate: new Date().toISOString().split('T')[0],
-
-    init: async () => {
-        document.getElementById('date-select').value = ScheduleManager.selectedDate;
-        const sToken = localStorage.getItem('saved_cal_token');
-        const sUri = localStorage.getItem('saved_cal_uri');
-        if (sToken) document.getElementById('cal-token').value = sToken;
-        if (sUri) document.getElementById('user-uri').value = sUri;
-        await ScheduleManager.loadFromGitHub();
-        if (sToken && sUri) refreshDashboard();
-        syncCozi();
-    },
-    changeDate: (val) => {
-        ScheduleManager.selectedDate = val;
-        ScheduleManager.loadFromGitHub();
-        refreshDashboard();
-        syncCozi();
-    },
-    resetToday: () => {
-        ScheduleManager.selectedDate = new Date().toISOString().split('T')[0];
-        document.getElementById('date-select').value = ScheduleManager.selectedDate;
-        ScheduleManager.changeDate(ScheduleManager.selectedDate);
-    },
-    loadFromGitHub: async () => {
-        try {
-            const res = await fetch(ScheduleManager.jsonUrl);
-            const data = await res.json();
-            const dayInfo = data.map.find(item => item.fecha === ScheduleManager.selectedDate);
-            scheduleState.currentCycle = dayInfo?.ciclo || null;
-            scheduleState.note = dayInfo?.note || "";
-            let blocks = [...templates.base];
-            if (scheduleState.currentCycle === "A") blocks = [...blocks, ...templates.cicloA];
-            if (scheduleState.currentCycle === "B") blocks = [...blocks, ...templates.cicloB];
-            scheduleState.dailyBlocks = blocks;
-            UIRenderer.render();
-        } catch (e) {
-            scheduleState.dailyBlocks = [...templates.base];
-            UIRenderer.render();
-        }
-    }
-};
-
 async function findMyUri() {
     const token = document.getElementById('cal-token').value.trim();
     if (!token) return alert("Paste token first!");
