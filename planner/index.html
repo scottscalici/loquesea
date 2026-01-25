@@ -106,11 +106,10 @@ function renderAllDayBrick(title) {
     container.appendChild(div);
 }
 
-    
-    // --- 2. SCHOOL CYCLE MODULE (Step 4) ---
-   async function syncSchoolCycle(todayStr) {
+  // --- 2. SCHOOL CYCLE MODULE (Updated for JSON & Calendly) ---
+async function syncSchoolCycle(todayStr) {
     try {
-        // Fetch both the Calendar (A/B) and the Schedule Blueprint
+        // Fetch both your A/B Calendar and your Schedule Blueprint
         const [calRes, schedRes] = await Promise.all([
             fetch(CONFIG.calendarUrl),
             fetch(CONFIG.scheduleUrl)
@@ -118,114 +117,51 @@ function renderAllDayBrick(title) {
         const calData = await calRes.json();
         const schedule = await schedRes.json();
 
-        // 1. Determine what "Type" of day today is
-        // We check the calendar for the cycle (A, B, PD, etc.)
-        const cycle = calData.map?.find(d => d.fecha === todayStr)?.ciclo;
-        const dayTypeMap = { "A": "A_Day", "B": "B_Day", "PD": "PD_Day" };
-        const dayKey = dayTypeMap[cycle];
+        // 1. Get Today's Cycle (A, B, or No School)
+        const dayInfo = calData.map?.find(d => d.fecha === todayStr);
+        const cycle = dayInfo?.ciclo; 
 
-        // 2. Weekend Check
+        // 2. Weekend Check: Don't show work blocks on Sat/Sun
         const dayNum = currentSelectedDate.getDay();
-        if (dayNum === 0 || dayNum === 6) return; // Exit if Saturday/Sunday
+        const isWeekend = (dayNum === 0 || dayNum === 6);
 
-        // 3. Render Routine (Step 3: The Morning Launch)
+        if (isWeekend) {
+            console.log("Weekend mode: Skipping school/work blocks.");
+            return; 
+        }
+
+        // 3. Render Routine (The Morning Launch)
+        // This calculates wake-up time based on your JSON hard_stops
         if (schedule.hard_stops?.school_dropoff) {
-            const stop = schedule.hard_stops.school_dropoff;
-            const routine = schedule.definitions.routines[stop.trigger_routine];
-            // Math: Dropoff (8:00) - Commute (15m) - Routine (45m) = Wake up time
-            const wheelsUp = subtractMinutes(stop.time, stop.commute_minutes);
+            const dropoff = schedule.hard_stops.school_dropoff;
+            const routine = schedule.definitions.routines[dropoff.trigger_routine];
+            const wheelsUp = subtractMinutes(dropoff.time, dropoff.commute_minutes);
             const wakeUp = subtractMinutes(wheelsUp, routine.duration);
             renderBrick(wakeUp, wheelsUp, `🚀 ${routine.label}`, "purple");
         }
 
-        // 4. Render Day Bricks (Step 4: The Work/School Blocks)
-        const dayBricks = schedule.days[dayKey] || [];
-        dayBricks.forEach(brick => {
-            const template = schedule.definitions.brick_templates[brick.template];
-            const startTime = brick.start;
-            const endTime = brick.end || addMinutes(startTime, brick.duration || 60);
-            
-            renderBrick(startTime, endTime, brick.label, template?.color || "blue");
-        });
+        // 4. Render Day Bricks (A_Day or B_Day)
+        const dayKey = cycle === "A" ? "A_Day" : (cycle === "B" ? "B_Day" : null);
+        if (dayKey && schedule.days[dayKey]) {
+            schedule.days[dayKey].forEach(brick => {
+                const temp = schedule.definitions.brick_templates[brick.template];
+                const endTime = brick.end || addMinutes(brick.start, brick.duration || 60);
+                renderBrick(brick.start, endTime, brick.label, temp?.color || "blue");
+            });
+        }
 
-    } catch (e) { console.error("Schedule Integration Error", e); }
+    } catch (e) { 
+        console.error("Modularity Error:", e); 
+    }
 }
 
-// Helper needed for the "Reverse Math" of Morning Launch
+// Add this helper function at the very bottom of your <script> section
 function subtractMinutes(t, m) {
     const [h, min] = t.split(':').map(Number);
     const d = new Date(); d.setHours(h, min - m);
     return d.toTimeString().slice(0, 5);
 }
- 
-
-
-    // --- 3. COZI MODULE (Step 5) ---
-async function syncCozi(todayMatch, currentDayOfWeek) {
-  try {
-    const res = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
-    const text = (await res.text()).replace(/\r\n /g, ""); // unfold ICS lines
-    const vevents = text.split("BEGIN:VEVENT");
-    let takenTimes = new Set();
-
-    // ---------- helpers ----------
-
-    function getStartDate(block) {
-      const m = block.match(/DTSTART.*:(\d{8})/);
-      return m ? m[1] : null;
-    }
-
-    function getStartTime(block) {
-      const m = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
-      return m ? `${m[1]}:${m[2]}` : null;
-    }
-
-    function parseRRule(rrule) {
-      const obj = {};
-      rrule.split(";").forEach(p => {
-        const [k, v] = p.split("=");
-        obj[k] = v;
-      });
-      return obj;
-    }
-
-    function isExcluded(block, today) {
-      const matches = [...block.matchAll(/EXDATE[^:]*:(\d{8})/g)];
-      return matches.some(m => m[1] === today);
-    }
-
-    function occursToday(block, today, dow) {
-    const startDate = getStartDate(block);
-    if (!startDate) return false;
-
-    // 1. EXDATE always wins (handles deleted basketball practices)
-    if (isExcluded(block, today)) return false;
-
-    const rruleMatch = block.match(/RRULE:(.*)/);
-    if (!rruleMatch) {
-        return startDate === today; // One-time event
-    }
-
-    const rrule = parseRRule(rruleMatch[1]);
-
-    // 2. UNTIL cutoff (Kills the 2025 ghost events)
-    if (rrule.UNTIL && rrule.UNTIL.slice(0, 8) < today) return false;
-
-    // 3. START DATE check (Don't show events that haven't started yet)
-    if (startDate > today) return false;
-
-    // 4. INTERVAL logic (Handles "Every 2 weeks" etc.)
-    const interval = parseInt(rrule.INTERVAL) || 1;
-    if (interval > 1) {
-        const startDay = new Date(startDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'));
-        const currentDay = new Date(today.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'));
-        const diffDays = Math.floor((currentDay - startDay) / (1000 * 60 * 60 * 24));
-        
-        if (rrule.FREQ === "WEEKLY") {
-            const weeksDiff = Math.floor(diffDays / 7);
-            if (weeksDiff % interval !== 0) return false;
-        }
-    }
+  
 
     // 5. Frequency Logic
     switch (rrule.FREQ) {
