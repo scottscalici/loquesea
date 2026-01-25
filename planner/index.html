@@ -65,7 +65,7 @@
 </div>
 
 <script>
-    const CONFIG = {
+       const CONFIG = {
         scheduleUrl: 'https://raw.githubusercontent.com/scottscalici/loquesea/main/planner/schedule.json',
         calendarUrl: 'https://raw.githubusercontent.com/scottscalici/imagenes/main/planes/calendario.json',
         coziUrl: 'https://rest.cozi.com/api/ext/1103/f9f7020d-05c9-4720-b813-2155b4485be7/icalendar/feed/feed.ics',
@@ -77,7 +77,6 @@
 
     let currentSelectedDate = new Date();
 
-    // --- 1. CORE RENDERING ENGINE ---
     function format12Hour(timeStr) {
         if (!timeStr) return "";
         let [h, m] = timeStr.split(':').map(Number);
@@ -99,42 +98,22 @@
         brick.style.height = `${durationMins * CONFIG.pixelsPerMinute}px`;
 
         let html = `<strong>${format12Hour(start)} - ${format12Hour(end)}</strong><br>${title}`;
-        
-        // Add Checklist
         html += `<ul class="task-list">`;
         if (tasks && tasks.length > 0) {
-            tasks.forEach((task, idx) => {
+            tasks.forEach(task => {
                 html += `<li class="task-item"><input type="checkbox"> <label>${task}</label></li>`;
             });
         }
         html += `</ul><button class="add-reminder-btn" onclick="addManualReminder(this)">+ Reminder</button>`;
-
         brick.innerHTML = html;
         timeline.appendChild(brick);
     }
 
-    function addManualReminder(btn) {
-        const reminder = prompt("What's the reminder?");
-        if (reminder) {
-            const list = btn.previousElementSibling;
-            const li = document.createElement('li');
-            li.className = 'task-item';
-            li.innerHTML = `<input type="checkbox"> <label>${reminder}</label>`;
-            list.appendChild(li);
-        }
-    }
-
-    function renderAllDayBrick(title) {
-        const container = document.getElementById('all-day-container');
-        const div = document.createElement('div');
-        div.className = 'all-day-brick';
-        div.innerHTML = `<strong>All Day</strong><br>${title}`;
-        container.appendChild(div);
-    }
-
-    // --- 2. SCHOOL CYCLE MODULE ---
     async function syncSchoolCycle(todayStr) {
         try {
+            const isWeekend = currentSelectedDate.getDay() === 0 || currentSelectedDate.getDay() === 6;
+            if (isWeekend) return; // Exit early ONLY for school blocks
+
             const [calRes, schedRes] = await Promise.all([
                 fetch(CONFIG.calendarUrl),
                 fetch(CONFIG.scheduleUrl)
@@ -144,9 +123,6 @@
             const dayInfo = calData.map?.find(d => d.fecha === todayStr);
             const cycle = dayInfo?.ciclo; 
 
-            if (currentSelectedDate.getDay() === 0 || currentSelectedDate.getDay() === 6) return; 
-
-            // Hard Stops (Morning Launch)
             if (schedule.hard_stops?.school_dropoff) {
                 const dropoff = schedule.hard_stops.school_dropoff;
                 const routine = schedule.definitions.routines[dropoff.trigger_routine];
@@ -155,7 +131,6 @@
                 renderBrick(wakeUp, wheelsUp, `🚀 ${routine.label}`, "purple", routine.tasks || []);
             }
 
-            // A/B Day Blocks
             const dayKey = cycle === "A" ? "A_Day" : (cycle === "B" ? "B_Day" : null);
             if (dayKey && schedule.days[dayKey]) {
                 schedule.days[dayKey].forEach(brick => {
@@ -167,52 +142,31 @@
         } catch (e) { console.error("School Cycle Error:", e); }
     }
 
-    // --- 3. COZI & CALENDLY MODULES (Simplified for Space) ---
-    
     async function syncCozi(todayMatch, dow) {
-    try {
-        const res = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
-        let text = await res.text();
-        text = text.replace(/\r\n /g, ""); // Fix Cozi line wrapping
-        const vevents = text.split("BEGIN:VEVENT");
-
-        // Helper to check if event happens today (handles recurring)
-        const occursToday = (block, today, dayOfWeek) => {
-            const startM = block.match(/DTSTART[:;](?:.*T)?(\d{8})/);
-            if (!startM) return false;
-            const startDate = startM[1];
-
-            // 1. Direct match (One-off)
-            if (startDate === today) return true;
-
-            // 2. Recurring match (Weekly/Daily)
-            const rruleMatch = block.match(/RRULE:(.*)/);
-            if (rruleMatch && startDate < today) {
-                const rrule = rruleMatch[1];
-                if (rrule.includes("FREQ=WEEKLY") && rrule.includes("BYDAY=" + dayOfWeek)) return true;
-                if (rrule.includes("FREQ=DAILY")) return true;
-            }
-            return false;
-        };
-
-        vevents.forEach(block => {
-            if (!occursToday(block, todayMatch, dow)) return;
-
-            const summary = block.match(/SUMMARY:(.*)/)?.[1]?.trim() || "Event";
-            const timeMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
+        try {
+            const res = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
+            let text = (await res.text()).replace(/\r\n /g, "");
+            const vevents = text.split("BEGIN:VEVENT");
             
-            if (timeMatch) {
-                const sTime = `${timeMatch[1]}:${timeMatch[2]}`;
-                // Render with orange for Cozi
-                renderBrick(sTime, addMinutes(sTime, 90), `🏠 ${summary}`, "orange");
-            } else {
-                renderAllDayBrick(`🏠 ${summary}`);
-            }
-        });
-    } catch (e) { console.error("Cozi Error:", e); }
-}
+            vevents.forEach(block => {
+                const startM = block.match(/DTSTART[:;](?:.*T)?(\d{8})/);
+                if (!startM) return;
+                const startDate = startM[1];
 
-    
+                // Simple check for now: date match OR Recurring
+                const isToday = startDate === todayMatch || (block.includes("RRULE") && block.includes("BYDAY=" + dow));
+
+                if (isToday) {
+                    const summary = block.match(/SUMMARY:(.*)/)?.[1]?.trim() || "Event";
+                    const timeMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
+                    if (timeMatch) {
+                        const sTime = `${timeMatch[1]}:${timeMatch[2]}`;
+                        renderBrick(sTime, addMinutes(sTime, 90), `🏠 ${summary}`, "orange");
+                    }
+                }
+            });
+        } catch (e) { console.error("Cozi Error"); }
+    }
 
     async function syncCalendly(todayStr) {
         if (!CONFIG.calendlyToken || CONFIG.calendlyToken.includes('PASTE')) return;
@@ -224,13 +178,16 @@
             });
             const eventsData = await eventsRes.json();
             eventsData.collection.forEach(event => {
-                const s = new Date(event.start_time); const e = new Date(event.end_time);
-                renderBrick(s.toLocaleTimeString('en-GB').slice(0,5), e.toLocaleTimeString('en-GB').slice(0,5), `📅 ${event.name}`, "blue-meeting");
+                const s = new Date(event.start_time);
+                if (s.toLocaleDateString('sv') === todayStr) {
+                    const sTime = s.toLocaleTimeString('en-GB').slice(0,5);
+                    const eTime = new Date(event.end_time).toLocaleTimeString('en-GB').slice(0,5);
+                    renderBrick(sTime, eTime, `📅 ${event.name}`, "blue-meeting");
+                }
             });
         } catch (e) { console.error("Calendly Error"); }
     }
 
-    // --- 4. THE CONDUCTOR ---
     async function updateUI() {
         const todayStr = currentSelectedDate.toLocaleDateString('sv');
         const todayMatch = todayStr.replace(/-/g, '');
@@ -242,6 +199,7 @@
         document.getElementById('date-picker').value = todayStr;
         document.getElementById('day-header').innerText = `Schedule for ${todayStr} (${currentDayOfWeek})`;
 
+        // Run all three independently
         await syncSchoolCycle(todayStr); 
         await syncCozi(todayMatch, currentDayOfWeek);
         await syncCalendly(todayStr);
@@ -249,7 +207,6 @@
         renderRedLine();
     }
 
-    // --- HELPERS ---
     function changeDay(offset) { currentSelectedDate.setDate(currentSelectedDate.getDate() + offset); updateUI(); }
     function goToToday() { currentSelectedDate = new Date(); updateUI(); }
     function addMinutes(t, m) { const [h, min] = t.split(':').map(Number); const d = new Date(); d.setHours(h, min + m); return d.toTimeString().slice(0, 5); }
@@ -273,6 +230,7 @@
 
     updateUI();
     setInterval(renderRedLine, 60000);
+
 </script>
 </body>
 </html>
