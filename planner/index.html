@@ -142,53 +142,98 @@
         } catch (e) { console.error("School Cycle Error:", e); }
     }
 
+function renderAllDayBrick(title) {
+    const container = document.getElementById('all-day-container');
+    const div = document.createElement('div');
+    div.className = 'all-day-brick';
+    div.innerHTML = `<strong>All Day</strong><br>${title}`;
+    container.appendChild(div);
+}
+    
 async function syncCozi(todayMatch, dow) {
     try {
         const res = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
         let text = await res.text();
-        // Cozi often breaks lines in the middle of data; this joins them back up
-        text = text.replace(/\r\n /g, ""); 
+
+        // Unfold ICS line breaks
+        text = text.replace(/\r\n /g, "");
+
         const vevents = text.split("BEGIN:VEVENT");
-        
+
+        function parseRRule(rrule) {
+            const obj = {};
+            rrule.split(";").forEach(p => {
+                const [k, v] = p.split("=");
+                obj[k] = v;
+            });
+            return obj;
+        }
+
+        function isExcluded(block) {
+            return [...block.matchAll(/EXDATE[^:]*:(\d{8})/g)]
+                .some(m => m[1] === todayMatch);
+        }
+
+        function occursToday(block) {
+            const startDateMatch = block.match(/DTSTART.*:(\d{8})/);
+            if (!startDateMatch) return false;
+            const startDate = startDateMatch[1];
+
+            if (isExcluded(block)) return false;
+
+            const rruleMatch = block.match(/RRULE:(.*)/);
+            if (!rruleMatch) {
+                // one-time event
+                return startDate === todayMatch;
+            }
+
+            const rrule = parseRRule(rruleMatch[1]);
+
+            // UNTIL cutoff
+            if (rrule.UNTIL && rrule.UNTIL.slice(0, 8) < todayMatch) return false;
+
+            switch (rrule.FREQ) {
+                case "DAILY":
+                    return todayMatch >= startDate;
+
+                case "WEEKLY":
+                    if (!rrule.BYDAY) return false;
+                    if (!rrule.BYDAY.split(",").includes(dow)) return false;
+                    return todayMatch >= startDate;
+
+                case "YEARLY":
+                    return todayMatch.slice(4) === startDate.slice(4);
+
+                default:
+                    return false;
+            }
+        }
+
         vevents.forEach(block => {
             const summaryMatch = block.match(/SUMMARY:(.*)/);
             if (!summaryMatch) return;
             const summary = summaryMatch[1].trim();
 
-            // Find any DTSTART date in the block
-            const startMatch = block.match(/DTSTART[:;](?:.*=.*:)?(\d{8})/);
-            if (!startMatch) return;
-            const startDate = startMatch[1];
+            if (!occursToday(block)) return;
 
-            const isRecurring = block.includes("RRULE");
-            let shouldShow = false;
+            // Timed vs all-day
+            const timeMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
 
-            if (isRecurring) {
-                // If it repeats, check if today's day code (SU, MO, etc.) is in the rule
-                // AND check that the series didn't start in the future
-                if (block.includes(dow) && startDate <= todayMatch) {
-                    shouldShow = true;
-                }
+            if (timeMatch) {
+                const sTime = `${timeMatch[1]}:${timeMatch[2]}`;
+                renderBrick(
+                    sTime,
+                    addMinutes(sTime, 60),
+                    `🏠 ${summary}`,
+                    "orange"
+                );
             } else {
-                // If it's a one-off, it must match today exactly
-                if (startDate === todayMatch) {
-                    shouldShow = true;
-                }
-            }
-
-            if (shouldShow) {
-                const timeMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
-                if (timeMatch) {
-                    const sTime = `${timeMatch[1]}:${timeMatch[2]}`;
-                    // Defaulting to 60 mins for a cleaner look
-                    renderBrick(sTime, addMinutes(sTime, 60), `🏠 ${summary}`, "orange");
-                } else {
-                    renderAllDayBrick(`🏠 ${summary}`);
-                }
+                renderAllDayBrick(`🏠 ${summary}`);
             }
         });
-    } catch (e) { 
-        console.error("Cozi Fetch/Parse Error:", e); 
+
+    } catch (e) {
+        console.error("Cozi Fetch/Parse Error:", e);
     }
 }
 
