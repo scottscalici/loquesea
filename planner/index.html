@@ -21,61 +21,32 @@
         .blue { background: var(--brick-blue); }
         .purple { background: var(--brick-purple); }
         .orange { background: var(--brick-orange); }
-        #time-marker { position: absolute; width: 100%; border-top: 2px solid red; z-index: 100; pointer-events: none; }
+
+        /* Time Marker Red Line */
         #time-marker {
-    position: absolute;
-    width: 100%;
-    border-top: 2px solid #ff4757; /* A bright Lego red */
-    z-index: 100;
-    pointer-events: none;
-    transition: top 0.3s linear;
-}
-.task-list {
-    margin-top: 8px;
-    padding-left: 0;
-    list-style: none;
-    font-size: 0.85em;
-}
-.task-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 4px;
-}
-.task-item input[type="checkbox"] {
-    cursor: pointer;
-    accent-color: #2ecc71;
-}
-.add-reminder-btn {
-    background: rgba(255,255,255,0.2);
-    border: none;
-    color: white;
-    font-size: 0.7em;
-    padding: 2px 6px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 5px;
-}
-.add-reminder-btn:hover { background: rgba(255,255,255,0.4); }
-
-#time-marker::after {
-    content: '●';
-    color: #ff4757;
-    position: absolute;
-    left: -10px;
-    top: -9px;
-    font-size: 18px;
-}
-
-        /* Nesting Style for Calendly */
-        .blue-meeting { 
-            background: #2980b9 !important; 
-            border: 2px solid #ffffff; 
-            width: calc(100% - 80px) !important; 
-            margin-left: 50px !important;
-            z-index: 10; 
-            font-weight: bold;
+            position: absolute;
+            width: 100%;
+            border-top: 2px solid #ff4757;
+            z-index: 100;
+            pointer-events: none;
+            transition: top 0.3s linear;
         }
+        #time-marker::after {
+            content: '●';
+            color: #ff4757;
+            position: absolute;
+            left: -10px;
+            top: -9px;
+            font-size: 18px;
+        }
+
+        /* Checklists & Reminders */
+        .task-list { margin-top: 8px; padding-left: 0; list-style: none; font-size: 0.85em; }
+        .task-item { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+        .task-item input[type="checkbox"] { cursor: pointer; accent-color: #2ecc71; }
+        .add-reminder-btn { background: rgba(255,255,255,0.2); border: none; color: white; font-size: 0.7em; padding: 2px 6px; border-radius: 4px; cursor: pointer; margin-top: 5px; }
+        
+        .blue-meeting { background: #2980b9 !important; border: 2px solid #ffffff; width: calc(100% - 80px) !important; margin-left: 50px !important; z-index: 10; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -107,53 +78,51 @@
     let currentSelectedDate = new Date();
 
     // --- 1. CORE RENDERING ENGINE ---
+    function format12Hour(timeStr) {
+        if (!timeStr) return "";
+        let [h, m] = timeStr.split(':').map(Number);
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        return `${h}:${m.toString().padStart(2, '0')} ${ampm}`;
+    }
+
     function renderBrick(start, end, title, colorClass, tasks = []) {
-    const timeline = document.getElementById('timeline');
-    const brick = document.createElement('div');
-    
-    const [hS, mS] = start.split(':').map(Number);
-    const [hE, mE] = end.split(':').map(Number);
-    const startMins = (hS - CONFIG.dayStartHour) * 60 + mS;
-    const durationMins = (hE * 60 + mE) - (hS * 60 + mS);
+        const timeline = document.getElementById('timeline');
+        const brick = document.createElement('div');
+        const [hS, mS] = start.split(':').map(Number);
+        const [hE, mE] = end.split(':').map(Number);
+        const startMins = (hS - CONFIG.dayStartHour) * 60 + mS;
+        const durationMins = (hE * 60 + mE) - (hS * 60 + mS);
 
-    brick.className = `brick ${colorClass}`;
-    brick.style.top = `${startMins * CONFIG.pixelsPerMinute}px`;
-    brick.style.height = `${durationMins * CONFIG.pixelsPerMinute}px`;
+        brick.className = `brick ${colorClass}`;
+        brick.style.top = `${startMins * CONFIG.pixelsPerMinute}px`;
+        brick.style.height = `${durationMins * CONFIG.pixelsPerMinute}px`;
 
-    // 1. Header with 12-Hour Time
-    let html = `<strong>${format12Hour(start)} - ${format12Hour(end)}</strong><br>${title}`;
-
-    // 2. Add JSON tasks if they exist
-    if (tasks && tasks.length > 0) {
+        let html = `<strong>${format12Hour(start)} - ${format12Hour(end)}</strong><br>${title}`;
+        
+        // Add Checklist
         html += `<ul class="task-list">`;
-        tasks.forEach((task, idx) => {
-            html += `
-                <li class="task-item">
-                    <input type="checkbox" id="task-${start}-${idx}">
-                    <label for="task-${start}-${idx}">${task}</label>
-                </li>`;
-        });
-        html += `</ul>`;
+        if (tasks && tasks.length > 0) {
+            tasks.forEach((task, idx) => {
+                html += `<li class="task-item"><input type="checkbox"> <label>${task}</label></li>`;
+            });
+        }
+        html += `</ul><button class="add-reminder-btn" onclick="addManualReminder(this)">+ Reminder</button>`;
+
+        brick.innerHTML = html;
+        timeline.appendChild(brick);
     }
 
-    // 3. The "Add Reminder" option for all bricks
-    html += `<button class="add-reminder-btn" onclick="addManualReminder(this)">+ Reminder</button>`;
-
-    brick.innerHTML = html;
-    timeline.appendChild(brick);
-}
-
-// Helper for manual reminders
-function addManualReminder(btn) {
-    const reminder = prompt("What's the reminder?");
-    if (reminder) {
-        const li = document.createElement('li');
-        li.className = 'task-item';
-        li.innerHTML = `<input type="checkbox"> <label>${reminder}</label>`;
-        btn.previousElementSibling.insertAdjacentElement('beforeend', li);
+    function addManualReminder(btn) {
+        const reminder = prompt("What's the reminder?");
+        if (reminder) {
+            const list = btn.previousElementSibling;
+            const li = document.createElement('li');
+            li.className = 'task-item';
+            li.innerHTML = `<input type="checkbox"> <label>${reminder}</label>`;
+            list.appendChild(li);
+        }
     }
-}
-
 
     function renderAllDayBrick(title) {
         const container = document.getElementById('all-day-container');
@@ -174,118 +143,79 @@ function addManualReminder(btn) {
             const schedule = await schedRes.json();
             const dayInfo = calData.map?.find(d => d.fecha === todayStr);
             const cycle = dayInfo?.ciclo; 
-            // Inside your loop in syncSchoolCycle:
-const brickTasks = brick.tasks || []; // Grabs tasks from your JSON if they exist
-renderBrick(brick.start, endTime, brick.label, temp?.color || "blue", brickTasks);
 
             if (currentSelectedDate.getDay() === 0 || currentSelectedDate.getDay() === 6) return; 
 
+            // Hard Stops (Morning Launch)
             if (schedule.hard_stops?.school_dropoff) {
                 const dropoff = schedule.hard_stops.school_dropoff;
                 const routine = schedule.definitions.routines[dropoff.trigger_routine];
                 const wheelsUp = subtractMinutes(dropoff.time, dropoff.commute_minutes);
                 const wakeUp = subtractMinutes(wheelsUp, routine.duration);
-                renderBrick(wakeUp, wheelsUp, `🚀 ${routine.label}`, "purple");
+                renderBrick(wakeUp, wheelsUp, `🚀 ${routine.label}`, "purple", routine.tasks || []);
             }
 
+            // A/B Day Blocks
             const dayKey = cycle === "A" ? "A_Day" : (cycle === "B" ? "B_Day" : null);
             if (dayKey && schedule.days[dayKey]) {
                 schedule.days[dayKey].forEach(brick => {
                     const temp = schedule.definitions.brick_templates[brick.template];
                     const endTime = brick.end || addMinutes(brick.start, brick.duration || 60);
-                    renderBrick(brick.start, endTime, brick.label, temp?.color || "blue");
+                    renderBrick(brick.start, endTime, brick.label, temp?.color || "blue", brick.tasks || []);
                 });
             }
         } catch (e) { console.error("School Cycle Error:", e); }
     }
 
-    // --- 3. COZI MODULE ---
+    // --- 3. COZI & CALENDLY MODULES (Simplified for Space) ---
     async function syncCozi(todayMatch, dow) {
         try {
             const res = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
             const text = (await res.text()).replace(/\r\n /g, "");
             const vevents = text.split("BEGIN:VEVENT");
-            let takenTimes = new Set();
-
-            const getStartDate = (b) => { const m = b.match(/DTSTART.*:(\d{8})/); return m ? m[1] : null; };
-            const getStartTime = (b) => { const m = b.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/); return m ? `${m[1]}:${m[2]}` : null; };
-            const parseRRule = (r) => { const obj = {}; r.split(";").forEach(p => { const [k, v] = p.split("="); obj[k] = v; }); return obj; };
-            const isExcluded = (b, t) => { const matches = [...b.matchAll(/EXDATE[^:]*:(\d{8})/g)]; return matches.some(m => m[1] === t); };
-
-            const occursToday = (block, today, dayOfWeek) => {
-                const startDate = getStartDate(block);
-                if (!startDate || isExcluded(block, today)) return false;
-                const rruleMatch = block.match(/RRULE:(.*)/);
-                if (!rruleMatch) return startDate === today;
-                const rrule = parseRRule(rruleMatch[1]);
-                if (rrule.UNTIL && rrule.UNTIL.slice(0, 8) < today) return false;
-                if (startDate > today) return false;
-                switch (rrule.FREQ) {
-                    case "DAILY": return true;
-                    case "WEEKLY": return rrule.BYDAY ? rrule.BYDAY.includes(dayOfWeek) : false;
-                    case "YEARLY": return today.slice(4) === startDate.slice(4);
-                    default: return false;
-                }
-            };
-
             vevents.forEach(block => {
-                if (!occursToday(block, todayMatch, dow)) return;
                 const summary = block.match(/SUMMARY:(.*)/)?.[1]?.trim() || "Event";
-                const startTime = getStartTime(block);
-                if (!startTime) { renderAllDayBrick(`🏠 ${summary}`); return; }
-                const key = startTime + summary;
-                if (!takenTimes.has(key)) {
-                    renderBrick(startTime, addMinutes(startTime, 90), `🏠 ${summary}`, "orange");
-                    takenTimes.add(key);
+                const startMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
+                const startDate = block.match(/DTSTART.*:(\d{8})/)?.[1];
+                if (startDate === todayMatch && startMatch) {
+                    const sTime = `${startMatch[1]}:${startMatch[2]}`;
+                    renderBrick(sTime, addMinutes(sTime, 60), `🏠 ${summary}`, "orange");
                 }
             });
-        } catch (e) { console.error("Cozi Error:", e); }
+        } catch (e) { console.error("Cozi Error"); }
     }
 
-    // --- 4. CALENDLY MODULE ---
     async function syncCalendly(todayStr) {
         if (!CONFIG.calendlyToken || CONFIG.calendlyToken.includes('PASTE')) return;
         try {
-            const userRes = await fetch('https://api.calendly.com/users/me', {
-                headers: { 'Authorization': `Bearer ${CONFIG.calendlyToken}` }
-            });
+            const userRes = await fetch('https://api.calendly.com/users/me', { headers: { 'Authorization': `Bearer ${CONFIG.calendlyToken}` } });
             const userData = await userRes.json();
-            const userUri = userData.resource.uri;
-
-            const startRange = `${todayStr}T00:00:00Z`;
-            const endRange = `${todayStr}T23:59:59Z`;
-            const eventsRes = await fetch(`https://api.calendly.com/scheduled_events?user=${userUri}&min_start_time=${startRange}&max_start_time=${endRange}`, {
+            const eventsRes = await fetch(`https://api.calendly.com/scheduled_events?user=${userData.resource.uri}&min_start_time=${todayStr}T00:00:00Z&max_start_time=${todayStr}T23:59:59Z`, {
                 headers: { 'Authorization': `Bearer ${CONFIG.calendlyToken}` }
             });
             const eventsData = await eventsRes.json();
-
             eventsData.collection.forEach(event => {
-                const sDate = new Date(event.start_time);
-                const eDate = new Date(event.end_time);
-                const sTime = sDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-                const eTime = eDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-                renderBrick(sTime, eTime, `📅 ${event.name}`, "blue-meeting");
+                const s = new Date(event.start_time); const e = new Date(event.end_time);
+                renderBrick(s.toLocaleTimeString('en-GB').slice(0,5), e.toLocaleTimeString('en-GB').slice(0,5), `📅 ${event.name}`, "blue-meeting");
             });
-        } catch (e) { console.error("Calendly API Error:", e); }
+        } catch (e) { console.error("Calendly Error"); }
     }
 
-    // --- 5. THE CONDUCTOR ---
+    // --- 4. THE CONDUCTOR ---
     async function updateUI() {
         const todayStr = currentSelectedDate.toLocaleDateString('sv');
         const todayMatch = todayStr.replace(/-/g, '');
         const daysMap = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
         const currentDayOfWeek = daysMap[currentSelectedDate.getDay()];
         
-        const timeline = document.getElementById('timeline');
-        timeline.innerHTML = '';
-        timeline.style.height = `${(22 - CONFIG.dayStartHour) * 60 * CONFIG.pixelsPerMinute}px`;
+        document.getElementById('timeline').innerHTML = '';
         document.getElementById('all-day-container').innerHTML = '';
         document.getElementById('date-picker').value = todayStr;
         document.getElementById('day-header').innerText = `Schedule for ${todayStr} (${currentDayOfWeek})`;
 
         await syncSchoolCycle(todayStr); 
         await syncCozi(todayMatch, currentDayOfWeek);
-        await syncCalendly(todayStr); // Now correctly nested!
+        await syncCalendly(todayStr);
 
         renderRedLine();
     }
@@ -297,38 +227,15 @@ renderBrick(brick.start, endTime, brick.label, temp?.color || "blue", brickTasks
     function subtractMinutes(t, m) { const [h, min] = t.split(':').map(Number); const d = new Date(); d.setHours(h, min - m); return d.toTimeString().slice(0, 5); }
 
     function renderRedLine() {
-    const now = new Date();
-    // Only show the line if we are looking at "Today"
-    if (now.toLocaleDateString('sv') !== currentSelectedDate.toLocaleDateString('sv')) {
-        const existing = document.getElementById('time-marker');
-        if (existing) existing.remove();
-        return;
-    }
-
-    const h = now.getHours();
-    const m = now.getMinutes();
-    
-    // Calculate total minutes since the start of the dashboard (5 AM)
-    const elapsedMins = (h - CONFIG.dayStartHour) * 60 + m;
-    
-    // If it's before 5 AM or after 10 PM, hide the line
-    if (elapsedMins < 0 || h >= 22) {
-        const existing = document.getElementById('time-marker');
-        if (existing) existing.remove();
-        return;
-    }
-
-    let marker = document.getElementById('time-marker');
-    if (!marker) {
-        marker = document.createElement('div');
+        const now = new Date();
+        if (now.toLocaleDateString('sv') !== currentSelectedDate.toLocaleDateString('sv')) return;
+        const elapsedMins = (now.getHours() - CONFIG.dayStartHour) * 60 + now.getMinutes();
+        if (elapsedMins < 0 || now.getHours() >= 22) return;
+        let marker = document.getElementById('time-marker') || document.createElement('div');
         marker.id = 'time-marker';
         document.getElementById('timeline').appendChild(marker);
+        marker.style.top = `${elapsedMins * CONFIG.pixelsPerMinute}px`;
     }
-    
-    const topPosition = elapsedMins * CONFIG.pixelsPerMinute;
-    marker.style.top = `${topPosition}px`;
-}
-
 
     document.getElementById('date-picker').addEventListener('change', (e) => {
         currentSelectedDate = new Date(e.target.value + "T12:00:00");
@@ -337,14 +244,6 @@ renderBrick(brick.start, endTime, brick.label, temp?.color || "blue", brickTasks
 
     updateUI();
     setInterval(renderRedLine, 60000);
-function format12Hour(timeStr) {
-    if (!timeStr) return "";
-    let [h, m] = timeStr.split(':').map(Number);
-    const ampm = h >= 12 ? 'PM' : 'AM';
-    h = h % 12 || 12; // Converts 0 to 12 and 13 to 1
-    return `${h}:${m.toString().padStart(2, '0')} ${ampm}`;
-}
-
 </script>
 </body>
 </html>
