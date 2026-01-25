@@ -22,6 +22,16 @@
         .purple { background: var(--brick-purple); }
         .orange { background: var(--brick-orange); }
         #time-marker { position: absolute; width: 100%; border-top: 2px solid red; z-index: 100; pointer-events: none; }
+    
+        .blue-meeting { 
+        background: #2980b9 !important; /* A darker, distinct blue */
+        border: 2px solid #ffffff; 
+        width: calc(100% - 80px) !important; /* Narrower to sit 'inside' the main block */
+        margin-left: 50px !important;
+        z-index: 10; /* Ensures it sits on top of the Work Block */
+        font-weight: bold;
+    }
+
     </style>
 </head>
 <body>
@@ -41,9 +51,11 @@
 
 <script>
     const CONFIG = {
+            const CONFIG = {
         scheduleUrl: 'https://raw.githubusercontent.com/scottscalici/loquesea/main/planner/schedule.json',
         calendarUrl: 'https://raw.githubusercontent.com/scottscalici/imagenes/main/planes/calendario.json',
         coziUrl: 'https://rest.cozi.com/api/ext/1103/f9f7020d-05c9-4720-b813-2155b4485be7/icalendar/feed/feed.ics',
+        calendlyToken: 'PASTE_YOUR_BEARER_TOKEN_HERE', 
         proxy: 'https://corsproxy.io/?',
         pixelsPerMinute: 1.5, 
         dayStartHour: 5 
@@ -149,6 +161,36 @@
             });
         } catch (e) { console.error("Cozi Error:", e); }
     }
+//Calendly Sync
+        async function syncCalendly(todayStr) {
+        if (!CONFIG.calendlyToken || CONFIG.calendlyToken.includes('PASTE')) return;
+
+        try {
+            // First, we need to get your User URI (usually cached, but we fetch to be safe)
+            const userRes = await fetch('https://api.calendly.com/users/me', {
+                headers: { 'Authorization': `Bearer ${CONFIG.calendlyToken}` }
+            });
+            const userData = await userRes.json();
+            const userUri = userData.resource.uri;
+
+            // Now, fetch scheduled events for today
+            const startRange = `${todayStr}T00:00:00Z`;
+            const endRange = `${todayStr}T23:59:59Z`;
+            const eventsRes = await fetch(`https://api.calendly.com/scheduled_events?user=${userUri}&min_start_time=${startRange}&max_start_time=${endRange}`, {
+                headers: { 'Authorization': `Bearer ${CONFIG.calendlyToken}` }
+            });
+            const eventsData = await eventsRes.json();
+
+            eventsData.collection.forEach(event => {
+                const sTime = new Date(event.start_time).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+                const eTime = new Date(event.end_time).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+                
+                // We use a specific class 'blue-meeting' to nest it inside the work block
+                renderBrick(sTime, eTime, `📅 ${event.name}`, "blue-meeting");
+            });
+        } catch (e) { console.error("Calendly API Error:", e); }
+    }
+
 
     // --- 4. THE CONDUCTOR ---
     async function updateUI() {
@@ -162,8 +204,10 @@
         document.getElementById('all-day-container').innerHTML = '';
         document.getElementById('date-picker').value = todayStr;
         document.getElementById('day-header').innerText = `Schedule for ${todayStr} (${currentDayOfWeek})`;
-        await syncSchoolCycle(todayStr);
-        await syncCozi(todayMatch, currentDayOfWeek);
+            await syncSchoolCycle(todayStr); // Background Work Block
+    await syncCozi(todayMatch, currentDayOfWeek); // Family Bricks
+    await syncCalendly(todayStr); // Nested Meetings
+
         renderRedLine();
     }
 
