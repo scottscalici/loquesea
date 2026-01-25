@@ -15,7 +15,22 @@
         .container { max-width: 800px; margin: auto; }
         .nav-bar { display: flex; gap: 10px; align-items: center; background: #222; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
         #timeline { position: relative; width: 100%; border-left: 2px solid #333; margin-top: 20px; }
-        
+        #all-day-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.all-day-brick {
+    background: #555;
+    border-left: 8px solid #e67e22;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 0.9em;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
         .brick { 
             position: absolute; 
             width: calc(100% - 40px); 
@@ -51,6 +66,7 @@
         <button onclick="goToToday()">Today</button>
     </div>
     <h2 id="day-header">Loading Schedule...</h2>
+    <div id="all-day-container"></div>
     <div id="timeline"></div>
 </div>
 
@@ -82,7 +98,15 @@
         brick.innerHTML = `<strong>${start} - ${end}</strong><br>${title}`;
         timeline.appendChild(brick);
     }
+function renderAllDayBrick(title) {
+    const container = document.getElementById('all-day-container');
+    const div = document.createElement('div');
+    div.className = 'all-day-brick';
+    div.innerHTML = `<strong>All Day</strong><br>${title}`;
+    container.appendChild(div);
+}
 
+    
     // --- 2. SCHOOL CYCLE MODULE (Step 4) ---
     async function syncSchoolCycle(todayStr) {
         try {
@@ -178,7 +202,12 @@ async function syncCozi(todayMatch, currentDayOfWeek) {
       if (!occursToday(block, todayMatch, currentDayOfWeek)) return;
 
       const startTime = getStartTime(block);
-      if (!startTime) return; // skip all-day events for planner grid
+
+if (!startTime) {
+  // ALL-DAY EVENT
+  renderAllDayBrick(`🏠 ${summary}`);
+  return;
+}
 
       const key = startTime + summary;
       if (takenTimes.has(key)) return;
@@ -209,7 +238,8 @@ async function syncCozi(todayMatch, currentDayOfWeek) {
         const timeline = document.getElementById('timeline');
         timeline.innerHTML = '';
         timeline.style.height = `${(22 - CONFIG.dayStartHour) * 60 * CONFIG.pixelsPerMinute}px`;
-        
+        document.getElementById('all-day-container').innerHTML = '';
+
         document.getElementById('date-picker').value = todayStr;
         document.getElementById('day-header').innerText = `Schedule for ${todayStr} (${currentDayOfWeek})`;
 
