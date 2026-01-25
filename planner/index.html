@@ -168,22 +168,51 @@
     }
 
     // --- 3. COZI & CALENDLY MODULES (Simplified for Space) ---
+    
     async function syncCozi(todayMatch, dow) {
-        try {
-            const res = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
-            const text = (await res.text()).replace(/\r\n /g, "");
-            const vevents = text.split("BEGIN:VEVENT");
-            vevents.forEach(block => {
-                const summary = block.match(/SUMMARY:(.*)/)?.[1]?.trim() || "Event";
-                const startMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
-                const startDate = block.match(/DTSTART.*:(\d{8})/)?.[1];
-                if (startDate === todayMatch && startMatch) {
-                    const sTime = `${startMatch[1]}:${startMatch[2]}`;
-                    renderBrick(sTime, addMinutes(sTime, 60), `🏠 ${summary}`, "orange");
-                }
-            });
-        } catch (e) { console.error("Cozi Error"); }
-    }
+    try {
+        const res = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
+        let text = await res.text();
+        text = text.replace(/\r\n /g, ""); // Fix Cozi line wrapping
+        const vevents = text.split("BEGIN:VEVENT");
+
+        // Helper to check if event happens today (handles recurring)
+        const occursToday = (block, today, dayOfWeek) => {
+            const startM = block.match(/DTSTART[:;](?:.*T)?(\d{8})/);
+            if (!startM) return false;
+            const startDate = startM[1];
+
+            // 1. Direct match (One-off)
+            if (startDate === today) return true;
+
+            // 2. Recurring match (Weekly/Daily)
+            const rruleMatch = block.match(/RRULE:(.*)/);
+            if (rruleMatch && startDate < today) {
+                const rrule = rruleMatch[1];
+                if (rrule.includes("FREQ=WEEKLY") && rrule.includes("BYDAY=" + dayOfWeek)) return true;
+                if (rrule.includes("FREQ=DAILY")) return true;
+            }
+            return false;
+        };
+
+        vevents.forEach(block => {
+            if (!occursToday(block, todayMatch, dow)) return;
+
+            const summary = block.match(/SUMMARY:(.*)/)?.[1]?.trim() || "Event";
+            const timeMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
+            
+            if (timeMatch) {
+                const sTime = `${timeMatch[1]}:${timeMatch[2]}`;
+                // Render with orange for Cozi
+                renderBrick(sTime, addMinutes(sTime, 90), `🏠 ${summary}`, "orange");
+            } else {
+                renderAllDayBrick(`🏠 ${summary}`);
+            }
+        });
+    } catch (e) { console.error("Cozi Error:", e); }
+}
+
+    
 
     async function syncCalendly(todayStr) {
         if (!CONFIG.calendlyToken || CONFIG.calendlyToken.includes('PASTE')) return;
