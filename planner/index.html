@@ -113,6 +113,16 @@ function addMinutes(t, m) {
     return d.toTimeString().slice(0, 5);
 }
 
+    function localDayToUTCWindow(dateStr) {
+    const localStart = new Date(dateStr + "T00:00:00");
+    const localEnd = new Date(dateStr + "T23:59:59");
+
+    return {
+        min: localStart.toISOString(),
+        max: localEnd.toISOString()
+    };
+}
+
 function subtractMinutes(t, m) {
     const [h, min] = t.split(':').map(Number);
     const d = new Date();
@@ -310,10 +320,12 @@ async function syncCalendly(todayStr) {
         );
         const userData = await userRes.json();
 
-        const eventsRes = await fetch(
-            `https://api.calendly.com/scheduled_events?user=${userData.resource.uri}&min_start_time=${todayStr}T00:00:00Z&max_start_time=${todayStr}T23:59:59Z`,
-            { headers: { Authorization: `Bearer ${CONFIG.calendlyToken}` } }
-        );
+        const { min, max } = localDayToUTCWindow(todayStr);
+
+const eventsRes = await fetch(
+  `https://api.calendly.com/scheduled_events?user=${userData.resource.uri}&min_start_time=${min}&max_start_time=${max}`,
+  { headers: { Authorization: `Bearer ${CONFIG.calendlyToken}` } }
+);
 
         const eventsData = await eventsRes.json();
 
