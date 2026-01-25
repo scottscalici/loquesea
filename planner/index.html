@@ -228,20 +228,26 @@ async function buildMyDay() {
 
 // --- STEP 5: COZI BRICKS (The Day-of-Week Filter) ---
 const daysMap = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
-const currentDayOfWeek = daysMap[currentSelectedDate.getDay()]; // e.g., "SA"
+// Use the date we are actually looking at on the screen
+const activeDate = currentSelectedDate || new Date(); 
+const currentDayOfWeek = daysMap[activeDate.getDay()]; 
+
+console.log("Filtering for:", currentDayOfWeek); // Check your console for this!
 
 vevents.forEach(block => {
     const summary = block.match(/SUMMARY:(.*)/)?.[1]?.trim() || "Event";
     const rrule = block.match(/RRULE:(.*)/)?.[1];
+    
+    // 1. Check for one-off events (Exact date match)
     const isTodayMatch = block.includes(todayMatch);
     
-    // Check if the recurrence rule actually includes TODAY's day of the week
+    // 2. Check for recurring events (Day of week match)
+    // We look for "BYDAY=" followed by the day code (e.g., BYDAY=MO)
     const dayMatch = rrule ? rrule.includes(`BYDAY=${currentDayOfWeek}`) : false;
     
-    // THE LOGIC: Show if it's explicitly for today OR if it's a recurrence that lands on this specific day
     let showToday = isTodayMatch || (rrule && dayMatch);
 
-    // Exception check: If you deleted it in Cozi, don't show it!
+    // 3. The "Delete" Rule (EXDATE)
     if (block.includes(`EXDATE:${todayMatch}`)) showToday = false;
 
     if (showToday) {
@@ -249,14 +255,12 @@ vevents.forEach(block => {
         if (sMatch) {
             const sTime = `${sMatch[1]}:${sMatch[2]}`;
             if (!takenTimes.has(sTime)) {
-                // Use a default 90-min duration for sports if DTEND is missing
                 renderBrick(sTime, addMinutes(sTime, 90), `🏠 ${summary}`, "orange", []);
                 takenTimes.add(sTime);
             }
         }
     }
-});
-        
+});        
         renderCurrentTimeLine();
 
     } catch (error) {
