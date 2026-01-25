@@ -181,7 +181,89 @@
         currentSelectedDate = new Date(e.target.value + "T12:00:00");
         updateUI();
     });
+async function buildMyDay() {
+    try {
+        const [scheduleRes, calendarRes, coziRes] = await Promise.all([
+            fetch(CONFIG.scheduleUrl),
+            fetch(CONFIG.calendarUrl),
+            fetch(CONFIG.coziUrl)
+        ]);
 
+        const schedule = await scheduleRes.json();
+        const calendar = await calendarRes.json();
+        const coziText = await coziRes.text();
+
+        const now = currentSelectedDate || new Date();
+        const todayStr = now.toISOString().split('T')[0]; 
+        const todayMatch = todayStr.replace(/-/g, ''); 
+        
+        const rawValue = schedule.overrides?.[todayStr] || calendar[todayStr] || "A";
+        const dayTypeMap = { "A": "A_Day", "B": "B_Day", "PD": "PD_Day", "Work": "PD_Day" };
+        const dayTypeKey = dayTypeMap[rawValue] || rawValue;
+        
+        document.getElementById('day-header').innerText = `${todayStr} (${dayTypeKey})`;
+        const timeline = document.getElementById('timeline');
+        timeline.innerHTML = '';
+
+        // --- STEP 3: MORNING LAUNCH (Existing) ---
+        if (schedule.hard_stops?.school_dropoff) {
+            const dropOff = schedule.hard_stops.school_dropoff;
+            const routine = schedule.definitions.routines[dropOff.trigger_routine];
+            const wheelsUp = subtractMinutes(dropOff.time, dropOff.commute_minutes);
+            const wakeUp = subtractMinutes(wheelsUp, routine.duration);
+            renderBrick(wakeUp, wheelsUp, routine.label, "purple", routine.subtasks);
+        }
+
+        // --- STEP 4: FOUNDATION BRICKS (The Missing Link) ---
+        const dayBricks = schedule.days[dayTypeKey] || [];
+        dayBricks.forEach(brick => {
+            const temp = schedule.definitions.brick_templates[brick.template] || {color: "grey"};
+            const end = brick.end || addMinutes(brick.start, brick.duration);
+            renderBrick(brick.start, end, brick.label, temp.color, []);
+        });
+
+        // --- STEP 5: COZI BRICKS (The New 2026 Brain) ---
+        const vevents = coziText.replace(/\r\n /g, '').split("BEGIN:VEVENT");
+        let takenTimes = new Set(); 
+
+        vevents.forEach(block => {
+            const summary = block.match(/SUMMARY:(.*)/)?.[1]?.trim() || "Event";
+            const startLine = block.match(/DTSTART[^:]*:(.*)/)?.[1];
+            const rrule = block.match(/RRULE:(.*)/)?.[1];
+            
+            if (startLine) {
+                const eventDate = startLine.substring(0, 8); 
+                const isTodayMatch = block.includes(todayMatch);
+                const isRecurring = !!rrule;
+                
+                let showToday = isTodayMatch;
+                if (isRecurring && eventDate < todayMatch) {
+                    const untilMatch = rrule.match(/UNTIL=(\d{8})/);
+                    if (!untilMatch || untilMatch[1] >= todayMatch) showToday = true;
+                }
+
+                // Exception check for deleted practices
+                if (block.includes(`EXDATE:${todayMatch}`)) showToday = false;
+
+                if (showToday) {
+                    const sMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
+                    if (sMatch) {
+                        const sTime = `${sMatch[1]}:${sMatch[2]}`;
+                        if (!takenTimes.has(sTime)) {
+                            renderBrick(sTime, addMinutes(sTime, 90), `🏠 ${summary}`, "orange", []);
+                            takenTimes.add(sTime);
+                        }
+                    }
+                }
+            }
+        });
+
+        renderCurrentTimeLine();
+
+    } catch (error) {
+        console.error("Step 4/5 Error:", error);
+    }
+}
     // Initial Load
     updateUI();
     setInterval(renderRedLine, 60000);
