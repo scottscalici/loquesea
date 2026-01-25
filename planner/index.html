@@ -142,31 +142,41 @@
         } catch (e) { console.error("School Cycle Error:", e); }
     }
 
-    async function syncCozi(todayMatch, dow) {
+        async function syncCozi(todayMatch, dow) {
         try {
             const res = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
             let text = (await res.text()).replace(/\r\n /g, "");
             const vevents = text.split("BEGIN:VEVENT");
             
             vevents.forEach(block => {
-                const startM = block.match(/DTSTART[:;](?:.*T)?(\d{8})/);
-                if (!startM) return;
-                const startDate = startM[1];
+                // Check if the block mentions today's date anywhere in the start fields
+                const hasDate = block.includes(`DTSTART:${todayMatch}`) || 
+                                block.includes(`DTSTART;VALUE=DATE:${todayMatch}`);
+                
+                // Also check for recurring weekly events
+                const isRecurring = block.includes("RRULE") && block.includes("BYDAY=" + dow);
 
-                // Simple check for now: date match OR Recurring
-                const isToday = startDate === todayMatch || (block.includes("RRULE") && block.includes("BYDAY=" + dow));
+                if (hasDate || isRecurring) {
+                    const summaryMatch = block.match(/SUMMARY:(.*)/);
+                    if (!summaryMatch) return;
+                    const summary = summaryMatch[1].trim();
 
-                if (isToday) {
-                    const summary = block.match(/SUMMARY:(.*)/)?.[1]?.trim() || "Event";
+                    // Try to find a time (HHMM)
                     const timeMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
+                    
                     if (timeMatch) {
                         const sTime = `${timeMatch[1]}:${timeMatch[2]}`;
+                        // We use 90 mins as a standard Lego brick size for Cozi items
                         renderBrick(sTime, addMinutes(sTime, 90), `🏠 ${summary}`, "orange");
+                    } else {
+                        // If no time found, it's an all-day/milestone event
+                        renderAllDayBrick(`🏠 ${summary}`);
                     }
                 }
             });
-        } catch (e) { console.error("Cozi Error"); }
+        } catch (e) { console.error("Cozi Error:", e); }
     }
+
 
     async function syncCalendly(todayStr) {
         if (!CONFIG.calendlyToken || CONFIG.calendlyToken.includes('PASTE')) return;
