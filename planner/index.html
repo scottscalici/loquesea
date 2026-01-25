@@ -22,7 +22,24 @@
         .purple { background: var(--brick-purple); }
         .orange { background: var(--brick-orange); }
         #time-marker { position: absolute; width: 100%; border-top: 2px solid red; z-index: 100; pointer-events: none; }
-        
+        #time-marker {
+    position: absolute;
+    width: 100%;
+    border-top: 2px solid #ff4757; /* A bright Lego red */
+    z-index: 100;
+    pointer-events: none;
+    transition: top 0.3s linear;
+}
+
+#time-marker::after {
+    content: '●';
+    color: #ff4757;
+    position: absolute;
+    left: -10px;
+    top: -9px;
+    font-size: 18px;
+}
+
         /* Nesting Style for Calendly */
         .blue-meeting { 
             background: #2980b9 !important; 
@@ -215,14 +232,38 @@
     function subtractMinutes(t, m) { const [h, min] = t.split(':').map(Number); const d = new Date(); d.setHours(h, min - m); return d.toTimeString().slice(0, 5); }
 
     function renderRedLine() {
-        const now = new Date();
-        if (now.toLocaleDateString('sv') !== currentSelectedDate.toLocaleDateString('sv')) return;
-        const elapsed = (now.getHours() - CONFIG.dayStartHour) * 60 + now.getMinutes();
-        let marker = document.getElementById('time-marker') || document.createElement('div');
+    const now = new Date();
+    // Only show the line if we are looking at "Today"
+    if (now.toLocaleDateString('sv') !== currentSelectedDate.toLocaleDateString('sv')) {
+        const existing = document.getElementById('time-marker');
+        if (existing) existing.remove();
+        return;
+    }
+
+    const h = now.getHours();
+    const m = now.getMinutes();
+    
+    // Calculate total minutes since the start of the dashboard (5 AM)
+    const elapsedMins = (h - CONFIG.dayStartHour) * 60 + m;
+    
+    // If it's before 5 AM or after 10 PM, hide the line
+    if (elapsedMins < 0 || h >= 22) {
+        const existing = document.getElementById('time-marker');
+        if (existing) existing.remove();
+        return;
+    }
+
+    let marker = document.getElementById('time-marker');
+    if (!marker) {
+        marker = document.createElement('div');
         marker.id = 'time-marker';
         document.getElementById('timeline').appendChild(marker);
-        marker.style.top = `${elapsed * CONFIG.pixelsPerMinute}px`;
     }
+    
+    const topPosition = elapsedMins * CONFIG.pixelsPerMinute;
+    marker.style.top = `${topPosition}px`;
+}
+
 
     document.getElementById('date-picker').addEventListener('change', (e) => {
         currentSelectedDate = new Date(e.target.value + "T12:00:00");
