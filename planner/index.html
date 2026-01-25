@@ -142,7 +142,7 @@
         } catch (e) { console.error("School Cycle Error:", e); }
     }
 
-        async function syncCozi(todayMatch, dow) {
+     async function syncCozi(todayMatch, dow) {
     try {
         const res = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
         let text = (await res.text()).replace(/\r\n /g, "");
@@ -157,23 +157,25 @@
             if (!startMatch) return;
             const startDate = startMatch[1];
 
-            const isRecurring = block.includes("RRULE");
-            let shouldShow = false;
+            // 1. Is it a direct match for today?
+            const isToday = (startDate === todayMatch);
 
-            if (isRecurring) {
-                // If it's recurring, only show if it matches the Day of Week (e.g., MO, TU)
-                // AND ensure the start date isn't in the future
-                if (block.includes("BYDAY=" + dow) && startDate <= todayMatch) {
-                    shouldShow = true;
-                }
-            } else {
-                // If NOT recurring, it MUST be a direct match for today's date
-                if (startDate === todayMatch) {
-                    shouldShow = true;
+            // 2. Is it a recurring event that applies today?
+            let isRecurringToday = false;
+            const rruleMatch = block.match(/RRULE:(.*)/);
+            if (rruleMatch) {
+                const rrule = rruleMatch[1];
+                // Check if it's a daily event OR if today's code (MO, TU, etc) is in the BYDAY section
+                if (rrule.includes("FREQ=DAILY") || rrule.includes(dow)) {
+                    // Only show if the recurring series has already started
+                    if (startDate <= todayMatch) {
+                        isRecurringToday = true;
+                    }
                 }
             }
 
-            if (shouldShow) {
+            if (isToday || isRecurringToday) {
+                // Try to find a time (e.g., T113000)
                 const timeMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
                 if (timeMatch) {
                     const sTime = `${timeMatch[1]}:${timeMatch[2]}`;
@@ -185,6 +187,7 @@
         });
     } catch (e) { console.error("Cozi Error:", e); }
 }
+
 
 
 
