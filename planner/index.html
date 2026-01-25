@@ -101,45 +101,51 @@
 async function syncCozi(todayMatch, currentDayOfWeek) {
     try {
         const res = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
-        const text = (await res.text()).replace(/\r\n /g, '');
+        const text = (await res.text()).replace(/\r\n /g, ''); // Heal broken lines
         const vevents = text.split("BEGIN:VEVENT");
         let takenTimes = new Set();
 
         vevents.forEach(block => {
             const summary = block.match(/SUMMARY:(.*)/)?.[1]?.trim() || "Event";
             const rrule = block.match(/RRULE:(.*)/)?.[1] || "";
-            const startLine = block.match(/DTSTART[^:]*:(.*)/)?.[1] || "";
             
-            // 1. DATE CHECKS
-            const isOneOffToday = block.includes(todayMatch);
-            const isRecurring = rrule.includes("FREQ=");
+            // 1. HARD DATE MATCH (The event explicitly mentions 20260124)
+            const isExplicitToday = block.includes(`:${todayMatch}`) || block.includes(`VALUE=DATE:${todayMatch}`);
             
-            // 2. THE WALL KILLER: Does the pattern match CURRENT day of week?
-            // If currentDayOfWeek is "SA", we look for "BYDAY=SA" or "BYDAY=...,SA,..."
-            const isPatternMatch = rrule.includes(`BYDAY=${currentDayOfWeek}`);
-            
-            // 3. EXCEPTION CHECK: Did you delete this specific day in the Cozi app?
-            const isDeleted = block.includes(`EXDATE:${todayMatch}`) || 
-                             block.includes(`EXDATE;VALUE=DATE:${todayMatch}`);
+            // 2. RECURRENCE MATCH (The event repeats on this specific Day of Week)
+            // We look for the "BYDAY" code (e.g., SA for Saturday)
+            const isRecurringDay = rrule.includes(`BYDAY=${currentDayOfWeek}`) || 
+                                   rrule.includes(`,${currentDayOfWeek}`) || 
+                                   (rrule.includes("FREQ=DAILY") && !rrule.includes("BYDAY"));
 
-            // LOGIC: Show if (One-off today OR (Recurring AND matches Day of Week)) AND NOT deleted
-            let showToday = (isOneOffToday || (isRecurring && isPatternMatch)) && !isDeleted;
+            // 3. THE "DELETED" CHECK (Critical for Jan 28th)
+            const isDeletedToday = block.includes(`EXDATE:${todayMatch}`) || 
+                                   block.includes(`EXDATE;VALUE=DATE:${todayMatch}`);
 
-            if (showToday) {
+            // LOGIC: Only show if it's explicitly today OR a matching recurring pattern, 
+            // AND it hasn't been deleted, AND it's not a master template with no today-data.
+            let shouldRender = (isExplicitToday || isRecurringDay) && !isDeletedToday;
+
+            // Extra safety: If it's recurring, make sure today isn't BEFORE the event started
+            const dtStart = block.match(/DTSTART[:;](?:.*T)?(\d{8})/)?.[1];
+            if (dtStart && dtStart > todayMatch) shouldRender = false;
+
+            if (shouldRender) {
                 const sMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
                 if (sMatch) {
                     const sTime = `${sMatch[1]}:${sMatch[2]}`;
+                    const uniqueKey = sTime + summary;
                     
-                    // Deduplicate so we don't stack the same event twice
-                    if (!takenTimes.has(sTime + summary)) {
+                    if (!takenTimes.has(uniqueKey)) {
                         renderBrick(sTime, addMinutes(sTime, 90), `🏠 ${summary}`, "orange");
-                        takenTimes.add(sTime + summary);
+                        takenTimes.add(uniqueKey);
                     }
                 }
             }
         });
-    } catch (e) { console.error("Cozi Sync Error", e); }
+    } catch (e) { console.error("Cozi Filter Error:", e); }
 }
+    
     // --- 4. THE CONDUCTOR ---
     async function updateUI() {
         const todayStr = currentSelectedDate.toLocaleDateString('sv'); // Local YYYY-MM-DD
