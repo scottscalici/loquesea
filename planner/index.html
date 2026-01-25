@@ -246,6 +246,52 @@ async function syncCozi() {
         UIRenderer.render();
     } catch (e) { console.error("Cozi Sync Error", e); }
 }
+    
+const ScheduleManager = {
+    jsonUrl: "https://raw.githubusercontent.com/scottscalici/imagenes/refs/heads/main/planes/calendario.json",
+    coziUrl: "https://rest.cozi.com/api/ext/1103/f9f7020d-05c9-4720-b813-2155b4485be7/icalendar/feed/feed.ics",
+    selectedDate: new Date().toISOString().split('T')[0],
+
+    init: async () => {
+        document.getElementById('date-select').value = ScheduleManager.selectedDate;
+        const sToken = localStorage.getItem('saved_cal_token');
+        const sUri = localStorage.getItem('saved_cal_uri');
+        if (sToken) document.getElementById('cal-token').value = sToken;
+        if (sUri) document.getElementById('user-uri').value = sUri;
+        await ScheduleManager.loadFromGitHub();
+        if (sToken && sUri) refreshDashboard();
+        syncCozi();
+    },
+    changeDate: (val) => {
+        ScheduleManager.selectedDate = val;
+        ScheduleManager.loadFromGitHub();
+        refreshDashboard();
+        syncCozi();
+    },
+    resetToday: () => {
+        ScheduleManager.selectedDate = new Date().toISOString().split('T')[0];
+        document.getElementById('date-select').value = ScheduleManager.selectedDate;
+        ScheduleManager.changeDate(ScheduleManager.selectedDate);
+    },
+    loadFromGitHub: async () => {
+        try {
+            const res = await fetch(ScheduleManager.jsonUrl);
+            const data = await res.json();
+            const dayInfo = data.map.find(item => item.fecha === ScheduleManager.selectedDate);
+            scheduleState.currentCycle = dayInfo?.ciclo || null;
+            scheduleState.note = dayInfo?.note || "";
+            let blocks = [...templates.base];
+            if (scheduleState.currentCycle === "A") blocks = [...blocks, ...templates.cicloA];
+            if (scheduleState.currentCycle === "B") blocks = [...blocks, ...templates.cicloB];
+            scheduleState.dailyBlocks = blocks;
+            UIRenderer.render();
+        } catch (e) {
+            scheduleState.dailyBlocks = [...templates.base];
+            UIRenderer.render();
+        }
+    }
+};
+
 async function findMyUri() {
     const token = document.getElementById('cal-token').value.trim();
     if (!token) return alert("Paste token first!");
