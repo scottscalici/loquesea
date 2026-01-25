@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5278.45,
+    "checking_balance": 5277.74,
     "travel_savings": 0,
-    "weekly_budget_remaining": 413.1899999999999,
+    "weekly_budget_remaining": 412.4799999999999,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-01-19T05:00:00.000Z"
@@ -598,6 +598,14 @@
       "vendor": "Disney/Hulu/HBO",
       "amount": -32.99,
       "category": "BILL"
+    },
+    {
+      "date": "2026-01-25",
+      "vendor": "Kroger",
+      "who": "Abbi",
+      "what": "",
+      "amount": -0.71,
+      "category": "MANUAL"
     }
   ],
   "bills": [
