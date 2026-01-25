@@ -15,44 +15,13 @@
         .container { max-width: 800px; margin: auto; }
         .nav-bar { display: flex; gap: 10px; align-items: center; background: #222; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
         #timeline { position: relative; width: 100%; border-left: 2px solid #333; margin-top: 20px; }
-        #all-day-container {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 12px;
-}
-
-.all-day-brick {
-    background: #555;
-    border-left: 8px solid #e67e22;
-    border-radius: 8px;
-    padding: 10px;
-    font-size: 0.9em;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-}
-
-        .brick { 
-            position: absolute; 
-            width: calc(100% - 40px); 
-            margin-left: 20px;
-            border-radius: 8px; 
-            padding: 10px; 
-            border-left: 8px solid rgba(0,0,0,0.3);
-            box-sizing: border-box;
-            font-size: 0.9em;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
+        #all-day-container { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+        .all-day-brick { background: #555; border-left: 8px solid #e67e22; border-radius: 8px; padding: 10px; font-size: 0.9em; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        .brick { position: absolute; width: calc(100% - 40px); margin-left: 20px; border-radius: 8px; padding: 10px; border-left: 8px solid rgba(0,0,0,0.3); box-sizing: border-box; font-size: 0.9em; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
         .blue { background: var(--brick-blue); }
         .purple { background: var(--brick-purple); }
         .orange { background: var(--brick-orange); }
-        
-        #time-marker {
-            position: absolute;
-            width: 100%;
-            border-top: 2px solid red;
-            z-index: 100;
-            pointer-events: none;
-        } or
+        #time-marker { position: absolute; width: 100%; border-top: 2px solid red; z-index: 100; pointer-events: none; }
     </style>
 </head>
 <body>
@@ -88,166 +57,121 @@
         const brick = document.createElement('div');
         const [hS, mS] = start.split(':').map(Number);
         const [hE, mE] = end.split(':').map(Number);
-        
         const startMins = (hS - CONFIG.dayStartHour) * 60 + mS;
         const durationMins = (hE * 60 + mE) - (hS * 60 + mS);
-
         brick.className = `brick ${colorClass}`;
         brick.style.top = `${startMins * CONFIG.pixelsPerMinute}px`;
         brick.style.height = `${durationMins * CONFIG.pixelsPerMinute}px`;
         brick.innerHTML = `<strong>${start} - ${end}</strong><br>${title}`;
         timeline.appendChild(brick);
     }
-function renderAllDayBrick(title) {
-    const container = document.getElementById('all-day-container');
-    const div = document.createElement('div');
-    div.className = 'all-day-brick';
-    div.innerHTML = `<strong>All Day</strong><br>${title}`;
-    container.appendChild(div);
-}
 
-  // --- 2. SCHOOL CYCLE MODULE (Updated for JSON & Calendly) ---
-async function syncSchoolCycle(todayStr) {
-    try {
-        // Fetch both your A/B Calendar and your Schedule Blueprint
-        const [calRes, schedRes] = await Promise.all([
-            fetch(CONFIG.calendarUrl),
-            fetch(CONFIG.scheduleUrl)
-        ]);
-        const calData = await calRes.json();
-        const schedule = await schedRes.json();
+    function renderAllDayBrick(title) {
+        const container = document.getElementById('all-day-container');
+        const div = document.createElement('div');
+        div.className = 'all-day-brick';
+        div.innerHTML = `<strong>All Day</strong><br>${title}`;
+        container.appendChild(div);
+    }
 
-        // 1. Get Today's Cycle (A, B, or No School)
-        const dayInfo = calData.map?.find(d => d.fecha === todayStr);
-        const cycle = dayInfo?.ciclo; 
+    // --- 2. SCHOOL CYCLE MODULE ---
+    async function syncSchoolCycle(todayStr) {
+        try {
+            const [calRes, schedRes] = await Promise.all([
+                fetch(CONFIG.calendarUrl),
+                fetch(CONFIG.scheduleUrl)
+            ]);
+            const calData = await calRes.json();
+            const schedule = await schedRes.json();
+            const dayInfo = calData.map?.find(d => d.fecha === todayStr);
+            const cycle = dayInfo?.ciclo; 
+            const dayNum = currentSelectedDate.getDay();
+            if (dayNum === 0 || dayNum === 6) return; 
 
-        // 2. Weekend Check: Don't show work blocks on Sat/Sun
-        const dayNum = currentSelectedDate.getDay();
-        const isWeekend = (dayNum === 0 || dayNum === 6);
+            if (schedule.hard_stops?.school_dropoff) {
+                const dropoff = schedule.hard_stops.school_dropoff;
+                const routine = schedule.definitions.routines[dropoff.trigger_routine];
+                const wheelsUp = subtractMinutes(dropoff.time, dropoff.commute_minutes);
+                const wakeUp = subtractMinutes(wheelsUp, routine.duration);
+                renderBrick(wakeUp, wheelsUp, `🚀 ${routine.label}`, "purple");
+            }
 
-        if (isWeekend) {
-            console.log("Weekend mode: Skipping school/work blocks.");
-            return; 
-        }
+            const dayKey = cycle === "A" ? "A_Day" : (cycle === "B" ? "B_Day" : null);
+            if (dayKey && schedule.days[dayKey]) {
+                schedule.days[dayKey].forEach(brick => {
+                    const temp = schedule.definitions.brick_templates[brick.template];
+                    const endTime = brick.end || addMinutes(brick.start, brick.duration || 60);
+                    renderBrick(brick.start, endTime, brick.label, temp?.color || "blue");
+                });
+            }
+        } catch (e) { console.error("School Cycle Error:", e); }
+    }
 
-        // 3. Render Routine (The Morning Launch)
-        // This calculates wake-up time based on your JSON hard_stops
-        if (schedule.hard_stops?.school_dropoff) {
-            const dropoff = schedule.hard_stops.school_dropoff;
-            const routine = schedule.definitions.routines[dropoff.trigger_routine];
-            const wheelsUp = subtractMinutes(dropoff.time, dropoff.commute_minutes);
-            const wakeUp = subtractMinutes(wheelsUp, routine.duration);
-            renderBrick(wakeUp, wheelsUp, `🚀 ${routine.label}`, "purple");
-        }
+    // --- 3. COZI MODULE ---
+    async function syncCozi(todayMatch, dow) {
+        try {
+            const res = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
+            const text = (await res.text()).replace(/\r\n /g, "");
+            const vevents = text.split("BEGIN:VEVENT");
+            let takenTimes = new Set();
 
-        // 4. Render Day Bricks (A_Day or B_Day)
-        const dayKey = cycle === "A" ? "A_Day" : (cycle === "B" ? "B_Day" : null);
-        if (dayKey && schedule.days[dayKey]) {
-            schedule.days[dayKey].forEach(brick => {
-                const temp = schedule.definitions.brick_templates[brick.template];
-                const endTime = brick.end || addMinutes(brick.start, brick.duration || 60);
-                renderBrick(brick.start, endTime, brick.label, temp?.color || "blue");
+            const getStartDate = (b) => { const m = b.match(/DTSTART.*:(\d{8})/); return m ? m[1] : null; };
+            const getStartTime = (b) => { const m = b.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/); return m ? `${m[1]}:${m[2]}` : null; };
+            const parseRRule = (r) => { const obj = {}; r.split(";").forEach(p => { const [k, v] = p.split("="); obj[k] = v; }); return obj; };
+            const isExcluded = (b, t) => { const matches = [...b.matchAll(/EXDATE[^:]*:(\d{8})/g)]; return matches.some(m => m[1] === t); };
+
+            const occursToday = (block, today, dayOfWeek) => {
+                const startDate = getStartDate(block);
+                if (!startDate || isExcluded(block, today)) return false;
+                const rruleMatch = block.match(/RRULE:(.*)/);
+                if (!rruleMatch) return startDate === today;
+                const rrule = parseRRule(rruleMatch[1]);
+                if (rrule.UNTIL && rrule.UNTIL.slice(0, 8) < today) return false;
+                if (startDate > today) return false;
+                switch (rrule.FREQ) {
+                    case "DAILY": return true;
+                    case "WEEKLY": return rrule.BYDAY ? rrule.BYDAY.includes(dayOfWeek) : false;
+                    case "YEARLY": return today.slice(4) === startDate.slice(4);
+                    default: return false;
+                }
+            };
+
+            vevents.forEach(block => {
+                if (!occursToday(block, todayMatch, dow)) return;
+                const summary = block.match(/SUMMARY:(.*)/)?.[1]?.trim() || "Event";
+                const startTime = getStartTime(block);
+                if (!startTime) { renderAllDayBrick(`🏠 ${summary}`); return; }
+                const key = startTime + summary;
+                if (!takenTimes.has(key)) {
+                    renderBrick(startTime, addMinutes(startTime, 90), `🏠 ${summary}`, "orange");
+                    takenTimes.add(key);
+                }
             });
-        }
-
-    } catch (e) { 
-        console.error("Modularity Error:", e); 
+        } catch (e) { console.error("Cozi Error:", e); }
     }
-}
 
-// Add this helper function at the very bottom of your <script> section
-function subtractMinutes(t, m) {
-    const [h, min] = t.split(':').map(Number);
-    const d = new Date(); d.setHours(h, min - m);
-    return d.toTimeString().slice(0, 5);
-}
-  
-
-    // 5. Frequency Logic
-    switch (rrule.FREQ) {
-        case "DAILY":
-            return true;
-        case "WEEKLY":
-            return rrule.BYDAY ? rrule.BYDAY.includes(dow) : false;
-        case "YEARLY":
-            return today.slice(4) === startDate.slice(4);
-        default:
-            return false;
-    }
-}
-    // ---------- main loop ----------
-
-    vevents.forEach(block => {
-      const summary =
-        block.match(/SUMMARY:(.*)/)?.[1]?.trim() || "Event";
-
-      if (!occursToday(block, todayMatch, currentDayOfWeek)) return;
-
-      const startTime = getStartTime(block);
-
-if (!startTime) {
-  // ALL-DAY EVENT
-  renderAllDayBrick(`🏠 ${summary}`);
-  return;
-}
-
-      const key = startTime + summary;
-      if (takenTimes.has(key)) return;
-
-      renderBrick(
-        startTime,
-        addMinutes(startTime, 90),
-        `🏠 ${summary}`,
-        "orange"
-      );
-
-      takenTimes.add(key);
-    });
-
-  } catch (e) {
-    console.error("Cozi Sync Error", e);
-  }
-}
-    
     // --- 4. THE CONDUCTOR ---
     async function updateUI() {
-        const todayStr = currentSelectedDate.toLocaleDateString('sv'); // Local YYYY-MM-DD
+        const todayStr = currentSelectedDate.toLocaleDateString('sv');
         const todayMatch = todayStr.replace(/-/g, '');
         const daysMap = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
         const currentDayOfWeek = daysMap[currentSelectedDate.getDay()];
-
-        // Reset Timeline
         const timeline = document.getElementById('timeline');
         timeline.innerHTML = '';
         timeline.style.height = `${(22 - CONFIG.dayStartHour) * 60 * CONFIG.pixelsPerMinute}px`;
         document.getElementById('all-day-container').innerHTML = '';
-
         document.getElementById('date-picker').value = todayStr;
         document.getElementById('day-header').innerText = `Schedule for ${todayStr} (${currentDayOfWeek})`;
-
-        // Run Modules
         await syncSchoolCycle(todayStr);
         await syncCozi(todayMatch, currentDayOfWeek);
-        
         renderRedLine();
     }
 
     // --- HELPERS ---
-    function changeDay(offset) {
-        currentSelectedDate.setDate(currentSelectedDate.getDate() + offset);
-        updateUI();
-    }
-
-    function goToToday() {
-        currentSelectedDate = new Date();
-        updateUI();
-    }
-
-    function addMinutes(t, m) {
-        const [h, min] = t.split(':').map(Number);
-        const d = new Date(); d.setHours(h, min + m);
-        return d.toTimeString().slice(0, 5);
-    }
+    function changeDay(offset) { currentSelectedDate.setDate(currentSelectedDate.getDate() + offset); updateUI(); }
+    function goToToday() { currentSelectedDate = new Date(); updateUI(); }
+    function addMinutes(t, m) { const [h, min] = t.split(':').map(Number); const d = new Date(); d.setHours(h, min + m); return d.toTimeString().slice(0, 5); }
+    function subtractMinutes(t, m) { const [h, min] = t.split(':').map(Number); const d = new Date(); d.setHours(h, min - m); return d.toTimeString().slice(0, 5); }
 
     function renderRedLine() {
         const now = new Date();
