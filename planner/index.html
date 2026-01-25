@@ -156,43 +156,50 @@ async function syncCozi(todayMatch, currentDayOfWeek) {
     }
 
     function occursToday(block, today, dow) {
-      const startDate = getStartDate(block);
-      if (!startDate) return false;
+    const startDate = getStartDate(block);
+    if (!startDate) return false;
 
-      // EXDATE always wins
-      if (isExcluded(block, today)) return false;
+    // 1. EXDATE always wins (handles deleted basketball practices)
+    if (isExcluded(block, today)) return false;
 
-      const rruleMatch = block.match(/RRULE:(.*)/);
-      if (!rruleMatch) {
-        // one-time event
-        return startDate === today;
-      }
-
-      const rrule = parseRRule(rruleMatch[1]);
-
-      // UNTIL cutoff
-      if (rrule.UNTIL && rrule.UNTIL.slice(0, 8) < today) return false;
-
-      // recurrence logic
-      switch (rrule.FREQ) {
-        case "DAILY":
-          return today >= startDate;
-
-        case "WEEKLY":
-          if (!rrule.BYDAY) return false;
-          if (!rrule.BYDAY.includes(dow)) return false;
-          return today >= startDate;
-
-        case "YEARLY": {
-          const m = block.match(/DTSTART.*:(\d{4})(\d{2})(\d{2})/);
-          return m && today.slice(4) === m[2] + m[3];
-        }
-
-        default:
-          return false;
-      }
+    const rruleMatch = block.match(/RRULE:(.*)/);
+    if (!rruleMatch) {
+        return startDate === today; // One-time event
     }
 
+    const rrule = parseRRule(rruleMatch[1]);
+
+    // 2. UNTIL cutoff (Kills the 2025 ghost events)
+    if (rrule.UNTIL && rrule.UNTIL.slice(0, 8) < today) return false;
+
+    // 3. START DATE check (Don't show events that haven't started yet)
+    if (startDate > today) return false;
+
+    // 4. INTERVAL logic (Handles "Every 2 weeks" etc.)
+    const interval = parseInt(rrule.INTERVAL) || 1;
+    if (interval > 1) {
+        const startDay = new Date(startDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'));
+        const currentDay = new Date(today.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'));
+        const diffDays = Math.floor((currentDay - startDay) / (1000 * 60 * 60 * 24));
+        
+        if (rrule.FREQ === "WEEKLY") {
+            const weeksDiff = Math.floor(diffDays / 7);
+            if (weeksDiff % interval !== 0) return false;
+        }
+    }
+
+    // 5. Frequency Logic
+    switch (rrule.FREQ) {
+        case "DAILY":
+            return true;
+        case "WEEKLY":
+            return rrule.BYDAY ? rrule.BYDAY.includes(dow) : false;
+        case "YEARLY":
+            return today.slice(4) === startDate.slice(4);
+        default:
+            return false;
+    }
+}
     // ---------- main loop ----------
 
     vevents.forEach(block => {
