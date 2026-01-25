@@ -174,7 +174,10 @@ function renderAllDayBrick(title) {
 async function syncSchoolCycle(todayStr) {
     try {
         const isWeekend = [0, 6].includes(currentSelectedDate.getDay());
-        if (isWeekend) return;
+        if (isWeekend) {
+    // Skip school blocks, but allow Cozi
+    return;
+}
 
         const [calRes, schedRes] = await Promise.all([
             fetch(CONFIG.calendarUrl),
@@ -315,6 +318,9 @@ async function updateUI() {
     document.getElementById('all-day-container').innerHTML = '';
     document.getElementById('date-picker').value = todayStr;
 
+    document.getElementById('day-header').innerText =
+        `Schedule for ${todayStr} (${dow})`;
+
     await syncSchoolCycle(todayStr);
     await syncCozi(todayMatch, dow);
 
@@ -325,6 +331,15 @@ document.getElementById('date-picker').addEventListener('change', e => {
     currentSelectedDate = new Date(e.target.value + "T12:00");
     updateUI();
 });
+function changeDay(offset) {
+    currentSelectedDate.setDate(currentSelectedDate.getDate() + offset);
+    updateUI();
+}
+
+function goToToday() {
+    currentSelectedDate = new Date();
+    updateUI();
+}
 
 updateUI();
 setInterval(renderRedLine, 60000);
