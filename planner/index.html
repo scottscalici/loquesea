@@ -123,32 +123,37 @@ async function loadPlaces() {
 /* =========================
    HELPERS
 ========================= */
-const arrivalTime = subtractMinutes(
+/* =========================
+   HELPERS
+========================= */
 
 function addMinutes(t, m) {
-    const [h, min] = t.split(':').map(Number);
-    const d = new Date(); d.setHours(h, min + m);
-    return d.toTimeString().slice(0, 5);
-}
-
-function localDayToUTCWindow(dateStr) {
-    return { min: new Date(dateStr + "T00:00:00").toISOString(), max: new Date(dateStr + "T23:59:59").toISOString() };
+  const [h, min] = t.split(':').map(Number);
+  const d = new Date();
+  d.setHours(h, min + m);
+  return d.toTimeString().slice(0, 5);
 }
 
 function subtractMinutes(timeStr, minutes) {
   const [h, m] = timeStr.split(":").map(Number);
   const d = new Date();
   d.setHours(h, m - minutes, 0, 0);
-  return d.toTimeString().slice(0,5);
+  return d.toTimeString().slice(0, 5);
 }
 
-    
+function localDayToUTCWindow(dateStr) {
+  return {
+    min: new Date(dateStr + "T00:00:00").toISOString(),
+    max: new Date(dateStr + "T23:59:59").toISOString()
+  };
+}
+
 function format12Hour(timeStr) {
-    if (!timeStr) return "";
-    let [h, m] = timeStr.split(':').map(Number);
-    const ampm = h >= 12 ? 'PM' : 'AM';
-    h = h % 12 || 12;
-    return `${h}:${m.toString().padStart(2, '0')} ${ampm}`;
+  if (!timeStr) return "";
+  let [h, m] = timeStr.split(':').map(Number);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return `${h}:${m.toString().padStart(2, '0')} ${ampm}`;
 }
 
 /* =========================
