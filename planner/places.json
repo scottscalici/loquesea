@@ -21,7 +21,7 @@
   },
   "coordinates": {
     "lat": 42.64583,
-    "lng": 82.90750
+    "lng": -82.90750
   }
 },
 "dakota_gym_entrance": {
@@ -34,17 +34,20 @@
   },
   "coordinates": {
     "lat": 42.64628,
-    "lng": 82.90983
+    "lng": -82.90983
   }
 },
-    "gym": {
-      "label": "Community Gym",
+    "Work": {
+      "label": "UAIS",
       "address": {
-        "line1": "789 Fitness Way",
-        "city": "Yourtown",
-        "state": "PA",
-        "zip": "19000"
-      }
+        "line1": "37400 Dodge Park Rd.",
+        "city": "Sterling Heights",
+        "state": "MI",
+        "zip": "48312"
+      },
+      "coordinates": {
+        "lat": 42.568499,
+        "lng": -83.008492
     }
   }
 }
