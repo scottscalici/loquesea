@@ -1,0 +1,54 @@
+{
+  "version": "1.0",
+
+  "defaults": {
+    "arrival_buffer_minutes": 10,
+    "parking_buffer_minutes": 5,
+    "warmup_minutes": 0
+  },
+
+  "places": {
+    "home": {
+      "label": "Home",
+      "role": "home",
+      "address": "YOUR HOME ADDRESS",
+      "maps": {
+        "apple": "https://maps.apple.com/?q=YOUR+HOME+ADDRESS",
+        "google": "https://www.google.com/maps/search/?api=1&query=YOUR+HOME+ADDRESS"
+      }
+    },
+
+    "work": {
+      "label": "Work",
+      "role": "work",
+      "address": "YOUR WORK ADDRESS",
+      "maps": {
+        "apple": "https://maps.apple.com/?q=YOUR+WORK+ADDRESS",
+        "google": "https://www.google.com/maps/search/?api=1&query=YOUR+WORK+ADDRESS"
+      }
+    },
+
+    "school_1": {
+      "label": "School",
+      "role": "school",
+      "address": "SCHOOL ADDRESS",
+      "arrival_buffer_minutes": 10,
+      "maps": {
+        "apple": "https://maps.apple.com/?q=SCHOOL+ADDRESS",
+        "google": "https://www.google.com/maps/search/?api=1&query=SCHOOL+ADDRESS"
+      }
+    },
+
+    "gym": {
+      "label": "Gym",
+      "role": "activity",
+      "address": "GYM ADDRESS",
+      "arrival_buffer_minutes": 15,
+      "warmup_minutes": 60,
+      "maps": {
+        "apple": "https://maps.apple.com/?q=GYM+ADDRESS",
+        "google": "https://www.google.com/maps/search/?api=1&query=GYM+ADDRESS"
+      }
+    }
+  }
+}
