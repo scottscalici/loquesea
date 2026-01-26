@@ -332,59 +332,51 @@ async function syncCalendly(todayStr) {
     if (!CONFIG.calendlyToken || CONFIG.calendlyToken === 'PASTE_IF_NEEDED') return;
 
     try {
-        const userRes = await fetch(
-            'https://api.calendly.com/users/me',
-            { headers: { Authorization: `Bearer ${CONFIG.calendlyToken}` } }
-        );
+        // 1. Wrap User Request in Proxy
+        const userUrl = 'https://api.calendly.com/users/me';
+        const userRes = await fetch(CONFIG.proxy + encodeURIComponent(userUrl), { 
+            headers: { Authorization: `Bearer ${CONFIG.calendlyToken}` } 
+        });
         const userData = await userRes.json();
 
+        // 2. Wrap Events Request in Proxy
         const { min, max } = localDayToUTCWindow(todayStr);
+        const eventsUrl = `https://api.calendly.com/scheduled_events?user=${userData.resource.uri}&min_start_time=${min}&max_start_time=${max}`;
+        
+        const eventsRes = await fetch(CONFIG.proxy + encodeURIComponent(eventsUrl), { 
+            headers: { Authorization: `Bearer ${CONFIG.calendlyToken}` } 
+        });
+        const eventsData = await eventsRes.json();
 
-    const eventsRes = await fetch(
-  `https://api.calendly.com/scheduled_events?user=${userData.resource.uri}&min_start_time=${min}&max_start_time=${max}`,
-  { headers: { Authorization: `Bearer ${CONFIG.calendlyToken}` } }
-);
+        const [year, month, day] = todayStr.split('-').map(Number);
 
-    const eventsData = await eventsRes.json();
+        eventsData.collection.forEach(ev => {
+            if (ev.status !== "active") return;
 
-const [year, month, day] = todayStr.split('-').map(Number);
+            const start = new Date(ev.start_time);
 
-eventsData.collection.forEach(ev => {
-    // ❌ Ignore canceled/rescheduled ghosts
-    if (ev.status !== "active") return;
+            // Hard local date match
+            if (
+                start.getFullYear() !== year ||
+                start.getMonth() + 1 !== month ||
+                start.getDate() !== day
+            ) {
+                return;
+            }
 
-    const start = new Date(ev.start_time);
+            const sTime = start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+            const eTime = new Date(ev.end_time).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 
-    // 🔒 Hard local date match
-    if (
-        start.getFullYear() !== year ||
-        start.getMonth() + 1 !== month ||
-        start.getDate() !== day
-    ) {
-        return;
-    }
-
-    const sTime = start.toLocaleTimeString('en-GB', {
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-
-    const eTime = new Date(ev.end_time).toLocaleTimeString('en-GB', {
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-
-    renderBrick(sTime, eTime, `📅 ${ev.name}`, "blue-meeting", [], {
-    source: "calendly",
-    nest: true
-});
-
+            renderBrick(sTime, eTime, `📅 ${ev.name}`, "blue-meeting", [], {
+                source: "calendly",
+                nest: true
+            });
+        }); // <-- Fixed missing bracket
 
     } catch (e) {
         console.error("Calendly error", e);
     }
-}
-
+} 
     
 /* =========================
    UI / NAV
