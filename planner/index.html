@@ -209,11 +209,26 @@ function restoreDefaultPopover() {
 document.addEventListener("click", () => popover.classList.add("hidden"));
 popover.addEventListener("click", (e) => {
   e.stopPropagation();
-  const action = e.target.dataset.action;
-  if (!action || !activeBrickData) return;
 
+  const action = e.target.dataset.action;
+  const placeKey = e.target.dataset.place;
+
+  // Main actions
   if (action === "travel") {
-    createTravelBlock("dakota_gym_entrance"); // TEMP: hardcoded
+    renderTravelPicker();
+    return;
+  }
+
+  if (action === "back") {
+    restoreDefaultPopover();
+    return;
+  }
+
+  // Selecting a place
+  if (placeKey) {
+    createTravelBlock(placeKey);
+    popover.classList.add("hidden");
+    return;
   }
 });
 
