@@ -331,20 +331,15 @@ async function syncCalendly(todayStr) {
 
     const eventsData = await eventsRes.json();
 
-// 🔒 HARD local-date match to prevent UTC bleed
 const [year, month, day] = todayStr.split('-').map(Number);
 
 eventsData.collection.forEach(ev => {
+    // ❌ Ignore canceled/rescheduled ghosts
+    if (ev.status !== "active") return;
+
     const start = new Date(ev.start_time);
 
-// 🔍 DEBUG — log every Calendly event
-    console.log(
-  ev.name,
-  ev.start_time,
-  new Date(ev.start_time).toString()
-);
-
-    // Authoritative local date check
+    // 🔒 Hard local date match
     if (
         start.getFullYear() !== year ||
         start.getMonth() + 1 !== month ||
