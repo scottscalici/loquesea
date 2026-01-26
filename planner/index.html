@@ -482,11 +482,10 @@ function stackOverlappingBricks() {
     // Reset layout
     const stackable = renderedBricks.filter(b => !b.meta?.nest);  
     stackable.forEach(b => {
-        b.column = 0;
-        b.totalColumns = 1;
-        b.el.style.left = '0';
-        b.el.style.width = 'calc(100% - 40px)';
-    });
+    b.column = 0;
+    b.totalColumns = 1;
+});
+
 
     // Sort by start time
     const bricks = [...stackable].sort((a, b) => a.start - b.start);
