@@ -54,6 +54,50 @@
     opacity: 0.85;
 }
 
+        .brick-popover {
+  position: absolute;
+  background: #1f1f1f;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 10px;
+  width: 220px;
+  z-index: 1000;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+.brick-popover.hidden {
+  display: none;
+}
+
+.popover-title {
+  font-weight: bold;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.popover-btn {
+  width: 100%;
+  background: #2a2a2a;
+  color: white;
+  border: none;
+  padding: 8px;
+  margin-top: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.popover-btn:hover {
+  background: #3a3a3a;
+}
+
+.popover-btn.danger {
+  background: #402020;
+}
+.popover-btn.danger:hover {
+  background: #603030;
+}
+
         /* Checklists & Reminders */
         .task-list { margin-top: 8px; padding-left: 0; list-style: none; font-size: 0.85em; }
         .task-item { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
@@ -103,6 +147,10 @@ const TEMPLATE_ROLE_MAP = {
 
 let renderedBricks = [];
 let PLACES = {};
+const popover = document.getElementById("brick-popover");
+const popoverTitle = document.getElementById("popover-title");
+
+let activeBrick = null;
     
 const renderedCalendlyEvents = new Set();
     
@@ -177,7 +225,12 @@ function renderBrick(start, end, title, colorClass, tasks = [], meta = {}) {
     brick.addEventListener("contextmenu", e => {
   e.preventDefault();
   alert("Travel coming next");
+
+        brickEl.addEventListener("click", (e) => {
+  e.stopPropagation(); // critical
+  showBrickPopover(brick, brickEl);
 });
+
 
     brick.innerHTML = html;
     timeline.appendChild(brick);
@@ -200,8 +253,38 @@ function renderAllDayBrick(title) {
     div.className = 'all-day-brick';
     div.innerHTML = `<strong>All Day</strong><br>${title}`;
     container.appendChild(div);
+    brickEl.addEventListener("click", (e) => {
+  e.stopPropagation(); // critical
+  showBrickPopover(brick, brickEl);
+});
+
 }
 
+function showBrickPopover(brick, brickEl) {
+  activeBrick = brick;
+
+  // Title
+  popoverTitle.textContent = `${brick.label || "Block"} (${brick.start || ""})`;
+
+  // Position next to the brick
+  const rect = brickEl.getBoundingClientRect();
+  popover.style.top = `${window.scrollY + rect.top}px`;
+  popover.style.left = `${window.scrollX + rect.right + 8}px`;
+
+  popover.classList.remove("hidden");
+}
+
+function hideBrickPopover() {
+  popover.classList.add("hidden");
+  activeBrick = null;
+}
+
+    document.addEventListener("click", () => {
+  hideBrickPopover();
+});
+
+
+    
 /* =========================
    SCHOOL SCHEDULE
 ========================= */
@@ -487,6 +570,9 @@ function nestCalendlyMeetings() {
 
             // Remove from stacking consideration
             meeting.stacked = true;
+            brickEl.addEventListener("click", (e) => {
+  e.stopPropagation(); // critical
+  showBrickPopover(brick, brickEl);
         });
 }
 
@@ -590,6 +676,25 @@ function getMapsLink(place) {
 
 console.log("MAP TEST LINK:", getMapsLink(placesTest.work_main));
 
+    <!-- Brick Popover -->
+<div id="brick-popover" class="brick-popover hidden">
+  <div class="popover-title" id="popover-title"></div>
+
+  <button class="popover-btn" data-action="travel">➕ Add travel before</button>
+  <button class="popover-btn" data-action="checklist">☑️ Add checklist</button>
+  <button class="popover-btn" data-action="edit">✏️ Edit</button>
+  <button class="popover-btn danger" data-action="delete">🗑 Delete</button>
+</div>
+
+popover.addEventListener("click", (e) => {
+  e.stopPropagation();
+  const action = e.target.dataset.action;
+  if (!action) return;
+
+  console.log("Popover action:", action, "on", activeBrick);
+});
+
+    
     
 updateUI();
 setInterval(renderRedLine, 60000);
