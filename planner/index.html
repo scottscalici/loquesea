@@ -42,7 +42,23 @@
         .popover-btn { width: 100%; background: #2a2a2a; color: white; border: none; padding: 8px; margin-top: 6px; border-radius: 6px; cursor: pointer; text-align: left; }
         .popover-btn:hover { background: #3a3a3a; }
         .popover-btn.danger { background: #402020; }
+        .brick-popover {
+  transform-origin: top;
+  animation: popIn 0.12s ease-out;
+}
 
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scaleY(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+        
         /* Tasks */
         .task-list { margin-top: 8px; padding-left: 0; list-style: none; font-size: 0.85em; }
         .task-item { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
@@ -163,8 +179,17 @@ function showBrickPopover(data, el) {
     activeBrickData = data;
     popoverTitle.textContent = data.title;
     const rect = el.getBoundingClientRect();
-    popover.style.top = `${window.scrollY + rect.top}px`;
-    popover.style.left = `${window.scrollX + rect.right + 10}px`;
+   const margin = 8;
+
+  popover.style.top =
+  `${window.scrollY + rect.bottom - 4}px`;
+
+popover.style.left =
+  `${window.scrollX + rect.left}px`;
+
+popover.style.width =
+  `${rect.width}px`;
+
     popover.classList.remove("hidden");
 }
 
