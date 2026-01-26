@@ -177,28 +177,76 @@ function renderAllDayBrick(title) {
 ========================= */
 function showBrickPopover(data, el) {
     activeBrickData = data;
-    popoverTitle.textContent = data.title;
+    restoreDefaultPopover();
+
     const rect = el.getBoundingClientRect();
-   const margin = 8;
-
-  popover.style.top =
-  `${window.scrollY + rect.bottom - 4}px`;
-
-popover.style.left =
-  `${window.scrollX + rect.left}px`;
-
-popover.style.width =
-  `${rect.width}px`;
-
+    popover.style.top = `${window.scrollY + rect.bottom + 8}px`;
+    popover.style.left = `${window.scrollX + rect.left}px`;
+    popover.style.width = `${rect.width}px`;
     popover.classList.remove("hidden");
+}
+
+function restoreDefaultPopover() {
+  popover.innerHTML = `
+    <div class="popover-title" id="popover-title">${activeBrickData?.title || "Block"}</div>
+    <button class="popover-btn" data-action="travel">➕ Add travel before</button>
+    <button class="popover-btn" data-action="checklist">☑️ Add checklist</button>
+    <button class="popover-btn danger" data-action="delete">🗑 Delete</button>
+  `;
 }
 
 document.addEventListener("click", () => popover.classList.add("hidden"));
 popover.addEventListener("click", (e) => {
-    e.stopPropagation();
-    const action = e.target.dataset.action;
-    if (action) alert(`Action: ${action} on ${activeBrickData.title}`);
+  e.stopPropagation();
+
+  const action = e.target.dataset.action;
+  const placeKey = e.target.dataset.place;
+
+  if (action === "travel") {
+    renderTravelPicker();
+    return;
+  }
+
+  if (action === "back") {
+    restoreDefaultPopover();
+    return;
+  }
+
+  if (action === "new-place") {
+    alert("New place UI coming next 🙂");
+    return;
+  }
+
+  if (placeKey) {
+    const place = PLACES[placeKey];
+    alert(`Selected destination: ${place.label}`);
+    return;
+  }
 });
+
+function renderTravelPicker() {
+  if (!PLACES || !Object.keys(PLACES).length) {
+    popover.innerHTML = `<div class="popover-title">No places loaded</div>`;
+    return;
+  }
+
+  let html = `<div class="popover-title">Add travel</div>`;
+
+  Object.entries(PLACES).forEach(([key, place]) => {
+    html += `
+      <button class="popover-btn" data-place="${key}">
+        📍 ${place.label}
+      </button>
+    `;
+  });
+
+  html += `
+    <button class="popover-btn" data-action="new-place">➕ New place</button>
+    <button class="popover-btn" data-action="back">← Back</button>
+  `;
+
+  popover.innerHTML = html;
+}
 
 /* =========================
    DATA SYNC
