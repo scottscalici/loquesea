@@ -583,7 +583,7 @@ const placesTest = {
 
 function getMapsLink(place) {
   if (place.coordinates) {
-    return `https://maps.apple.com/?ll=${place.coordinates.lat},${place.coordinates.lon}`;
+    return `https://maps.apple.com/?ll=${place.coordinates.lat},${place.coordinates.lng}`;
   }
   return "";
 }
