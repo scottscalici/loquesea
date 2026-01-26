@@ -146,7 +146,7 @@ function format12Hour(timeStr) {
    RENDERING
 ========================= */
 
-function renderBrick(start, end, title, colorClass, tasks = []) {
+function renderBrick(start, end, title, colorClass, tasks = [], meta = {}) {
     const timeline = document.getElementById('timeline');
     const brick = document.createElement('div');
 
@@ -176,13 +176,15 @@ function renderBrick(start, end, title, colorClass, tasks = []) {
     timeline.appendChild(brick);
 
     // 🔹 REGISTER BRICK FOR STACKING
-    renderedBricks.push({
-        el: brick,
-        start: startAbs,
-        end: endAbs,
-        column: 0,
-        totalColumns: 1
-    });
+   renderedBricks.push({
+    el: brick,
+    start: startAbs,
+    end: endAbs,
+    column: 0,
+    totalColumns: 1,
+    meta
+});
+
 }
 
 function renderAllDayBrick(title) {
@@ -372,8 +374,11 @@ eventsData.collection.forEach(ev => {
         minute: '2-digit'
     });
 
-    renderBrick(sTime, eTime, `📅 ${ev.name}`, "blue-meeting");
+    renderBrick(sTime, eTime, `📅 ${ev.name}`, "blue-meeting", [], {
+    source: "calendly",
+    nest: true
 });
+
 
     } catch (e) {
         console.error("Calendly error", e);
@@ -417,50 +422,110 @@ async function updateUI() {
 
     renderedCalendlyEvents.clear();
 
-    
-    await syncSchoolCycle(todayStr);
+    renderedBricks = [];
+
+await syncSchoolCycle(todayStr);
 await syncCozi(todayMatch, dow);
 await syncCalendly(todayStr);
 
+nestCalendlyMeetings();   // 🔑 before stacking
 stackOverlappingBricks();
+
 renderRedLine();
 }
 
 /* =========================
+   NEST CALENDLY
+========================= */
+
+function nestCalendlyMeetings() {
+    const prepBlocks = renderedBricks.filter(b =>
+        b.el.classList.contains('prep')
+    );
+
+    renderedBricks
+        .filter(b => b.meta?.nest)
+        .forEach(meeting => {
+            const parent = prepBlocks.find(p =>
+                meeting.start >= p.start && meeting.end <= p.end
+            );
+
+            if (!parent) return;
+
+            // Position relative to parent
+            const offset =
+                (meeting.start - parent.start) * CONFIG.pixelsPerMinute;
+            const height =
+                (meeting.end - meeting.start) * CONFIG.pixelsPerMinute;
+
+            meeting.el.style.position = 'absolute';
+            meeting.el.style.top = `${offset}px`;
+            meeting.el.style.height = `${height}px`;
+            meeting.el.style.left = '8px';
+            meeting.el.style.width = 'calc(100% - 16px)';
+            meeting.el.style.zIndex = 20;
+
+            parent.el.appendChild(meeting.el);
+            meeting.el.classList.add('nested');
+
+            // Remove from stacking consideration
+            renderedBricks = renderedBricks.filter(b => b !== meeting);
+        });
+}
+
+
+    
+/* =========================
    OVERLAPPING BRICKS
 ========================= */
 function stackOverlappingBricks() {
+    // Reset layout
+    renderedBricks.forEach(b => {
+        b.column = 0;
+        b.totalColumns = 1;
+        b.el.style.left = '0';
+        b.el.style.width = 'calc(100% - 40px)';
+    });
+
     // Sort by start time
-    renderedBricks.sort((a, b) => a.start - b.start);
+    const bricks = [...renderedBricks].sort((a, b) => a.start - b.start);
 
-    const active = [];
+    let group = [];
 
-    renderedBricks.forEach(brick => {
-        // Remove finished bricks
-        for (let i = active.length - 1; i >= 0; i--) {
-            if (active[i].end <= brick.start) {
-                active.splice(i, 1);
-            }
+    function applyGroup(group) {
+        if (group.length === 1) return; // 🔑 full width if no overlap
+
+        group.forEach((brick, i) => {
+            brick.column = i;
+            brick.totalColumns = group.length;
+        });
+
+        group.forEach(b => {
+            const width = 100 / b.totalColumns;
+            b.el.style.width = `calc(${width}% - 12px)`;
+            b.el.style.left = `${b.column * width}%`;
+        });
+    }
+
+    bricks.forEach(brick => {
+        if (!group.length) {
+            group.push(brick);
+            return;
         }
 
-        // Find first free column
-        const usedColumns = active.map(b => b.column);
-        let col = 0;
-        while (usedColumns.includes(col)) col++;
+        const overlaps = group.some(b =>
+            brick.start < b.end && brick.end > b.start
+        );
 
-        brick.column = col;
-        active.push(brick);
-
-        const totalCols = Math.max(...active.map(b => b.column)) + 1;
-        active.forEach(b => b.totalColumns = totalCols);
+        if (overlaps) {
+            group.push(brick);
+        } else {
+            applyGroup(group);
+            group = [brick];
+        }
     });
 
-    // Apply layout
-    renderedBricks.forEach(b => {
-        const width = 100 / b.totalColumns;
-        b.el.style.width = `calc(${width}% - 12px)`;
-        b.el.style.left = `${b.column * width}%`;
-    });
+    applyGroup(group);
 }
 
     
