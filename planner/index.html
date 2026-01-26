@@ -196,26 +196,95 @@ async function syncSchoolCycle(todayStr) {
     } catch (e) { console.error("School Error", e); }
 }
 
+/* =========================
+   COZI CALENDAR
+========================= */
+
 async function syncCozi(todayMatch, dow) {
     try {
         const res = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
-        const text = (await res.text()).replace(/\r\n /g, "");
+        let text = (await res.text()).replace(/\r\n /g, "");
+
         const vevents = text.split("BEGIN:VEVENT");
+
+        function parseRRule(rr) {
+            const o = {};
+            rr.split(";").forEach(p => {
+                const [k, v] = p.split("=");
+                o[k] = v;
+            });
+            return o;
+        }
+
+        function isExcluded(block) {
+    const exDates = [...block.matchAll(/EXDATE[^:]*:(\d{8})/g)]
+        .map(m => m[1]);
+    return exDates.includes(todayMatch);
+}
+
+        function occursToday(block) {
+    if (isExcluded(block)) return false;
+
+    const startMatch = block.match(/DTSTART.*:(\d{8})/);
+    if (!startMatch) return false;
+
+    const startDate = startMatch[1];
+    const rruleMatch = block.match(/RRULE:(.*)/);
+
+    if (!rruleMatch) return startDate === todayMatch;
+
+            const r = parseRRule(rruleMatch[1]);
+            if (r.UNTIL && r.UNTIL.slice(0, 8) < todayMatch) return false;
+
+            if (r.FREQ === "DAILY") return todayMatch >= startDate;
+            if (r.FREQ === "WEEKLY" && r.BYDAY?.includes(dow)) return todayMatch >= startDate;
+
+            return false;
+        }
+
+        function getEnd(block, start) {
+            const dtEnd = block.match(/DTEND[:;](?:.*T)?(\d{2})(\d{2})/);
+            if (dtEnd) return `${dtEnd[1]}:${dtEnd[2]}`;
+
+            const dur = block.match(/DURATION:PT(?:(\d+)H)?(?:(\d+)M)?/);
+            if (dur) {
+                const mins = (parseInt(dur[1] || 0) * 60) + parseInt(dur[2] || 0);
+                return addMinutes(start, mins);
+            }
+
+            return addMinutes(start, 60);
+        }
+
         vevents.forEach(block => {
             const summaryMatch = block.match(/SUMMARY:(.*)/);
             if (!summaryMatch) return;
+
             const summary = summaryMatch[1].trim();
-            const startMatch = block.match(/DTSTART.*:(\d{8})/);
-            if (startMatch && startMatch[1] === todayMatch) {
-                const timeMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
-                if (!timeMatch) renderAllDayBrick(`🏠 ${summary}`);
-                else {
-                    const s = `${timeMatch[1]}:${timeMatch[2]}`;
-                    renderBrick(s, addMinutes(s, 60), `🏠 ${summary}`, "orange");
+            const dateRange = block.match(/DTSTART.*:(\d{8}).*DTEND.*:(\d{8})/);
+
+            if (dateRange) {
+                if (todayMatch >= dateRange[1] && todayMatch < dateRange[2]) {
+                    renderAllDayBrick(`🏠 ${summary}`);
                 }
+                return;
             }
+
+            if (!occursToday(block)) return;
+
+            const timeMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
+            if (!timeMatch) {
+                renderAllDayBrick(`🏠 ${summary}`);
+                return;
+            }
+
+            const start = `${timeMatch[1]}:${timeMatch[2]}`;
+            const end = getEnd(block, start);
+            renderBrick(start, end, `🏠 ${summary}`, "orange");
         });
-    } catch (e) { console.error("Cozi Error", e); }
+
+    } catch (e) {
+        console.error("Cozi error", e);
+    }
 }
 
 async function syncCalendly(todayStr) {
