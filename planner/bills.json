@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5117.7699999999995,
+    "checking_balance": 5098.78,
     "travel_savings": 0,
     "weekly_budget_remaining": 327.8799999999999,
     "daily_allowance_locked": 0,
@@ -645,6 +645,14 @@
       "who": "Abbi",
       "what": "Hungry Howie’s",
       "amount": -54,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-01-25",
+      "vendor": "Amazon",
+      "who": "Abbi",
+      "what": "Vitamins",
+      "amount": -18.99,
       "category": "MANUAL"
     }
   ],
