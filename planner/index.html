@@ -253,8 +253,8 @@ function createTravelBlock(destinationKey) {
     date: currentSelectedDate.toLocaleDateString('sv'),
     from: "home", // default for now
     to: destinationKey,
-    duration: 25, // default minutes
-    buffer: 10,   // arrive early buffer
+    duration: 25,
+    buffer: 10,
     anchor: {
       title: activeBrickData.title,
       start: activeBrickData.start
@@ -266,6 +266,7 @@ function createTravelBlock(destinationKey) {
 
   console.log("🧱 Travel block created:", travelBlock);
 }
+
 function renderTravelBrick(travel) {
   const arrivalTime = subtractMinutes(
     travel.anchor.start,
