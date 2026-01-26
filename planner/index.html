@@ -480,7 +480,8 @@ function nestCalendlyMeetings() {
 ========================= */
 function stackOverlappingBricks() {
     // Reset layout
-    const stackable = renderedBricks.filter(b => !b.meta?.nest);  
+    const stackable = renderedBricks.filter(b => !(b.meta && b.meta.nest));
+  
     stackable.forEach(b => {
     b.column = 0;
     b.totalColumns = 1;
