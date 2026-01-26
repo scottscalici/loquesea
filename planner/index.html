@@ -176,13 +176,13 @@ function renderBrick(start, end, title, colorClass, tasks = [], meta = {}) {
     timeline.appendChild(brick);
 
     // 🔹 REGISTER BRICK FOR STACKING
-   renderedBricks.push({
+ renderedBricks.push({
     el: brick,
     start: startAbs,
     end: endAbs,
     column: 0,
     totalColumns: 1,
-    meta
+    meta: meta
 });
 
 }
