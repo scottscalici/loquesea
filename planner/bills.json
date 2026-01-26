@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5171.7699999999995,
+    "checking_balance": 5117.7699999999995,
     "travel_savings": 0,
-    "weekly_budget_remaining": 381.8799999999999,
+    "weekly_budget_remaining": 327.8799999999999,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-01-19T05:00:00.000Z"
@@ -637,6 +637,14 @@
       "who": "Abbi",
       "what": "God knows",
       "amount": -60.54,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-01-25",
+      "vendor": "Pizza",
+      "who": "Abbi",
+      "what": "Hungry Howie’s",
+      "amount": -54,
       "category": "MANUAL"
     }
   ],
