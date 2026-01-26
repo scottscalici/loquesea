@@ -133,6 +133,14 @@ function localDayToUTCWindow(dateStr) {
     return { min: new Date(dateStr + "T00:00:00").toISOString(), max: new Date(dateStr + "T23:59:59").toISOString() };
 }
 
+function subtractMinutes(timeStr, minutes) {
+  const [h, m] = timeStr.split(":").map(Number);
+  const d = new Date();
+  d.setHours(h, m - minutes, 0, 0);
+  return d.toTimeString().slice(0,5);
+}
+
+    
 function format12Hour(timeStr) {
     if (!timeStr) return "";
     let [h, m] = timeStr.split(':').map(Number);
