@@ -102,6 +102,7 @@ const TEMPLATE_ROLE_MAP = {
 };
 
 let renderedBricks = [];
+let PLACES = {};
     
 const renderedCalendlyEvents = new Set();
     
@@ -438,8 +439,6 @@ async function updateUI() {
     renderedCalendlyEvents.clear();
 
     renderedBricks = [];
-
-    let PLACES = {};
 
     
 await syncSchoolCycle(todayStr);
