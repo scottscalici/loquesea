@@ -14,97 +14,38 @@
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
         .container { max-width: 800px; margin: auto; }
         .nav-bar { display: flex; gap: 10px; align-items: center; background: #222; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-        #timeline { position: relative; width: 100%; border-left: 2px solid #333; margin-top: 20px; }
+        
+        #timeline { position: relative; width: 100%; border-left: 2px solid #333; margin-top: 20px; min-height: 1200px; }
         #all-day-container { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+        
         .all-day-brick { background: #555; border-left: 8px solid #e67e22; border-radius: 8px; padding: 10px; font-size: 0.9em; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        .brick { position: absolute; width: calc(100% - 40px); margin-left: 20px; border-radius: 8px; padding: 10px; border-left: 8px solid rgba(0,0,0,0.3); box-sizing: border-box; font-size: 0.9em; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        .brick { position: absolute; width: calc(100% - 40px); margin-left: 20px; border-radius: 8px; padding: 10px; border-left: 8px solid rgba(0,0,0,0.3); box-sizing: border-box; font-size: 0.9em; box-shadow: 0 4px 6px rgba(0,0,0,0.3); cursor: pointer; transition: transform 0.1s; }
+        .brick:active { transform: scale(0.98); }
+
+        /* Roles/Colors */
         .blue { background: var(--brick-blue); }
         .purple { background: var(--brick-purple); }
         .orange { background: var(--brick-orange); }
+        .teaching { background: #e74c3c; border-left-color: #c0392b; }
+        .prep { background: #3498db; border-left-color: #21618c; }
+        .lunch { background: #000000; opacity: 0.85; }
+        .blue-meeting { background: #2980b9 !important; border: 2px solid #ffffff; z-index: 10; font-weight: bold; }
 
-        /* Time Marker Red Line */
-        #time-marker {
-            position: absolute;
-            width: 100%;
-            border-top: 2px solid #ff4757;
-            z-index: 100;
-            pointer-events: none;
-            transition: top 0.3s linear;
-        }
-        #time-marker::after {
-            content: '●';
-            color: #ff4757;
-            position: absolute;
-            left: -10px;
-            top: -9px;
-            font-size: 18px;
-        }
-.teaching {
-    background: #e74c3c;
-    border-left: 8px solid #c0392b;
-}
+        /* Time Marker */
+        #time-marker { position: absolute; width: 100%; border-top: 2px solid #ff4757; z-index: 100; pointer-events: none; }
+        #time-marker::after { content: '●'; color: #ff4757; position: absolute; left: -10px; top: -9px; font-size: 18px; }
 
-.prep {
-    background: #3498db;
-    border-left: 8px solid #21618c;
-}
+        /* Popover */
+        .brick-popover { position: absolute; background: #1f1f1f; border: 1px solid #333; border-radius: 8px; padding: 10px; width: 220px; z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+        .hidden { display: none; }
+        .popover-title { font-weight: bold; margin-bottom: 8px; font-size: 14px; color: #fff; }
+        .popover-btn { width: 100%; background: #2a2a2a; color: white; border: none; padding: 8px; margin-top: 6px; border-radius: 6px; cursor: pointer; text-align: left; }
+        .popover-btn:hover { background: #3a3a3a; }
+        .popover-btn.danger { background: #402020; }
 
-.lunch {
-    background: #000000;
-    opacity: 0.85;
-}
-
-        .brick-popover {
-  position: absolute;
-  background: #1f1f1f;
-  border: 1px solid #333;
-  border-radius: 8px;
-  padding: 10px;
-  width: 220px;
-  z-index: 1000;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-}
-
-.brick-popover.hidden {
-  display: none;
-}
-
-.popover-title {
-  font-weight: bold;
-  margin-bottom: 8px;
-  font-size: 14px;
-}
-
-.popover-btn {
-  width: 100%;
-  background: #2a2a2a;
-  color: white;
-  border: none;
-  padding: 8px;
-  margin-top: 6px;
-  border-radius: 6px;
-  cursor: pointer;
-  text-align: left;
-}
-
-.popover-btn:hover {
-  background: #3a3a3a;
-}
-
-.popover-btn.danger {
-  background: #402020;
-}
-.popover-btn.danger:hover {
-  background: #603030;
-}
-
-        /* Checklists & Reminders */
+        /* Tasks */
         .task-list { margin-top: 8px; padding-left: 0; list-style: none; font-size: 0.85em; }
         .task-item { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-        .task-item input[type="checkbox"] { cursor: pointer; accent-color: #2ecc71; }
-        .add-reminder-btn { background: rgba(255,255,255,0.2); border: none; color: white; font-size: 0.7em; padding: 2px 6px; border-radius: 4px; cursor: pointer; margin-top: 5px; }
-        
-        .blue-meeting { background: #2980b9 !important; border: 2px solid #ffffff; width: calc(100% - 80px) !important; margin-left: 50px !important; z-index: 10; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -117,16 +58,23 @@
         <button onclick="changeDay(1)">Next ▶</button>
         <button onclick="goToToday()">Today</button>
     </div>
+    
     <h2 id="day-header">Loading Schedule...</h2>
     <div id="all-day-container"></div>
     <div id="timeline"></div>
 </div>
 
+<div id="brick-popover" class="brick-popover hidden">
+    <div class="popover-title" id="popover-title">Block Title</div>
+    <button class="popover-btn" data-action="travel">➕ Add travel before</button>
+    <button class="popover-btn" data-action="checklist">☑️ Add checklist</button>
+    <button class="popover-btn danger" data-action="delete">🗑 Delete</button>
+</div>
+
 <script>
 /* =========================
-   GLOBAL CONFIG & MAPS
+   GLOBAL CONFIG
 ========================= */
-
 const CONFIG = {
     scheduleUrl: 'https://raw.githubusercontent.com/scottscalici/loquesea/main/planner/schedule.json',
     calendarUrl: 'https://raw.githubusercontent.com/scottscalici/imagenes/main/planes/calendario.json',
@@ -138,50 +86,26 @@ const CONFIG = {
     dayStartHour: 5
 };
 
-const TEMPLATE_ROLE_MAP = {
-    class: "teaching",
-    prep: "prep",
-    routine: "lunch",
-    work: "prep"
-};
-
+const TEMPLATE_ROLE_MAP = { class: "teaching", prep: "prep", routine: "lunch", work: "prep" };
 let renderedBricks = [];
 let PLACES = {};
+let currentSelectedDate = new Date();
+let activeBrickData = null;
+
 const popover = document.getElementById("brick-popover");
 const popoverTitle = document.getElementById("popover-title");
 
-let activeBrick = null;
-    
-const renderedCalendlyEvents = new Set();
-    
-let currentSelectedDate = new Date();
-
 /* =========================
-   TIME HELPERS
+   HELPERS
 ========================= */
-
 function addMinutes(t, m) {
     const [h, min] = t.split(':').map(Number);
-    const d = new Date();
-    d.setHours(h, min + m);
+    const d = new Date(); d.setHours(h, min + m);
     return d.toTimeString().slice(0, 5);
 }
 
-    function localDayToUTCWindow(dateStr) {
-    const localStart = new Date(dateStr + "T00:00:00");
-    const localEnd = new Date(dateStr + "T23:59:59");
-
-    return {
-        min: localStart.toISOString(),
-        max: localEnd.toISOString()
-    };
-}
-
-function subtractMinutes(t, m) {
-    const [h, min] = t.split(':').map(Number);
-    const d = new Date();
-    d.setHours(h, min - m);
-    return d.toTimeString().slice(0, 5);
+function localDayToUTCWindow(dateStr) {
+    return { min: new Date(dateStr + "T00:00:00").toISOString(), max: new Date(dateStr + "T23:59:59").toISOString() };
 }
 
 function format12Hour(timeStr) {
@@ -193,58 +117,35 @@ function format12Hour(timeStr) {
 }
 
 /* =========================
-   RENDERING
+   CORE RENDERING
 ========================= */
-
 function renderBrick(start, end, title, colorClass, tasks = [], meta = {}) {
     const timeline = document.getElementById('timeline');
-    const brick = document.createElement('div');
+    const brickEl = document.createElement('div');
 
     const [hS, mS] = start.split(':').map(Number);
     const [hE, mE] = end.split(':').map(Number);
-
     const startAbs = hS * 60 + mS;
     const endAbs = hE * 60 + mE;
 
-    const startMins = (hS - CONFIG.dayStartHour) * 60 + mS;
-    const durationMins = endAbs - startAbs;
-
-    brick.className = `brick ${colorClass}`;
-    brick.style.top = `${startMins * CONFIG.pixelsPerMinute}px`;
-    brick.style.height = `${durationMins * CONFIG.pixelsPerMinute}px`;
+    brickEl.className = `brick ${colorClass}`;
+    brickEl.style.top = `${(startAbs - CONFIG.dayStartHour * 60) * CONFIG.pixelsPerMinute}px`;
+    brickEl.style.height = `${(endAbs - startAbs) * CONFIG.pixelsPerMinute}px`;
 
     let html = `<strong>${format12Hour(start)} – ${format12Hour(end)}</strong><br>${title}`;
     if (tasks.length) {
-        html += `<ul class="task-list">`;
-        tasks.forEach(t => {
-            html += `<li class="task-item"><input type="checkbox"> ${t}</li>`;
-        });
-        html += `</ul>`;
+        html += `<ul class="task-list">` + tasks.map(t => `<li class="task-item"><input type="checkbox"> ${t}</li>`).join('') + `</ul>`;
     }
+    brickEl.innerHTML = html;
 
-    brick.addEventListener("contextmenu", e => {
-  e.preventDefault();
-  alert("Travel coming next");
+    // Click for Popover
+    brickEl.addEventListener("click", (e) => {
+        e.stopPropagation();
+        showBrickPopover({start, end, title, meta}, brickEl);
+    });
 
-        brickEl.addEventListener("click", (e) => {
-  e.stopPropagation(); // critical
-  showBrickPopover(brick, brickEl);
-});
-
-
-    brick.innerHTML = html;
-    timeline.appendChild(brick);
-
-    // 🔹 REGISTER BRICK FOR STACKING
- renderedBricks.push({
-    el: brick,
-    start: startAbs,
-    end: endAbs,
-    column: 0,
-    totalColumns: 1,
-    meta: meta
-});
-
+    timeline.appendChild(brickEl);
+    renderedBricks.push({ el: brickEl, start: startAbs, end: endAbs, meta: meta });
 }
 
 function renderAllDayBrick(title) {
@@ -253,449 +154,158 @@ function renderAllDayBrick(title) {
     div.className = 'all-day-brick';
     div.innerHTML = `<strong>All Day</strong><br>${title}`;
     container.appendChild(div);
-    brickEl.addEventListener("click", (e) => {
-  e.stopPropagation(); // critical
-  showBrickPopover(brick, brickEl);
-});
-
 }
 
-function showBrickPopover(brick, brickEl) {
-  activeBrick = brick;
-
-  // Title
-  popoverTitle.textContent = `${brick.label || "Block"} (${brick.start || ""})`;
-
-  // Position next to the brick
-  const rect = brickEl.getBoundingClientRect();
-  popover.style.top = `${window.scrollY + rect.top}px`;
-  popover.style.left = `${window.scrollX + rect.right + 8}px`;
-
-  popover.classList.remove("hidden");
-}
-
-function hideBrickPopover() {
-  popover.classList.add("hidden");
-  activeBrick = null;
-}
-
-    document.addEventListener("click", () => {
-  hideBrickPopover();
-});
-
-
-    
 /* =========================
-   SCHOOL SCHEDULE
+   POPOVER LOGIC
 ========================= */
+function showBrickPopover(data, el) {
+    activeBrickData = data;
+    popoverTitle.textContent = data.title;
+    const rect = el.getBoundingClientRect();
+    popover.style.top = `${window.scrollY + rect.top}px`;
+    popover.style.left = `${window.scrollX + rect.right + 10}px`;
+    popover.classList.remove("hidden");
+}
 
+document.addEventListener("click", () => popover.classList.add("hidden"));
+popover.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const action = e.target.dataset.action;
+    if (action) alert(`Action: ${action} on ${activeBrickData.title}`);
+});
+
+/* =========================
+   DATA SYNC
+========================= */
 async function syncSchoolCycle(todayStr) {
     try {
-        const isWeekend = [0, 6].includes(currentSelectedDate.getDay());
-        if (isWeekend) {
-    // Skip school blocks, but allow Cozi
-    return;
-}
-
-        const [calRes, schedRes] = await Promise.all([
-            fetch(CONFIG.calendarUrl),
-            fetch(CONFIG.scheduleUrl)
-        ]);
-
+        if ([0, 6].includes(currentSelectedDate.getDay())) return;
+        const [calRes, schedRes] = await Promise.all([fetch(CONFIG.calendarUrl), fetch(CONFIG.scheduleUrl)]);
         const calData = await calRes.json();
         const schedule = await schedRes.json();
-
         const dayInfo = calData.map?.find(d => d.fecha === todayStr);
         const cycle = dayInfo?.ciclo;
-
         const dayKey = cycle === "A" ? "A_Day" : cycle === "B" ? "B_Day" : null;
         if (!dayKey) return;
 
         schedule.days[dayKey].forEach(b => {
             const endTime = b.end || addMinutes(b.start, b.duration || 60);
-            const role = TEMPLATE_ROLE_MAP[b.template] || "teaching";
-            renderBrick(b.start, endTime, b.label, role, b.tasks || []);
+            renderBrick(b.start, endTime, b.label, TEMPLATE_ROLE_MAP[b.template] || "teaching", b.tasks || []);
         });
-
-    } catch (e) {
-        console.error("School cycle error", e);
-    }
+    } catch (e) { console.error("School Error", e); }
 }
-
-/* =========================
-   COZI CALENDAR
-========================= */
 
 async function syncCozi(todayMatch, dow) {
     try {
         const res = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
-        let text = (await res.text()).replace(/\r\n /g, "");
-
+        const text = (await res.text()).replace(/\r\n /g, "");
         const vevents = text.split("BEGIN:VEVENT");
-
-        function parseRRule(rr) {
-            const o = {};
-            rr.split(";").forEach(p => {
-                const [k, v] = p.split("=");
-                o[k] = v;
-            });
-            return o;
-        }
-
-        function isExcluded(block) {
-    const exDates = [...block.matchAll(/EXDATE[^:]*:(\d{8})/g)]
-        .map(m => m[1]);
-    return exDates.includes(todayMatch);
-}
-
-        function occursToday(block) {
-    if (isExcluded(block)) return false;
-
-    const startMatch = block.match(/DTSTART.*:(\d{8})/);
-    if (!startMatch) return false;
-
-    const startDate = startMatch[1];
-    const rruleMatch = block.match(/RRULE:(.*)/);
-
-    if (!rruleMatch) return startDate === todayMatch;
-
-            const r = parseRRule(rruleMatch[1]);
-            if (r.UNTIL && r.UNTIL.slice(0, 8) < todayMatch) return false;
-
-            if (r.FREQ === "DAILY") return todayMatch >= startDate;
-            if (r.FREQ === "WEEKLY" && r.BYDAY?.includes(dow)) return todayMatch >= startDate;
-
-            return false;
-        }
-
-        function getEnd(block, start) {
-            const dtEnd = block.match(/DTEND[:;](?:.*T)?(\d{2})(\d{2})/);
-            if (dtEnd) return `${dtEnd[1]}:${dtEnd[2]}`;
-
-            const dur = block.match(/DURATION:PT(?:(\d+)H)?(?:(\d+)M)?/);
-            if (dur) {
-                const mins = (parseInt(dur[1] || 0) * 60) + parseInt(dur[2] || 0);
-                return addMinutes(start, mins);
-            }
-
-            return addMinutes(start, 60);
-        }
-
         vevents.forEach(block => {
             const summaryMatch = block.match(/SUMMARY:(.*)/);
             if (!summaryMatch) return;
-
             const summary = summaryMatch[1].trim();
-            const dateRange = block.match(/DTSTART.*:(\d{8}).*DTEND.*:(\d{8})/);
-
-            if (dateRange) {
-                if (todayMatch >= dateRange[1] && todayMatch < dateRange[2]) {
-                    renderAllDayBrick(`🏠 ${summary}`);
+            const startMatch = block.match(/DTSTART.*:(\d{8})/);
+            if (startMatch && startMatch[1] === todayMatch) {
+                const timeMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
+                if (!timeMatch) renderAllDayBrick(`🏠 ${summary}`);
+                else {
+                    const s = `${timeMatch[1]}:${timeMatch[2]}`;
+                    renderBrick(s, addMinutes(s, 60), `🏠 ${summary}`, "orange");
                 }
-                return;
             }
-
-            if (!occursToday(block)) return;
-
-            const timeMatch = block.match(/DTSTART[:;](?:.*T)?(\d{2})(\d{2})/);
-            if (!timeMatch) {
-                renderAllDayBrick(`🏠 ${summary}`);
-                return;
-            }
-
-            const start = `${timeMatch[1]}:${timeMatch[2]}`;
-            const end = getEnd(block, start);
-            renderBrick(start, end, `🏠 ${summary}`, "orange");
         });
-
-    } catch (e) {
-        console.error("Cozi error", e);
-    }
+    } catch (e) { console.error("Cozi Error", e); }
 }
 
-    /* =========================
-   CALENDLY
-========================= */
-
-
 async function syncCalendly(todayStr) {
-    if (!CONFIG.calendlyToken || CONFIG.calendlyToken === 'PASTE_IF_NEEDED') return;
-
+    if (!CONFIG.calendlyToken || CONFIG.calendlyToken.includes('PASTE')) return;
     try {
-        // 1. Wrap User Request in Proxy
-        const userUrl = 'https://api.calendly.com/users/me';
-        const userRes = await fetch(CONFIG.proxy + encodeURIComponent(userUrl), { 
+        const userRes = await fetch(CONFIG.proxy + encodeURIComponent('https://api.calendly.com/users/me'), { 
             headers: { Authorization: `Bearer ${CONFIG.calendlyToken}` } 
         });
         const userData = await userRes.json();
-
-        // 2. Wrap Events Request in Proxy
         const { min, max } = localDayToUTCWindow(todayStr);
-        const eventsUrl = `https://api.calendly.com/scheduled_events?user=${userData.resource.uri}&min_start_time=${min}&max_start_time=${max}`;
-        
-        const eventsRes = await fetch(CONFIG.proxy + encodeURIComponent(eventsUrl), { 
+        const eventsRes = await fetch(CONFIG.proxy + encodeURIComponent(`https://api.calendly.com/scheduled_events?user=${userData.resource.uri}&min_start_time=${min}&max_start_time=${max}`), { 
             headers: { Authorization: `Bearer ${CONFIG.calendlyToken}` } 
         });
         const eventsData = await eventsRes.json();
-
-        const [year, month, day] = todayStr.split('-').map(Number);
-
         eventsData.collection.forEach(ev => {
             if (ev.status !== "active") return;
-
             const start = new Date(ev.start_time);
-
-            // Hard local date match
-            if (
-                start.getFullYear() !== year ||
-                start.getMonth() + 1 !== month ||
-                start.getDate() !== day
-            ) {
-                return;
-            }
-
             const sTime = start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
             const eTime = new Date(ev.end_time).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+            renderBrick(sTime, eTime, `📅 ${ev.name}`, "blue-meeting", [], { nest: true });
+        });
+    } catch (e) { console.error("Calendly Error", e); }
+}
 
-            renderBrick(sTime, eTime, `📅 ${ev.name}`, "blue-meeting", [], {
-                source: "calendly",
-                nest: true
-            });
-        }); // <-- Fixed missing bracket
-
-    } catch (e) {
-        console.error("Calendly error", e);
-    }
-} 
-    
 /* =========================
-   UI / NAV
+   LAYOUT ENGINES
 ========================= */
-
-function renderRedLine() {
-    const now = new Date();
-    if (now.toDateString() !== currentSelectedDate.toDateString()) return;
-
-    const elapsed = (now.getHours() - CONFIG.dayStartHour) * 60 + now.getMinutes();
-    if (elapsed < 0) return;
-
-    let line = document.getElementById('time-marker');
-    if (!line) {
-        line = document.createElement('div');
-        line.id = 'time-marker';
-        document.getElementById('timeline').appendChild(line);
-    }
-
-    line.style.top = `${elapsed * CONFIG.pixelsPerMinute}px`;
+function nestCalendlyMeetings() {
+    const preps = renderedBricks.filter(b => b.el.classList.contains('prep'));
+    renderedBricks.filter(b => b.meta?.nest).forEach(meeting => {
+        const parent = preps.find(p => meeting.start >= p.start && meeting.end <= p.end);
+        if (!parent) return;
+        meeting.el.style.top = `${(meeting.start - parent.start) * CONFIG.pixelsPerMinute}px`;
+        meeting.el.style.left = '8px';
+        meeting.el.style.width = 'calc(100% - 16px)';
+        parent.el.appendChild(meeting.el);
+        meeting.nested = true;
+    });
 }
 
-
-async function loadPlaces() {
-    try {
-        const res = await fetch(CONFIG.placesUrl);
-        const data = await res.json();
-        PLACES = data.places || {};
-        console.log("✅ Places loaded:", PLACES);
-    } catch (e) {
-        console.error("❌ Failed to load places.json", e);
-    }
+function stackOverlappingBricks() {
+    const stackable = renderedBricks.filter(b => !b.nested).sort((a,b) => a.start - b.start);
+    stackable.forEach(b => {
+        b.el.style.width = 'calc(100% - 40px)';
+        b.el.style.left = '20px';
+    });
 }
 
-    
+/* =========================
+   UI CONTROL
+========================= */
 async function updateUI() {
     const todayStr = currentSelectedDate.toLocaleDateString('sv');
-    if (!Object.keys(PLACES).length) {
-    await loadPlaces();
-}
-
     const todayMatch = todayStr.replace(/-/g, '');
-    const dowMap = ['SU','MO','TU','WE','TH','FR','SA'];
-    const dow = dowMap[currentSelectedDate.getDay()];
+    const dow = ['SU','MO','TU','WE','TH','FR','SA'][currentSelectedDate.getDay()];
 
     document.getElementById('timeline').innerHTML = '';
     document.getElementById('all-day-container').innerHTML = '';
     document.getElementById('date-picker').value = todayStr;
-
-    document.getElementById('day-header').innerText =
-        `Schedule for ${todayStr} (${dow})`;
-
-    renderedCalendlyEvents.clear();
+    document.getElementById('day-header').innerText = `Schedule for ${todayStr} (${dow})`;
 
     renderedBricks = [];
+    await syncSchoolCycle(todayStr);
+    await syncCozi(todayMatch, dow);
+    await syncCalendly(todayStr);
 
-    
-await syncSchoolCycle(todayStr);
-await syncCozi(todayMatch, dow);
-await syncCalendly(todayStr);
-
-nestCalendlyMeetings();   // 🔑 before stacking
-stackOverlappingBricks();
-
-renderRedLine();
+    nestCalendlyMeetings();
+    stackOverlappingBricks();
+    renderRedLine();
 }
 
-/* =========================
-   NEST CALENDLY
-========================= */
-
-function nestCalendlyMeetings() {
-    const prepBlocks = renderedBricks.filter(b =>
-        b.el.classList.contains('prep')
-    );
-
-    renderedBricks
-        .filter(b => b.meta?.nest)
-        .forEach(meeting => {
-            const parent = prepBlocks.find(p =>
-                meeting.start >= p.start && meeting.end <= p.end
-            );
-
-            if (!parent) return;
-
-            // Position relative to parent
-            const offset =
-                (meeting.start - parent.start) * CONFIG.pixelsPerMinute;
-            const height =
-                (meeting.end - meeting.start) * CONFIG.pixelsPerMinute;
-
-            meeting.el.style.position = 'absolute';
-            meeting.el.style.top = `${offset}px`;
-            meeting.el.style.height = `${height}px`;
-            meeting.el.style.left = '8px';
-            meeting.el.style.width = 'calc(100% - 16px)';
-            meeting.el.style.zIndex = 20;
-
-            parent.el.appendChild(meeting.el);
-            meeting.el.classList.add('nested');
-
-            // Remove from stacking consideration
-            meeting.stacked = true;
-            brickEl.addEventListener("click", (e) => {
-  e.stopPropagation(); // critical
-  showBrickPopover(brick, brickEl);
-        });
+function renderRedLine() {
+    const now = new Date();
+    if (now.toDateString() !== currentSelectedDate.toDateString()) return;
+    const elapsed = (now.getHours() - CONFIG.dayStartHour) * 60 + now.getMinutes();
+    if (elapsed < 0) return;
+    let line = document.getElementById('time-marker') || document.createElement('div');
+    line.id = 'time-marker';
+    line.style.top = `${elapsed * CONFIG.pixelsPerMinute}px`;
+    document.getElementById('timeline').appendChild(line);
 }
 
+function changeDay(offset) { currentSelectedDate.setDate(currentSelectedDate.getDate() + offset); updateUI(); }
+function goToToday() { currentSelectedDate = new Date(); updateUI(); }
 
-    
-/* =========================
-   OVERLAPPING BRICKS
-========================= */
-function stackOverlappingBricks() {
-    // Reset layout
-    const stackable = renderedBricks.filter(b => !(b.meta && b.meta.nest));
-  
-    stackable.forEach(b => {
-    b.column = 0;
-    b.totalColumns = 1;
-});
-
-
-    // Sort by start time
-    const bricks = [...stackable].sort((a, b) => a.start - b.start);
-
-    let group = [];
-
-  function applyGroup(group) {
-    if (group.length <= 1) {
-        group.forEach(b => {
-            b.el.style.left = '0';
-            b.el.style.width = 'calc(100% - 40px)';
-        });
-        return;
-    }
-
-    group.forEach((brick, i) => {
-        brick.column = i;
-        brick.totalColumns = group.length;
-    });
-
-    group.forEach(b => {
-        const width = 100 / b.totalColumns;
-        b.el.style.width = `calc(${width}% - 12px)`;
-        b.el.style.left = `${b.column * width}%`;
-    });
-}
-
-    bricks.forEach(brick => {
-        if (!group.length) {
-            group.push(brick);
-            return;
-        }
-
-        const overlaps = group.some(b =>
-            brick.start < b.end && brick.end > b.start
-        );
-
-        if (overlaps) {
-            group.push(brick);
-        } else {
-            applyGroup(group);
-            group = [brick];
-        }
-    });
-
-    applyGroup(group);
-}
-
-    
 document.getElementById('date-picker').addEventListener('change', e => {
     currentSelectedDate = new Date(e.target.value + "T12:00");
     updateUI();
 });
-function changeDay(offset) {
-    currentSelectedDate.setDate(currentSelectedDate.getDate() + offset);
-    updateUI();
-}
 
-function goToToday() {
-    currentSelectedDate = new Date();
-    updateUI();
-}
-
-renderedBricks = [];
-
-    /* =========================
-   STEP 3 – PLACES TEST
-   (temporary – safe to delete)
-========================= */
-
-const placesTest = {
-  work_main: {
-    label: "School – Main Campus",
-    coordinates: { lat: 40.0000, lng: -75.0000 }
-  }
-};
-
-function getMapsLink(place) {
-  if (place.coordinates) {
-    return `https://maps.apple.com/?ll=${place.coordinates.lat},${place.coordinates.lng}`;
-  }
-  return "";
-}
-
-console.log("MAP TEST LINK:", getMapsLink(placesTest.work_main));
-
-    <!-- Brick Popover -->
-<div id="brick-popover" class="brick-popover hidden">
-  <div class="popover-title" id="popover-title"></div>
-
-  <button class="popover-btn" data-action="travel">➕ Add travel before</button>
-  <button class="popover-btn" data-action="checklist">☑️ Add checklist</button>
-  <button class="popover-btn" data-action="edit">✏️ Edit</button>
-  <button class="popover-btn danger" data-action="delete">🗑 Delete</button>
-</div>
-
-popover.addEventListener("click", (e) => {
-  e.stopPropagation();
-  const action = e.target.dataset.action;
-  if (!action) return;
-
-  console.log("Popover action:", action, "on", activeBrick);
-});
-
-    
-    
 updateUI();
 setInterval(renderRedLine, 60000);
 </script>
