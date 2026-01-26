@@ -489,7 +489,7 @@ function stackOverlappingBricks() {
     });
 
     // Sort by start time
-    const bricks = [...renderedBricks].sort((a, b) => a.start - b.start);
+    const bricks = [...stackable].sort((a, b) => a.start - b.start);
 
     let group = [];
 
@@ -507,6 +507,13 @@ function stackOverlappingBricks() {
             b.el.style.left = `${b.column * width}%`;
         });
     }
+if (group.length <= 1) {
+    group.forEach(b => {
+        b.el.style.left = '0';
+        b.el.style.width = 'calc(100% - 40px)';
+    });
+    return;
+}
 
     bricks.forEach(brick => {
         if (!group.length) {
