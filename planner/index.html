@@ -253,10 +253,39 @@ function createTravelBlock(destinationKey) {
       start: activeBrickData.start
     }
   };
+function renderTravelBrick(travel) {
+  const arrivalTime = subtractMinutes(
+    travel.anchor.start,
+    travel.buffer
+  );
+
+  const departTime = subtractMinutes(
+    arrivalTime,
+    travel.duration
+  );
+
+  const place = PLACES[travel.to];
+  if (!place) return;
+
+  const label = `🚗 Travel → ${place.label}`;
+
+  renderBrick(
+    departTime,
+    arrivalTime,
+    label,
+    "purple",
+    [],
+    {
+      travel: true,
+      placeKey: travel.to
+    }
+  );
+
 
   USER_TRAVEL.push(travelBlock);
+renderTravelBrick(travelBlock);
 
-  console.log("🧱 Travel block created:", travelBlock);
+console.log("🧱 Travel block created:", travelBlock);
 }
     
 function renderTravelPicker() {
