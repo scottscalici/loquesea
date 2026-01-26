@@ -14,7 +14,7 @@
     },
     "routines": {
       "morning_launch": {
-        "label": "Morning Launch",
+        "label": "Morning Routine",
         "duration": 45,
         "color": "purple",
         "subtasks": [
@@ -24,6 +24,18 @@
           "Get Ready",
           "Load Car"
         ]
+      }
+    },
+    {
+      "travel_work": {
+        "label": "Dakota Dropoff to Work",
+        "duration": 45,
+        "color": "purple",
+        "subtasks": [
+          "Warmup truck",
+          "Dakota",
+          "Work"
+          ]
       }
     }
   },
