@@ -253,6 +253,12 @@ function createTravelBlock(destinationKey) {
       start: activeBrickData.start
     }
   };
+
+  USER_TRAVEL.push(travelBlock);
+  renderTravelBrick(travelBlock);
+
+  console.log("🧱 Travel block created:", travelBlock);
+}
 function renderTravelBrick(travel) {
   const arrivalTime = subtractMinutes(
     travel.anchor.start,
@@ -280,6 +286,7 @@ function renderTravelBrick(travel) {
       placeKey: travel.to
     }
   );
+}
 
 
   USER_TRAVEL.push(travelBlock);
