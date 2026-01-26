@@ -26,8 +26,7 @@
         ]
       }
     },
-    {
-      "travel_work": {
+        "travel_work": {
         "label": "Dakota Dropoff to Work",
         "duration": 45,
         "color": "purple",
@@ -37,9 +36,8 @@
           "Work"
           ]
       }
-    }
-  },
-  "days": {
+    },
+    "days": {
     "A_Day": [
       { "label": "1A Prep", "start": "07:15", "duration": 90, "template": "prep" },
       { "label": "2A Prep", "start": "08:51", "duration": 90, "template": "prep" },
