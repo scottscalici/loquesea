@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5081.98,
+    "checking_balance": 5075.61,
     "travel_savings": 0,
     "weekly_budget_remaining": 1327.8799999999999,
     "daily_allowance_locked": 0,
@@ -661,6 +661,14 @@
       "who": "Abbi",
       "what": "Vitamins",
       "amount": -16.8,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-01-26",
+      "vendor": "Amazon",
+      "who": "Sub",
+      "what": "",
+      "amount": -6.37,
       "category": "MANUAL"
     }
   ],
