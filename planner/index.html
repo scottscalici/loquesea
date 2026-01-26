@@ -86,6 +86,9 @@
 const CONFIG = {
     scheduleUrl: 'https://raw.githubusercontent.com/scottscalici/loquesea/main/planner/schedule.json',
     calendarUrl: 'https://raw.githubusercontent.com/scottscalici/imagenes/main/planes/calendario.json',
+    placesUrl: 'https://raw.githubusercontent.com/YOUR_REPO/places.json'
+};
+
     coziUrl: 'https://rest.cozi.com/api/ext/1103/f9f7020d-05c9-4720-b813-2155b4485be7/icalendar/feed/feed.ics',
     calendlyToken: 'eyJraWQiOiIxY2UxZTEzNjE3ZGNmNzY2YjNjZWJjY2Y4ZGM1YmFmYThhNjVlNjg0MDIzZjdjMzJiZTgzNDliMjM4MDEzNWI0IiwidHlwIjoiUEFUIiwiYWxnIjoiRVMyNTYifQ.eyJpc3MiOiJodHRwczovL2F1dGguY2FsZW5kbHkuY29tIiwiaWF0IjoxNzY5MjMzNzU5LCJqdGkiOiJlODY1MTVlYS1hOGRiLTQ5YjMtYmI5Ny1lOWU5ZWIzYTI1NmQiLCJ1c2VyX3V1aWQiOiIzMGZkMzdhYS1kMGUyLTQxODYtOTVkNi04MjU2NTYxMDczMWIifQ.lF3v1MUuFxrttIsaDu5yNCWI0UTN9Z7NvQI78IPyxnR3D5scFL7iCIyormTQdu9_GHp_pnnTJ5lGPiXtGKLWtg',
     proxy: 'https://corsproxy.io/?',
@@ -404,8 +407,25 @@ function renderRedLine() {
     line.style.top = `${elapsed * CONFIG.pixelsPerMinute}px`;
 }
 
+
+async function loadPlaces() {
+    try {
+        const res = await fetch(CONFIG.placesUrl);
+        const data = await res.json();
+        PLACES = data.places || {};
+        console.log("✅ Places loaded:", PLACES);
+    } catch (e) {
+        console.error("❌ Failed to load places.json", e);
+    }
+}
+
+    
 async function updateUI() {
     const todayStr = currentSelectedDate.toLocaleDateString('sv');
+    if (!Object.keys(PLACES).length) {
+    await loadPlaces();
+}
+
     const todayMatch = todayStr.replace(/-/g, '');
     const dowMap = ['SU','MO','TU','WE','TH','FR','SA'];
     const dow = dowMap[currentSelectedDate.getDay()];
@@ -421,6 +441,9 @@ async function updateUI() {
 
     renderedBricks = [];
 
+    let PLACES = {};
+
+    
 await syncSchoolCycle(todayStr);
 await syncCozi(todayMatch, dow);
 await syncCalendly(todayStr);
