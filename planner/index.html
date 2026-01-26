@@ -111,6 +111,14 @@ let activeBrickData = null;
 const popover = document.getElementById("brick-popover");
 const popoverTitle = document.getElementById("popover-title");
 
+async function loadPlaces() {
+    const res = await fetch(CONFIG.placesUrl);
+    const data = await res.json();
+    PLACES = data.places || {};
+    console.log("✅ Places loaded:", PLACES);
+}
+
+
 /* =========================
    HELPERS
 ========================= */
@@ -164,6 +172,8 @@ function renderBrick(start, end, title, colorClass, tasks = [], meta = {}) {
     renderedBricks.push({ el: brickEl, start: startAbs, end: endAbs, meta: meta });
 }
 
+
+    
 function renderAllDayBrick(title) {
     const container = document.getElementById('all-day-container');
     const div = document.createElement('div');
@@ -410,6 +420,9 @@ function stackOverlappingBricks() {
    UI CONTROL
 ========================= */
 async function updateUI() {
+    if (!Object.keys(PLACES).length) {
+        await loadPlaces();
+    }
     const todayStr = currentSelectedDate.toLocaleDateString('sv');
     const todayMatch = todayStr.replace(/-/g, '');
     const dow = ['SU','MO','TU','WE','TH','FR','SA'][currentSelectedDate.getDay()];
