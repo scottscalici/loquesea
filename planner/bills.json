@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5232.3099999999995,
+    "checking_balance": 5171.7699999999995,
     "travel_savings": 0,
     "weekly_budget_remaining": 381.8799999999999,
     "daily_allowance_locked": 0,
@@ -629,6 +629,14 @@
       "who": "Abbi",
       "what": "KT tape",
       "amount": -14.83,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-01-25",
+      "vendor": "Amazon",
+      "who": "Abbi",
+      "what": "God knows",
+      "amount": -60.54,
       "category": "MANUAL"
     }
   ],
