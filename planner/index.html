@@ -493,26 +493,25 @@ function stackOverlappingBricks() {
 
     let group = [];
 
-    function applyGroup(group) {
-        if (group.length === 1) return; // 🔑 full width if no overlap
-
-        group.forEach((brick, i) => {
-            brick.column = i;
-            brick.totalColumns = group.length;
-        });
-
+  function applyGroup(group) {
+    if (group.length <= 1) {
         group.forEach(b => {
-            const width = 100 / b.totalColumns;
-            b.el.style.width = `calc(${width}% - 12px)`;
-            b.el.style.left = `${b.column * width}%`;
+            b.el.style.left = '0';
+            b.el.style.width = 'calc(100% - 40px)';
         });
+        return;
     }
-if (group.length <= 1) {
-    group.forEach(b => {
-        b.el.style.left = '0';
-        b.el.style.width = 'calc(100% - 40px)';
+
+    group.forEach((brick, i) => {
+        brick.column = i;
+        brick.totalColumns = group.length;
     });
-    return;
+
+    group.forEach(b => {
+        const width = 100 / b.totalColumns;
+        b.el.style.width = `calc(${width}% - 12px)`;
+        b.el.style.left = `${b.column * width}%`;
+    });
 }
 
     bricks.forEach(brick => {
