@@ -100,6 +100,8 @@ const TEMPLATE_ROLE_MAP = {
     work: "prep"
 };
 
+let renderedBricks = [];
+    
 const renderedCalendlyEvents = new Set();
 
 let currentSelectedDate = new Date();
@@ -151,8 +153,11 @@ function renderBrick(start, end, title, colorClass, tasks = []) {
     const [hS, mS] = start.split(':').map(Number);
     const [hE, mE] = end.split(':').map(Number);
 
+    const startAbs = hS * 60 + mS;
+    const endAbs = hE * 60 + mE;
+
     const startMins = (hS - CONFIG.dayStartHour) * 60 + mS;
-    const durationMins = (hE * 60 + mE) - (hS * 60 + mS);
+    const durationMins = endAbs - startAbs;
 
     brick.className = `brick ${colorClass}`;
     brick.style.top = `${startMins * CONFIG.pixelsPerMinute}px`;
@@ -169,6 +174,15 @@ function renderBrick(start, end, title, colorClass, tasks = []) {
 
     brick.innerHTML = html;
     timeline.appendChild(brick);
+
+    // 🔹 REGISTER BRICK FOR STACKING
+    renderedBricks.push({
+        el: brick,
+        start: startAbs,
+        end: endAbs,
+        column: 0,
+        totalColumns: 1
+    });
 }
 
 function renderAllDayBrick(title) {
@@ -405,12 +419,51 @@ async function updateUI() {
 
     
     await syncSchoolCycle(todayStr);
-    await syncCozi(todayMatch, dow);
-    await syncCalendly(todayStr);
+await syncCozi(todayMatch, dow);
+await syncCalendly(todayStr);
 
-    renderRedLine();
+stackOverlappingBricks();
+renderRedLine();
 }
 
+/* =========================
+   OVERLAPPING BRICKS
+========================= */
+function stackOverlappingBricks() {
+    // Sort by start time
+    renderedBricks.sort((a, b) => a.start - b.start);
+
+    const active = [];
+
+    renderedBricks.forEach(brick => {
+        // Remove finished bricks
+        for (let i = active.length - 1; i >= 0; i--) {
+            if (active[i].end <= brick.start) {
+                active.splice(i, 1);
+            }
+        }
+
+        // Find first free column
+        const usedColumns = active.map(b => b.column);
+        let col = 0;
+        while (usedColumns.includes(col)) col++;
+
+        brick.column = col;
+        active.push(brick);
+
+        const totalCols = Math.max(...active.map(b => b.column)) + 1;
+        active.forEach(b => b.totalColumns = totalCols);
+    });
+
+    // Apply layout
+    renderedBricks.forEach(b => {
+        const width = 100 / b.totalColumns;
+        b.el.style.width = `calc(${width}% - 12px)`;
+        b.el.style.left = `${b.column * width}%`;
+    });
+}
+
+    
 document.getElementById('date-picker').addEventListener('change', e => {
     currentSelectedDate = new Date(e.target.value + "T12:00");
     updateUI();
@@ -425,6 +478,7 @@ function goToToday() {
     updateUI();
 }
 
+renderedBricks = [];
 updateUI();
 setInterval(renderRedLine, 60000);
 </script>
