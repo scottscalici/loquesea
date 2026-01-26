@@ -107,6 +107,7 @@ let renderedBricks = [];
 let PLACES = {};
 let currentSelectedDate = new Date();
 let activeBrickData = null;
+let USER_TRAVEL = [];
 
 const popover = document.getElementById("brick-popover");
 const popoverTitle = document.getElementById("popover-title");
@@ -208,32 +209,33 @@ function restoreDefaultPopover() {
 document.addEventListener("click", () => popover.classList.add("hidden"));
 popover.addEventListener("click", (e) => {
   e.stopPropagation();
-
   const action = e.target.dataset.action;
-  const placeKey = e.target.dataset.place;
+  if (!action || !activeBrickData) return;
 
   if (action === "travel") {
-    renderTravelPicker();
-    return;
-  }
-
-  if (action === "back") {
-    restoreDefaultPopover();
-    return;
-  }
-
-  if (action === "new-place") {
-    alert("New place UI coming next 🙂");
-    return;
-  }
-
-  if (placeKey) {
-    const place = PLACES[placeKey];
-    alert(`Selected destination: ${place.label}`);
-    return;
+    createTravelBlock("dakota_gym_entrance"); // TEMP: hardcoded
   }
 });
 
+function createTravelBlock(destinationKey) {
+  const travelBlock = {
+    id: `travel_${Date.now()}`,
+    date: currentSelectedDate.toLocaleDateString('sv'),
+    from: "home", // default for now
+    to: destinationKey,
+    duration: 25, // default minutes
+    buffer: 10,   // arrive early buffer
+    anchor: {
+      title: activeBrickData.title,
+      start: activeBrickData.start
+    }
+  };
+
+  USER_TRAVEL.push(travelBlock);
+
+  console.log("🧱 Travel block created:", travelBlock);
+}
+    
 function renderTravelPicker() {
   if (!PLACES || !Object.keys(PLACES).length) {
     popover.innerHTML = `<div class="popover-title">No places loaded</div>`;
