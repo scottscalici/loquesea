@@ -1,53 +1,49 @@
 {
   "version": "1.0",
-
-  "defaults": {
-    "arrival_buffer_minutes": 10,
-    "parking_buffer_minutes": 5,
-    "warmup_minutes": 0
-  },
-
   "places": {
     "home": {
       "label": "Home",
-      "role": "home",
-      "address": "YOUR HOME ADDRESS",
-      "maps": {
-        "apple": "https://maps.apple.com/?q=YOUR+HOME+ADDRESS",
-        "google": "https://www.google.com/maps/search/?api=1&query=YOUR+HOME+ADDRESS"
+      "address": {
+        "line1": "55616 Fallbrooke Dr.",
+        "city": "Macomb Township",
+        "state": "MI",
+        "zip": "48042"
       }
     },
 
-    "work": {
-      "label": "Work",
-      "role": "work",
-      "address": "YOUR WORK ADDRESS",
-      "maps": {
-        "apple": "https://maps.apple.com/?q=YOUR+WORK+ADDRESS",
-        "google": "https://www.google.com/maps/search/?api=1&query=YOUR+WORK+ADDRESS"
-      }
-    },
-
-    "school_1": {
-      "label": "School",
-      "role": "school",
-      "address": "SCHOOL ADDRESS",
-      "arrival_buffer_minutes": 10,
-      "maps": {
-        "apple": "https://maps.apple.com/?q=SCHOOL+ADDRESS",
-        "google": "https://www.google.com/maps/search/?api=1&query=SCHOOL+ADDRESS"
-      }
-    },
-
+"dakota_main_entrance": {
+  "label": "Dakota – 9th Grade Center",
+  "address": {
+    "line1": "21051 21 Mile Rd",
+    "city": "Macomb Township",
+    "state": "MI",
+    "zip": "48044"
+  },
+  "coordinates": {
+    "lat": 42.64583,
+    "lng": 82.90750
+  }
+},
+"dakota_gym_entrance": {
+  "label": "Dakota – Gym",
+  "address": {
+    "line1": "21051 21 Mile Rd",
+    "city": "Macomb Township",
+    "state": "MI",
+    "zip": "48044"
+  },
+  "coordinates": {
+    "lat": 42.64628,
+    "lng": 82.90983
+  }
+},
     "gym": {
-      "label": "Gym",
-      "role": "activity",
-      "address": "GYM ADDRESS",
-      "arrival_buffer_minutes": 15,
-      "warmup_minutes": 60,
-      "maps": {
-        "apple": "https://maps.apple.com/?q=GYM+ADDRESS",
-        "google": "https://www.google.com/maps/search/?api=1&query=GYM+ADDRESS"
+      "label": "Community Gym",
+      "address": {
+        "line1": "789 Fitness Way",
+        "city": "Yourtown",
+        "state": "PA",
+        "zip": "19000"
       }
     }
   }
