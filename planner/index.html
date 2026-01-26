@@ -123,6 +123,8 @@ async function loadPlaces() {
 /* =========================
    HELPERS
 ========================= */
+const arrivalTime = subtractMinutes(
+
 function addMinutes(t, m) {
     const [h, min] = t.split(':').map(Number);
     const d = new Date(); d.setHours(h, min + m);
