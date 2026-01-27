@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4518.8,
+    "checking_balance": 4208.41,
     "travel_savings": 0,
     "weekly_budget_remaining": 938.5299999999999,
     "daily_allowance_locked": 0,
@@ -724,6 +724,12 @@
       "what": "",
       "amount": -13.35,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-01-28",
+      "vendor": "Comcast",
+      "amount": -310.39,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -809,7 +815,7 @@
       "name": "Comcast",
       "frequency": "monthly",
       "amount": 310,
-      "next_due_date": "2026-01-28"
+      "next_due_date": "2026-02-28"
     },
     {
       "id": "d-bat",
