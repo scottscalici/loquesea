@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4208.41,
+    "checking_balance": 4195.0599999999995,
     "travel_savings": 0,
-    "weekly_budget_remaining": 938.5299999999999,
+    "weekly_budget_remaining": 925.1799999999998,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-01-26T05:00:00.000Z"
@@ -730,6 +730,14 @@
       "vendor": "Comcast",
       "amount": -310.39,
       "category": "BILL"
+    },
+    {
+      "date": "2026-01-27",
+      "vendor": "Amazon",
+      "who": "Sub",
+      "what": "",
+      "amount": -13.35,
+      "category": "MANUAL"
     }
   ],
   "bills": [
