@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4701.200000000001,
+    "checking_balance": 4532.150000000001,
     "travel_savings": 0,
     "weekly_budget_remaining": 951.8799999999999,
     "daily_allowance_locked": 0,
@@ -710,6 +710,12 @@
       "what": "",
       "amount": -39.19,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-14",
+      "vendor": "Semco",
+      "amount": -169.05,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -991,7 +997,7 @@
       "name": "Semco",
       "frequency": "monthly",
       "amount": 250,
-      "next_due_date": "2026-02-14"
+      "next_due_date": "2026-03-14"
     },
     {
       "id": "snowfreaks",
