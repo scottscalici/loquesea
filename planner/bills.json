@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3987.34,
+    "checking_balance": 3962.34,
     "travel_savings": 0,
-    "weekly_budget_remaining": 911.6199999999998,
+    "weekly_budget_remaining": 886.6199999999998,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-01-26T05:00:00.000Z"
@@ -768,6 +768,14 @@
       "vendor": "Student Loan",
       "amount": -154.16,
       "category": "BILL"
+    },
+    {
+      "date": "2026-01-28",
+      "vendor": "Starbucks",
+      "who": "Abbi",
+      "what": "",
+      "amount": -25,
+      "category": "MANUAL"
     }
   ],
   "bills": [
