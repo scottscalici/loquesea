@@ -1325,7 +1325,7 @@
   {
     "name": "Penne with marinara and sausage",
     "link": "PASTE_LINK_HERE",
-    "tags": [],
+    "tags": ["Italian", "Pasta"],
     "components": [
         {
             "name": "Main Dish",
