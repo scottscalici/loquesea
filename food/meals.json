@@ -1242,6 +1242,40 @@
     ]
   },
   {
+    "name": "Pasta ",
+    "link": "PASTE_LINK_HERE",
+    "tags": [],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "pasta",
+                "marinara"
+            ]
+        },
+        {
+            "name": "Green Beans",
+            "type": "side",
+            "ingredients": [
+                "green beans"
+            ]
+        },
+        {
+            "name": "Garlic bread ",
+            "type": "side",
+            "ingredients": ["garlic bread"]
+        },
+        {
+            "name": "Salad",
+            "type": "side",
+            "ingredients": [
+                "salad"
+            ]
+        }
+    ]
+},
+  {
     "name": "Pastalaya",
     "link": "https://www.tiktok.com/t/ZTrAHxf2N/",
     "tags": [
@@ -1328,7 +1362,7 @@
     ]
 },
   {
-    "name": "potato tacos",
+    "name": "Potato tacos",
     "link": "https://www.tiktok.com/t/ZTMD3eTPD/",
     "tags": ["Mexican", "One-pot"],
     "components": [
