@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3834.2900000000004,
+    "checking_balance": 3784.3000000000006,
     "travel_savings": 0,
-    "weekly_budget_remaining": 818.5599999999997,
+    "weekly_budget_remaining": 768.5699999999997,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-01-26T05:00:00.000Z"
@@ -795,6 +795,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -68.06,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-01-29",
+      "vendor": "Boom Learning",
+      "who": "Abbi",
+      "what": "",
+      "amount": -49.99,
       "category": "MANUAL"
     }
   ],
