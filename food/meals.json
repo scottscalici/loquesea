@@ -1244,7 +1244,7 @@
   {
     "name": "Pasta ",
     "link": "PASTE_LINK_HERE",
-    "tags": [],
+    "tags": ["Pasta", "Italian"],
     "components": [
         {
             "name": "Main Dish",
@@ -1276,6 +1276,28 @@
     ]
 },
   {
+    "name": "Pasta (Alfredo and spinach) ",
+    "link": "https://www.tiktok.com/t/ZTrutePok/",
+    "tags": ["Pasta", "Italian"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Tortellini (or replace with pasta / ravioli)",
+                "frozen spinach",
+                "Alfredo sauce",
+                "diced tomatoes"
+            ]
+        },
+        {
+            "name": "Breadsticks ",
+            "type": "side",
+            "ingredients": ["breadsticks"]
+        }
+    ]
+},
+  {
     "name": "Pastalaya",
     "link": "https://www.tiktok.com/t/ZTrAHxf2N/",
     "tags": [
@@ -1300,6 +1322,44 @@
       }
     ]
   },
+  {
+    "name": "Penne with marinara and sausage",
+    "link": "PASTE_LINK_HERE",
+    "tags": [],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "pasta",
+                "marinara",
+                "ground italian sausage",
+                "Parmesan cheese"
+            ]
+        },
+        {
+            "name": "Salad",
+            "type": "side",
+            "ingredients": [
+                "salad mix or lettuce"
+            ]
+        },
+        {
+            "name": "Green Beans",
+            "type": "side",
+            "ingredients": [
+                "green beans"
+            ]
+        },
+        {
+            "name": "Garlic bread",
+            "type": "side",
+            "ingredients": [
+                "garlic bread"
+            ]
+        }
+    ]
+},
   {
     "name": "Pineapple Meatballs",
     "link": "https://youtu.be/ILE2nTP-eP0?si=0FN8DVdI-Lr8IeD6&t=619",
