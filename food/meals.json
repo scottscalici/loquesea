@@ -1300,6 +1300,103 @@
     ]
   },
   {
+    "name": "Pork tenderloin (bake in bag)",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["Pork"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Brown sugar bacon pork tenderloin x 2"
+            ]
+        },
+        {
+            "name": "Petite potatoes ",
+            "type": "side",
+            "ingredients": [
+              "petite potatoes with seasoning"
+            ]
+        },
+        {
+            "name": "Noodles",
+            "type": "side",
+            "ingredients": [
+                "knorrs noodles"
+            ]
+        }
+    ]
+},
+  {
+    "name": "potato tacos",
+    "link": "https://www.tiktok.com/t/ZTMD3eTPD/",
+    "tags": ["Mexican", "One-pot"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "1.5 lb. Petite potatoes",
+                "taco seasoning",
+                "ground beef",
+                "rotel tomatoes",
+                "shredded cheese",
+                "guacamole"
+            ]
+        },
+        {
+            "name": "Tortilla Chips",
+            "type": "side",
+            "ingredients": [
+                "tortilla chips"
+            ]
+        },
+        {
+            "name": "Queso",
+            "type": "side",
+            "ingredients": [
+                "queso"
+            ]
+        }
+    ]
+},
+  {
+    "name": "Quesadillas ",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["Mexican"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "tortillas",
+                "queso"
+            ]
+        },
+        {
+            "name": "Spanish Rice",
+            "type": "side",
+            "ingredients": [
+                "spanish rice"
+            ]
+        },
+        {
+            "name": "Corn",
+            "type": "side",
+            "ingredients": [
+                "frozen corn"
+            ]
+        },
+        {
+            "name": "Salad",
+            "type": "side",
+            "ingredients": [
+                "salad"
+            ]
+        }
+    ]
+},
+  {
     "name": "Ramen bake",
     "link": "https://www.tiktok.com/t/ZT6KHdwQr/",
     "tags": [
@@ -1341,7 +1438,7 @@
   {
     "name": "Ravioli",
     "link": "PASTE_LINK_HERE",
-    "tags": [],
+    "tags": ["Italian", "Pasta"],
     "components": [
       {
         "name": "Main Dish",
@@ -1764,6 +1861,24 @@
           "beans"
         ]
       },
+      {
+    "name": "Teriyaki meatballs ",
+    "link": "https://www.tiktok.com/t/ZTrutyUPX/",
+    "tags": ["Meatballs"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Meatballs",
+                "frozen peppers and onions",
+                "pineapple chunks",
+                "kinders sweet sesame teriyaki",
+                "jasmine rice"
+            ]
+        }
+    ]
+},
       {
         "name": "Tortilla Chips and queso",
         "type": "side",
