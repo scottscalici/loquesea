@@ -1298,6 +1298,31 @@
     ]
 },
   {
+    "name": "Pasta Salad",
+    "link": "https://www.tiktok.com/t/ZTFhNMKEE/",
+    "tags": [],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Italian seasoning",
+                "Dijon mustard",
+                "pasta",
+                "diced ham",
+                "pepperoni",
+                "salami",
+                "mozzarella pearls",
+                "cherry tomatoes",
+                "red onion",
+                "banana peppers",
+                "lettuce",
+                ""
+            ]
+        }
+    ]
+},
+  {
     "name": "Pastalaya",
     "link": "https://www.tiktok.com/t/ZTrAHxf2N/",
     "tags": [
