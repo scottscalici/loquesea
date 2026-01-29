@@ -172,5 +172,12 @@
       "Main Dish",
       "Green beans"
     ]
+  },
+  {
+    "date": "2026-01-30",
+    "meal": "Teriyaki meatballs ",
+    "sides_included": [
+      "Main Dish"
+    ]
   }
 ]
