@@ -189,5 +189,12 @@
       "Carrots",
       "Blue Cheese Dip"
     ]
+  },
+  {
+    "date": "2026-04-06",
+    "meal": "Teriyaki meatballs ",
+    "sides_included": [
+      "Main Dish"
+    ]
   }
 ]
