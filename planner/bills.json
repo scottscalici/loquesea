@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 9389.52,
+    "checking_balance": 9142.02,
     "travel_savings": 0,
     "weekly_budget_remaining": 708.5699999999997,
     "daily_allowance_locked": 0,
@@ -824,6 +824,12 @@
       "vendor": "Scott Payday",
       "amount": 2847.15,
       "category": "INCOME"
+    },
+    {
+      "date": "2026-02-18",
+      "vendor": "DTE",
+      "amount": -247.5,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -937,7 +943,7 @@
       "name": "DTE",
       "frequency": "monthly",
       "amount": 450,
-      "next_due_date": "2026-02-18"
+      "next_due_date": "2026-03-18"
     },
     {
       "id": "fallbrooke",
