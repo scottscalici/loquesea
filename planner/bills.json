@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 9117.02,
+    "checking_balance": 8315.02,
     "travel_savings": 0,
     "weekly_budget_remaining": 683.5699999999997,
     "daily_allowance_locked": 0,
@@ -838,6 +838,12 @@
       "what": "",
       "amount": -25,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-03-01",
+      "vendor": "Michigan SOS",
+      "amount": -802,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -1056,7 +1062,7 @@
       "name": "Michigan SOS",
       "frequency": "annually",
       "amount": 900,
-      "next_due_date": "2026-03-01"
+      "next_due_date": "2027-03-01"
     },
     {
       "id": "mortgage",
