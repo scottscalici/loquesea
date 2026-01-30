@@ -1055,7 +1055,7 @@
       "id": "mi-sos",
       "name": "Michigan SOS",
       "frequency": "annually",
-      "amount": 500,
+      "amount": 900,
       "next_due_date": "2026-03-01"
     },
     {
