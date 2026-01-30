@@ -179,5 +179,15 @@
     "sides_included": [
       "Main Dish"
     ]
+  },
+  {
+    "date": "2026-02-08",
+    "meal": "Wings (BBQ)",
+    "sides_included": [
+      "Main Dish",
+      "Celery",
+      "Carrots",
+      "Blue Cheese Dip"
+    ]
   }
 ]
