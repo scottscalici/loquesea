@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 8283.220000000001,
+    "checking_balance": 8133.220000000001,
     "travel_savings": 0,
     "weekly_budget_remaining": 651.7699999999998,
     "daily_allowance_locked": 0,
@@ -852,6 +852,12 @@
       "what": "",
       "amount": -31.8,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-02",
+      "vendor": "Citibank 1",
+      "amount": -150,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -923,7 +929,7 @@
       "name": "Citibank 1",
       "frequency": "monthly",
       "amount": 150,
-      "next_due_date": "2026-02-02"
+      "next_due_date": "2026-03-02"
     },
     {
       "id": "citibank-2",
