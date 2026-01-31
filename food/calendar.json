@@ -196,5 +196,15 @@
     "sides_included": [
       "Main Dish"
     ]
+  },
+  {
+    "date": "2026-02-03",
+    "meal": "Quesadillas ",
+    "sides_included": [
+      "Main Dish",
+      "Spanish Rice",
+      "Corn",
+      "Salad"
+    ]
   }
 ]
