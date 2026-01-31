@@ -224,5 +224,14 @@
       "Green Beans",
       "Salad Wedges"
     ]
+  },
+  {
+    "date": "2026-02-06",
+    "meal": "Crockpot Chicken spaghetti ",
+    "sides_included": [
+      "Main Dish",
+      "Garlic Bread",
+      "Caesar Salad"
+    ]
   }
 ]
