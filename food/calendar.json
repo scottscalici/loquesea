@@ -206,5 +206,13 @@
       "Corn",
       "Salad"
     ]
+  },
+  {
+    "date": "2026-02-05",
+    "meal": "Lomo Saltado",
+    "sides_included": [
+      "Main Dish",
+      "Rice"
+    ]
   }
 ]
