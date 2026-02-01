@@ -285,5 +285,13 @@
       "Main Dish",
       "Nacho Chips"
     ]
+  },
+  {
+    "date": "2026-02-17",
+    "meal": "Sonoran Hot Dogs",
+    "sides_included": [
+      "Main Dish",
+      "Fries"
+    ]
   }
 ]
