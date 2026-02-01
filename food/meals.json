@@ -1389,6 +1389,39 @@
     ]
 },
   {
+    "name": "Mississippi Chicken (rolls) 6:50",
+    "link": "https://youtu.be/-jibPRw9H7w?si=oovSw9-cSYICoGTp&t=405",
+    "tags": ["Chicken", "Crockpot"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "chicken breasts",
+                "ranch seasoning",
+                "au jus mix",
+                "butter",
+                "pepperoncini peppers"
+            ]
+        },
+        {
+            "name": "Sandwiches/Rolls",
+            "type": "side",
+            "ingredients": ["sub buns"]
+        },
+        {
+            "name": "Chips/Pickles",
+            "type": "side",
+            "ingredients": ["chips", "pickle spears"]
+        },
+        {
+            "name": "Noodles",
+            "type": "side",
+            "ingredients": ["noodle pack"]
+        }
+    ]
+},
+  {
     "name": "Mississippi Pot Roast",
     "link": "https://www.tiktok.com/@vrogers17/video/6996649630243048709",
     "tags": [
@@ -1664,7 +1697,7 @@
   {
     "name": "Pork chops w/ lo mein",
     "link": "https://youtu.be/5KsZdQWI6_c?si=zz9K73NwnL6MHMIV",
-    "tags": [],
+    "tags": ["Pork", "Asian"],
     "components": [
         {
             "name": "Main Dish",
