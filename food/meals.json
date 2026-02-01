@@ -593,6 +593,34 @@
     ]
   },
   {
+    "name": "Chicken Gyros",
+    "link": "https://www.tiktok.com/t/ZThy2GFWW/",
+    "tags": ["Greek", "Chicken"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Chicken thighs (or breasts)",
+                "Greek yogurt",
+                "garlic paste",
+                "Dijon mustard",
+                "lemon juice",
+                "tzatziki",
+                "pita",
+                "tomatoes"
+            ]
+        },
+        {
+            "name": "Fries",
+            "type": "side",
+            "ingredients": [
+                "French fries"
+            ]
+        }
+    ]
+},
+  {
     "name": "Chicken Marinara Subs",
     "link": "https://youtu.be/PPG-IpXfLo0?si=WhgH0ohotvrCMsY8&t=627",
     "tags": [
@@ -1200,6 +1228,39 @@
     ]
   },
   {
+    "name": "McRibs",
+    "link": "https://www.tiktok.com/t/ZThy2EvSd/",
+    "tags": ["American"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Ground pork",
+                "ketchup",
+                "brown sugar",
+                "bbq seasoning",
+                "pickles",
+                "hoagie rolls"
+            ]
+        },
+        {
+            "name": "Fries",
+            "type": "side",
+            "ingredients": [
+                "fries"
+            ]
+        },
+        {
+            "name": "Salad",
+            "type": "side",
+            "ingredients": [
+                "salad"
+            ]
+        }
+    ]
+},
+  {
     "name": "Menemen (Turkish eggs)",
     "link": "https://www.tiktok.com/t/ZTHsbJE6tTv2Q-01fiB/",
     "tags": [
@@ -1235,6 +1296,33 @@
       }
     ]
   },
+  {
+    "name": "Mexican Hot Dogs",
+    "link": "https://www.tiktok.com/t/ZThy2osAE/",
+    "tags": ["Mexican", "American"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Hot dogs",
+                "buns",
+                "onion",
+                "peppers",
+                "tomatoes",
+                "jalapeños",
+                "shredded cheese"
+            ]
+        },
+        {
+            "name": "Fries",
+            "type": "side",
+            "ingredients": [
+                "fries"
+            ]
+        }
+    ]
+},
   {
     "name": "Mississippi Pot Roast",
     "link": "https://www.tiktok.com/@vrogers17/video/6996649630243048709",
@@ -1762,6 +1850,83 @@
       }
     ]
   },
+  {
+    "name": "Smashed Dumpling Tacos",
+    "link": "https://www.tiktok.com/t/ZThyj8koW/",
+    "tags": ["Mexican", "Asian"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Ground pork",
+                "green onion",
+                "sesame oil",
+                "soy sauce",
+                "Cole slaw",
+                "flour tortillas"
+            ]
+        },
+      {
+    "name": "Smashed McChicken Tacos",
+    "link": "https://www.tiktok.com/t/ZThy2Wvht/",
+    "tags": ["American", "Chicken"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Ground chicken",
+                "flour tortillas",
+                "sweet gherkins",
+                "shredded lettuce",
+                "Parmesan"
+            ]
+        },
+        {
+            "name": "Fries",
+            "type": "side",
+            "ingredients": [
+                "fries"
+            ]
+        }
+    ]
+},
+        {
+            "name": "Cilantro lime rice",
+            "type": "side",
+            "ingredients": [
+                "cilantro lime rice"
+            ]
+        }
+    ]
+},
+  {
+    "name": "Sonoran Hot Dogs",
+    "link": "https://www.tiktok.com/t/ZThy2WWNP/",
+    "tags": ["Mexican", "American"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Hot dogs",
+                "bacon",
+                "jalapeño salsa",
+                "bolillo buns",
+                "Mexican pinto beans",
+                "cotija cheese"
+            ]
+        },
+        {
+            "name": "Fries",
+            "type": "side",
+            "ingredients": [
+                "fries"
+            ]
+        }
+    ]
+},
   {
     "name": "Southwestern tortellini ",
     "link": "https://www.tiktok.com/t/ZTNNPD7Vp/",
