@@ -277,5 +277,13 @@
       "Main Dish",
       "Cilantro lime rice"
     ]
+  },
+  {
+    "date": "2026-02-12",
+    "meal": "Taco Salad",
+    "sides_included": [
+      "Main Dish",
+      "Nacho Chips"
+    ]
   }
 ]
