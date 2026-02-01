@@ -1875,6 +1875,7 @@
       }
     ]
   },
+  
   {
     "name": "Smashed Dumpling Tacos",
     "link": "https://www.tiktok.com/t/ZThyj8koW/",
@@ -1892,7 +1893,16 @@
                 "flour tortillas"
             ]
         },
-      {
+           {
+            "name": "Cilantro lime rice",
+            "type": "side",
+            "ingredients": [
+                "cilantro lime rice"
+            ]
+        }
+    ]
+},
+     {
     "name": "Smashed McChicken Tacos",
     "link": "https://www.tiktok.com/t/ZThy2Wvht/",
     "tags": ["American", "Chicken"],
@@ -1913,15 +1923,6 @@
             "type": "side",
             "ingredients": [
                 "fries"
-            ]
-        }
-    ]
-},
-        {
-            "name": "Cilantro lime rice",
-            "type": "side",
-            "ingredients": [
-                "cilantro lime rice"
             ]
         }
     ]
