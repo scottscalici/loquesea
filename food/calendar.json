@@ -311,5 +311,14 @@
       "Bacon or Sausage",
       "Eggs"
     ]
+  },
+  {
+    "date": "2026-02-20",
+    "meal": "Swamp Potatoes",
+    "sides_included": [
+      "Main Dish",
+      "Caesar salad",
+      "French Bread"
+    ]
   }
 ]
