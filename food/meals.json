@@ -1767,6 +1767,22 @@
     ]
   },
   {
+    "name": "Sausage and Rice",
+    "link": "https://www.tiktok.com/t/ZTMa9roFN/",
+    "tags": ["One-pot"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Smoked sausage",
+                "onion",
+                "knorr's cheddar and broccoli sides x 2"
+            ]
+        }
+    ]
+},
+  {
     "name": "Shrimp Alfredo ",
     "link": "PASTE_LINK_HERE",
     "tags": [
