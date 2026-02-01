@@ -1808,6 +1808,31 @@
     ]
   },
   {
+    "name": "Shrimp Boil ",
+    "link": ["https://thedomesticgeek.com/shrimp-boil/", "https://youtu.be/xvRIlpOirSk?si=gRuySm94tGUGO4ag"],
+    "tags": ["Shrimp", "Seafood", "Cajun"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "2 lemons",
+                "2 yellow onions",
+                "Old Bay",
+                "baby potatoes",
+                "corn on the cob",
+                "4 smoked pork sausages",
+                "shrimp"
+            ]
+        },
+        {
+            "name": "Video link ",
+            "type": "side",
+            "ingredients": []
+        }
+    ]
+},
+  {
     "name": "Sloppy Joe",
     "link": "PASTE_LINK_HERE",
     "tags": ["American"],
@@ -2258,6 +2283,32 @@
     ]
 },
   {
+    "name": "Tomato Soup",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["Soup"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "canned crushed tomatoes",
+                "chicken or vegetable broth",
+                "garlic",
+                "onion",
+                "basil",
+                "heavy cream or milk (optional)"
+            ]
+        },
+        {
+            "name": "Grilled Cheese",
+            "type": "side",
+            "ingredients": ["sandwich bread",
+                "sliced cheese",
+                "butter"]
+        }
+    ]
+},
+  {
     "name": "Tuna Helper",
     "link": "PASTE_LINK_HERE",
     "tags": [
@@ -2304,6 +2355,42 @@
       }
     ]
   },
+  {
+    "name": "Tuscan Chicken (Creamy Garlic Parmesan Chicken with Spinach and Tomatoes)",
+    "link": "https://therecipecritic.com/creamy-tuscan-garlic-chicken/",
+    "tags": ["Chicken", "One-pot"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "chicken breasts",
+                "heavy cream (or milk + butter)",
+                "Parmesan cheese",
+                "garlic",
+                "cherry tomatoes",
+                "spinach",
+                "chicken broth",
+                "Italian seasoning",
+                "red pepper flakes (optional)"
+            ]
+        },
+        {
+            "name": "Jasmine Rice",
+            "type": "side",
+            "ingredients": [
+                "jasmine rice"
+            ]
+        },
+        {
+            "name": "Brussels sprouts",
+            "type": "side",
+            "ingredients": [
+                "Brussels sprouts"
+            ]
+        }
+    ]
+},
   {
     "name": "Vegetable Curry",
     "link": "https://www.tiktok.com/t/ZTFh85Puq/",
