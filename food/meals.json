@@ -994,6 +994,34 @@
     ]
   },
   {
+    "name": "Haitian Spaghetti ",
+    "link": "https://www.tiktok.com/t/ZThy24sGn/",
+    "tags": ["Haitian", "Pasta"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Spaghetti",
+                "Smoked Sausage",
+                "peppers",
+                "onions",
+                "epis (use sofrito)",
+                "tomato paste",
+                "sazón",
+                "sazón completa"
+            ]
+        },
+        {
+            "name": "Baguette",
+            "type": "side",
+            "ingredients": [
+                "baguette"
+            ]
+        }
+    ]
+},
+  {
     "name": "Herbed Chicken & Rice Soup",
     "link": "https://thedomesticgeek.com/herbed-chicken-rice-soup/",
     "tags": [
