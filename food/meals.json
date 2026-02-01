@@ -812,6 +812,29 @@
     ]
   },
   {
+    "name": "Dumpling Bake",
+    "link": "https://www.tiktok.com/t/ZThyj1BGU/",
+    "tags": ["Asian", "One-pot"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Coconut milk",
+                "red curry paste",
+                "oyster sauce",
+                "frozen dumplings",
+                "bok choy"
+            ]
+        },
+        {
+            "name": "Rice ",
+            "type": "side",
+            "ingredients": ["rice"]
+        }
+    ]
+},
+  {
     "name": "Dumpling Lasagna ",
     "link": "https://www.tiktok.com/t/ZThYMjJwn/",
     "tags": [
