@@ -655,6 +655,33 @@
     ]
   },
   {
+    "name": "Chicken and Pasta w/Arrabbiata Sauce",
+    "link": "PASTE_LINK_HERE",
+    "tags": [],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "pasta",
+                "arrabbiata sauce"
+            ]
+        },
+        {
+            "name": "Grilled Chicken",
+            "type": "side",
+            "ingredients": [
+                "grilled chicken strips (cooked)"
+            ]
+        },
+        {
+            "name": "Sautéed spinach",
+            "type": "side",
+            "ingredients": ["spinach"]
+        }
+    ]
+},
+  {
     "name": "Cocktail Meatballs",
     "link": "https://www.youtube.com/watch?v=veaaoBi3YzM",
     "tags": [
@@ -1558,6 +1585,71 @@
     ]
   },
   {
+    "name": "Pork chops w/ lo mein",
+    "link": "https://youtu.be/5KsZdQWI6_c?si=zz9K73NwnL6MHMIV",
+    "tags": [],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "pork chops",
+                "lo mein"
+            ]
+        },
+        {
+            "name": "Applesauce",
+            "type": "side",
+            "ingredients": [
+                "applesauce"
+            ]
+        },
+        {
+            "name": "Asparagus ",
+            "type": "side",
+            "ingredients": ["asparagus"]
+        },
+        {
+            "name": "Salad",
+            "type": "side",
+            "ingredients": [
+                "salad"
+            ]
+        }
+    ]
+},
+  {
+    "name": "Pork Loin",
+    "link": "https://www.tiktok.com/t/ZTNQCxTQo/",
+    "tags": ["Pork", "Sheet"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Seasoned Pork loin"
+            ]
+        },
+        {
+            "name": "Applesauce",
+            "type": "side",
+            "ingredients": ["applesauce"]
+        },
+        {
+            "name": "Broccoli, carrots, potatoes ",
+            "type": "side",
+            "ingredients": ["broccoli", "carrots", "petite potatoes"]
+        },
+        {
+            "name": "Dinner Rolls",
+            "type": "side",
+            "ingredients": [
+                "dinner rolls"
+            ]
+        }
+    ]
+},
+  {
     "name": "Pork tenderloin (bake in bag)",
     "link": "PASTE_LINK_HERE",
     "tags": ["Pork"],
@@ -1730,6 +1822,83 @@
     ]
   },
   {
+    "name": "Ropa vieja",
+    "link": "https://www.tiktok.com/t/ZTHsqpykMS6st-ZRYVZ/",
+    "tags": ["Steak", "Cuban"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Steak (flank or hanger)",
+                "peppers and onions",
+                "tomato paste",
+                "diced tomatoes",
+                "green olives",
+                "beef stock"
+            ]
+        },
+        {
+            "name": "Plantain Chips",
+            "type": "side",
+            "ingredients": [
+                "Plantain Chips"
+            ]
+        },
+        {
+            "name": "Rice",
+            "type": "side",
+            "ingredients": [
+                "Rice"
+            ]
+        },
+        {
+            "name": "Black beans",
+            "type": "side",
+            "ingredients": [
+                "Black beans"
+            ]
+        }
+    ]
+},
+  {
+    "name": "Rotini",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["Italian", "Pasta"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "pasta",
+                "marinara sauce",
+                "premade salad"
+            ]
+        },
+        {
+            "name": "Garlic Bread",
+            "type": "side",
+            "ingredients": [
+                "garlic bread"
+            ]
+        },
+        {
+            "name": "Green Beans",
+            "type": "side",
+            "ingredients": [
+                "green beans"
+            ]
+        },
+        {
+            "name": "Cottage Cheese",
+            "type": "side",
+            "ingredients": [
+                "cottage cheese"
+            ]
+        }
+    ]
+},
+  {
     "name": "Salmon",
     "link": "PASTE_LINK_HERE",
     "tags": [
@@ -1766,6 +1935,39 @@
       }
     ]
   },
+  {
+    "name": "Salisbury Steak",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["American", "Beef"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Salisbury steak"
+            ]
+        },
+        {
+            "name": "Mashed Potatoes",
+            "type": "side",
+            "ingredients": [
+                "mashed potatoes"
+            ]
+        },
+        {
+            "name": "Corn",
+            "type": "side",
+            "ingredients": [
+                "corn"
+            ]
+        },
+        {
+            "name": "Brussels Sprouts (balsamic glaze)",
+            "type": "side",
+            "ingredients": ["brussels sprouts", "balsamic glaze"]
+        }
+    ]
+},
   {
     "name": "Sausage and Rice",
     "link": "https://www.tiktok.com/t/ZTMa9roFN/",
