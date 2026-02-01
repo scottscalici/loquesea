@@ -293,5 +293,13 @@
       "Main Dish",
       "Fries"
     ]
+  },
+  {
+    "date": "2026-02-19",
+    "meal": "Dumpling Bake",
+    "sides_included": [
+      "Main Dish",
+      "Rice "
+    ]
   }
 ]
