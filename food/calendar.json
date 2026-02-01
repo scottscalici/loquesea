@@ -320,5 +320,14 @@
       "Caesar salad",
       "French Bread"
     ]
+  },
+  {
+    "date": "2026-02-10",
+    "meal": "Chicken Marinara Subs",
+    "sides_included": [
+      "Main Dish",
+      "Noodles",
+      "Green Beans"
+    ]
   }
 ]
