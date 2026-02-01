@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 7950.710000000001,
+    "checking_balance": 7728.230000000001,
     "travel_savings": 0,
-    "weekly_budget_remaining": 424.25999999999976,
+    "weekly_budget_remaining": 201.77999999999977,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-01-26T05:00:00.000Z"
@@ -897,6 +897,14 @@
       "who": "Abbi",
       "what": "Jet’s",
       "amount": -75.73,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-01",
+      "vendor": "Kroger",
+      "who": "Abbi",
+      "what": "",
+      "amount": -222.48,
       "category": "MANUAL"
     }
   ],
