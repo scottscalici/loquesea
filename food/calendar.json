@@ -301,5 +301,15 @@
       "Main Dish",
       "Rice "
     ]
+  },
+  {
+    "date": "2026-02-13",
+    "meal": "Breakfast: Pancakes",
+    "sides_included": [
+      "Main Dish",
+      "Pancakes",
+      "Bacon or Sausage",
+      "Eggs"
+    ]
   }
 ]
