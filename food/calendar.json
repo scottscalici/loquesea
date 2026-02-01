@@ -233,5 +233,13 @@
       "Garlic Bread",
       "Caesar Salad"
     ]
+  },
+  {
+    "date": "2026-02-02",
+    "meal": "Haitian Spaghetti ",
+    "sides_included": [
+      "Main Dish",
+      "Baguette"
+    ]
   }
 ]
