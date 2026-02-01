@@ -261,5 +261,13 @@
       "Veggie",
       "Cottage Cheese"
     ]
+  },
+  {
+    "date": "2026-02-23",
+    "meal": "Smashed McChicken Tacos",
+    "sides_included": [
+      "Main Dish",
+      "Fries"
+    ]
   }
 ]
