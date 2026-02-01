@@ -329,5 +329,15 @@
       "Noodles",
       "Green Beans"
     ]
+  },
+  {
+    "date": "2026-03-05",
+    "meal": "Breakfast: French Toast",
+    "sides_included": [
+      "Main Dish",
+      "French Toast",
+      "Bacon or Sausage",
+      "Eggs"
+    ]
   }
 ]
