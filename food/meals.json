@@ -337,7 +337,7 @@
     ]
   },
   {
-    "name": "Breakfast",
+    "name": "Breakfast: Pancakes",
     "link": "PASTE_LINK_HERE",
     "tags": [
       "Eggs",
@@ -357,6 +357,44 @@
           "blueberries",
           "chocolate chips"
         ]
+      },
+      {
+        "name": "Bacon or Sausage",
+        "type": "side",
+        "ingredients": [
+          "bacon",
+          "sausage"
+        ]
+      },
+      {
+        "name": "Eggs",
+        "type": "side",
+        "ingredients": [
+          "eggs"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Breakfast: French Toast",
+    "link": "https://www.tiktok.com/t/ZThyKSVgY/",
+    "tags": [
+      "Eggs",
+      "Breakfast"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": []
+      },
+      {
+        "name": "French Toast",
+        "type": "side",
+        "ingredients": [
+          "texas toast",
+          "eggs"
+         ]
       },
       {
         "name": "Bacon or Sausage",
@@ -1460,6 +1498,45 @@
             "name": "Breadsticks ",
             "type": "side",
             "ingredients": ["breadsticks"]
+        }
+    ]
+},
+  {
+    "name": "Pasta w/ Marinara",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["Pasta", "Italian"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "pasta",
+                "marinara sauce"
+            ]
+        },
+        {
+            "name": "Garlic Bread",
+            "type": "side",
+            "ingredients": ["garlic bread"]
+        },
+        {
+            "name": "Salad",
+            "type": "side",
+            "ingredients": [
+                "salad"
+            ]
+        },
+              {
+            "name": "Veggie",
+            "type": "side",
+            "ingredients": [
+                "frozen veggie"
+            ]
+        },
+        {
+            "name": "Cottage Cheese",
+            "type": "side",
+            "ingredients": ["cottage cheese"]
         }
     ]
 },
