@@ -269,5 +269,13 @@
       "Main Dish",
       "Fries"
     ]
+  },
+  {
+    "date": "2026-03-02",
+    "meal": "Smashed Dumpling Tacos",
+    "sides_included": [
+      "Main Dish",
+      "Cilantro lime rice"
+    ]
   }
 ]
