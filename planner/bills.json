@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 7628.340000000001,
+    "checking_balance": 7611.390000000001,
     "travel_savings": 0,
     "weekly_budget_remaining": 1101.8899999999999,
     "daily_allowance_locked": 0,
@@ -930,6 +930,12 @@
       "what": "",
       "amount": -6.62,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-02",
+      "vendor": "HP Instant Ink",
+      "amount": -16.95,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -1106,7 +1112,7 @@
       "name": "HP Instant Ink",
       "frequency": "monthly",
       "amount": 16.99,
-      "next_due_date": "2026-02-02"
+      "next_due_date": "2026-03-02"
     },
     {
       "id": "hp-ink-2",
