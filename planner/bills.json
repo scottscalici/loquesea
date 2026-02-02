@@ -7,7 +7,7 @@
     {
       "name": "Cedar Point Tournament",
       "target": 1500,
-      "current": 400
+      "current": 650
     },
     {
       "name": "Pigeon Forge Tournament",
@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 7611.390000000001,
+    "checking_balance": 7361.390000000001,
     "travel_savings": 0,
     "weekly_budget_remaining": 1101.8899999999999,
     "daily_allowance_locked": 0,
@@ -936,6 +936,14 @@
       "vendor": "HP Instant Ink",
       "amount": -16.95,
       "category": "BILL"
+    },
+    {
+      "date": "2026-02-02",
+      "vendor": "TO SAVINGS: Cedar Point Tournament ",
+      "who": "Grayson",
+      "what": "",
+      "amount": -250,
+      "category": "SAVINGS"
     }
   ],
   "bills": [
