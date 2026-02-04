@@ -7,12 +7,12 @@
     {
       "name": "Cedar Point Tournament",
       "target": 1500,
-      "current": 700
+      "current": 650
     },
     {
       "name": "Pigeon Forge Tournament",
       "target": 2500,
-      "current": 950
+      "current": 1000
     },
     {
       "name": "Renovation",
@@ -1015,7 +1015,7 @@
     },
     {
       "date": "2026-02-04",
-      "vendor": "TO SAVINGS: Cedar Point Tournament",
+      "vendor": "TO SAVINGS: Pigeon Forge Tournament",
       "who": "Family",
       "what": "",
       "amount": -50,
