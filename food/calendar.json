@@ -339,5 +339,12 @@
       "Bacon or Sausage",
       "Eggs"
     ]
+  },
+  {
+    "date": "2026-04-06",
+    "meal": "Chicken Cobbler",
+    "sides_included": [
+      "Main Dish"
+    ]
   }
 ]
