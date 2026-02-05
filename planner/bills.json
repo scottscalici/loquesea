@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 6253.150000000001,
+    "checking_balance": 5875.830000000001,
     "travel_savings": 0,
     "weekly_budget_remaining": 958.6599999999999,
     "daily_allowance_locked": 0,
@@ -1036,6 +1036,12 @@
       "what": "",
       "amount": -25,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-05",
+      "vendor": "Secondary Mortgage",
+      "amount": -377.32,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -1310,7 +1316,7 @@
       "name": "Secondary Mortgage",
       "frequency": "monthly",
       "amount": 377.32,
-      "next_due_date": "2026-02-05"
+      "next_due_date": "2026-03-05"
     },
     {
       "id": "semco",
