@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5875.830000000001,
+    "checking_balance": 5679.7300000000005,
     "travel_savings": 0,
-    "weekly_budget_remaining": 958.6599999999999,
+    "weekly_budget_remaining": 762.5599999999998,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-02-02T05:00:00.000Z"
@@ -1042,6 +1042,14 @@
       "vendor": "Secondary Mortgage",
       "amount": -377.32,
       "category": "BILL"
+    },
+    {
+      "date": "2026-02-06",
+      "vendor": "Adidas",
+      "who": "Abbi",
+      "what": "",
+      "amount": -196.1,
+      "category": "MANUAL"
     }
   ],
   "bills": [
