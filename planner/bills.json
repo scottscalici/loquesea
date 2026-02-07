@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4305.72,
+    "checking_balance": 3639.9800000000005,
     "travel_savings": 0,
     "weekly_budget_remaining": 572.6899999999997,
     "daily_allowance_locked": 0,
@@ -1100,6 +1100,12 @@
       "vendor": "Water & Sewer",
       "amount": -316.07,
       "category": "BILL"
+    },
+    {
+      "date": "2026-02-09",
+      "vendor": "Ford F-150",
+      "amount": -665.74,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -1234,7 +1240,7 @@
       "name": "Ford F-150",
       "frequency": "monthly",
       "amount": 665.74,
-      "next_due_date": "2026-02-09"
+      "next_due_date": "2026-03-09"
     },
     {
       "id": "ford-mache",
