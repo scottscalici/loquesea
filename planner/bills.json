@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4621.79,
+    "checking_balance": 4305.72,
     "travel_savings": 0,
     "weekly_budget_remaining": 572.6899999999997,
     "daily_allowance_locked": 0,
@@ -1094,6 +1094,12 @@
       "vendor": "Meemic",
       "amount": -208.27,
       "category": "BILL"
+    },
+    {
+      "date": "2026-02-15",
+      "vendor": "Water & Sewer",
+      "amount": -316.07,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -1424,7 +1430,7 @@
       "name": "Water & Sewer",
       "frequency": "quarterly",
       "amount": 350,
-      "next_due_date": "2026-02-15"
+      "next_due_date": "2026-05-15"
     },
     {
       "id": "wea",
