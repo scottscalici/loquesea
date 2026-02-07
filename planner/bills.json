@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2344.750000000001,
+    "checking_balance": 2336.760000000001,
     "travel_savings": 0,
-    "weekly_budget_remaining": 154.47999999999968,
+    "weekly_budget_remaining": 146.48999999999967,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-02-02T05:00:00.000Z"
@@ -1155,6 +1155,14 @@
       "who": "Scott",
       "what": "Refund",
       "amount": 11.31,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-07",
+      "vendor": "Kroger",
+      "who": "Grayson",
+      "what": "",
+      "amount": -7.99,
       "category": "MANUAL"
     }
   ],
