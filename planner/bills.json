@@ -40,10 +40,10 @@
     "escrow_remaining": 500,
     "checking_balance": 2134.8100000000013,
     "travel_savings": 0,
-    "weekly_budget_remaining": -38.47000000000033,
+    "weekly_budget_remaining": 961.5299999999996,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
-    "last_weekly_reset": "2026-02-02T05:00:00.000Z"
+    "last_weekly_reset": "2026-02-09T05:00:00.000Z"
   },
   "vendors": [
     "Amazon",
