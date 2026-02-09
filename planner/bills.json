@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2224.110000000001,
+    "checking_balance": 2169.800000000001,
     "travel_savings": 0,
-    "weekly_budget_remaining": 33.83999999999967,
+    "weekly_budget_remaining": -20.470000000000333,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-02-02T05:00:00.000Z"
@@ -1195,6 +1195,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -25,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-08",
+      "vendor": "Pizza",
+      "who": "Abbi",
+      "what": "Jet’s ",
+      "amount": -54.31,
       "category": "MANUAL"
     }
   ],
