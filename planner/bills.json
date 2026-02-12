@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 1701.7300000000014,
+    "checking_balance": 1698.9800000000014,
     "travel_savings": 0,
-    "weekly_budget_remaining": 556.2599999999995,
+    "weekly_budget_remaining": 553.5099999999995,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-02-09T05:00:00.000Z"
@@ -1295,6 +1295,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -124.18,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-12",
+      "vendor": "TPT",
+      "who": "Abbi",
+      "what": "",
+      "amount": -2.75,
       "category": "MANUAL"
     }
   ],
