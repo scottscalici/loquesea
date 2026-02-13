@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4176.920000000002,
+    "checking_balance": 7024.0700000000015,
     "travel_savings": 0,
     "weekly_budget_remaining": 513.3799999999995,
     "daily_allowance_locked": 0,
@@ -1331,6 +1331,12 @@
       "date": "2026-02-13",
       "vendor": "Wife Payday",
       "amount": 2818.07,
+      "category": "INCOME"
+    },
+    {
+      "date": "2026-02-15",
+      "vendor": "Scott Payday",
+      "amount": 2847.15,
       "category": "INCOME"
     }
   ],
