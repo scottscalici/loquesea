@@ -1320,6 +1320,12 @@
       "what": "",
       "amount": -300,
       "category": "SAVINGS"
+    },
+    {
+      "date": "2026-02-13",
+      "vendor": "Put money aside",
+      "amount": 0,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -1587,7 +1593,7 @@
       "name": "Put money aside",
       "frequency": "bi-weekly",
       "amount": 1,
-      "next_due_date": "2026-02-13"
+      "next_due_date": "2026-02-27"
     },
     {
       "id": "secondary-mortgage",
