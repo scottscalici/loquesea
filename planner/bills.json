@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 6449.750000000002,
+    "checking_balance": 6281.410000000002,
     "travel_savings": 0,
-    "weekly_budget_remaining": 439.05999999999955,
+    "weekly_budget_remaining": 270.7199999999996,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-02-09T05:00:00.000Z"
@@ -1370,6 +1370,14 @@
       "what": "",
       "amount": -500,
       "category": "SAVINGS"
+    },
+    {
+      "date": "2026-02-14",
+      "vendor": "Kroger",
+      "who": "Abbi",
+      "what": "",
+      "amount": -168.34,
+      "category": "MANUAL"
     }
   ],
   "bills": [
