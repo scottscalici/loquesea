@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 6281.410000000002,
+    "checking_balance": 6245.420000000002,
     "travel_savings": 0,
     "weekly_budget_remaining": 270.7199999999996,
     "daily_allowance_locked": 0,
@@ -1378,6 +1378,12 @@
       "what": "",
       "amount": -168.34,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-16",
+      "vendor": "Jax S",
+      "amount": -35.99,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -1575,7 +1581,7 @@
       "name": "Jax S",
       "frequency": "monthly",
       "amount": 35.99,
-      "next_due_date": "2026-02-16"
+      "next_due_date": "2026-03-16"
     },
     {
       "id": "luna-vet",
