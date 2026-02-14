@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 6949.750000000002,
+    "checking_balance": 6449.750000000002,
     "travel_savings": 0,
     "weekly_budget_remaining": 439.05999999999955,
     "daily_allowance_locked": 0,
@@ -1362,6 +1362,14 @@
       "what": "",
       "amount": -35.99,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-14",
+      "vendor": "TO SAVINGS: Savings",
+      "who": "Family",
+      "what": "",
+      "amount": -500,
+      "category": "SAVINGS"
     }
   ],
   "bills": [
