@@ -12,7 +12,7 @@
     {
       "name": "Pigeon Forge Tournament",
       "target": 2500,
-      "current": 1000
+      "current": 1100
     },
     {
       "name": "Renovation",
@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 6009.230000000002,
+    "checking_balance": 5909.230000000002,
     "travel_savings": 0,
     "weekly_budget_remaining": 34.529999999999575,
     "daily_allowance_locked": 0,
@@ -1424,6 +1424,14 @@
       "what": "DR",
       "amount": -50,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-15",
+      "vendor": "TO SAVINGS: Pigeon Forge Tournament",
+      "who": "Grayson",
+      "what": "",
+      "amount": -100,
+      "category": "SAVINGS"
     }
   ],
   "bills": [
