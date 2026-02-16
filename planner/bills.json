@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5839.230000000002,
+    "checking_balance": 5724.770000000002,
     "travel_savings": 0,
-    "weekly_budget_remaining": 34.529999999999575,
+    "weekly_budget_remaining": -79.93000000000042,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-02-09T05:00:00.000Z"
@@ -1438,6 +1438,14 @@
       "vendor": "Rec Center",
       "amount": -70,
       "category": "BILL"
+    },
+    {
+      "date": "2026-02-15",
+      "vendor": "Journey’s ",
+      "who": "Abbi",
+      "what": "",
+      "amount": -114.46,
+      "category": "MANUAL"
     }
   ],
   "bills": [
