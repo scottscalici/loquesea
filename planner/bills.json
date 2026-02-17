@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5620.170000000002,
+    "checking_balance": 5601.800000000002,
     "travel_savings": 0,
-    "weekly_budget_remaining": 823.9399999999997,
+    "weekly_budget_remaining": 805.5699999999997,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-02-16T05:00:00.000Z"
@@ -1475,6 +1475,14 @@
       "who": "Scott",
       "what": "",
       "amount": -65.8,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-17",
+      "vendor": "MI SOS",
+      "who": "Scott",
+      "what": "RealID",
+      "amount": -18.37,
       "category": "MANUAL"
     }
   ],
