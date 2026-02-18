@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5599.090000000002,
+    "checking_balance": 5585.100000000002,
     "travel_savings": 0,
     "weekly_budget_remaining": 802.8599999999997,
     "daily_allowance_locked": 0,
@@ -1492,6 +1492,12 @@
       "what": "",
       "amount": -2.71,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-17",
+      "vendor": "Paramount Plus",
+      "amount": -13.99,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -1731,7 +1737,7 @@
       "name": "Paramount Plus",
       "frequency": "monthly",
       "amount": 12.99,
-      "next_due_date": "2026-02-17"
+      "next_due_date": "2026-03-17"
     },
     {
       "id": "priority-waste",
