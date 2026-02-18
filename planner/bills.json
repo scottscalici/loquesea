@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5397.2400000000025,
+    "checking_balance": 5290.340000000003,
     "travel_savings": 0,
     "weekly_budget_remaining": 719.6999999999997,
     "daily_allowance_locked": 0,
@@ -1520,6 +1520,12 @@
       "vendor": "WEA",
       "amount": -104.7,
       "category": "BILL"
+    },
+    {
+      "date": "2026-02-15",
+      "vendor": "UEA",
+      "amount": -106.9,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -1843,7 +1849,7 @@
       "name": "UEA",
       "frequency": "monthly",
       "amount": 106.8,
-      "next_due_date": "2026-02-15"
+      "next_due_date": "2026-03-15"
     },
     {
       "id": "water-sewer",
