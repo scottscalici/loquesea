@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5290.340000000003,
+    "checking_balance": 4676.330000000003,
     "travel_savings": 0,
     "weekly_budget_remaining": 719.6999999999997,
     "daily_allowance_locked": 0,
@@ -1526,6 +1526,12 @@
       "vendor": "UEA",
       "amount": -106.9,
       "category": "BILL"
+    },
+    {
+      "date": "2026-02-18",
+      "vendor": "Mortgage",
+      "amount": -614.01,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -1751,7 +1757,7 @@
       "name": "Mortgage",
       "frequency": "bi-weekly",
       "amount": 614.01,
-      "next_due_date": "2026-02-18"
+      "next_due_date": "2026-03-04"
     },
     {
       "id": "nfhs",
