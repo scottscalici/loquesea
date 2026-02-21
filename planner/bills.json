@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4433.690000000003,
+    "checking_balance": 4395.440000000003,
     "travel_savings": 0,
-    "weekly_budget_remaining": 518.5099999999996,
+    "weekly_budget_remaining": 480.25999999999965,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-02-16T05:00:00.000Z"
@@ -1609,6 +1609,14 @@
       "who": "Kinley",
       "what": "",
       "amount": -14.82,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-20",
+      "vendor": "Gas station ",
+      "who": "Family",
+      "what": "",
+      "amount": -38.25,
       "category": "MANUAL"
     }
   ],
