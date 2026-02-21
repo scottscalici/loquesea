@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4389.460000000004,
+    "checking_balance": 4382.140000000004,
     "travel_savings": 0,
     "weekly_budget_remaining": 474.27999999999963,
     "daily_allowance_locked": 0,
@@ -1625,6 +1625,14 @@
       "who": "Kinley",
       "what": "",
       "amount": -5.98,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-21",
+      "vendor": "Amazon",
+      "who": "",
+      "what": "",
+      "amount": -7.32,
       "category": "MANUAL"
     }
   ],
