@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4448.510000000003,
+    "checking_balance": 4433.690000000003,
     "travel_savings": 0,
-    "weekly_budget_remaining": 533.3299999999997,
+    "weekly_budget_remaining": 518.5099999999996,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-02-16T05:00:00.000Z"
@@ -1601,6 +1601,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -19.15,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-20",
+      "vendor": "McDonald’s ",
+      "who": "Kinley",
+      "what": "",
+      "amount": -14.82,
       "category": "MANUAL"
     }
   ],
