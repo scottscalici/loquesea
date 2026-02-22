@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3899.5300000000034,
+    "checking_balance": 3818.2800000000034,
     "travel_savings": 0,
-    "weekly_budget_remaining": 296.67999999999967,
+    "weekly_budget_remaining": 215.42999999999967,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-02-16T05:00:00.000Z"
@@ -1731,6 +1731,14 @@
       "who": "Scott",
       "what": "",
       "amount": -74.46,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-22",
+      "vendor": "Pizza",
+      "who": "Abbi",
+      "what": "",
+      "amount": -81.25,
       "category": "MANUAL"
     }
   ],
