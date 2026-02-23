@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3395.9600000000037,
+    "checking_balance": 3299.8600000000038,
     "travel_savings": 0,
-    "weekly_budget_remaining": 1194.1799999999996,
+    "weekly_budget_remaining": 1098.0799999999997,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-02-23T05:00:00.000Z"
@@ -1786,6 +1786,14 @@
       "vendor": "T-Mobile",
       "amount": -296.35,
       "category": "BILL"
+    },
+    {
+      "date": "2026-02-23",
+      "vendor": "Kroger",
+      "who": "",
+      "what": "",
+      "amount": -96.1,
+      "category": "MANUAL"
     }
   ],
   "bills": [
