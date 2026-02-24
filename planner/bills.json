@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3282.1100000000038,
+    "checking_balance": 3251.780000000004,
     "travel_savings": 0,
-    "weekly_budget_remaining": 1080.3299999999997,
+    "weekly_budget_remaining": 1049.9999999999998,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-02-23T05:00:00.000Z"
@@ -1809,6 +1809,14 @@
       "who": "",
       "what": "",
       "amount": -8.96,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-23",
+      "vendor": "Dermatologist ",
+      "who": "Abbi",
+      "what": "",
+      "amount": -30.33,
       "category": "MANUAL"
     }
   ],
