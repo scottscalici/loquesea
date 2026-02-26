@@ -7,7 +7,7 @@
     {
       "name": "Cedar Point Tournament",
       "target": 1500,
-      "current": 1000
+      "current": 1500
     },
     {
       "name": "Pigeon Forge Tournament",
@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2462.4200000000037,
+    "checking_balance": 1962.4200000000037,
     "travel_savings": 0,
     "weekly_budget_remaining": 770.0299999999997,
     "daily_allowance_locked": 0,
@@ -1948,6 +1948,14 @@
       "what": "",
       "amount": -25,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-26",
+      "vendor": "TO SAVINGS: Cedar Point Tournament ",
+      "who": "Grayson",
+      "what": "",
+      "amount": -500,
+      "category": "SAVINGS"
     }
   ],
   "bills": [
