@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2626.220000000004,
+    "checking_balance": 2564.7100000000037,
     "travel_savings": 0,
-    "weekly_budget_remaining": 856.5399999999997,
+    "weekly_budget_remaining": 795.0299999999997,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-02-23T05:00:00.000Z"
@@ -1915,6 +1915,14 @@
       "who": "Scott",
       "what": "",
       "amount": -57.46,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-25",
+      "vendor": "Culver’s ",
+      "who": "Abbi",
+      "what": "",
+      "amount": -61.51,
       "category": "MANUAL"
     }
   ],
