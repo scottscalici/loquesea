@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 1887.2600000000039,
+    "checking_balance": 1828.690000000004,
     "travel_savings": 0,
     "weekly_budget_remaining": 705.4599999999997,
     "daily_allowance_locked": 0,
@@ -1980,6 +1980,12 @@
       "what": "",
       "amount": -10.59,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-27",
+      "vendor": "Salt & Stone",
+      "amount": -58.57,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -2240,7 +2246,7 @@
       "name": "Salt & Stone",
       "frequency": "monthly",
       "amount": 26.02,
-      "next_due_date": "2026-02-27"
+      "next_due_date": "2026-03-27"
     },
     {
       "id": "savings",
