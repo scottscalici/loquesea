@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 7183.530000000003,
+    "checking_balance": 7492.920000000004,
     "travel_savings": 0,
     "weekly_budget_remaining": 705.4599999999997,
     "daily_allowance_locked": 0,
@@ -2000,9 +2000,9 @@
       "category": "BILL"
     },
     {
-      "date": "2026-02-28",
-      "vendor": "Comcast",
-      "amount": -310.39,
+      "date": "2026-02-27",
+      "vendor": "Put money aside",
+      "amount": -1,
       "category": "BILL"
     }
   ],
@@ -2089,7 +2089,7 @@
       "name": "Comcast",
       "frequency": "monthly",
       "amount": 310,
-      "next_due_date": "2026-03-28"
+      "next_due_date": "2026-02-28"
     },
     {
       "id": "d-bat",
@@ -2271,7 +2271,7 @@
       "name": "Put money aside",
       "frequency": "bi-weekly",
       "amount": 1,
-      "next_due_date": "2026-02-27"
+      "next_due_date": "2026-03-13"
     },
     {
       "id": "secondary-mortgage",
