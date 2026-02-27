@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 1897.8500000000038,
+    "checking_balance": 1887.2600000000039,
     "travel_savings": 0,
     "weekly_budget_remaining": 705.4599999999997,
     "daily_allowance_locked": 0,
@@ -1971,6 +1971,14 @@
       "who": "",
       "what": "",
       "amount": -16,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-27",
+      "vendor": "Amazon",
+      "who": "Abbi",
+      "what": "",
+      "amount": -10.59,
       "category": "MANUAL"
     }
   ],
