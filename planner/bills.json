@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 6776.980000000004,
+    "checking_balance": 6737.0800000000045,
     "travel_savings": 0,
-    "weekly_budget_remaining": 679.6299999999997,
+    "weekly_budget_remaining": 639.7299999999997,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-02-23T05:00:00.000Z"
@@ -2037,6 +2037,14 @@
       "who": "Scott",
       "what": "",
       "amount": -30.03,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-28",
+      "vendor": "Korean Skincare",
+      "who": "I wonder ",
+      "what": "",
+      "amount": -39.9,
       "category": "MANUAL"
     }
   ],
