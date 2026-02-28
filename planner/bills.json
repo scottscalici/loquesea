@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 7111.170000000004,
+    "checking_balance": 6961.170000000004,
     "travel_savings": 0,
     "weekly_budget_remaining": 705.4599999999997,
     "daily_allowance_locked": 0,
@@ -2018,6 +2018,12 @@
       "vendor": "Comcast",
       "amount": -310.39,
       "category": "BILL"
+    },
+    {
+      "date": "2026-03-02",
+      "vendor": "Citibank 1",
+      "amount": -150,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -2089,7 +2095,7 @@
       "name": "Citibank 1",
       "frequency": "monthly",
       "amount": 150,
-      "next_due_date": "2026-03-02"
+      "next_due_date": "2026-04-02"
     },
     {
       "id": "citibank-2",
