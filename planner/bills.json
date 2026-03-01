@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 6379.160000000004,
+    "checking_balance": 6311.160000000004,
     "travel_savings": 0,
     "weekly_budget_remaining": 541.7999999999997,
     "daily_allowance_locked": 0,
@@ -2084,6 +2084,12 @@
       "what": "Hungry Howie’s ",
       "amount": -38,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-02-27",
+      "vendor": "D-Bat",
+      "amount": -68,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -2176,7 +2182,7 @@
       "name": "D-Bat",
       "frequency": "monthly",
       "amount": 68,
-      "next_due_date": "2026-02-27"
+      "next_due_date": "2026-03-27"
     },
     {
       "id": "disney-bundle",
