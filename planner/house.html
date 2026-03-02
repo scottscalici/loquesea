@@ -165,7 +165,7 @@
       }
     }
 
-    function renderTasks() {
+  function renderTasks() {
       const container = document.getElementById('taskList');
       container.innerHTML = '';
       const now = new Date();
@@ -179,9 +179,12 @@
         dueDate.setHours(0,0,0,0);
         const days = Math.round((dueDate - now) / 86400000);
         
-        let sClass = task.type === 'reminder' ? "reminder" : "good";
+        // NEW: Fallback to 'task' if the type is missing in the JSON
+        const safeType = task.type || 'task'; 
+        
+        let sClass = safeType === 'reminder' ? "reminder" : "good";
         if (days < 0) sClass = "overdue";
-        else if (days <= 2 && task.type !== 'reminder') sClass = "due-soon";
+        else if (days <= 2 && safeType !== 'reminder') sClass = "due-soon";
 
         const card = document.createElement('div');
         card.className = `task-card ${sClass}`;
@@ -189,7 +192,7 @@
           <div class="task-info">
             <p class="task-title">${task.title}</p>
             <p class="task-meta">
-              <span class="type-badge type-${task.type}">${task.type}</span>
+              <span class="type-badge type-${safeType}">${safeType}</span>
               Due: ${days === 0 ? 'Today' : (days === 1 ? 'Tomorrow' : days + ' days')}
             </p>
           </div>
@@ -198,7 +201,6 @@
         container.appendChild(card);
       });
     }
-
     async function addNewItem() {
       const title = document.getElementById('newItemTitle').value;
       if (!title) return alert("Title required");
