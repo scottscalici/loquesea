@@ -316,8 +316,8 @@
       "type": "reminder",
       "duration_minutes": 0,
       "frequency_days": 1,
-      "next_due": "2026-03-02T02:05:17.141Z",
-      "is_active": true,
+      "next_due": "2026-03-02T05:00:00.000Z",
+      "is_active": false,
       "end_date": "2026-03-01T00:00:00.000Z"
     },
     {
