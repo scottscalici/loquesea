@@ -369,6 +369,16 @@
       "next_due": "2026-03-02T05:00:00.000Z",
       "is_active": false,
       "end_date": "2026-03-01T04:59:59.000Z"
+    },
+    {
+      "id": "id_1772418393402",
+      "title": "Take medicine",
+      "type": "task",
+      "duration_minutes": 0,
+      "frequency_days": 1,
+      "next_due": "2026-03-02T02:26:33.402Z",
+      "is_active": true,
+      "end_date": "2026-03-02T04:59:59.000Z"
     }
   ]
 }
