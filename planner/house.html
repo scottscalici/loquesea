@@ -179,7 +179,7 @@
       </div>
       <div class="input-group">
         <span class="input-label">End Date (Optional)</span>
-        <input type="date" id="newItemEndDate" class="form-input">
+        <input type="date" id="newItemEndDate" class="form-input" title="It will stop after this date">
       </div>
     </div>
     
@@ -208,6 +208,22 @@
       if (statusElement) statusElement.textContent = msg;
     }
 
+    // --- BULLETPROOF DATE HELPERS ---
+    // Ignores all browser timezone offsets by aggressively splitting the string
+    function getSafeDate(dateStr) {
+        if (!dateStr) return new Date();
+        const datePart = dateStr.split('T')[0]; // Grabs just "YYYY-MM-DD"
+        const p = datePart.split('-');
+        return new Date(p[0], p[1] - 1, p[2], 0, 0, 0); // Force local midnight
+    }
+
+    function toLocalDateString(d) {
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    }
+
     async function fetchTasks() {
       setStatus("Fetching from GitHub...");
       try {
@@ -219,9 +235,43 @@
         currentSha = data.sha;
         const decoded = decodeURIComponent(escape(atob(data.content)));
         houseData = JSON.parse(decoded);
+        
+        // --- AUTO-HEALER RUNS ON LOAD ---
+        let needsSave = false;
+        houseData.house_tasks.forEach(t => {
+            if (!t.id) {
+                t.id = 'id_healed_' + Date.now() + Math.floor(Math.random() * 1000);
+                needsSave = true;
+            }
+            if (t.anchor_day) {
+                const cleanAnchor = t.anchor_day.trim().charAt(0).toUpperCase() + t.anchor_day.trim().slice(1).toLowerCase();
+                if (t.anchor_day !== cleanAnchor) {
+                    t.anchor_day = cleanAnchor;
+                    needsSave = true;
+                }
+            }
+            let f = parseInt(t.frequency_days);
+            if (isNaN(f)) f = 1;
+            if (f === 0 && !t.is_one_off && !t.anchor_day) {
+                t.frequency_days = 1; 
+                needsSave = true;
+            }
+            // Fix old timezone-shifted ISO strings into safe YYYY-MM-DD strings
+            if (t.next_due && t.next_due.includes('T')) {
+                t.next_due = toLocalDateString(getSafeDate(t.next_due));
+                needsSave = true;
+            }
+        });
+
         renderTasks();
-        setStatus("Ready");
-        setTimeout(() => setStatus(""), 3000);
+        
+        if (needsSave) {
+            setStatus("Healing database errors...");
+            await saveTasks(true);
+        } else {
+            setStatus("Ready");
+            setTimeout(() => setStatus(""), 3000);
+        }
       } catch (e) {
         console.error(e);
         setStatus("Load Error. Check Token.");
@@ -235,11 +285,11 @@
       now.setHours(0,0,0,0);
 
       const active = (houseData.house_tasks || []).filter(t => t.is_active);
-      active.sort((a, b) => new Date(a.next_due) - new Date(b.next_due));
+      
+      active.sort((a, b) => getSafeDate(a.next_due) - getSafeDate(b.next_due));
 
       active.forEach(task => {
-        const dueDate = new Date(task.next_due);
-        dueDate.setHours(0,0,0,0);
+        const dueDate = getSafeDate(task.next_due);
         const days = Math.round((dueDate - now) / 86400000);
         
         const safeType = task.type || 'task'; 
@@ -253,11 +303,7 @@
         else if (days >= 7 && days <= 30) sClass = "color-blue";
         else sClass = "color-purple"; 
 
-        const yyyy = dueDate.getFullYear();
-        const mm = String(dueDate.getMonth() + 1).padStart(2, '0');
-        const dd = String(dueDate.getDate()).padStart(2, '0');
-        const formattedDate = `${yyyy}-${mm}-${dd}`;
-
+        const formattedDate = toLocalDateString(dueDate);
         let relativeText = days === 0 ? 'Today' : (days === 1 ? 'Tomorrow' : (days < 0 ? Math.abs(days) + ' days ago' : 'In ' + days + ' days'));
 
         const card = document.createElement('div');
@@ -283,10 +329,9 @@
       const taskIndex = houseData.house_tasks.findIndex(t => t.id === taskId);
       if (taskIndex === -1) return;
 
-      const parts = newDateStr.split('-');
-      const localDate = new Date(parts[0], parts[1] - 1, parts[2]);
+      const localDate = getSafeDate(newDateStr);
+      houseData.house_tasks[taskIndex].next_due = toLocalDateString(localDate);
       
-      houseData.house_tasks[taskIndex].next_due = localDate.toISOString();
       renderTasks();
       await saveTasks();
     }
@@ -296,7 +341,6 @@
       if (!title) return alert("Title required");
       
       const freqRaw = document.getElementById('newItemFreq').value;
-      
       let freqDays = 1;
       if (freqRaw.trim() === "0") {
         freqDays = 0;
@@ -308,9 +352,18 @@
       initialDue.setHours(0,0,0,0);
       
       const startRaw = document.getElementById('newItemStartDate').value;
+      const anchorRaw = document.getElementById('newItemAnchor').value;
+
+      // Smart Anchor Creation Math
       if (startRaw && startRaw.trim() !== "") {
-        const sParts = startRaw.split('-');
-        initialDue = new Date(sParts[0], sParts[1] - 1, sParts[2], 0, 0, 0);
+        initialDue = getSafeDate(startRaw);
+      } else if (anchorRaw !== "") {
+        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const targetIdx = daysOfWeek.indexOf(anchorRaw);
+        const currentIdx = initialDue.getDay();
+        let diff = targetIdx - currentIdx;
+        if (diff < 0) diff += 7; // Jump to the next upcoming occurrence
+        initialDue.setDate(initialDue.getDate() + diff);
       }
 
       const newItem = {
@@ -319,21 +372,15 @@
         type: document.getElementById('newItemType').value,
         duration_minutes: parseInt(document.getElementById('newItemDuration').value) || 0,
         frequency_days: freqDays,
-        next_due: initialDue.toISOString(),
+        next_due: toLocalDateString(initialDue),
         is_active: true
       };
 
-      // Add Anchor Day if selected
-      const anchorRaw = document.getElementById('newItemAnchor').value;
-      if (anchorRaw !== "") {
-          newItem.anchor_day = anchorRaw;
-      }
+      if (anchorRaw !== "") newItem.anchor_day = anchorRaw;
 
       const endRaw = document.getElementById('newItemEndDate').value;
       if (endRaw && endRaw.trim() !== "") {
-        const eParts = endRaw.split('-');
-        const localEnd = new Date(eParts[0], eParts[1] - 1, eParts[2], 23, 59, 59);
-        newItem.end_date = localEnd.toISOString();
+        newItem.end_date = toLocalDateString(getSafeDate(endRaw));
       }
 
       if (!houseData.house_tasks) houseData.house_tasks = [];
@@ -341,7 +388,6 @@
       renderTasks();
       await saveTasks();
       
-      // Reset Form
       document.getElementById('newItemTitle').value = '';
       document.getElementById('newItemDuration').value = '';
       document.getElementById('newItemFreq').value = '';
@@ -351,54 +397,63 @@
     }
 
     async function completeTask(id) {
-      const idx = houseData.house_tasks.findIndex(t => t.id === id);
-      if (idx === -1) return;
-      const t = houseData.house_tasks[idx];
-      
-      let freq = 1; 
-      if (t.frequency_days === 0) freq = 0;
-      else if (!isNaN(parseInt(t.frequency_days))) freq = parseInt(t.frequency_days);
+      try {
+          const idx = houseData.house_tasks.findIndex(t => t.id === id);
+          if (idx === -1) {
+              alert("Error: Couldn't find that task! Try refreshing.");
+              return;
+          }
+          const t = houseData.house_tasks[idx];
+          
+          let freq = parseInt(t.frequency_days);
+          if (isNaN(freq)) freq = 1;
 
-      if (freq === 0 && !t.anchor_day) {
-        t.is_active = false; 
-      } else {
-        const baseDate = new Date();
-        baseDate.setHours(0,0,0,0);
-        const next = new Date(baseDate); 
+          if (freq === 0 && !t.anchor_day && !t.is_one_off) freq = 1;
 
-        // ANCHOR DAY MATH RESTORED
-        if (t.anchor_day) {
-            const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-            const targetDayIndex = daysOfWeek.indexOf(t.anchor_day);
-            const currentDayIndex = next.getDay();
+          if (freq === 0 && !t.anchor_day) {
+            t.is_active = false; 
+          } else {
+            const now = new Date();
+            now.setHours(0,0,0,0);
             
-            let daysUntilNext = targetDayIndex - currentDayIndex;
-            // If the day has already passed this week (or is today), push it to NEXT week
-            if (daysUntilNext <= 0) {
-                daysUntilNext += 7; 
+            const currentDue = getSafeDate(t.next_due);
+            const baseDate = currentDue > now ? currentDue : now;
+            const next = new Date(baseDate); 
+
+            if (t.anchor_day) {
+                const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                const targetIdx = daysOfWeek.indexOf(t.anchor_day);
+                
+                if (targetIdx !== -1) {
+                    const currentIdx = next.getDay();
+                    let diff = targetIdx - currentIdx;
+                    if (diff <= 0) diff += 7; 
+                    next.setDate(next.getDate() + diff);
+                } else {
+                    next.setDate(next.getDate() + freq);
+                }
+            } else {
+                next.setDate(next.getDate() + freq);
             }
-            next.setDate(next.getDate() + daysUntilNext);
-        } else {
-            // Standard frequency math
-            next.setDate(next.getDate() + freq);
-        }
-        
-        t.next_due = next.toISOString();
-        
-        if (t.end_date) {
-            const expDate = new Date(t.end_date);
-            if (next > expDate) {
-                t.is_active = false;
+            
+            t.next_due = toLocalDateString(next);
+            
+            if (t.end_date) {
+                const expDate = getSafeDate(t.end_date);
+                if (next > expDate) t.is_active = false;
             }
-        }
+          }
+          
+          renderTasks();
+          await saveTasks();
+      } catch(err) {
+          console.error("Bug caught:", err);
+          alert("Something broke when clicking Done! Please check the developer console.");
       }
-      
-      renderTasks();
-      await saveTasks();
     }
 
-    async function saveTasks() {
-      setStatus("Saving...");
+    async function saveTasks(isSilent = false) {
+      if (!isSilent) setStatus("Saving...");
       const content = btoa(unescape(encodeURIComponent(JSON.stringify(houseData, null, 2))));
       try {
         const res = await fetch(API_URL, {
@@ -409,11 +464,14 @@
         if (!res.ok) throw new Error("Failed to save");
         const d = await res.json();
         currentSha = d.content.sha;
-        setStatus("Saved!");
-        setTimeout(() => setStatus(""), 3000);
+        
+        if (!isSilent) {
+            setStatus("Saved!");
+            setTimeout(() => setStatus(""), 3000);
+        }
       } catch (e) { 
         console.error(e);
-        setStatus("Save Failed"); 
+        if (!isSilent) setStatus("Save Failed"); 
       }
     }
 
