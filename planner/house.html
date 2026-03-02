@@ -327,13 +327,14 @@
 
         const card = document.createElement('div');
         card.className = `task-card ${sClass}`;
-        card.innerHTML = `
+card.innerHTML = `
           <div class="task-info">
             <p class="task-title">${task.title}</p>
             <p class="task-meta" style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap; margin-top: 5px;">
               <span class="type-badge type-${safeType}">${safeType}</span>
-              By: <input type="date" class="date-edit-input" value="${formattedDate}" onchange="changeDueDate('${task.id}', this.value)">
-              <span style="font-size: 0.85em; opacity: 0.8;">(${relativeText} at ${task.time || 'Anytime'})</span>
+              <input type="date" class="date-edit-input" value="${formattedDate}" onchange="changeDueDate('${task.id}', this.value)">
+              <input type="time" class="date-edit-input" value="${task.time || ''}" onchange="changeDueTime('${task.id}', this.value)">
+              <span style="font-size: 0.85em; opacity: 0.8;">(${relativeText})</span>
             </p>
           </div>
           <button class="complete-btn" onclick="completeTask('${task.id}')">Done</button>
@@ -342,14 +343,17 @@
       });
     }
 
-    async function changeDueDate(taskId, newDateStr) {
-      if (!newDateStr) return; 
-      setStatus("Updating date...");
+async function changeDueTime(taskId, newTimeStr) {
+      setStatus("Updating time...");
       const taskIndex = houseData.house_tasks.findIndex(t => t.id === taskId);
       if (taskIndex === -1) return;
 
-      const localDate = getSafeDate(newDateStr);
-      houseData.house_tasks[taskIndex].next_due = toLocalDateString(localDate);
+      if (newTimeStr) {
+        houseData.house_tasks[taskIndex].time = newTimeStr;
+      } else {
+        // If you clear the time box completely, it removes the time requirement
+        delete houseData.house_tasks[taskIndex].time; 
+      }
       
       renderTasks();
       await saveTasks();
