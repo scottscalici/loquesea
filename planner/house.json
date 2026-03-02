@@ -675,7 +675,7 @@
       "type": "task",
       "duration_minutes": 0,
       "frequency_days": 1,
-      "next_due": "2026-03-26",
+      "next_due": "2026-03-27",
       "is_active": true,
       "end_date": "2026-03-29"
     }
