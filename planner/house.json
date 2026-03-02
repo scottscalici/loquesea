@@ -228,7 +228,7 @@
       "duration_minutes": 180,
       "is_one_off": true,
       "next_due": "2026-03-01T00:00:00Z",
-      "is_active": true
+      "is_active": false
     },
     {
       "id": "tsk_mulch",
