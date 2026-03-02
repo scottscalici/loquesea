@@ -108,17 +108,21 @@
       margin-left: 10px;
     }
 
-    .date-edit-input {
-      border: 1px solid transparent;
-      background: transparent;
+  .date-edit-input {
+      border: 1px solid #e0e0e0; 
+      background: #f9f9f9; 
       font-family: inherit;
       color: var(--text-main);
       font-size: 0.9em;
       cursor: pointer;
-      padding: 2px 5px;
-      border-radius: 4px;
+      padding: 6px 8px; /* Bigger tap target for thumbs */
+      border-radius: 6px;
       outline: none;
       font-weight: bold;
+      min-width: 90px; /* Forces empty time boxes to stay wide enough to tap */
+      text-align: center;
+      appearance: none; /* Helps override stubborn iOS default styles */
+      -webkit-appearance: none;
     }
     .date-edit-input:hover, .date-edit-input:focus {
       background: #e8e8e8;
