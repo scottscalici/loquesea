@@ -9,6 +9,7 @@
       "anchor_day": "Thursday",
       "flexibility_days": 1,
       "next_due": "2026-03-05",
+      "time": "18:00",
       "is_active": true
     },
     {
@@ -20,6 +21,7 @@
       "anchor_day": "Thursday",
       "flexibility_days": 0,
       "next_due": "2026-03-05",
+      "time": "17:45",
       "is_active": true
     },
     {
@@ -31,6 +33,7 @@
       "anchor_day": "Thursday",
       "flexibility_days": 0,
       "next_due": "2026-03-05",
+      "time": "17:00",
       "is_active": true
     },
     {
@@ -41,6 +44,7 @@
       "frequency_days": 1,
       "flexibility_days": 0,
       "next_due": "2026-03-02",
+      "time": "18:00",
       "is_active": true
     },
     {
@@ -51,6 +55,7 @@
       "frequency_days": 1,
       "flexibility_days": 0,
       "next_due": "2026-03-02",
+      "time": "18:15",
       "is_active": true
     },
     {
@@ -61,6 +66,7 @@
       "frequency_days": 1,
       "flexibility_days": 0,
       "next_due": "2026-03-02",
+      "time": "18:30",
       "is_active": true
     },
     {
@@ -71,6 +77,7 @@
       "frequency_days": 1,
       "flexibility_days": 0,
       "next_due": "2026-03-02",
+      "time": "22:30",
       "is_active": true
     },
     {
@@ -82,6 +89,7 @@
       "anchor_day": "Sunday",
       "flexibility_days": 0,
       "next_due": "2026-03-08",
+      "time": "12:00",
       "is_active": true
     },
     {
@@ -93,6 +101,7 @@
       "anchor_day": "Friday",
       "flexibility_days": 1,
       "next_due": "2026-03-06",
+      "time": "15:45",
       "is_active": true
     },
     {
@@ -104,6 +113,7 @@
       "anchor_day": "Friday",
       "flexibility_days": 1,
       "next_due": "2026-03-06",
+      "time": "16:15",
       "is_active": true
     },
     {
@@ -115,6 +125,7 @@
       "anchor_day": "Friday",
       "flexibility_days": 1,
       "next_due": "2026-03-06",
+      "time": "15:00",
       "is_active": true
     },
     {
@@ -126,6 +137,7 @@
       "anchor_day": "Friday",
       "flexibility_days": 1,
       "next_due": "2026-03-06",
+      "time": "15:30",
       "is_active": true
     },
     {
@@ -137,6 +149,7 @@
       "anchor_day": "Wednesday",
       "flexibility_days": 0,
       "next_due": "2026-03-04",
+      "time": "15:15",
       "is_active": true
     },
     {
@@ -148,6 +161,7 @@
       "anchor_day": "Wednesday",
       "flexibility_days": 0,
       "next_due": "2026-03-04",
+      "time": "15:05",
       "is_active": true
     },
     {
@@ -159,6 +173,7 @@
       "anchor_day": "Wednesday",
       "flexibility_days": 0,
       "next_due": "2026-03-04",
+      "time": "15:10",
       "is_active": true
     },
     {
@@ -169,6 +184,7 @@
       "frequency_days": 30,
       "flexibility_days": 5,
       "next_due": "2026-03-05",
+      "time": "15:30",
       "is_active": true
     },
     {
@@ -178,7 +194,8 @@
       "duration_minutes": 10,
       "frequency_days": 182,
       "flexibility_days": 7,
-      "next_due": "2026-08-30",
+      "next_due": "2026-03-08",
+      "time": "10:00",
       "is_active": true
     },
     {
@@ -188,17 +205,9 @@
       "duration_minutes": 60,
       "frequency_days": 7,
       "flexibility_days": 2,
-      "active_months": [
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10
-      ],
+      "active_months": [3, 4, 5, 6, 7, 8, 9, 10],
       "next_due": "2026-04-15",
+      "time": "12:00",
       "is_active": true
     },
     {
@@ -209,6 +218,7 @@
       "frequency_days": 7,
       "flexibility_days": 1,
       "next_due": "2026-03-08",
+      "time": "12:00",
       "is_active": true
     },
     {
@@ -219,16 +229,8 @@
       "frequency_days": 30,
       "flexibility_days": 3,
       "next_due": "2026-03-31",
+      "time": "12:00",
       "is_active": true
-    },
-    {
-      "id": "tsk_downspouts",
-      "title": "Fix Downspouts",
-      "category": "Outdoor",
-      "duration_minutes": 180,
-      "is_one_off": true,
-      "next_due": "2026-03-01",
-      "is_active": false
     },
     {
       "id": "tsk_mulch",
@@ -238,6 +240,7 @@
       "frequency_days": 365,
       "flexibility_days": 14,
       "next_due": "2026-05-01",
+      "time": "10:00",
       "is_active": true
     },
     {
@@ -248,6 +251,7 @@
       "frequency_days": 365,
       "flexibility_days": 7,
       "next_due": "2026-03-07",
+      "time": "12:00",
       "is_active": true
     },
     {
@@ -258,6 +262,7 @@
       "frequency_days": 1,
       "flexibility_days": 0,
       "next_due": "2026-03-02",
+      "time": "17:30",
       "is_active": true
     },
     {
@@ -268,6 +273,7 @@
       "frequency_days": 1,
       "flexibility_days": 0,
       "next_due": "2026-03-02",
+      "time": "21:30",
       "is_active": true
     },
     {
@@ -278,6 +284,7 @@
       "frequency_days": 1,
       "flexibility_days": 0,
       "next_due": "2026-03-02",
+      "time": "16:00",
       "is_active": true
     },
     {
@@ -288,6 +295,7 @@
       "frequency_days": 14,
       "flexibility_days": 2,
       "next_due": "2026-03-15",
+      "time": "12:30",
       "is_active": true
     },
     {
@@ -298,107 +306,8 @@
       "frequency_days": 14,
       "flexibility_days": 2,
       "next_due": "2026-03-08",
+      "time": "12:30",
       "is_active": true
-    },
-    {
-      "id": "id_1772417070039",
-      "title": "Coffee ready",
-      "type": "task",
-      "duration_minutes": 5,
-      "frequency_days": 1,
-      "next_due": "2026-03-02",
-      "is_active": false,
-      "end_date": "2026-03-01T00:00:00.000Z"
-    },
-    {
-      "id": "id_1772417117141",
-      "title": "Take Medicine",
-      "type": "reminder",
-      "duration_minutes": 0,
-      "frequency_days": 1,
-      "next_due": "2026-03-02",
-      "is_active": false,
-      "end_date": "2026-03-01T00:00:00.000Z"
-    },
-    {
-      "id": "id_1772417142682",
-      "title": "Get refill of medicine",
-      "type": "reminder",
-      "duration_minutes": 0,
-      "frequency_days": 1,
-      "next_due": "2026-03-02",
-      "is_active": false,
-      "end_date": "2026-03-02T00:00:00.000Z"
-    },
-    {
-      "id": "id_1772417173279",
-      "title": "Charge Car",
-      "type": "reminder",
-      "duration_minutes": 1,
-      "frequency_days": 1,
-      "next_due": "2026-03-02",
-      "is_active": false,
-      "end_date": "2026-03-01T00:00:00.000Z"
-    },
-    {
-      "id": "id_1772417255749",
-      "title": "Take Medicine",
-      "type": "task",
-      "duration_minutes": 1,
-      "frequency_days": 1,
-      "next_due": "2026-03-02",
-      "is_active": false,
-      "end_date": "2026-02-28T00:00:00.000Z"
-    },
-    {
-      "id": "id_1772417455494",
-      "title": "Take medicine",
-      "type": "reminder",
-      "duration_minutes": 1,
-      "frequency_days": 1,
-      "next_due": "2026-03-02",
-      "is_active": false,
-      "end_date": "2026-03-01T00:00:00.000Z"
-    },
-    {
-      "id": "id_1772418276076",
-      "title": "Take medicine",
-      "type": "reminder",
-      "duration_minutes": 0,
-      "frequency_days": 1,
-      "next_due": "2026-03-02",
-      "is_active": false,
-      "end_date": "2026-03-01T04:59:59.000Z"
-    },
-    {
-      "id": "id_1772418393402",
-      "title": "Take medicine",
-      "type": "task",
-      "duration_minutes": 0,
-      "frequency_days": 1,
-      "next_due": "2026-03-02",
-      "is_active": false,
-      "end_date": "2026-03-02T04:59:59.000Z"
-    },
-    {
-      "id": "id_1772418760383",
-      "title": "Take Medicine",
-      "type": "reminder",
-      "duration_minutes": 0,
-      "frequency_days": 1,
-      "next_due": "2026-03-02",
-      "is_active": false,
-      "end_date": "2026-03-01T04:59:59.000Z"
-    },
-    {
-      "id": "id_1772418822327",
-      "title": "Take Medicine",
-      "type": "task",
-      "duration_minutes": 1,
-      "frequency_days": 1,
-      "next_due": "2026-03-02",
-      "is_active": false,
-      "end_date": "2026-02-28T04:59:59.000Z"
     },
     {
       "id": "id_1772419239713",
@@ -407,6 +316,7 @@
       "duration_minutes": 0,
       "frequency_days": 1,
       "next_due": "2026-03-02",
+      "time": "22:00",
       "is_active": true
     },
     {
@@ -416,6 +326,7 @@
       "duration_minutes": 2,
       "frequency_days": 1,
       "next_due": "2026-03-02",
+      "time": "21:00",
       "is_active": true
     },
     {
@@ -425,6 +336,7 @@
       "duration_minutes": 5,
       "frequency_days": 1,
       "next_due": "2026-03-02",
+      "time": "19:00",
       "is_active": true
     },
     {
@@ -434,6 +346,7 @@
       "duration_minutes": 0,
       "frequency_days": 1,
       "next_due": "2026-03-02",
+      "time": "12:00",
       "is_active": true,
       "end_date": "2026-03-09T03:59:59.000Z"
     },
@@ -444,18 +357,9 @@
       "duration_minutes": 5,
       "frequency_days": 14,
       "next_due": "2026-03-07",
+      "time": "12:00",
       "is_active": true,
       "anchor_day": "Saturday"
-    },
-    {
-      "id": "id_1772422586672",
-      "title": "Test",
-      "type": "task",
-      "duration_minutes": 100,
-      "frequency_days": 1,
-      "next_due": "2026-04-01",
-      "is_active": false,
-      "end_date": "2026-03-31"
     },
     {
       "id": "id_1772422954897",
@@ -464,6 +368,7 @@
       "duration_minutes": 60,
       "frequency_days": 180,
       "next_due": "2026-03-21",
+      "time": "15:00",
       "is_active": true
     },
     {
@@ -473,6 +378,7 @@
       "duration_minutes": 0,
       "frequency_days": 1,
       "next_due": "2026-03-02",
+      "time": "15:00",
       "is_active": true,
       "end_date": "2026-03-02"
     },
@@ -483,6 +389,7 @@
       "duration_minutes": 0,
       "frequency_days": 1,
       "next_due": "2026-03-02",
+      "time": "23:00",
       "is_active": true,
       "end_date": "2026-03-08"
     },
@@ -493,6 +400,7 @@
       "duration_minutes": 0,
       "frequency_days": 1,
       "next_due": "2026-03-02",
+      "time": "23:00",
       "is_active": true,
       "end_date": "2026-03-08"
     },
@@ -503,6 +411,7 @@
       "duration_minutes": 0,
       "frequency_days": 1,
       "next_due": "2026-03-20",
+      "time": "23:00",
       "is_active": true,
       "end_date": "2026-03-31"
     },
@@ -513,6 +422,7 @@
       "duration_minutes": 0,
       "frequency_days": 1,
       "next_due": "2026-03-02",
+      "time": "23:00",
       "is_active": true,
       "end_date": "2026-04-03"
     },
@@ -523,6 +433,7 @@
       "duration_minutes": 0,
       "frequency_days": 7,
       "next_due": "2026-03-29",
+      "time": "23:00",
       "is_active": true,
       "end_date": "2026-05-31"
     },
@@ -533,6 +444,7 @@
       "duration_minutes": 0,
       "frequency_days": 7,
       "next_due": "2026-03-28",
+      "time": "23:00",
       "is_active": true,
       "end_date": "2026-06-20"
     },
@@ -543,6 +455,7 @@
       "duration_minutes": 0,
       "frequency_days": 1,
       "next_due": "2026-03-02",
+      "time": "23:00",
       "is_active": true,
       "end_date": "2026-03-21"
     },
@@ -553,6 +466,7 @@
       "duration_minutes": 0,
       "frequency_days": 7,
       "next_due": "2026-03-07",
+      "time": "23:00",
       "is_active": true,
       "end_date": "2026-03-31"
     },
@@ -563,6 +477,7 @@
       "duration_minutes": 0,
       "frequency_days": 1,
       "next_due": "2026-03-28",
+      "time": "12:00",
       "is_active": true,
       "end_date": "2026-03-28"
     },
@@ -573,6 +488,7 @@
       "duration_minutes": 0,
       "frequency_days": 1,
       "next_due": "2026-03-03",
+      "time": "16:00",
       "is_active": true,
       "end_date": "2026-03-03"
     },
@@ -583,6 +499,7 @@
       "duration_minutes": 5,
       "frequency_days": 7,
       "next_due": "2026-03-06",
+      "time": "15:00",
       "is_active": true,
       "anchor_day": "Friday"
     },
@@ -593,6 +510,7 @@
       "duration_minutes": 200,
       "frequency_days": 1,
       "next_due": "2026-03-30",
+      "time": "10:00",
       "is_active": true,
       "end_date": "2026-05-30"
     },
@@ -603,6 +521,7 @@
       "duration_minutes": 5,
       "frequency_days": 7,
       "next_due": "2026-03-02",
+      "time": "16:00",
       "is_active": true
     },
     {
@@ -612,6 +531,7 @@
       "duration_minutes": 60,
       "frequency_days": 365,
       "next_due": "2026-03-29",
+      "time": "10:00",
       "is_active": true
     },
     {
@@ -621,6 +541,7 @@
       "duration_minutes": 0,
       "frequency_days": 1,
       "next_due": "2026-03-27",
+      "time": "12:00",
       "is_active": true,
       "end_date": "2026-04-05"
     },
@@ -631,6 +552,7 @@
       "duration_minutes": 5,
       "frequency_days": 2,
       "next_due": "2026-03-03",
+      "time": "18:00",
       "is_active": true
     },
     {
@@ -640,6 +562,7 @@
       "duration_minutes": 120,
       "frequency_days": 365,
       "next_due": "2026-05-01",
+      "time": "10:00",
       "is_active": true
     },
     {
@@ -649,6 +572,7 @@
       "duration_minutes": 120,
       "frequency_days": 365,
       "next_due": "2026-10-31",
+      "time": "10:00",
       "is_active": true
     },
     {
@@ -658,6 +582,7 @@
       "duration_minutes": 10,
       "frequency_days": 15,
       "next_due": "2026-03-14",
+      "time": "17:00",
       "is_active": true
     },
     {
@@ -667,25 +592,19 @@
       "duration_minutes": 5,
       "frequency_days": 21,
       "next_due": "2026-03-07",
+      "time": "17:00",
       "is_active": true
     },
-       {
+    {
       "id": "tsk_humid",
       "title": "Refill humidifiers",
       "category": "Indoor",
       "duration_minutes": 20,
       "frequency_days": 1,
       "flexibility_days": 2,
-      "active_months": [
-        3,
-        4,
-        11,
-        12,
-        1,
-        2,
-        10
-      ],
+      "active_months": [3, 4, 11, 12, 1, 2, 10],
       "next_due": "2026-03-02",
+      "time": "15:00",
       "is_active": true
     }
   ]
