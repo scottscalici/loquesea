@@ -426,6 +426,16 @@
       "frequency_days": 1,
       "next_due": "2026-03-01T05:00:00.000Z",
       "is_active": true
+    },
+    {
+      "id": "id_1772420648101",
+      "title": "Get Refill",
+      "type": "reminder",
+      "duration_minutes": 0,
+      "frequency_days": 1,
+      "next_due": "2026-03-02T05:00:00.000Z",
+      "is_active": true,
+      "end_date": "2026-03-09T03:59:59.000Z"
     }
   ]
 }
