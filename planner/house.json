@@ -659,6 +659,15 @@
       "frequency_days": 15,
       "next_due": "2026-03-14",
       "is_active": true
+    },
+    {
+      "id": "id_1772425605207",
+      "title": "Refill dog food ",
+      "type": "task",
+      "duration_minutes": 5,
+      "frequency_days": 21,
+      "next_due": "2026-03-07",
+      "is_active": true
     }
   ]
 }
