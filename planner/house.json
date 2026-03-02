@@ -1,89 +1,295 @@
-[
-  {
-    "id": 1,
-    "name": "Garbage Day",
-    "type": "FIXED",
-    "due": "2026-01-15T18:00",
-    "intervalDays": 7
-  },
-  {
-    "id": 2,
-    "name": "Empty dishwasher",
-    "type": "INTERVAL",
-    "due": "2026-01-14T12:00",
-    "intervalDays": 1
-  },
-  {
-    "id": 3,
-    "name": "Load dishwasher",
-    "type": "INTERVAL",
-    "due": "2026-01-14T12:00",
-    "intervalDays": 1
-  },
-  {
-    "id": 4,
-    "name": "Vacuum",
-    "type": "FIXED",
-    "due": "2026-01-16T12:00",
-    "intervalDays": 7
-  },  
-  {
-    "id": 5,
-    "name": "Mop",
-    "type": "FIXED",
-    "due": "2026-01-16T12:00",
-    "intervalDays": 7
-  },
+{
+  "house_tasks": [
     {
-    "id": 6,
-    "name": "Clean Bathrooms",
-    "type": "FIXED",
-    "due": "2026-01-16T12:00",
-    "intervalDays": 7
-  },
+      "id": "tsk_trash",
+      "title": "Take Out Trash",
+      "category": "Outdoor",
+      "duration_minutes": 20,
+      "frequency_days": 7,
+      "anchor_day": "Thursday",
+      "flexibility_days": 1,
+      "next_due": "2026-03-05T18:00:00Z",
+      "is_active": true
+    },
     {
-    "id": 7,
-    "name": "Clean Toilets",
-    "type": "FIXED",
-    "due": "2026-01-16T12:00",
-    "intervalDays": 7
-  },
+      "id": "tsk_bath_trash",
+      "title": "Empty Bathroom Garbage & Replace Bags",
+      "category": "Bathroom",
+      "duration_minutes": 10,
+      "frequency_days": 7,
+      "anchor_day": "Thursday",
+      "flexibility_days": 0,
+      "next_due": "2026-03-05T00:00:00Z",
+      "is_active": true
+    },
     {
-    "id": 8,
-    "name": "Empty Bathroom Garbages",
-    "type": "FIXED",
-    "due": "2026-01-15T12:00",
-    "intervalDays": 7
-  },
+      "id": "tsk_fridge",
+      "title": "Clean Out Fridge",
+      "category": "Kitchen",
+      "duration_minutes": 20,
+      "frequency_days": 7,
+      "anchor_day": "Thursday",
+      "flexibility_days": 0,
+      "next_due": "2026-03-05T00:00:00Z",
+      "is_active": true
+    },
     {
-    "id": 9,
-    "name": "Refill humidifiers",
-    "type": "INTERVAL",
-    "due": "2026-01-14T12:00",
-    "intervalDays": 1
-  },
-  {
-    "id": 10,
-    "name": "Charge Car",
-    "type": "INTERVAL",
-    "due": "2026-01-14T12:00",
-    "intervalDays": 1
-  },
-  {
-    "id": 11,
-    "name": "Clothes for tomorrow",
-    "type": "FIXED",
-    "due": "2026-01-16T12:00",
-    "intervalDays": 7
-  },
-
-
-
-  {
-    "id": 22,
-    "name": "Air Filters",
-    "type": "INTERVAL",
-    "due": "2026-01-17T12:00",
-    "intervalDays": 90
-  }
-]
+      "id": "tsk_dish_empty",
+      "title": "Empty Dishwasher",
+      "category": "Kitchen",
+      "duration_minutes": 15,
+      "frequency_days": 1,
+      "flexibility_days": 0,
+      "next_due": "2026-03-01T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_dish_load",
+      "title": "Load Dishwasher",
+      "category": "Kitchen",
+      "duration_minutes": 15,
+      "frequency_days": 1,
+      "flexibility_days": 0,
+      "next_due": "2026-03-01T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_counters",
+      "title": "Wipe Counters and Sink",
+      "category": "Kitchen",
+      "duration_minutes": 10,
+      "frequency_days": 1,
+      "flexibility_days": 0,
+      "next_due": "2026-03-01T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_laundry_check",
+      "title": "Laundry (Check & Night Prep)",
+      "category": "General",
+      "duration_minutes": 5,
+      "frequency_days": 1,
+      "flexibility_days": 0,
+      "next_due": "2026-03-01T20:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_clothes_away",
+      "title": "Put Away Clothes",
+      "category": "Bedroom",
+      "duration_minutes": 30,
+      "frequency_days": 7,
+      "anchor_day": "Sunday",
+      "flexibility_days": 0,
+      "next_due": "2026-03-01T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_vacuum",
+      "title": "Vacuum Floors",
+      "category": "General",
+      "duration_minutes": 60,
+      "frequency_days": 7,
+      "anchor_day": "Friday",
+      "flexibility_days": 1,
+      "next_due": "2026-03-06T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_mop",
+      "title": "Mop Floors",
+      "category": "General",
+      "duration_minutes": 20,
+      "frequency_days": 7,
+      "anchor_day": "Friday",
+      "flexibility_days": 1,
+      "next_due": "2026-03-06T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_bath_clean",
+      "title": "Clean Bathrooms",
+      "category": "Bathroom",
+      "duration_minutes": 20,
+      "frequency_days": 7,
+      "anchor_day": "Friday",
+      "flexibility_days": 1,
+      "next_due": "2026-03-06T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_toilet_clean",
+      "title": "Clean Toilets",
+      "category": "Bathroom",
+      "duration_minutes": 5,
+      "frequency_days": 7,
+      "anchor_day": "Friday",
+      "flexibility_days": 1,
+      "next_due": "2026-03-06T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_refill_tp",
+      "title": "Refill Toilet Paper",
+      "category": "Bathroom",
+      "duration_minutes": 2,
+      "frequency_days": 7,
+      "anchor_day": "Wednesday",
+      "flexibility_days": 0,
+      "next_due": "2026-03-04T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_refill_pt",
+      "title": "Refill Paper Towels",
+      "category": "Kitchen",
+      "duration_minutes": 2,
+      "frequency_days": 7,
+      "anchor_day": "Wednesday",
+      "flexibility_days": 0,
+      "next_due": "2026-03-04T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_refill_kleenex",
+      "title": "Refill Kleenex",
+      "category": "General",
+      "duration_minutes": 2,
+      "frequency_days": 7,
+      "anchor_day": "Wednesday",
+      "flexibility_days": 0,
+      "next_due": "2026-03-04T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_air_filter",
+      "title": "Replace Air Filters",
+      "category": "Maintenance",
+      "duration_minutes": 10,
+      "frequency_days": 30,
+      "flexibility_days": 5,
+      "next_due": "2026-03-01T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_smoke_detector",
+      "title": "Change Smoke Detector Batteries",
+      "category": "Maintenance",
+      "duration_minutes": 10,
+      "frequency_days": 182,
+      "flexibility_days": 7,
+      "next_due": "2026-03-01T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_mow",
+      "title": "Mow the Lawn",
+      "category": "Outdoor",
+      "duration_minutes": 60,
+      "frequency_days": 7,
+      "flexibility_days": 2,
+      "active_months": [3, 4, 5, 6, 7, 8, 9, 10],
+      "next_due": "2026-03-01T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_dog_poop",
+      "title": "Clean Up Dog Doodoo",
+      "category": "Outdoor",
+      "duration_minutes": 15,
+      "frequency_days": 7,
+      "flexibility_days": 1,
+      "next_due": "2026-03-01T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_dog_groom",
+      "title": "Groom Dog",
+      "category": "Pet",
+      "duration_minutes": 30,
+      "frequency_days": 30,
+      "flexibility_days": 3,
+      "next_due": "2026-03-01T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_downspouts",
+      "title": "Fix Downspouts",
+      "category": "Outdoor",
+      "duration_minutes": 180,
+      "is_one_off": true,
+      "next_due": "2026-03-01T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_mulch",
+      "title": "Replenish Mulch",
+      "category": "Outdoor",
+      "duration_minutes": 60,
+      "frequency_days": 365,
+      "flexibility_days": 14,
+      "next_due": "2026-04-01T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_plates",
+      "title": "New License Plate Tabs",
+      "category": "Auto",
+      "duration_minutes": 2,
+      "frequency_days": 365,
+      "flexibility_days": 7,
+      "next_due": "2026-03-01T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_cook",
+      "title": "Cook Dinner",
+      "category": "Kitchen",
+      "duration_minutes": 60,
+      "frequency_days": 1,
+      "flexibility_days": 0,
+      "next_due": "2026-03-01T17:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_shower",
+      "title": "Clean Out Shower",
+      "category": "Bathroom",
+      "duration_minutes": 5,
+      "frequency_days": 1,
+      "flexibility_days": 0,
+      "next_due": "2026-03-01T21:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_workout",
+      "title": "Work Out",
+      "category": "Health",
+      "duration_minutes": 60,
+      "frequency_days": 1,
+      "flexibility_days": 0,
+      "next_due": "2026-03-01T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_sheets_parents",
+      "title": "Change Parents' Bedsheets",
+      "category": "Bedroom",
+      "duration_minutes": 15,
+      "frequency_days": 14,
+      "flexibility_days": 2,
+      "next_due": "2026-03-01T00:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "tsk_sheets_kids",
+      "title": "Change Kids' Bedsheets",
+      "category": "Bedroom",
+      "duration_minutes": 15,
+      "frequency_days": 14,
+      "flexibility_days": 2,
+      "next_due": "2026-03-08T00:00:00Z",
+      "is_active": true
+    }
+  ]
+}
