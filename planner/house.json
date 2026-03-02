@@ -456,6 +456,15 @@
       "next_due": "2026-04-01",
       "is_active": false,
       "end_date": "2026-03-31"
+    },
+    {
+      "id": "id_1772422954897",
+      "title": "Clean bathroom ceilings",
+      "type": "task",
+      "duration_minutes": 60,
+      "frequency_days": 180,
+      "next_due": "2026-03-21",
+      "is_active": true
     }
   ]
 }
