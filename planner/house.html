@@ -142,7 +142,7 @@
       <input type="number" id="newItemDuration" class="form-input" placeholder="Mins">
     </div>
     <div class="form-row">
-      <input type="number" id="newItemFreq" class="form-input" placeholder="Repeat days">
+     <input type="number" id="newItemFreq" class="form-input" placeholder="Repeat days (Blank=1, 0=Never)">
       <input type="date" id="newItemEndDate" class="form-input" title="End Date (Optional)">
     </div>
     <button onclick="addNewItem()" class="add-btn">Add to Tracker</button>
@@ -150,8 +150,7 @@
 
   <div id="taskList" class="task-container"></div>
 
-  <script>
-    // --- CONFIG ---
+// --- CONFIG ---
     let GITHUB_TOKEN = localStorage.getItem('my_house_token');
     if (!GITHUB_TOKEN) {
       GITHUB_TOKEN = prompt("Enter your GitHub Personal Access Token (starts with ghp_):");
@@ -209,7 +208,6 @@
         
         const safeType = task.type || 'task'; 
         
-        // Apply requested color scheme logic
         let sClass = "";
         if (days < 0) sClass = "color-black";
         else if (days === 0) sClass = "color-red";
@@ -217,9 +215,8 @@
         else if (days === 2) sClass = "color-yellow";
         else if (days >= 3 && days <= 6) sClass = "color-green";
         else if (days >= 7 && days <= 30) sClass = "color-blue";
-        else sClass = "color-purple"; // 31+ days
+        else sClass = "color-purple"; 
 
-        // Format date for the input field (YYYY-MM-DD)
         const yyyy = dueDate.getFullYear();
         const mm = String(dueDate.getMonth() + 1).padStart(2, '0');
         const dd = String(dueDate.getDate()).padStart(2, '0');
@@ -244,10 +241,8 @@
       });
     }
 
-    // --- CHANGE DATE DIRECTLY FROM UI ---
     async function changeDueDate(taskId, newDateStr) {
       if (!newDateStr) return; 
-      
       setStatus("Updating date...");
       const taskIndex = houseData.house_tasks.findIndex(t => t.id === taskId);
       if (taskIndex === -1) return;
@@ -256,7 +251,6 @@
       const localDate = new Date(parts[0], parts[1] - 1, parts[2]);
       
       houseData.house_tasks[taskIndex].next_due = localDate.toISOString();
-      
       renderTasks();
       await saveTasks();
     }
@@ -265,25 +259,32 @@
       const title = document.getElementById('newItemTitle').value;
       if (!title) return alert("Title required");
       
+      const freqRaw = document.getElementById('newItemFreq').value;
+      // Default to 1 (daily) if blank. If explicitly 0, it stays 0.
+      const freqDays = freqRaw === "" ? 1 : parseInt(freqRaw);
+
       const newItem = {
         id: `id_${Date.now()}`,
         title: title,
         type: document.getElementById('newItemType').value,
         duration_minutes: parseInt(document.getElementById('newItemDuration').value) || 0,
-        frequency_days: parseInt(document.getElementById('newItemFreq').value) || 0,
+        frequency_days: freqDays,
         next_due: new Date().toISOString(),
         is_active: true
       };
 
       const end = document.getElementById('newItemEndDate').value;
-      if (end) newItem.end_date = new Date(end).toISOString();
+      if (end) {
+        const parts = end.split('-');
+        const localEnd = new Date(parts[0], parts[1] - 1, parts[2], 23, 59, 59);
+        newItem.end_date = localEnd.toISOString();
+      }
 
       if (!houseData.house_tasks) houseData.house_tasks = [];
       houseData.house_tasks.push(newItem);
       renderTasks();
       await saveTasks();
       
-      // Clear form
       document.getElementById('newItemTitle').value = '';
       document.getElementById('newItemDuration').value = '';
       document.getElementById('newItemFreq').value = '';
@@ -294,14 +295,22 @@
       const idx = houseData.house_tasks.findIndex(t => t.id === id);
       const t = houseData.house_tasks[idx];
       
-      if (!t.frequency_days && !t.anchor_day) {
+      // Bulletproof check: If it's missing or broken in the JSON, assume it repeats daily (1)
+      let freq = t.frequency_days !== undefined && t.frequency_days !== null ? parseInt(t.frequency_days) : 1;
+      if (isNaN(freq)) freq = 1;
+
+      // Only archive if it is explicitly 0 and doesn't have a hard anchor day like "Thursday"
+      if (freq === 0 && !t.anchor_day) {
         t.is_active = false;
       } else {
-        const next = new Date();
-        next.setDate(next.getDate() + (t.frequency_days || 7));
+        const next = new Date(); 
+        next.setDate(next.getDate() + freq);
         next.setHours(0,0,0,0);
         t.next_due = next.toISOString();
-        if (t.end_date && next > new Date(t.end_date)) t.is_active = false;
+        
+        if (t.end_date && next > new Date(t.end_date)) {
+            t.is_active = false;
+        }
       }
       renderTasks();
       await saveTasks();
@@ -329,5 +338,5 @@
 
     fetchTasks();
   </script>
-</body>
+        </body>
 </html>
