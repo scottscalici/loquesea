@@ -650,6 +650,15 @@
       "frequency_days": 365,
       "next_due": "2026-10-31",
       "is_active": true
+    },
+    {
+      "id": "id_1772425576872",
+      "title": "Inventory: dog food, cranberry, vitamin C, dogzymes",
+      "type": "task",
+      "duration_minutes": 10,
+      "frequency_days": 15,
+      "next_due": "2026-03-14",
+      "is_active": true
     }
   ]
 }
