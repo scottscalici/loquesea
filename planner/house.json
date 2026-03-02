@@ -535,6 +535,16 @@
       "next_due": "2026-03-28",
       "is_active": true,
       "end_date": "2026-06-20"
+    },
+    {
+      "id": "id_1772424161696",
+      "title": "Update team generator: swap, sorting update ",
+      "type": "reminder",
+      "duration_minutes": 0,
+      "frequency_days": 1,
+      "next_due": "2026-03-02",
+      "is_active": true,
+      "end_date": "2026-03-21"
     }
   ]
 }
