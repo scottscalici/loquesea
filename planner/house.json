@@ -668,6 +668,16 @@
       "frequency_days": 21,
       "next_due": "2026-03-07",
       "is_active": true
+    },
+    {
+      "id": "id_1772451307810",
+      "title": "Refill humidifier ",
+      "type": "task",
+      "duration_minutes": 0,
+      "frequency_days": 1,
+      "next_due": "2025-11-26",
+      "is_active": true,
+      "end_date": "2026-03-29"
     }
   ]
 }
