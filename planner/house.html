@@ -10,8 +10,8 @@
       --card-bg: #ffffff;
       --text-main: #333333;
       --text-sub: #666666;
-      --primary-btn: #4CAF50;
-      --primary-hover: #45a049;
+      --primary-btn: #0066cc;
+      --primary-hover: #005bb5;
       --action-btn: #0066cc;
       --action-hover: #005bb5;
     }
@@ -65,10 +65,10 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-left: 8px solid #ccc; /* Slightly thicker border for better color visibility */
+      border-left: 8px solid #ccc; 
     }
     
-    /* New Color Scheme */
+    /* Requested Color Scheme */
     .color-black { border-left-color: #000000; } /* Overdue */
     .color-red { border-left-color: #d32f2f; }   /* Today */
     .color-orange { border-left-color: #f57c00; } /* Tomorrow */
@@ -142,7 +142,7 @@
       <input type="number" id="newItemDuration" class="form-input" placeholder="Mins">
     </div>
     <div class="form-row">
-     <input type="number" id="newItemFreq" class="form-input" placeholder="Repeat days (Blank=1, 0=Never)">
+      <input type="number" id="newItemFreq" class="form-input" placeholder="Repeat days (Blank=1, 0=Never)">
       <input type="date" id="newItemEndDate" class="form-input" title="End Date (Optional)">
     </div>
     <button onclick="addNewItem()" class="add-btn">Add to Tracker</button>
@@ -150,7 +150,8 @@
 
   <div id="taskList" class="task-container"></div>
 
-// --- CONFIG ---
+  <script>
+    // --- CONFIG ---
     let GITHUB_TOKEN = localStorage.getItem('my_house_token');
     if (!GITHUB_TOKEN) {
       GITHUB_TOKEN = prompt("Enter your GitHub Personal Access Token (starts with ghp_):");
@@ -208,6 +209,7 @@
         
         const safeType = task.type || 'task'; 
         
+        // Apply requested color scheme logic
         let sClass = "";
         if (days < 0) sClass = "color-black";
         else if (days === 0) sClass = "color-red";
@@ -260,7 +262,6 @@
       if (!title) return alert("Title required");
       
       const freqRaw = document.getElementById('newItemFreq').value;
-      // Default to 1 (daily) if blank. If explicitly 0, it stays 0.
       const freqDays = freqRaw === "" ? 1 : parseInt(freqRaw);
 
       const newItem = {
@@ -295,11 +296,9 @@
       const idx = houseData.house_tasks.findIndex(t => t.id === id);
       const t = houseData.house_tasks[idx];
       
-      // Bulletproof check: If it's missing or broken in the JSON, assume it repeats daily (1)
       let freq = t.frequency_days !== undefined && t.frequency_days !== null ? parseInt(t.frequency_days) : 1;
       if (isNaN(freq)) freq = 1;
 
-      // Only archive if it is explicitly 0 and doesn't have a hard anchor day like "Thursday"
       if (freq === 0 && !t.anchor_day) {
         t.is_active = false;
       } else {
@@ -338,5 +337,5 @@
 
     fetchTasks();
   </script>
-        </body>
+</body>
 </html>
