@@ -327,7 +327,7 @@
       "duration_minutes": 0,
       "frequency_days": 0,
       "next_due": "2026-03-02T02:05:42.682Z",
-      "is_active": true,
+      "is_active": false,
       "end_date": "2026-03-02T00:00:00.000Z"
     },
     {
