@@ -22,10 +22,7 @@
       margin: 0;
       padding: 20px;
     }
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+    h1 { text-align: center; margin-bottom: 20px; }
     .status-msg {
       text-align: center;
       font-size: 0.9em;
@@ -41,21 +38,10 @@
       margin-bottom: 20px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.05);
       max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
+      margin: 0 auto 20px auto;
     }
-    .form-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    .form-input {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      flex: 1;
-      font-size: 1em;
-    }
+    .form-row { display: flex; gap: 10px; margin-bottom: 10px; }
+    .form-input { padding: 10px; border: 1px solid #ccc; border-radius: 6px; flex: 1; font-size: 1em; }
     .add-btn {
       background-color: var(--action-btn);
       color: white;
@@ -66,18 +52,8 @@
       cursor: pointer;
       width: 100%;
       font-size: 1em;
-      transition: background-color 0.2s;
     }
-    .add-btn:hover {
-      background-color: var(--action-hover);
-    }
-    .task-container {
-      max-width: 600px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
+    .task-container { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 15px; }
     .task-card {
       background-color: var(--card-bg);
       border-radius: 12px;
@@ -91,34 +67,21 @@
     .task-card.due-soon { border-left-color: #ffb74d; }
     .task-card.overdue { border-left-color: #ef5350; }
     .task-card.good { border-left-color: #66bb6a; }
-    .task-card.reminder { border-left-color: #ba68c8; } /* Purple for reminders */
-    
-    .task-info {
-      flex-grow: 1;
-    }
-    .task-title {
-      font-size: 1.1em;
-      font-weight: bold;
-      margin: 0 0 5px 0;
-    }
-    .task-meta {
-      font-size: 0.85em;
-      color: var(--text-sub);
-      margin: 0;
-    }
+    .task-card.reminder { border-left-color: #ba68c8; }
+    .task-info { flex-grow: 1; }
+    .task-title { font-size: 1.1em; font-weight: bold; margin: 0 0 5px 0; }
+    .task-meta { font-size: 0.85em; color: var(--text-sub); margin: 0; }
     .type-badge {
       display: inline-block;
       padding: 2px 6px;
       border-radius: 4px;
       font-size: 0.75em;
       font-weight: bold;
-      background-color: #e0e0e0;
       margin-right: 5px;
       text-transform: uppercase;
     }
     .type-reminder { background-color: #f3e5f5; color: #8e24aa; }
     .type-task { background-color: #e3f2fd; color: #1565c0; }
-
     .complete-btn {
       background-color: var(--primary-btn);
       color: white;
@@ -128,280 +91,161 @@
       font-size: 0.9em;
       font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    .complete-btn:hover {
-      background-color: var(--primary-hover);
     }
   </style>
 </head>
 <body>
 
   <h1>Manager</h1>
-  <div id="statusMessage" class="status-msg">Loading from GitHub...</div>
+  <div id="statusMessage" class="status-msg">Initial loading...</div>
 
   <div class="add-form-container">
-    <h3 style="margin-top: 0; margin-bottom: 15px;">Add New Item</h3>
-    
+    <h3 style="margin-top: 0;">Add New Item</h3>
     <div class="form-row">
       <input type="text" id="newItemTitle" class="form-input" placeholder="Title (e.g., Take Medicine)">
     </div>
-    
     <div class="form-row">
       <select id="newItemType" class="form-input">
         <option value="task">Task (Takes Time)</option>
         <option value="reminder">Reminder (Quick)</option>
       </select>
-      <input type="number" id="newItemDuration" class="form-input" placeholder="Mins (if task)">
+      <input type="number" id="newItemDuration" class="form-input" placeholder="Mins">
     </div>
-
     <div class="form-row">
-      <input type="number" id="newItemFreq" class="form-input" placeholder="Repeat every X days">
-      <input type="date" id="newItemEndDate" class="form-input" title="Optional End Date">
+      <input type="number" id="newItemFreq" class="form-input" placeholder="Repeat days">
+      <input type="date" id="newItemEndDate" class="form-input">
     </div>
-    
     <button onclick="addNewItem()" class="add-btn">Add to Tracker</button>
   </div>
 
   <div id="taskList" class="task-container"></div>
 
   <script>
-    // --- GITHUB CONFIGURATION ---
-    // Make sure to paste your actual Personal Access Token here before using!
+    // --- CONFIG ---
     const GITHUB_TOKEN = 'YOUR_PAT_HERE'; 
     const OWNER = 'scottscalici';
     const REPO = 'loquesea';
     const PATH = 'planner/house.json';
-    
     const API_URL = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}`;
 
-    let houseData = { house_tasks: [] }; // Default empty structure
+    let houseData = { house_tasks: [] };
     let currentSha = null;
-// Utility: Update the status message text on screen
-function setStatus(msg) {
-  const statusElement = document.getElementById('statusMessage');
-  if (statusElement) {
-    statusElement.textContent = msg;
-  }
-}
-    // --- 1. FETCH DATA FROM GITHUB ---
+
+    // --- UTILITIES ---
+    function setStatus(msg) {
+      const statusElement = document.getElementById('statusMessage');
+      if (statusElement) statusElement.textContent = msg;
+    }
+
+    // --- CORE LOGIC ---
     async function fetchTasks() {
-      setStatus("Fetching data...");
+      setStatus("Fetching from GitHub...");
       try {
         const response = await fetch(API_URL, {
-          headers: {
-            'Authorization': `token ${GITHUB_TOKEN}`,
-            'Accept': 'application/vnd.github.v3+json'
-          }
+          headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
         });
-
-        if (!response.ok) throw new Error("Failed to fetch. Check token, username, and repo path.");
-
+        if (!response.ok) throw new Error(`Error: ${response.status}`);
         const data = await response.json();
-        currentSha = data.sha; 
-        
-        const decodedContent = decodeURIComponent(escape(atob(data.content)));
-        houseData = JSON.parse(decodedContent);
-        
+        currentSha = data.sha;
+        const decoded = decodeURIComponent(escape(atob(data.content)));
+        houseData = JSON.parse(decoded);
         renderTasks();
-        setStatus("Loaded successfully.");
-        setTimeout(() => setStatus(""), 3000);
-      } catch (error) {
-        console.error(error);
-        setStatus("Error loading. Is the JSON file in GitHub yet?");
+        setStatus("Ready");
+      } catch (e) {
+        console.error(e);
+        setStatus("Load Error. Check Token.");
       }
     }
 
-    // --- 2. RENDER TASKS TO UI ---
     function renderTasks() {
       const container = document.getElementById('taskList');
-      container.innerHTML = ''; 
-
-      if (!houseData || !houseData.house_tasks) return;
-
+      container.innerHTML = '';
       const now = new Date();
-      now.setHours(0,0,0,0); // Normalize to start of today for fair comparison
+      now.setHours(0,0,0,0);
 
-      let activeTasks = houseData.house_tasks.filter(t => t.is_active);
-      activeTasks.sort((a, b) => new Date(a.next_due) - new Date(b.next_due));
+      const active = (houseData.house_tasks || []).filter(t => t.is_active);
+      active.sort((a, b) => new Date(a.next_due) - new Date(b.next_due));
 
-      activeTasks.forEach(task => {
+      active.forEach(task => {
         const dueDate = new Date(task.next_due);
         dueDate.setHours(0,0,0,0);
+        const days = Math.round((dueDate - now) / 86400000);
         
-        const daysUntilDue = Math.round((dueDate - now) / (1000 * 60 * 60 * 24));
-        
-        let statusClass = task.type === 'reminder' ? "reminder" : "good";
-        let dueText = `Due in ${daysUntilDue} day(s)`;
-
-        if (daysUntilDue < 0) {
-          statusClass = "overdue";
-          dueText = `Overdue by ${Math.abs(daysUntilDue)} day(s)`;
-        } else if (daysUntilDue <= 2) {
-          if (task.type !== 'reminder') statusClass = "due-soon";
-          if (daysUntilDue === 0) dueText = "Due Today";
-          if (daysUntilDue === 1) dueText = "Due Tomorrow";
-        }
-
-        const typeClass = task.type === 'reminder' ? 'type-reminder' : 'type-task';
-        const typeLabel = task.type === 'reminder' ? 'Reminder' : 'Task';
-        const durationText = task.duration_minutes > 0 ? ` • ${task.duration_minutes} mins` : '';
+        let sClass = task.type === 'reminder' ? "reminder" : "good";
+        if (days < 0) sClass = "overdue";
+        else if (days <= 2 && task.type !== 'reminder') sClass = "due-soon";
 
         const card = document.createElement('div');
-        card.className = `task-card ${statusClass}`;
+        card.className = `task-card ${sClass}`;
         card.innerHTML = `
           <div class="task-info">
-            <h3 class="task-title">${task.title}</h3>
+            <p class="task-title">${task.title}</p>
             <p class="task-meta">
-              <span class="type-badge ${typeClass}">${typeLabel}</span>
-              ${dueText}${durationText}
+              <span class="type-badge type-${task.type}">${task.type}</span>
+              Due: ${days === 0 ? 'Today' : (days === 1 ? 'Tomorrow' : days + ' days')}
             </p>
           </div>
-          <button class="complete-btn" onclick="completeTask('${task.id}')">Complete</button>
+          <button class="complete-btn" onclick="completeTask('${task.id}')">Done</button>
         `;
         container.appendChild(card);
       });
     }
 
-    // --- 3. ADD NEW ITEM ---
     async function addNewItem() {
       const title = document.getElementById('newItemTitle').value;
-      const type = document.getElementById('newItemType').value;
-      const duration = parseInt(document.getElementById('newItemDuration').value) || 0;
-      const freqDays = parseInt(document.getElementById('newItemFreq').value) || 0;
-      const endDateRaw = document.getElementById('newItemEndDate').value;
-
-      if (!title) {
-        alert("Please enter a title!");
-        return;
-      }
-
-      setStatus("Adding item...");
-
-      let now = new Date();
-      const newItemId = `item_${Date.now()}`;
-
+      if (!title) return alert("Title required");
+      
       const newItem = {
-        id: newItemId,
+        id: `id_${Date.now()}`,
         title: title,
-        type: type,
-        duration_minutes: duration,
-        frequency_days: freqDays,
-        next_due: now.toISOString(),
+        type: document.getElementById('newItemType').value,
+        duration_minutes: parseInt(document.getElementById('newItemDuration').value) || 0,
+        frequency_days: parseInt(document.getElementById('newItemFreq').value) || 0,
+        next_due: new Date().toISOString(),
         is_active: true
       };
 
-      if (endDateRaw) {
-        let endDate = new Date(endDateRaw);
-        endDate.setHours(23, 59, 59); // Set to end of the selected day
-        newItem.end_date = endDate.toISOString();
-      }
+      const end = document.getElementById('newItemEndDate').value;
+      if (end) newItem.end_date = new Date(end).toISOString();
 
-      // Initialize array if missing
-      if (!houseData.house_tasks) houseData.house_tasks = [];
-      
       houseData.house_tasks.push(newItem);
       renderTasks();
-      await saveTasksToGitHub();
-
-      // Clear the form
-      document.getElementById('newItemTitle').value = '';
-      document.getElementById('newItemDuration').value = '';
-      document.getElementById('newItemFreq').value = '';
-      document.getElementById('newItemEndDate').value = '';
+      await saveTasks();
     }
 
-    // --- 4. HANDLE COMPLETION & CALCULATE NEXT DUE ---
-    async function completeTask(taskId) {
-      const taskIndex = houseData.house_tasks.findIndex(t => t.id === taskId);
-      if (taskIndex === -1) return;
-
-      let task = houseData.house_tasks[taskIndex];
-      setStatus("Processing completion...");
-
-      // If it's a one-off, or has no frequency/anchor logic, retire it immediately
-      if (task.is_one_off || (!task.frequency_days && !task.anchor_day)) {
-        task.is_active = false;
+    async function completeTask(id) {
+      const idx = houseData.house_tasks.findIndex(t => t.id === id);
+      const t = houseData.house_tasks[idx];
+      
+      if (!t.frequency_days && !t.anchor_day) {
+        t.is_active = false;
       } else {
-        let now = new Date();
-        let nextDate = new Date(now);
-
-        // Anchor Day Math
-        if (task.anchor_day) {
-          const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-          const targetDayIndex = daysOfWeek.indexOf(task.anchor_day);
-          const currentDayIndex = nextDate.getDay();
-          
-          let daysUntilNext = targetDayIndex - currentDayIndex;
-          if (daysUntilNext <= 0) daysUntilNext += 7; 
-          
-          nextDate.setDate(nextDate.getDate() + daysUntilNext);
-        } 
-        // Standard Frequency Math
-        else if (task.frequency_days) {
-          nextDate.setDate(nextDate.getDate() + task.frequency_days);
-        }
-
-        nextDate.setHours(0, 0, 0, 0);
-
-        // Check against end_date (expiration)
-        if (task.end_date) {
-          let expirationDate = new Date(task.end_date);
-          if (nextDate > expirationDate) {
-            task.is_active = false;
-          }
-        }
-
-        task.last_completed = now.toISOString();
-        task.next_due = nextDate.toISOString();
+        const next = new Date();
+        next.setDate(next.getDate() + (t.frequency_days || 7));
+        next.setHours(0,0,0,0);
+        t.next_due = next.toISOString();
+        if (t.end_date && next > new Date(t.end_date)) t.is_active = false;
       }
-
-      houseData.house_tasks[taskIndex] = task;
-      
       renderTasks();
-      await saveTasksToGitHub();
+      await saveTasks();
     }
 
-    // --- 5. SAVE DATA BACK TO GITHUB ---
-    async function saveTasksToGitHub() {
-      setStatus("Saving to GitHub...");
-      
-      const updatedJsonString = JSON.stringify(houseData, null, 2);
-      const encodedContent = btoa(unescape(encodeURIComponent(updatedJsonString)));
-
-      const bodyData = {
-        message: "House Manager App: Data updated",
-        content: encodedContent,
-        sha: currentSha
-      };
-
+    async function saveTasks() {
+      setStatus("Saving...");
+      const content = btoa(unescape(encodeURIComponent(JSON.stringify(houseData, null, 2))));
       try {
-        const response = await fetch(API_URL, {
+        const res = await fetch(API_URL, {
           method: 'PUT',
-          headers: {
-            'Authorization': `token ${GITHUB_TOKEN}`,
-            'Accept': 'application/vnd.github.v3+json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(bodyData)
+          headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: "Update", content, sha: currentSha })
         });
-
-        if (!response.ok) throw new Error("Failed to save.");
-
-        const data = await response.json();
-        currentSha = data.content.sha; 
-        
-        setStatus("Saved successfully!");
-        setTimeout(() => setStatus(""), 3000);
-      } catch (error) {
-        console.error(error);
-        setStatus("Error saving. Check console.");
-      }
+        const d = await res.json();
+        currentSha = d.content.sha;
+        setStatus("Saved");
+      } catch (e) { setStatus("Save Failed"); }
     }
 
-    // --- INIT ---
     fetchTasks();
-
   </script>
 </body>
 </html>
