@@ -23,6 +23,7 @@
       padding: 20px;
     }
     h1 { text-align: center; margin-bottom: 20px; }
+    
     .status-msg {
       text-align: center;
       font-size: 0.9em;
@@ -31,6 +32,7 @@
       height: 20px;
       font-weight: bold;
     }
+    
     .add-form-container {
       background: var(--card-bg);
       padding: 15px;
@@ -53,6 +55,7 @@
       width: 100%;
       font-size: 1em;
     }
+    
     .task-container { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 15px; }
     .task-card {
       background-color: var(--card-bg);
@@ -62,15 +65,22 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-left: 6px solid #ccc;
+      border-left: 8px solid #ccc; /* Slightly thicker border for better color visibility */
     }
-    .task-card.due-soon { border-left-color: #ffb74d; }
-    .task-card.overdue { border-left-color: #ef5350; }
-    .task-card.good { border-left-color: #66bb6a; }
-    .task-card.reminder { border-left-color: #ba68c8; }
+    
+    /* New Color Scheme */
+    .color-black { border-left-color: #000000; } /* Overdue */
+    .color-red { border-left-color: #d32f2f; }   /* Today */
+    .color-orange { border-left-color: #f57c00; } /* Tomorrow */
+    .color-yellow { border-left-color: #fbc02d; } /* 2 Days */
+    .color-green { border-left-color: #388e3c; }  /* 3-6 Days */
+    .color-blue { border-left-color: #1976d2; }   /* 7-30 Days */
+    .color-purple { border-left-color: #7b1fa2; } /* 31+ Days */
+
     .task-info { flex-grow: 1; }
     .task-title { font-size: 1.1em; font-weight: bold; margin: 0 0 5px 0; }
     .task-meta { font-size: 0.85em; color: var(--text-sub); margin: 0; }
+    
     .type-badge {
       display: inline-block;
       padding: 2px 6px;
@@ -82,6 +92,7 @@
     }
     .type-reminder { background-color: #f3e5f5; color: #8e24aa; }
     .type-task { background-color: #e3f2fd; color: #1565c0; }
+    
     .complete-btn {
       background-color: var(--primary-btn);
       color: white;
@@ -91,6 +102,25 @@
       font-size: 0.9em;
       font-weight: bold;
       cursor: pointer;
+      margin-left: 10px;
+    }
+
+    /* Date Edit Input Styling */
+    .date-edit-input {
+      border: 1px solid transparent;
+      background: transparent;
+      font-family: inherit;
+      color: var(--text-main);
+      font-size: 0.9em;
+      cursor: pointer;
+      padding: 2px 5px;
+      border-radius: 4px;
+      outline: none;
+      font-weight: bold;
+    }
+    .date-edit-input:hover, .date-edit-input:focus {
+      background: #e8e8e8;
+      border-color: #ccc;
     }
   </style>
 </head>
@@ -113,7 +143,7 @@
     </div>
     <div class="form-row">
       <input type="number" id="newItemFreq" class="form-input" placeholder="Repeat days">
-      <input type="date" id="newItemEndDate" class="form-input">
+      <input type="date" id="newItemEndDate" class="form-input" title="End Date (Optional)">
     </div>
     <button onclick="addNewItem()" class="add-btn">Add to Tracker</button>
   </div>
@@ -121,21 +151,18 @@
   <div id="taskList" class="task-container"></div>
 
   <script>
- // --- CONFIG ---
-    // Instead of hardcoding, we ask the browser if it remembers the token
+    // --- CONFIG ---
     let GITHUB_TOKEN = localStorage.getItem('my_house_token');
-
-    // If it doesn't remember it (like your first time opening the app), prompt for it
     if (!GITHUB_TOKEN) {
-      GITHUB_TOKEN = prompt("Enter your GitHub Personal Access Token:");
-      localStorage.setItem('my_house_token', GITHUB_TOKEN);
+      GITHUB_TOKEN = prompt("Enter your GitHub Personal Access Token (starts with ghp_):");
+      if (GITHUB_TOKEN) localStorage.setItem('my_house_token', GITHUB_TOKEN);
     }
 
     const OWNER = 'scottscalici';
     const REPO = 'loquesea';
     const PATH = 'planner/house.json';
     const API_URL = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}`;
-    
+
     let houseData = { house_tasks: [] };
     let currentSha = null;
 
@@ -159,13 +186,14 @@
         houseData = JSON.parse(decoded);
         renderTasks();
         setStatus("Ready");
+        setTimeout(() => setStatus(""), 3000);
       } catch (e) {
         console.error(e);
         setStatus("Load Error. Check Token.");
       }
     }
 
-  function renderTasks() {
+    function renderTasks() {
       const container = document.getElementById('taskList');
       container.innerHTML = '';
       const now = new Date();
@@ -179,21 +207,35 @@
         dueDate.setHours(0,0,0,0);
         const days = Math.round((dueDate - now) / 86400000);
         
-        // NEW: Fallback to 'task' if the type is missing in the JSON
         const safeType = task.type || 'task'; 
         
-        let sClass = safeType === 'reminder' ? "reminder" : "good";
-        if (days < 0) sClass = "overdue";
-        else if (days <= 2 && safeType !== 'reminder') sClass = "due-soon";
+        // Apply requested color scheme logic
+        let sClass = "";
+        if (days < 0) sClass = "color-black";
+        else if (days === 0) sClass = "color-red";
+        else if (days === 1) sClass = "color-orange";
+        else if (days === 2) sClass = "color-yellow";
+        else if (days >= 3 && days <= 6) sClass = "color-green";
+        else if (days >= 7 && days <= 30) sClass = "color-blue";
+        else sClass = "color-purple"; // 31+ days
+
+        // Format date for the input field (YYYY-MM-DD)
+        const yyyy = dueDate.getFullYear();
+        const mm = String(dueDate.getMonth() + 1).padStart(2, '0');
+        const dd = String(dueDate.getDate()).padStart(2, '0');
+        const formattedDate = `${yyyy}-${mm}-${dd}`;
+
+        let relativeText = days === 0 ? 'Today' : (days === 1 ? 'Tomorrow' : (days < 0 ? Math.abs(days) + ' days ago' : 'In ' + days + ' days'));
 
         const card = document.createElement('div');
         card.className = `task-card ${sClass}`;
         card.innerHTML = `
           <div class="task-info">
             <p class="task-title">${task.title}</p>
-            <p class="task-meta">
+            <p class="task-meta" style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap; margin-top: 5px;">
               <span class="type-badge type-${safeType}">${safeType}</span>
-              Due: ${days === 0 ? 'Today' : (days === 1 ? 'Tomorrow' : days + ' days')}
+              By: <input type="date" class="date-edit-input" value="${formattedDate}" onchange="changeDueDate('${task.id}', this.value)">
+              <span style="font-size: 0.85em; opacity: 0.8;">(${relativeText})</span>
             </p>
           </div>
           <button class="complete-btn" onclick="completeTask('${task.id}')">Done</button>
@@ -201,6 +243,24 @@
         container.appendChild(card);
       });
     }
+
+    // --- CHANGE DATE DIRECTLY FROM UI ---
+    async function changeDueDate(taskId, newDateStr) {
+      if (!newDateStr) return; 
+      
+      setStatus("Updating date...");
+      const taskIndex = houseData.house_tasks.findIndex(t => t.id === taskId);
+      if (taskIndex === -1) return;
+
+      const parts = newDateStr.split('-');
+      const localDate = new Date(parts[0], parts[1] - 1, parts[2]);
+      
+      houseData.house_tasks[taskIndex].next_due = localDate.toISOString();
+      
+      renderTasks();
+      await saveTasks();
+    }
+
     async function addNewItem() {
       const title = document.getElementById('newItemTitle').value;
       if (!title) return alert("Title required");
@@ -218,9 +278,16 @@
       const end = document.getElementById('newItemEndDate').value;
       if (end) newItem.end_date = new Date(end).toISOString();
 
+      if (!houseData.house_tasks) houseData.house_tasks = [];
       houseData.house_tasks.push(newItem);
       renderTasks();
       await saveTasks();
+      
+      // Clear form
+      document.getElementById('newItemTitle').value = '';
+      document.getElementById('newItemDuration').value = '';
+      document.getElementById('newItemFreq').value = '';
+      document.getElementById('newItemEndDate').value = '';
     }
 
     async function completeTask(id) {
@@ -247,12 +314,17 @@
         const res = await fetch(API_URL, {
           method: 'PUT',
           headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: "Update", content, sha: currentSha })
+          body: JSON.stringify({ message: "Update via App", content, sha: currentSha })
         });
+        if (!res.ok) throw new Error("Failed to save");
         const d = await res.json();
         currentSha = d.content.sha;
-        setStatus("Saved");
-      } catch (e) { setStatus("Save Failed"); }
+        setStatus("Saved!");
+        setTimeout(() => setStatus(""), 3000);
+      } catch (e) { 
+        console.error(e);
+        setStatus("Save Failed"); 
+      }
     }
 
     fetchTasks();
