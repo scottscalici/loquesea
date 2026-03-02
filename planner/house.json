@@ -485,6 +485,16 @@
       "next_due": "2026-03-02",
       "is_active": true,
       "end_date": "2026-03-08"
+    },
+    {
+      "id": "id_1772423757487",
+      "title": "Build rubric app",
+      "type": "reminder",
+      "duration_minutes": 0,
+      "frequency_days": 1,
+      "next_due": "2026-03-02",
+      "is_active": true,
+      "end_date": "2026-03-08"
     }
   ]
 }
