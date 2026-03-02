@@ -172,7 +172,11 @@
       </div>
     </div>
 
-    <div class="form-row">
+   <div class="form-row">
+      <div class="input-group">
+        <span class="input-label">Time (Optional)</span>
+        <input type="time" id="newItemTime" class="form-input"> 
+      </div>
       <div class="input-group">
         <span class="input-label">Start Date (Optional)</span>
         <input type="date" id="newItemStartDate" class="form-input">
@@ -286,7 +290,22 @@
 
       const active = (houseData.house_tasks || []).filter(t => t.is_active);
       
-      active.sort((a, b) => getSafeDate(a.next_due) - getSafeDate(b.next_due));
+     active.sort((a, b) => {
+        // 1. Compare the dates first
+        const dateDiff = getSafeDate(a.next_due) - getSafeDate(b.next_due);
+        
+        // If they are due on different days, sort normally by day
+        if (dateDiff !== 0) {
+            return dateDiff; 
+        }
+        
+        // 2. If dates are the exact same, sort alphabetically by time
+        // We use "23:59" as a fallback so tasks without a time drop to the bottom
+        const timeA = a.time || "23:59";
+        const timeB = b.time || "23:59";
+        
+        return timeA.localeCompare(timeB);
+      });
 
       active.forEach(task => {
         const dueDate = getSafeDate(task.next_due);
@@ -314,7 +333,7 @@
             <p class="task-meta" style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap; margin-top: 5px;">
               <span class="type-badge type-${safeType}">${safeType}</span>
               By: <input type="date" class="date-edit-input" value="${formattedDate}" onchange="changeDueDate('${task.id}', this.value)">
-              <span style="font-size: 0.85em; opacity: 0.8;">(${relativeText})</span>
+              <span style="font-size: 0.85em; opacity: 0.8;">(${relativeText} at ${task.time || 'Anytime'})</span>
             </p>
           </div>
           <button class="complete-btn" onclick="completeTask('${task.id}')">Done</button>
@@ -366,6 +385,8 @@
         initialDue.setDate(initialDue.getDate() + diff);
       }
 
+const timeRaw = document.getElementById('newItemTime').value;
+
       const newItem = {
         id: `id_${Date.now()}`,
         title: title,
@@ -376,6 +397,7 @@
         is_active: true
       };
 
+      if (timeRaw !== "") newItem.time = timeRaw;
       if (anchorRaw !== "") newItem.anchor_day = anchorRaw;
 
       const endRaw = document.getElementById('newItemEndDate').value;
@@ -394,6 +416,7 @@
       document.getElementById('newItemAnchor').value = '';
       document.getElementById('newItemStartDate').value = '';
       document.getElementById('newItemEndDate').value = '';
+      document.getElementById('newItemTime').value = '';
     }
 
     async function completeTask(id) {
