@@ -257,7 +257,7 @@
       "duration_minutes": 60,
       "frequency_days": 1,
       "flexibility_days": 0,
-      "next_due": "2026-03-01T17:00:00Z",
+      "next_due": "2026-03-02T05:00:00.000Z",
       "is_active": true
     },
     {
