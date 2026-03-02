@@ -585,6 +585,16 @@
       "next_due": "2026-03-06",
       "is_active": true,
       "anchor_day": "Friday"
+    },
+    {
+      "id": "id_1772424471511",
+      "title": "Fix downspouts ",
+      "type": "task",
+      "duration_minutes": 200,
+      "frequency_days": 0,
+      "next_due": "2026-03-30",
+      "is_active": true,
+      "end_date": "2026-05-30"
     }
   ]
 }
