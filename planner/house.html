@@ -121,13 +121,21 @@
   <div id="taskList" class="task-container"></div>
 
   <script>
-    // --- CONFIG ---
-    const GITHUB_TOKEN = 'YOUR_PAT_HERE'; 
+ // --- CONFIG ---
+    // Instead of hardcoding, we ask the browser if it remembers the token
+    let GITHUB_TOKEN = localStorage.getItem('my_house_token');
+
+    // If it doesn't remember it (like your first time opening the app), prompt for it
+    if (!GITHUB_TOKEN) {
+      GITHUB_TOKEN = prompt("Enter your GitHub Personal Access Token:");
+      localStorage.setItem('my_house_token', GITHUB_TOKEN);
+    }
+
     const OWNER = 'scottscalici';
     const REPO = 'loquesea';
     const PATH = 'planner/house.json';
     const API_URL = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}`;
-
+    
     let houseData = { house_tasks: [] };
     let currentSha = null;
 
