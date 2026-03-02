@@ -205,7 +205,16 @@
       "duration_minutes": 60,
       "frequency_days": 7,
       "flexibility_days": 2,
-      "active_months": [3, 4, 5, 6, 7, 8, 9, 10],
+      "active_months": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
       "next_due": "2026-04-15",
       "time": "12:00",
       "is_active": true
@@ -346,7 +355,7 @@
       "duration_minutes": 0,
       "frequency_days": 1,
       "next_due": "2026-03-02",
-      "time": "12:00",
+      "time": "11:00",
       "is_active": true,
       "end_date": "2026-03-09T03:59:59.000Z"
     },
@@ -602,7 +611,15 @@
       "duration_minutes": 20,
       "frequency_days": 1,
       "flexibility_days": 2,
-      "active_months": [3, 4, 11, 12, 1, 2, 10],
+      "active_months": [
+        3,
+        4,
+        11,
+        12,
+        1,
+        2,
+        10
+      ],
       "next_due": "2026-03-02",
       "time": "15:00",
       "is_active": true
