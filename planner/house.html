@@ -1,185 +1,401 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lego Dashboard & House Hub</title>
-    <style>
-        :root {
-            --bg: #121212;
-            --brick-blue: #3498db;
-            --brick-purple: #9b59b6;
-            --ghost-border: #444;
-            --text: #ffffff;
-        }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
-        .container { max-width: 800px; margin: auto; }
-        
-        /* Configuration Bar */
-        .config-bar { background: #222; padding: 15px; border-radius: 10px; margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-        input { background: #333; color: white; border: 1px solid #555; padding: 8px; border-radius: 5px; flex-grow: 1; }
-        button { cursor: pointer; padding: 8px 15px; border-radius: 5px; border: none; font-weight: bold; transition: 0.2s; }
-        .btn-sync { background: var(--brick-blue); color: white; }
-        .btn-uri { background: #f1c40f; color: black; }
-        
-        /* Lego Timeline */
-        .timeline { display: flex; flex-direction: column; gap: 12px; }
-        
-        .brick { 
-            background: var(--brick-blue); 
-            border-radius: 8px; 
-            padding: 20px; 
-            border-left: 12px solid rgba(0,0,0,0.3);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            position: relative;
-        }
-        .brick.meeting-nested { background: var(--brick-purple); }
-        
-        .ghost-brick { 
-            border: 2px dashed var(--ghost-border); 
-            border-radius: 8px; 
-            padding: 15px; 
-            text-align: center; 
-            cursor: pointer; 
-            color: #888; 
-            transition: all 0.3s;
-        }
-        .ghost-brick:hover { border-color: var(--brick-blue); color: var(--brick-blue); background: rgba(52, 152, 219, 0.05); }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>House & Life Manager</title>
+  <style>
+    :root {
+      --bg-color: #f4f4f9;
+      --card-bg: #ffffff;
+      --text-main: #333333;
+      --text-sub: #666666;
+      --primary-btn: #4CAF50;
+      --primary-hover: #45a049;
+      --action-btn: #0066cc;
+      --action-hover: #005bb5;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .status-msg {
+      text-align: center;
+      font-size: 0.9em;
+      margin-bottom: 15px;
+      color: var(--action-btn);
+      height: 20px;
+      font-weight: bold;
+    }
+    .add-form-container {
+      background: var(--card-bg);
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .form-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .form-input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      flex: 1;
+      font-size: 1em;
+    }
+    .add-btn {
+      background-color: var(--action-btn);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      font-size: 1em;
+      transition: background-color 0.2s;
+    }
+    .add-btn:hover {
+      background-color: var(--action-hover);
+    }
+    .task-container {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .task-card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 15px 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 6px solid #ccc;
+    }
+    .task-card.due-soon { border-left-color: #ffb74d; }
+    .task-card.overdue { border-left-color: #ef5350; }
+    .task-card.good { border-left-color: #66bb6a; }
+    .task-card.reminder { border-left-color: #ba68c8; } /* Purple for reminders */
+    
+    .task-info {
+      flex-grow: 1;
+    }
+    .task-title {
+      font-size: 1.1em;
+      font-weight: bold;
+      margin: 0 0 5px 0;
+    }
+    .task-meta {
+      font-size: 0.85em;
+      color: var(--text-sub);
+      margin: 0;
+    }
+    .type-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.75em;
+      font-weight: bold;
+      background-color: #e0e0e0;
+      margin-right: 5px;
+      text-transform: uppercase;
+    }
+    .type-reminder { background-color: #f3e5f5; color: #8e24aa; }
+    .type-task { background-color: #e3f2fd; color: #1565c0; }
 
-        .nested-event { 
-            background: rgba(0,0,0,0.2); 
-            margin-top: 12px; 
-            padding: 10px; 
-            border-radius: 6px; 
-            font-size: 0.9em; 
-            border-left: 3px solid #fff;
-        }
-        .time-label { font-size: 0.8em; opacity: 0.7; display: block; margin-bottom: 5px; }
-    </style>
+    .complete-btn {
+      background-color: var(--primary-btn);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-size: 0.9em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .complete-btn:hover {
+      background-color: var(--primary-hover);
+    }
+  </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="config-bar">
-        <input type="password" id="cal-token" placeholder="Paste Calendly Token">
-        <input type="text" id="user-uri" placeholder="User URI (Leave blank first time)">
-        <button class="btn-uri" onclick="findMyUri()">1. Get URI</button>
-        <button class="btn-sync" onclick="refreshDashboard()">2. Sync Dashboard</button>
+  <h1>Manager</h1>
+  <div id="statusMessage" class="status-msg">Loading from GitHub...</div>
+
+  <div class="add-form-container">
+    <h3 style="margin-top: 0; margin-bottom: 15px;">Add New Item</h3>
+    
+    <div class="form-row">
+      <input type="text" id="newItemTitle" class="form-input" placeholder="Title (e.g., Take Medicine)">
+    </div>
+    
+    <div class="form-row">
+      <select id="newItemType" class="form-input">
+        <option value="task">Task (Takes Time)</option>
+        <option value="reminder">Reminder (Quick)</option>
+      </select>
+      <input type="number" id="newItemDuration" class="form-input" placeholder="Mins (if task)">
     </div>
 
-    <div id="dashboard" class="timeline">
-        </div>
-</div>
+    <div class="form-row">
+      <input type="number" id="newItemFreq" class="form-input" placeholder="Repeat every X days">
+      <input type="date" id="newItemEndDate" class="form-input" title="Optional End Date">
+    </div>
+    
+    <button onclick="addNewItem()" class="add-btn">Add to Tracker</button>
+  </div>
 
-<script>
-    // --- YOUR BASE SCHEDULE ---
-    let dailyBlocks = [
-        { name: "Morning Routine", start: "07:00", end: "09:00" },
-        { name: "Deep Work", start: "09:00", end: "12:00" },
-        { name: "Admin/Prep", start: "13:00", end: "15:00" },
-        { name: "PM Cleanup", start: "19:00", end: "20:30" }
-    ];
+  <div id="taskList" class="task-container"></div>
 
-    const PROXY = "https://corsproxy.io/?";
+  <script>
+    // --- GITHUB CONFIGURATION ---
+    // Make sure to paste your actual Personal Access Token here before using!
+    const GITHUB_TOKEN = 'YOUR_PAT_HERE'; 
+    const OWNER = 'scottscalici';
+    const REPO = 'loquesea';
+    const PATH = 'planner/house.json';
+    
+    const API_URL = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}`;
 
-    // STEP 1: Find the URI for your account
-    async function findMyUri() {
-        const token = document.getElementById('cal-token').value;
-        if (!token) return alert("Please paste your token first!");
-        
-        try {
-            const target = "https://api.calendly.com/users/me";
-            const res = await fetch(PROXY + encodeURIComponent(target), {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const data = await res.json();
-            const uri = data.resource.uri;
-            document.getElementById('user-uri').value = uri;
-            alert("Found it! URI loaded into the box.");
-        } catch (e) {
-            alert("Error finding URI. Check your token and console.");
-            console.error(e);
-        }
-    }
+    let houseData = { house_tasks: [] }; // Default empty structure
+    let currentSha = null;
 
-    // STEP 2: Fetch meetings and draw the dashboard
-    async function refreshDashboard() {
-        const token = document.getElementById('cal-token').value;
-        const userUri = document.getElementById('user-uri').value;
-        
-        if (!token || !userUri) return alert("Need both Token and URI to sync!");
-
-        try {
-            const target = `https://api.calendly.com/scheduled_events?user=${userUri}&status=active`;
-            const response = await fetch(PROXY + encodeURIComponent(target), {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const data = await response.json();
-            renderDashboard(data.collection || []);
-        } catch (e) {
-            console.error("Fetch error:", e);
-            alert("Could not fetch meetings.");
-        }
-    }
-
-    function renderDashboard(meetings) {
-        const container = document.getElementById('dashboard');
-        container.innerHTML = "";
-        
-        // Sort blocks by time
-        dailyBlocks.sort((a,b) => a.start.localeCompare(b.start));
-
-        dailyBlocks.forEach((block, index) => {
-            // Check for Gaps (Ghost Blocks)
-            if (index > 0) {
-                const prevEnd = dailyBlocks[index-1].end;
-                if (prevEnd < block.start) {
-                    container.appendChild(createGhostBlock(prevEnd, block.start));
-                }
-            }
-
-            // Create Lego Brick
-            const brick = document.createElement('div');
-            brick.className = 'brick';
-            brick.innerHTML = `
-                <span class="time-label">${block.start} - ${block.end}</span>
-                <strong>${block.name}</strong>
-            `;
-
-            // Nest Calendly Meetings (Logic: if meeting starts during this block)
-            meetings.forEach(m => {
-                const mTime = new Date(m.start_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
-                if (mTime >= block.start && mTime < block.end) {
-                    brick.classList.add('meeting-nested');
-                    brick.innerHTML += `
-                        <div class="nested-event">
-                            <strong>📅 ${m.name}</strong><br>
-                            Starts: ${mTime}
-                        </div>`;
-                }
-            });
-
-            container.appendChild(brick);
+    // --- 1. FETCH DATA FROM GITHUB ---
+    async function fetchTasks() {
+      setStatus("Fetching data...");
+      try {
+        const response = await fetch(API_URL, {
+          headers: {
+            'Authorization': `token ${GITHUB_TOKEN}`,
+            'Accept': 'application/vnd.github.v3+json'
+          }
         });
+
+        if (!response.ok) throw new Error("Failed to fetch. Check token, username, and repo path.");
+
+        const data = await response.json();
+        currentSha = data.sha; 
+        
+        const decodedContent = decodeURIComponent(escape(atob(data.content)));
+        houseData = JSON.parse(decodedContent);
+        
+        renderTasks();
+        setStatus("Loaded successfully.");
+        setTimeout(() => setStatus(""), 3000);
+      } catch (error) {
+        console.error(error);
+        setStatus("Error loading. Is the JSON file in GitHub yet?");
+      }
     }
 
-    function createGhostBlock(start, end) {
-        const ghost = document.createElement('div');
-        ghost.className = 'ghost-brick';
-        ghost.innerHTML = `<span>+ Add Task to Gap (${start} - ${end})</span>`;
-        ghost.onclick = () => {
-            const taskName = prompt(`What are we doing between ${start} and ${end}?`);
-            if (taskName) {
-                dailyBlocks.push({ name: taskName, start, end });
-                refreshDashboard(); // Re-render
-            }
-        };
-        return ghost;
+    // --- 2. RENDER TASKS TO UI ---
+    function renderTasks() {
+      const container = document.getElementById('taskList');
+      container.innerHTML = ''; 
+
+      if (!houseData || !houseData.house_tasks) return;
+
+      const now = new Date();
+      now.setHours(0,0,0,0); // Normalize to start of today for fair comparison
+
+      let activeTasks = houseData.house_tasks.filter(t => t.is_active);
+      activeTasks.sort((a, b) => new Date(a.next_due) - new Date(b.next_due));
+
+      activeTasks.forEach(task => {
+        const dueDate = new Date(task.next_due);
+        dueDate.setHours(0,0,0,0);
+        
+        const daysUntilDue = Math.round((dueDate - now) / (1000 * 60 * 60 * 24));
+        
+        let statusClass = task.type === 'reminder' ? "reminder" : "good";
+        let dueText = `Due in ${daysUntilDue} day(s)`;
+
+        if (daysUntilDue < 0) {
+          statusClass = "overdue";
+          dueText = `Overdue by ${Math.abs(daysUntilDue)} day(s)`;
+        } else if (daysUntilDue <= 2) {
+          if (task.type !== 'reminder') statusClass = "due-soon";
+          if (daysUntilDue === 0) dueText = "Due Today";
+          if (daysUntilDue === 1) dueText = "Due Tomorrow";
+        }
+
+        const typeClass = task.type === 'reminder' ? 'type-reminder' : 'type-task';
+        const typeLabel = task.type === 'reminder' ? 'Reminder' : 'Task';
+        const durationText = task.duration_minutes > 0 ? ` • ${task.duration_minutes} mins` : '';
+
+        const card = document.createElement('div');
+        card.className = `task-card ${statusClass}`;
+        card.innerHTML = `
+          <div class="task-info">
+            <h3 class="task-title">${task.title}</h3>
+            <p class="task-meta">
+              <span class="type-badge ${typeClass}">${typeLabel}</span>
+              ${dueText}${durationText}
+            </p>
+          </div>
+          <button class="complete-btn" onclick="completeTask('${task.id}')">Complete</button>
+        `;
+        container.appendChild(card);
+      });
     }
 
-    // Initial draw
-    renderDashboard([]);
-</script>
+    // --- 3. ADD NEW ITEM ---
+    async function addNewItem() {
+      const title = document.getElementById('newItemTitle').value;
+      const type = document.getElementById('newItemType').value;
+      const duration = parseInt(document.getElementById('newItemDuration').value) || 0;
+      const freqDays = parseInt(document.getElementById('newItemFreq').value) || 0;
+      const endDateRaw = document.getElementById('newItemEndDate').value;
 
+      if (!title) {
+        alert("Please enter a title!");
+        return;
+      }
+
+      setStatus("Adding item...");
+
+      let now = new Date();
+      const newItemId = `item_${Date.now()}`;
+
+      const newItem = {
+        id: newItemId,
+        title: title,
+        type: type,
+        duration_minutes: duration,
+        frequency_days: freqDays,
+        next_due: now.toISOString(),
+        is_active: true
+      };
+
+      if (endDateRaw) {
+        let endDate = new Date(endDateRaw);
+        endDate.setHours(23, 59, 59); // Set to end of the selected day
+        newItem.end_date = endDate.toISOString();
+      }
+
+      // Initialize array if missing
+      if (!houseData.house_tasks) houseData.house_tasks = [];
+      
+      houseData.house_tasks.push(newItem);
+      renderTasks();
+      await saveTasksToGitHub();
+
+      // Clear the form
+      document.getElementById('newItemTitle').value = '';
+      document.getElementById('newItemDuration').value = '';
+      document.getElementById('newItemFreq').value = '';
+      document.getElementById('newItemEndDate').value = '';
+    }
+
+    // --- 4. HANDLE COMPLETION & CALCULATE NEXT DUE ---
+    async function completeTask(taskId) {
+      const taskIndex = houseData.house_tasks.findIndex(t => t.id === taskId);
+      if (taskIndex === -1) return;
+
+      let task = houseData.house_tasks[taskIndex];
+      setStatus("Processing completion...");
+
+      // If it's a one-off, or has no frequency/anchor logic, retire it immediately
+      if (task.is_one_off || (!task.frequency_days && !task.anchor_day)) {
+        task.is_active = false;
+      } else {
+        let now = new Date();
+        let nextDate = new Date(now);
+
+        // Anchor Day Math
+        if (task.anchor_day) {
+          const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+          const targetDayIndex = daysOfWeek.indexOf(task.anchor_day);
+          const currentDayIndex = nextDate.getDay();
+          
+          let daysUntilNext = targetDayIndex - currentDayIndex;
+          if (daysUntilNext <= 0) daysUntilNext += 7; 
+          
+          nextDate.setDate(nextDate.getDate() + daysUntilNext);
+        } 
+        // Standard Frequency Math
+        else if (task.frequency_days) {
+          nextDate.setDate(nextDate.getDate() + task.frequency_days);
+        }
+
+        nextDate.setHours(0, 0, 0, 0);
+
+        // Check against end_date (expiration)
+        if (task.end_date) {
+          let expirationDate = new Date(task.end_date);
+          if (nextDate > expirationDate) {
+            task.is_active = false;
+          }
+        }
+
+        task.last_completed = now.toISOString();
+        task.next_due = nextDate.toISOString();
+      }
+
+      houseData.house_tasks[taskIndex] = task;
+      
+      renderTasks();
+      await saveTasksToGitHub();
+    }
+
+    // --- 5. SAVE DATA BACK TO GITHUB ---
+    async function saveTasksToGitHub() {
+      setStatus("Saving to GitHub...");
+      
+      const updatedJsonString = JSON.stringify(houseData, null, 2);
+      const encodedContent = btoa(unescape(encodeURIComponent(updatedJsonString)));
+
+      const bodyData = {
+        message: "House Manager App: Data updated",
+        content: encodedContent,
+        sha: currentSha
+      };
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${GITHUB_TOKEN}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(bodyData)
+        });
+
+        if (!response.ok) throw new Error("Failed to save.");
+
+        const data = await response.json();
+        currentSha = data.content.sha; 
+        
+        setStatus("Saved successfully!");
+        setTimeout(() => setStatus(""), 3000);
+      } catch (error) {
+        console.error(error);
+        setStatus("Error saving. Check console.");
+      }
+    }
+
+    // --- INIT ---
+    fetchTasks();
+
+  </script>
 </body>
 </html>
