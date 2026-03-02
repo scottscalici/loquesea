@@ -669,15 +669,24 @@
       "next_due": "2026-03-07",
       "is_active": true
     },
-    {
-      "id": "id_1772451307810",
-      "title": "Refill humidifier ",
-      "type": "task",
-      "duration_minutes": 0,
+       {
+      "id": "tsk_humid",
+      "title": "Refill humidifiers",
+      "category": "Indoor",
+      "duration_minutes": 20,
       "frequency_days": 1,
-      "next_due": "2026-03-30",
-      "is_active": false,
-      "end_date": "2026-03-29"
+      "flexibility_days": 2,
+      "active_months": [
+        3,
+        4,
+        11,
+        12,
+        1,
+        2,
+        10
+      ],
+      "next_due": "2026-03-02",
+      "is_active": true
     }
   ]
 }
