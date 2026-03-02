@@ -613,6 +613,16 @@
       "frequency_days": 365,
       "next_due": "2026-03-29",
       "is_active": true
+    },
+    {
+      "id": "id_1772424963023",
+      "title": "Flip washer door hinge",
+      "type": "task",
+      "duration_minutes": 0,
+      "frequency_days": 0,
+      "next_due": "2026-03-27",
+      "is_active": true,
+      "end_date": "2026-04-05"
     }
   ]
 }
