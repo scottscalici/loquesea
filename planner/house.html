@@ -158,6 +158,22 @@
     
     <div class="form-row">
       <div class="input-group">
+        <span class="input-label">Anchor Day (Optional)</span>
+        <select id="newItemAnchor" class="form-input">
+          <option value="">None (Floating)</option>
+          <option value="Sunday">Sunday</option>
+          <option value="Monday">Monday</option>
+          <option value="Tuesday">Tuesday</option>
+          <option value="Wednesday">Wednesday</option>
+          <option value="Thursday">Thursday</option>
+          <option value="Friday">Friday</option>
+          <option value="Saturday">Saturday</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="input-group">
         <span class="input-label">Start Date (Optional)</span>
         <input type="date" id="newItemStartDate" class="form-input">
       </div>
@@ -281,7 +297,6 @@
       
       const freqRaw = document.getElementById('newItemFreq').value;
       
-      // ABSOLUTE FAILSAFE: If not a number, default to 1. If literally "0", keep 0.
       let freqDays = 1;
       if (freqRaw.trim() === "0") {
         freqDays = 0;
@@ -289,7 +304,6 @@
         freqDays = parseInt(freqRaw);
       }
 
-      // Handle Start Date Math (Default to today if blank)
       let initialDue = new Date();
       initialDue.setHours(0,0,0,0);
       
@@ -309,7 +323,12 @@
         is_active: true
       };
 
-      // Handle End Date
+      // Add Anchor Day if selected
+      const anchorRaw = document.getElementById('newItemAnchor').value;
+      if (anchorRaw !== "") {
+          newItem.anchor_day = anchorRaw;
+      }
+
       const endRaw = document.getElementById('newItemEndDate').value;
       if (endRaw && endRaw.trim() !== "") {
         const eParts = endRaw.split('-');
@@ -326,6 +345,7 @@
       document.getElementById('newItemTitle').value = '';
       document.getElementById('newItemDuration').value = '';
       document.getElementById('newItemFreq').value = '';
+      document.getElementById('newItemAnchor').value = '';
       document.getElementById('newItemStartDate').value = '';
       document.getElementById('newItemEndDate').value = '';
     }
@@ -335,26 +355,38 @@
       if (idx === -1) return;
       const t = houseData.house_tasks[idx];
       
-      // ABSOLUTE FAILSAFE: Ensure frequency is captured
       let freq = 1; 
       if (t.frequency_days === 0) freq = 0;
       else if (!isNaN(parseInt(t.frequency_days))) freq = parseInt(t.frequency_days);
 
       if (freq === 0 && !t.anchor_day) {
-        t.is_active = false; // It's a true one-off
+        t.is_active = false; 
       } else {
-        // Find current date to base math on
         const baseDate = new Date();
         baseDate.setHours(0,0,0,0);
-        
         const next = new Date(baseDate); 
-        next.setDate(next.getDate() + freq);
+
+        // ANCHOR DAY MATH RESTORED
+        if (t.anchor_day) {
+            const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const targetDayIndex = daysOfWeek.indexOf(t.anchor_day);
+            const currentDayIndex = next.getDay();
+            
+            let daysUntilNext = targetDayIndex - currentDayIndex;
+            // If the day has already passed this week (or is today), push it to NEXT week
+            if (daysUntilNext <= 0) {
+                daysUntilNext += 7; 
+            }
+            next.setDate(next.getDate() + daysUntilNext);
+        } else {
+            // Standard frequency math
+            next.setDate(next.getDate() + freq);
+        }
+        
         t.next_due = next.toISOString();
         
-        // Expiration check
         if (t.end_date) {
             const expDate = new Date(t.end_date);
-            // If the newly calculated date is technically past the expiration date, kill it.
             if (next > expDate) {
                 t.is_active = false;
             }
