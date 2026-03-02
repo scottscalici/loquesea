@@ -555,6 +555,16 @@
       "next_due": "2026-03-07",
       "is_active": true,
       "end_date": "2026-03-31"
+    },
+    {
+      "id": "id_1772424319477",
+      "title": "Turn off automatic start",
+      "type": "reminder",
+      "duration_minutes": 0,
+      "frequency_days": 1,
+      "next_due": "2026-03-28",
+      "is_active": true,
+      "end_date": "2026-03-28"
     }
   ]
 }
