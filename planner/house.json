@@ -604,6 +604,15 @@
       "frequency_days": 7,
       "next_due": "2026-03-02",
       "is_active": true
+    },
+    {
+      "id": "id_1772424909092",
+      "title": "Insect spray",
+      "type": "task",
+      "duration_minutes": 60,
+      "frequency_days": 365,
+      "next_due": "2026-03-29",
+      "is_active": true
     }
   ]
 }
