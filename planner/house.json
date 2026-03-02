@@ -623,6 +623,15 @@
       "next_due": "2026-03-27",
       "is_active": true,
       "end_date": "2026-04-05"
+    },
+    {
+      "id": "id_1772424993396",
+      "title": "Empty garbage",
+      "type": "task",
+      "duration_minutes": 5,
+      "frequency_days": 2,
+      "next_due": "2026-03-01",
+      "is_active": true
     }
   ]
 }
