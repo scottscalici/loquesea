@@ -641,6 +641,15 @@
       "frequency_days": 365,
       "next_due": "2026-05-01",
       "is_active": true
+    },
+    {
+      "id": "id_1772425482778",
+      "title": "Bring in outdoor furniture ",
+      "type": "task",
+      "duration_minutes": 120,
+      "frequency_days": 365,
+      "next_due": "2026-10-31",
+      "is_active": true
     }
   ]
 }
