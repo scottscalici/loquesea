@@ -150,7 +150,7 @@
 
   <div id="taskList" class="task-container"></div>
 
-  <script>
+<script>
     // --- CONFIG ---
     let GITHUB_TOKEN = localStorage.getItem('my_house_token');
     if (!GITHUB_TOKEN) {
@@ -209,7 +209,6 @@
         
         const safeType = task.type || 'task'; 
         
-        // Apply requested color scheme logic
         let sClass = "";
         if (days < 0) sClass = "color-black";
         else if (days === 0) sClass = "color-red";
@@ -262,7 +261,12 @@
       if (!title) return alert("Title required");
       
       const freqRaw = document.getElementById('newItemFreq').value;
-      const freqDays = freqRaw === "" ? 1 : parseInt(freqRaw);
+      
+      // FAILSAFE: If it's blank or not a real number, force it to 1
+      let freqDays = parseInt(freqRaw);
+      if (isNaN(freqDays) || freqRaw.trim() === "") {
+        freqDays = 1;
+      }
 
       const newItem = {
         id: `id_${Date.now()}`,
@@ -275,7 +279,7 @@
       };
 
       const end = document.getElementById('newItemEndDate').value;
-      if (end) {
+      if (end && end.trim() !== "") {
         const parts = end.split('-');
         const localEnd = new Date(parts[0], parts[1] - 1, parts[2], 23, 59, 59);
         newItem.end_date = localEnd.toISOString();
@@ -294,21 +298,30 @@
 
     async function completeTask(id) {
       const idx = houseData.house_tasks.findIndex(t => t.id === id);
+      if (idx === -1) return;
       const t = houseData.house_tasks[idx];
       
-      let freq = t.frequency_days !== undefined && t.frequency_days !== null ? parseInt(t.frequency_days) : 1;
+      // FAILSAFE: Ensure we always have a valid integer for frequency
+      let freq = parseInt(t.frequency_days);
       if (isNaN(freq)) freq = 1;
+
+      console.log(`Checking off '${t.title}'. Read frequency as: ${freq}`);
 
       if (freq === 0 && !t.anchor_day) {
         t.is_active = false;
+        console.log(`Archived '${t.title}' because frequency is 0.`);
       } else {
         const next = new Date(); 
         next.setDate(next.getDate() + freq);
         next.setHours(0,0,0,0);
         t.next_due = next.toISOString();
         
-        if (t.end_date && next > new Date(t.end_date)) {
-            t.is_active = false;
+        if (t.end_date) {
+            const expDate = new Date(t.end_date);
+            if (next > expDate) {
+                t.is_active = false;
+                console.log(`Archived '${t.title}' because next due date passes the End Date.`);
+            }
         }
       }
       renderTasks();
