@@ -177,7 +177,13 @@
 
     let houseData = { house_tasks: [] }; // Default empty structure
     let currentSha = null;
-
+// Utility: Update the status message text on screen
+function setStatus(msg) {
+  const statusElement = document.getElementById('statusMessage');
+  if (statusElement) {
+    statusElement.textContent = msg;
+  }
+}
     // --- 1. FETCH DATA FROM GITHUB ---
     async function fetchTasks() {
       setStatus("Fetching data...");
