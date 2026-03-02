@@ -505,6 +505,16 @@
       "next_due": "2026-03-20",
       "is_active": true,
       "end_date": "2026-03-31"
+    },
+    {
+      "id": "id_1772423941152",
+      "title": "Custom workout app",
+      "type": "reminder",
+      "duration_minutes": 0,
+      "frequency_days": 1,
+      "next_due": "2026-03-02",
+      "is_active": true,
+      "end_date": "2026-04-03"
     }
   ]
 }
