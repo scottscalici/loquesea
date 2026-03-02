@@ -329,6 +329,16 @@
       "next_due": "2026-03-02T02:05:42.682Z",
       "is_active": true,
       "end_date": "2026-03-02T00:00:00.000Z"
+    },
+    {
+      "id": "id_1772417173279",
+      "title": "Charge Car",
+      "type": "reminder",
+      "duration_minutes": 1,
+      "frequency_days": 1,
+      "next_due": "2026-03-02T02:06:13.279Z",
+      "is_active": true,
+      "end_date": "2026-03-01T00:00:00.000Z"
     }
   ]
 }
