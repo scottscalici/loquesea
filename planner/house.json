@@ -309,6 +309,16 @@
       "next_due": "2026-03-02T02:04:30.039Z",
       "is_active": true,
       "end_date": "2026-03-01T00:00:00.000Z"
+    },
+    {
+      "id": "id_1772417117141",
+      "title": "Take Medicine",
+      "type": "reminder",
+      "duration_minutes": 0,
+      "frequency_days": 1,
+      "next_due": "2026-03-02T02:05:17.141Z",
+      "is_active": true,
+      "end_date": "2026-03-01T00:00:00.000Z"
     }
   ]
 }
