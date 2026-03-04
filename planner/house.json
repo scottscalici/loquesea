@@ -661,7 +661,7 @@
       "type": "reminder",
       "duration_minutes": 2,
       "frequency_days": 1,
-      "next_due": "2026-03-19",
+      "next_due": "2026-03-20",
       "is_active": true,
       "time": "06:00"
     }
