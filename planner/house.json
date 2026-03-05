@@ -683,6 +683,15 @@
       "frequency_days": 0,
       "next_due": "2026-03-05",
       "is_active": true
+    },
+    {
+      "id": "id_1772754178677",
+      "title": "Pack computer monitor",
+      "type": "reminder",
+      "duration_minutes": 0,
+      "frequency_days": 0,
+      "next_due": "2026-03-05",
+      "is_active": true
     }
   ]
 }
