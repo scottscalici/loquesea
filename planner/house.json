@@ -674,6 +674,15 @@
       "next_due": "2026-04-01",
       "is_active": true,
       "time": "12:00"
+    },
+    {
+      "id": "id_1772754115138",
+      "title": "Email Raul",
+      "type": "reminder",
+      "duration_minutes": 0,
+      "frequency_days": 0,
+      "next_due": "2026-03-05",
+      "is_active": true
     }
   ]
 }
