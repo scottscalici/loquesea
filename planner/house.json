@@ -664,6 +664,16 @@
       "next_due": "2026-05-07",
       "is_active": true,
       "time": "06:00"
+    },
+    {
+      "id": "id_1772742743260",
+      "title": "Refill soaps in kitchen",
+      "type": "task",
+      "duration_minutes": 5,
+      "frequency_days": 30,
+      "next_due": "2026-04-01",
+      "is_active": true,
+      "time": "12:00"
     }
   ]
 }
