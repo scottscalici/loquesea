@@ -741,6 +741,16 @@
       "next_due": "2026-03-06",
       "is_active": true,
       "time": "09:20"
+    },
+    {
+      "id": "id_1772800730985",
+      "title": "Materials to conference room ",
+      "type": "reminder",
+      "duration_minutes": 0,
+      "frequency_days": 0,
+      "next_due": "2026-03-06",
+      "is_active": true,
+      "time": "08:00"
     }
   ]
 }
