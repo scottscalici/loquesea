@@ -791,6 +791,16 @@
       "next_due": "2026-03-06",
       "is_active": true,
       "time": "10:00"
+    },
+    {
+      "id": "id_1772801227096",
+      "title": "Link rubric to index (live IA)",
+      "type": "reminder",
+      "duration_minutes": 0,
+      "frequency_days": 0,
+      "next_due": "2026-03-06",
+      "is_active": true,
+      "time": "09:55"
     }
   ]
 }
