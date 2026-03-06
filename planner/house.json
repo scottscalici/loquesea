@@ -692,6 +692,15 @@
       "frequency_days": 1,
       "next_due": "2026-03-05",
       "is_active": true
+    },
+    {
+      "id": "id_1772759902581",
+      "title": "Pop in bag",
+      "type": "reminder",
+      "duration_minutes": 0,
+      "frequency_days": 0,
+      "next_due": "2026-03-05",
+      "is_active": true
     }
   ]
 }
