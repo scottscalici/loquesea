@@ -731,6 +731,16 @@
       "next_due": "2026-03-06",
       "is_active": true,
       "time": "08:20"
+    },
+    {
+      "id": "id_1772800672584",
+      "title": "Meeting 2",
+      "type": "reminder",
+      "duration_minutes": 0,
+      "frequency_days": 0,
+      "next_due": "2026-03-06",
+      "is_active": true,
+      "time": "09:20"
     }
   ]
 }
