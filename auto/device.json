@@ -1,0 +1,11 @@
+{
+  "tvs": [
+    { "id": "living_room", "name": "Living Room TV", "ip": "192.168.1.50", "type": "roku" },
+    { "id": "bedroom", "name": "Bedroom TV", "ip": "192.168.1.51", "type": "roku" }
+  ],
+  "buttons": [
+    { "label": "🏠 Home", "command": "Home" },
+    { "label": "🔊 Vol Up", "command": "VolumeUp" },
+    { "label": "🔉 Vol Down", "command": "VolumeDown" }
+  ]
+}
