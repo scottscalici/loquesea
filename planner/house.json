@@ -600,7 +600,7 @@
       "type": "task",
       "duration_minutes": 5,
       "frequency_days": 21,
-      "next_due": "2026-03-07",
+      "next_due": "2026-03-29",
       "time": "17:00",
       "is_active": true
     },
