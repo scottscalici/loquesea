@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 1764.6900000000044,
+    "checking_balance": 1745.7000000000044,
     "travel_savings": 0,
     "weekly_budget_remaining": 437.20999999999964,
     "daily_allowance_locked": 0,
@@ -2388,6 +2388,12 @@
       "what": "",
       "amount": -41.2,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-03-09",
+      "vendor": "Spotify",
+      "amount": -18.99,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -2683,7 +2689,7 @@
       "name": "Spotify",
       "frequency": "monthly",
       "amount": 16.99,
-      "next_due_date": "2026-03-09"
+      "next_due_date": "2026-04-09"
     },
     {
       "id": "student-id-g",
