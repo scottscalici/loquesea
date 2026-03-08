@@ -408,9 +408,9 @@
       "type": "reminder",
       "duration_minutes": 0,
       "frequency_days": 1,
-      "next_due": "2026-03-08",
+      "next_due": "2026-03-09",
       "time": "23:00",
-      "is_active": true,
+      "is_active": false,
       "end_date": "2026-03-08"
     },
     {
