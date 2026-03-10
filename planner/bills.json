@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 1338.0000000000045,
+    "checking_balance": 1312.7200000000046,
     "travel_savings": 0,
-    "weekly_budget_remaining": 1029.5099999999998,
+    "weekly_budget_remaining": 1004.2299999999998,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-03-09T04:00:00.000Z"
@@ -2425,6 +2425,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -24.79,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-03-10",
+      "vendor": "Someplace in Fraser",
+      "who": "Abbi",
+      "what": "",
+      "amount": -25.28,
       "category": "MANUAL"
     }
   ],
