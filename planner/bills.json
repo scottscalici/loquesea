@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 1304.2200000000046,
+    "checking_balance": 1276.4100000000046,
     "travel_savings": 0,
     "weekly_budget_remaining": 995.7299999999998,
     "daily_allowance_locked": 0,
@@ -2442,6 +2442,12 @@
       "what": "",
       "amount": -8.5,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-03-09",
+      "vendor": "AXA S",
+      "amount": -27.81,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -2485,7 +2491,7 @@
       "name": "AXA S",
       "frequency": "monthly",
       "amount": 27.81,
-      "next_due_date": "2026-03-09"
+      "next_due_date": "2026-04-09"
     },
     {
       "id": "beachbody",
