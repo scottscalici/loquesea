@@ -2492,6 +2492,12 @@
       "vendor": "Scott Payday",
       "amount": 2847.15,
       "category": "INCOME"
+    },
+    {
+      "date": "2026-03-13",
+      "vendor": "Put money aside",
+      "amount": 0,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -2759,7 +2765,7 @@
       "name": "Put money aside",
       "frequency": "bi-weekly",
       "amount": 1,
-      "next_due_date": "2026-03-13"
+      "next_due_date": "2026-03-27"
     },
     {
       "id": "secondary-mortgage",
