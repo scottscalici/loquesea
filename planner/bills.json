@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 1158.3600000000047,
+    "checking_balance": 3999.490000000005,
     "travel_savings": 0,
     "weekly_budget_remaining": 877.6799999999997,
     "daily_allowance_locked": 0,
@@ -2480,6 +2480,12 @@
       "what": "",
       "amount": -71.54,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-03-14",
+      "vendor": "Wife Payday",
+      "amount": 2841.13,
+      "category": "INCOME"
     }
   ],
   "bills": [
