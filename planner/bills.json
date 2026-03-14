@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 6199.120000000005,
+    "checking_balance": 6170.320000000005,
     "travel_savings": 0,
-    "weekly_budget_remaining": 480.1599999999998,
+    "weekly_budget_remaining": 451.3599999999998,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-03-09T04:00:00.000Z"
@@ -2601,6 +2601,14 @@
       "who": "Kinley",
       "what": "",
       "amount": -26,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-03-14",
+      "vendor": "MJR",
+      "who": "Kinley",
+      "what": "",
+      "amount": -28.8,
       "category": "MANUAL"
     }
   ],
