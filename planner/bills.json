@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 6227.2100000000055,
+    "checking_balance": 6225.120000000005,
     "travel_savings": 0,
-    "weekly_budget_remaining": 508.2499999999998,
+    "weekly_budget_remaining": 506.1599999999998,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-03-09T04:00:00.000Z"
@@ -2589,10 +2589,10 @@
     },
     {
       "date": "2026-03-14",
-      "vendor": "MJR",
+      "vendor": "Raise 365",
       "who": "Abbi",
       "what": "",
-      "amount": -26,
+      "amount": -28.09,
       "category": "MANUAL"
     }
   ],
