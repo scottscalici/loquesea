@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 6482.910000000005,
+    "checking_balance": 6454.110000000005,
     "travel_savings": 0,
-    "weekly_budget_remaining": 763.9499999999997,
+    "weekly_budget_remaining": 735.1499999999997,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
     "last_weekly_reset": "2026-03-09T04:00:00.000Z"
@@ -2553,6 +2553,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -9.51,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-03-13",
+      "vendor": "MJR",
+      "who": "Abbi",
+      "what": "",
+      "amount": -28.8,
       "category": "MANUAL"
     }
   ],
