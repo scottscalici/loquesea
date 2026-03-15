@@ -708,7 +708,7 @@
       "type": "reminder",
       "duration_minutes": 0,
       "frequency_days": 1,
-      "next_due": "2026-03-15",
+      "next_due": "2026-03-16",
       "is_active": true,
       "time": "08:35"
     },
@@ -738,7 +738,7 @@
       "type": "reminder",
       "duration_minutes": 0,
       "frequency_days": 1,
-      "next_due": "2026-03-15",
+      "next_due": "2026-03-16",
       "is_active": true,
       "time": "09:20"
     },
