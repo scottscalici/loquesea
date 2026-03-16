@@ -340,8 +340,11 @@ card.innerHTML = `
               <input type="time" class="date-edit-input" value="${task.time || ''}" onchange="changeDueTime('${task.id}', this.value)">
               <span style="font-size: 0.85em; opacity: 0.8;">(${relativeText})</span>
             </p>
+        </div>
+          <div style="display: flex; gap: 5px;">
+            <button class="complete-btn" style="background-color: #d32f2f; margin-left: 0;" onclick="deleteTask('${task.id}')">Delete</button>
+            <button class="complete-btn" onclick="completeTask('${task.id}')">Done</button>
           </div>
-          <button class="complete-btn" onclick="completeTask('${task.id}')">Done</button>
         `;
         container.appendChild(card);
       });
@@ -485,6 +488,17 @@ const timeRaw = document.getElementById('newItemTime').value;
       }
     }
 
+    async function deleteTask(id) {
+  if (!confirm("Are you sure you want to delete this item forever?")) return;
+  
+  const idx = houseData.house_tasks.findIndex(t => t.id === id);
+  if (idx > -1) {
+    houseData.house_tasks.splice(idx, 1); // Completely removes it from the array
+    renderTasks();
+    await saveTasks();
+  }
+}
+    
     async function saveTasks(isSilent = false) {
       if (!isSilent) setStatus("Saving...");
       const content = btoa(unescape(encodeURIComponent(JSON.stringify(houseData, null, 2))));
