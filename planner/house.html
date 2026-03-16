@@ -404,7 +404,9 @@ const timeRaw = document.getElementById('newItemTime').value;
         next_due: toLocalDateString(initialDue),
         is_active: true
       };
-
+      if (freqDays === 0) {
+        newItem.is_one_off = true;
+      }
       if (timeRaw !== "") newItem.time = timeRaw;
       if (anchorRaw !== "") newItem.anchor_day = anchorRaw;
 
