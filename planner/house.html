@@ -444,7 +444,7 @@ const timeRaw = document.getElementById('newItemTime').value;
           if (freq === 0 && !t.anchor_day && !t.is_one_off) freq = 1;
 
           if (freq === 0 && !t.anchor_day) {
-            t.is_active = false; 
+          houseData.house_tasks.splice(idx, 1); // This deletes it forever
           } else {
             const now = new Date();
             now.setHours(0,0,0,0);
