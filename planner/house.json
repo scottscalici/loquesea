@@ -664,18 +664,6 @@
       "next_due": "2026-04-01",
       "is_active": true,
       "time": "12:00"
-    },
-    {
-      "id": "id_1773691664224",
-      "title": "Replace kitchen lights",
-      "type": "task",
-      "duration_minutes": 5,
-      "frequency_days": 0,
-      "next_due": "2026-03-16",
-      "is_active": true,
-      "is_one_off": true,
-      "time": "16:07",
-      "end_date": "2026-03-16"
     }
   ]
 }
