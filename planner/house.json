@@ -656,16 +656,6 @@
       "time": "17:15"
     },
     {
-      "id": "id_1772504612199",
-      "title": "Grab print outs",
-      "type": "reminder",
-      "duration_minutes": 2,
-      "frequency_days": 1,
-      "next_due": "2026-05-07",
-      "is_active": true,
-      "time": "06:00"
-    },
-    {
       "id": "id_1772742743260",
       "title": "Refill soaps in kitchen",
       "type": "task",
