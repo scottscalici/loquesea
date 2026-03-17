@@ -13,8 +13,9 @@
         .sub-label { font-size: 1rem; color: #555; margin-bottom: 15px; display: block; }
         .progress-container { background: #eee; height: 12px; border-radius: 6px; margin: 20px 0; overflow: hidden; }
         .progress-bar { background: var(--primary); height: 100%; transition: width 0.5s ease; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; }
-        .stat-val { font-size: 1.1rem; font-weight: bold; display: block; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; }
+        .stat-box { display: flex; flex-direction: column; }
+        .stat-val { font-size: 1.1rem; font-weight: bold; display: block; margin-top: 5px; }
         .history-card { background: var(--card); border-radius: 15px; padding: 20px; width: 100%; max-width: 400px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .history-title { font-size: 0.75rem; color: #aaa; text-transform: uppercase; font-weight: bold; margin-bottom: 15px; display: block; text-align: left; }
         .history-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.85rem; }
@@ -37,20 +38,21 @@
             <div id="progressBar" class="progress-bar" style="width: 0%"></div>
         </div>
 
-     <div class="stats-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+     <div class="stats-grid">
             <div class="stat-box">
-                <span class="label">Main Left</span>
-                <span id="weeklyRemaining" class="stat-val">$0</span>
+                <span class="label">Month Left</span>
+                <span id="monthlyRemaining" class="stat-val">$0</span>
             </div>
             <div class="stat-box">
                 <span class="label">Flex Left</span>
                 <span id="flexRemaining" class="stat-val" style="color: var(--accent);">$0</span>
             </div>
             <div class="stat-box">
-                <span class="label">Today's Spend</span>
+                <span class="label">Today</span>
                 <span id="todaySpend" class="stat-val" style="color:#d32f2f;">$0</span>
             </div>
         </div>
+    </div>
         
     <div class="history-card">
         <span class="history-title">Recent Spending</span>
@@ -64,7 +66,7 @@
         const TOKEN = localStorage.getItem('gh_token');
         const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
         const body = {
-            message: "Automatic Weekly Reset via Spend Dashboard",
+            message: "Automatic Dashboard Reset (Monthly/Weekly)",
             content: content,
             sha: sha
         };
@@ -73,6 +75,48 @@
             headers: { "Authorization": `token ${TOKEN}`, "Content-Type": "application/json" },
             body: JSON.stringify(body)
         });
+    }
+
+    // Helper: Calculate General Spent since a specific date
+    function getGeneralSpentSince(history, sinceDateStr, now) {
+        let total = 0;
+        history.forEach(item => {
+            let itemDateStr = item.date.substring(0, 10);
+            if (itemDateStr >= sinceDateStr) {
+                const cat = (item.category || "").toUpperCase();
+                const vend = (item.vendor || "").toUpperCase();
+                const what = (item.what || "").toUpperCase();
+                
+                const isAmazon = vend.includes("AMAZON") || vend.includes("AMZN");
+                const isShieldWindow = now.getDate() >= 21;
+                const isShielded = isAmazon && isShieldWindow;
+                const isFlex = vend.includes("KROGER") || vend.includes("GAS") || vend.includes("GROCERY") || what.includes("GROCERY");
+
+                if (cat !== "BILL" && cat !== "INCOME" && cat !== "SAVINGS" && vend !== "INCOME" && !isShielded && !isFlex) {
+                    total += Math.abs(item.amount);
+                }
+            }
+        });
+        return total;
+    }
+
+    // Helper: Calculate Flex Spent since a specific date
+    function getFlexSpentSince(history, sinceDateStr) {
+        let total = 0;
+        history.forEach(item => {
+            let itemDateStr = item.date.substring(0, 10);
+            if (itemDateStr >= sinceDateStr) {
+                const cat = (item.category || "").toUpperCase();
+                const vend = (item.vendor || "").toUpperCase();
+                const what = (item.what || "").toUpperCase();
+                
+                const isFlex = vend.includes("KROGER") || vend.includes("GAS") || vend.includes("GROCERY") || what.includes("GROCERY");
+                if (isFlex && cat !== "INCOME" && cat !== "SAVINGS" && cat !== "BILL") {
+                    total += Math.abs(item.amount);
+                }
+            }
+        });
+        return total;
     }
 
     async function init() {
@@ -91,27 +135,48 @@
             const m = String(now.getMonth() + 1).padStart(2, '0');
             const d = String(now.getDate()).padStart(2, '0');
             const todayStr = `${y}-${m}-${d}`; 
+            const currentMonthStr = `${y}-${m}`;
 
-            // Extract just the YYYY-MM-DD part of the ISO string in your JSON
-            let lastResetDate = data.state.last_weekly_reset ? data.state.last_weekly_reset.substring(0, 10) : "";
+            let lastWeeklyReset = data.state.last_weekly_reset ? data.state.last_weekly_reset.substring(0, 10) : "";
+            let lastMonthlyResetStr = data.state.last_monthly_reset ? data.state.last_monthly_reset.substring(0, 7) : "";
+            
+            let needsSave = false;
 
-            // AUTOMATIC MONDAY RESET
-            if (now.getDay() === 1 && lastResetDate !== todayStr) {
-                
-                let weeklySurplus = data.state.weekly_budget_remaining || 0;
-                let flexSurplus = data.state.flex_budget_remaining || 0;
-                let yearlyPool = data.state.yearly_surplus_pool || 0;
-
-                let halfWeekly = Math.max(0, weeklySurplus) / 2;
-                let moneyForNextWeek = halfWeekly + Math.max(0, flexSurplus);
-
-                data.state.weekly_budget_remaining = 700 + moneyForNextWeek;
-                data.state.flex_budget_remaining = 300;
-                data.state.yearly_surplus_pool = yearlyPool + halfWeekly;
-                
-                // Save the new timestamp
+            // 1. ONE-TIME MIGRATION TO NEW SYSTEM (If no monthly reset exists yet)
+            if (!data.state.last_monthly_reset) {
+                data.state.monthly_general_pool = 2000; // Your $1500 for rest of March + $500 excess
+                data.state.last_monthly_reset = now.toISOString();
                 data.state.last_weekly_reset = now.toISOString();
+                needsSave = true;
+            } 
+            else {
+                // 2. AUTOMATIC MONTHLY RESET (1st of the Month)
+                if (currentMonthStr !== lastMonthlyResetStr) {
+                    let spentLastMonth = getGeneralSpentSince(data.history, data.state.last_monthly_reset.substring(0, 10), now);
+                    let leftoverGeneral = Math.max(0, (data.state.monthly_general_pool || 0) - spentLastMonth);
+                    
+                    const daysInNewMonth = new Date(y, now.getMonth() + 1, 0).getDate();
+                    
+                    // New Base + Leftover
+                    data.state.monthly_general_pool = (daysInNewMonth * 100) + leftoverGeneral;
+                    data.state.last_monthly_reset = now.toISOString();
+                    needsSave = true;
+                }
 
+                // 3. AUTOMATIC WEEKLY FLEX ROLLOVER (Mondays)
+                if (now.getDay() === 1 && lastWeeklyReset !== todayStr) {
+                    let flexSpent = getFlexSpentSince(data.history, lastWeeklyReset);
+                    let flexLeft = Math.max(0, 300 - flexSpent);
+                    
+                    // Add unused flex to the month's general pool
+                    data.state.monthly_general_pool += flexLeft;
+                    
+                    data.state.last_weekly_reset = now.toISOString();
+                    needsSave = true;
+                }
+            }
+
+            if (needsSave) {
                 await saveToGitHub(data, currentSha);
             }
 
@@ -119,79 +184,48 @@
         } catch (e) { console.error(e); }
     }
 
-function updateUI(data) {
+    function updateUI(data) {
         const now = new Date();
         const y = now.getFullYear();
         const m = String(now.getMonth() + 1).padStart(2, '0');
         const d = String(now.getDate()).padStart(2, '0');
         const todayStr = `${y}-${m}-${d}`; 
         
-        const dayOfWeek = now.getDay();
-        const daysLeft = (dayOfWeek === 0) ? 1 : (8 - dayOfWeek);
+        let lastWeeklyResetStr = data.state.last_weekly_reset.substring(0, 10);
+        let lastMonthlyResetStr = data.state.last_monthly_reset.substring(0, 10);
+
+        // Calculate days left in month (including today)
+        const daysInMonth = new Date(y, now.getMonth() + 1, 0).getDate();
+        const daysLeftInMonth = daysInMonth - now.getDate() + 1;
+
+        // 1. GET SPENDING DATA
+        const generalSpentThisMonth = getGeneralSpentSince(data.history, lastMonthlyResetStr, now);
+        const flexSpentThisWeek = getFlexSpentSince(data.history, lastWeeklyResetStr);
+        const spentToday = getGeneralSpentSince(data.history, todayStr, now); // Today's spend is just general since todayStr
+
+        // 2. CALCULATE REMAINING BALANCES
+        const startOfMonthPool = data.state.monthly_general_pool || 0;
         
-        let lastResetDateStr = data.state.last_weekly_reset ? data.state.last_weekly_reset.substring(0, 10) : "";
-
-        // 1. FILTER TODAY'S STANDARD SPENDING (Ignores Flex)
-        const todayItems = data.history.filter(item => {
-            let itemDateStr = item.date.substring(0, 10);
-            const isToday = itemDateStr === todayStr;
-            const cat = (item.category || "").toUpperCase();
-            const vend = (item.vendor || "").toUpperCase();
-            const what = (item.what || "").toUpperCase();
-            
-            const isAmazon = vend.includes("AMAZON") || vend.includes("AMZN");
-            const isShieldWindow = now.getDate() >= 21;
-            const isShielded = isAmazon && isShieldWindow;
-            
-            const isFlex = vend.includes("KROGER") || vend.includes("GAS") || vend.includes("GROCERY") || what.includes("GROCERY");
-
-            return isToday && cat !== "BILL" && cat !== "INCOME" && cat !== "SAVINGS" && vend !== "INCOME" && !isShielded && !isFlex;
-        });
-
-        const spentToday = todayItems.reduce((sum, item) => sum + Math.abs(item.amount), 0);
-
-        // 2. SCAN THE WEEK TO FIND TOTAL FLEX SPENT
-        let flexSpentThisWeek = 0;
-        data.history.forEach(item => {
-            let itemDateStr = item.date.substring(0, 10);
-            if (itemDateStr >= lastResetDateStr) {
-                const cat = (item.category || "").toUpperCase();
-                const vend = (item.vendor || "").toUpperCase();
-                const what = (item.what || "").toUpperCase();
-                
-                const isFlex = vend.includes("KROGER") || vend.includes("GAS") || vend.includes("GROCERY") || what.includes("GROCERY");
-                if (isFlex && cat !== "INCOME" && cat !== "SAVINGS" && cat !== "BILL") {
-                    flexSpentThisWeek += Math.abs(item.amount);
-                }
-            }
-        });
-
-        // 3. CALCULATE BALANCES & REFUND THE MAIN POOL
-        const flexBase = data.state.flex_budget_remaining || 300;
-        const currentFlexLeft = flexBase - flexSpentThisWeek;
-
-        const rawWeeklyRemaining = data.state.weekly_budget_remaining || 0;
-        const trueWeeklyRemaining = rawWeeklyRemaining + flexSpentThisWeek;
-
-        // 4. DAILY LIMIT MATH
-        const startOfDayTotal = trueWeeklyRemaining + spentToday;
-        const dailyAllowanceGoal = startOfDayTotal / daysLeft;
-
-        const endOfYear = new Date(y, 11, 31);
-        let daysLeftInYear = Math.ceil((endOfYear - now) / (1000 * 60 * 60 * 24));
-        if (daysLeftInYear <= 0) daysLeftInYear = 365; 
+        // True General Remaining (Start Pool - All General Spent This Month)
+        const trueMonthlyRemaining = startOfMonthPool - generalSpentThisMonth;
         
-        const dailyBoost = (data.state.yearly_surplus_pool || 0) / daysLeftInYear;
-        const finalDailyGoal = dailyAllowanceGoal + dailyBoost;
+        // True Flex Remaining
+        const currentFlexLeft = Math.max(0, 300 - flexSpentThisWeek);
 
+        // 3. DAILY LIMIT MATH
+        // We add back today's spend to find out what you started the morning with
+        const startOfDayTotal = trueMonthlyRemaining + spentToday; 
+        const finalDailyGoal = startOfDayTotal / daysLeftInMonth;
+        
         const availableToday = finalDailyGoal - spentToday;
         const pct = Math.max(0, Math.min((availableToday / finalDailyGoal) * 100, 100));
 
-        // 5. UPDATE THE SCREEN
+        // 4. UPDATE THE SCREEN
         document.getElementById('dailyLimit').innerText = `$${Math.round(availableToday)}`;
         document.getElementById('dayStartBadge').innerText = `Goal: $${Math.round(finalDailyGoal)}/day`;
-        document.getElementById('daysLeftMsg').innerText = `resets in ${daysLeft} days`;
-        document.getElementById('weeklyRemaining').innerText = `$${Math.round(trueWeeklyRemaining).toLocaleString()}`;
+        document.getElementById('daysLeftMsg').innerText = `Month ends in ${daysLeftInMonth} days`;
+        
+        document.getElementById('monthlyRemaining').innerText = `$${Math.round(trueMonthlyRemaining).toLocaleString()}`;
         document.getElementById('flexRemaining').innerText = `$${Math.round(currentFlexLeft)}`;
         document.getElementById('todaySpend').innerText = `$${Math.round(spentToday)}`;
         document.getElementById('progressBar').style.width = pct + '%';
@@ -200,6 +234,7 @@ function updateUI(data) {
         if (availableToday <= 0) dailyEl.style.color = 'var(--danger)';
         else dailyEl.style.color = 'var(--primary)';
 
+        // 5. RENDER RECENT TRANSACTIONS
         const spendingOnly = data.history.slice().reverse().filter(item => {
             const cat = (item.category || "").toUpperCase();
             const vend = (item.vendor || "").toUpperCase();
