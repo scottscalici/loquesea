@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5700.480000000005,
+    "checking_balance": 5497.200000000005,
     "travel_savings": 0,
     "weekly_budget_remaining": 1332.1699999999996,
     "flex_budget_remaining": 300,
@@ -2694,6 +2694,12 @@
       "vendor": "Chewy",
       "amount": -60.58,
       "category": "BILL"
+    },
+    {
+      "date": "2026-04-14",
+      "vendor": "Semco",
+      "amount": -203.28,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -2975,7 +2981,7 @@
       "name": "Semco",
       "frequency": "monthly",
       "amount": 250,
-      "next_due_date": "2026-04-14"
+      "next_due_date": "2026-05-14"
     },
     {
       "id": "snowfreaks",
