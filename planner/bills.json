@@ -38,16 +38,14 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5457.110000000005,
+    "checking_balance": 5256.630000000006,
     "travel_savings": 0,
-    "weekly_budget_remaining": 1326.0699999999997,
+    "weekly_budget_remaining": 1125.5899999999997,
     "flex_budget_remaining": 300,
     "yearly_surplus_pool": 0,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
-    "last_weekly_reset": "2026-03-17T19:29:18.651Z",
-    "monthly_general_pool": 2000,
-    "last_monthly_reset": "2026-03-17T19:29:18.651Z"
+    "last_weekly_reset": "2026-03-16T04:00:00.000Z"
   },
   "vendors": [
     "Amazon",
@@ -2715,6 +2713,14 @@
       "who": "",
       "what": "",
       "amount": -6.1,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-03-17",
+      "vendor": "Slidemvp",
+      "who": "Abbi",
+      "what": "",
+      "amount": -200.48,
       "category": "MANUAL"
     }
   ],
