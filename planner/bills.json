@@ -45,7 +45,9 @@
     "yearly_surplus_pool": 0,
     "daily_allowance_locked": 0,
     "last_daily_reset": "2026-01-15",
-    "last_weekly_reset": "2026-03-16T04:00:00.000Z"
+    "last_weekly_reset": "2026-03-17T19:37:58.384Z",
+    "monthly_general_pool": 2000,
+    "last_monthly_reset": "2026-03-17T19:37:58.384Z"
   },
   "vendors": [
     "Amazon",
