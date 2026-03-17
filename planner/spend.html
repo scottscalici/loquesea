@@ -57,6 +57,21 @@
 <script>
     const CONFIG = { owner: 'scottscalici', repo: 'loquesea', path: 'planner/bills.json' };
 
+    async function saveToGitHub(data, sha) {
+        const TOKEN = localStorage.getItem('gh_token');
+        const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+        const body = {
+            message: "Automatic Weekly Reset via Spend Dashboard",
+            content: content,
+            sha: sha
+        };
+        await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`, {
+            method: 'PUT',
+            headers: { "Authorization": `token ${TOKEN}`, "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+    }
+
     async function init() {
         try {
             const TOKEN = localStorage.getItem('gh_token');
@@ -65,76 +80,108 @@
                 cache: 'no-store'
             });
             const fileData = await resp.json();
-            const data = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+            const currentSha = fileData.sha;
+            let data = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+            
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const d = String(now.getDate()).padStart(2, '0');
+            const todayStr = `${y}-${m}-${d}`; 
+
+            // Extract just the YYYY-MM-DD part of the ISO string in your JSON
+            let lastResetDate = data.state.last_weekly_reset ? data.state.last_weekly_reset.substring(0, 10) : "";
+
+            // AUTOMATIC MONDAY RESET
+            if (now.getDay() === 1 && lastResetDate !== todayStr) {
+                
+                let weeklySurplus = data.state.weekly_budget_remaining || 0;
+                let flexSurplus = data.state.flex_budget_remaining || 0;
+                let yearlyPool = data.state.yearly_surplus_pool || 0;
+
+                let halfWeekly = Math.max(0, weeklySurplus) / 2;
+                let moneyForNextWeek = halfWeekly + Math.max(0, flexSurplus);
+
+                data.state.weekly_budget_remaining = 700 + moneyForNextWeek;
+                data.state.flex_budget_remaining = 300;
+                data.state.yearly_surplus_pool = yearlyPool + halfWeekly;
+                
+                // Save the new timestamp
+                data.state.last_weekly_reset = now.toISOString();
+
+                await saveToGitHub(data, currentSha);
+            }
+
             updateUI(data);
         } catch (e) { console.error(e); }
     }
 
     function updateUI(data) {
-        // --- FIX 1: LOCAL DATE INSTEAD OF ISO/UTC ---
         const now = new Date();
         const y = now.getFullYear();
         const m = String(now.getMonth() + 1).padStart(2, '0');
         const d = String(now.getDate()).padStart(2, '0');
         const todayStr = `${y}-${m}-${d}`; 
         
-        // --- FIX 2: STABLE DAYS REMAINING ---
-        // We want to know how many days are left until the NEXT Monday reset.
-        const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon... 6=Sat
-        // This calculates days remaining including today:
-        // If Monday(1): 7 days left. If Saturday(6): 2 days left. If Sunday(0): 1 day left.
+        const dayOfWeek = now.getDay();
         const daysLeft = (dayOfWeek === 0) ? 1 : (8 - dayOfWeek);
 
-        // 2. Calculate Today's Spending (Manual Transactions Only)
-        const todayItems = data.history.filter(item => {
-    const isToday = item.date === todayStr;
-    const cat = (item.category || "").toUpperCase();
-    const vend = (item.vendor || "").toUpperCase();
-    
-    // NEW: Check if it's a shielded Amazon purchase
-    const isAmazon = vend.includes("AMAZON") || vend.includes("AMZN");
-    const isShieldWindow = now.getDate() >= 21;
-    const isShielded = isAmazon && isShieldWindow;
+const todayItems = data.history.filter(item => {
+            let itemDateStr = item.date.substring(0, 10);
+            const isToday = itemDateStr === todayStr;
+            const cat = (item.category || "").toUpperCase();
+            const vend = (item.vendor || "").toUpperCase();
+            const what = (item.what || "").toUpperCase();
+            
+            // The Amazon Shield
+            const isAmazon = vend.includes("AMAZON") || vend.includes("AMZN");
+            const isShieldWindow = now.getDate() >= 21;
+            const isShielded = isAmazon && isShieldWindow;
 
-    // Only count it if it's NOT a Bill, Income, Savings, OR a shielded Amazon purchase
-    return isToday && 
-           cat !== "BILL" && 
-           cat !== "INCOME" && 
-           cat !== "SAVINGS" && 
-           vend !== "INCOME" && 
-           !isShielded;
-});
+            // NEW: The Flex Interceptor
+            const isFlex = vend.includes("KROGER") || 
+                           vend.includes("GAS") || 
+                           vend.includes("GROCERY") || 
+                           what.includes("GROCERY");
 
+            // Only count it if it's NOT a Bill, Income, Savings, Shielded Amazon, OR Flex
+            return isToday && 
+                   cat !== "BILL" && 
+                   cat !== "INCOME" && 
+                   cat !== "SAVINGS" && 
+                   vend !== "INCOME" && 
+                   !isShielded &&
+                   !isFlex; // Drops Flex purchases out of the daily calculation
+        });
+        
         const spentToday = todayItems.reduce((sum, item) => sum + Math.abs(item.amount), 0);
 
-        // 3. CALCULATE DAILY ALLOWANCE
         const weeklyRemaining = data.state.weekly_budget_remaining || 0;
-        
-        // Logic: (Total Budget Left + What you already spent today) / Days remaining
-        // This gives you your "Starting Goal" for this morning.
         const startOfDayTotal = weeklyRemaining + spentToday;
         const dailyAllowanceGoal = startOfDayTotal / daysLeft;
 
-        // 4. AVAILABLE TODAY = Goal - Spent Today
-        const availableToday = dailyAllowanceGoal - spentToday;
+        // YEARLY BOOST LOGIC
+        const endOfYear = new Date(y, 11, 31);
+        let daysLeftInYear = Math.ceil((endOfYear - now) / (1000 * 60 * 60 * 24));
+        if (daysLeftInYear <= 0) daysLeftInYear = 365; 
         
-        // 5. Progress Bar
-        const pct = Math.max(0, Math.min((availableToday / dailyAllowanceGoal) * 100, 100));
+        const dailyBoost = (data.state.yearly_surplus_pool || 0) / daysLeftInYear;
+        const finalDailyGoal = dailyAllowanceGoal + dailyBoost;
 
-        // UI Updates
+        const availableToday = finalDailyGoal - spentToday;
+        const pct = Math.max(0, Math.min((availableToday / finalDailyGoal) * 100, 100));
+
         document.getElementById('dailyLimit').innerText = `$${Math.round(availableToday)}`;
-        document.getElementById('dayStartBadge').innerText = `Goal: $${Math.round(dailyAllowanceGoal)}/day`;
+        document.getElementById('dayStartBadge').innerText = `Goal: $${Math.round(finalDailyGoal)}/day`;
         document.getElementById('daysLeftMsg').innerText = `resets in ${daysLeft} days`;
         document.getElementById('weeklyRemaining').innerText = `$${Math.round(weeklyRemaining).toLocaleString()}`;
         document.getElementById('todaySpend').innerText = `$${Math.round(spentToday)}`;
         document.getElementById('progressBar').style.width = pct + '%';
 
-        // Color Logic
         const dailyEl = document.getElementById('dailyLimit');
         if (availableToday <= 0) dailyEl.style.color = 'var(--danger)';
         else dailyEl.style.color = 'var(--primary)';
 
-        // Render Recent Spending (Newest at the top)
         const spendingOnly = data.history.slice().reverse().filter(item => {
             const cat = (item.category || "").toUpperCase();
             const vend = (item.vendor || "").toUpperCase();
@@ -145,7 +192,7 @@
         list.innerHTML = spendingOnly.map(item => {
             let dStr = item.date;
             try {
-                const parts = item.date.split('-');
+                const parts = item.date.substring(0, 10).split('-');
                 dStr = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][parts[1]-1] + " " + parseInt(parts[2]);
             } catch(e) {}
 
@@ -158,11 +205,10 @@
             </div>`;
         }).join('');
     }
+    
     init();
 </script>
-
 
 </body>
 </html>
 <button onclick="localStorage.setItem('gh_token', prompt('Enter Token:'))" style="margin-top:20px; opacity:0.2;">Set Token</button>
-
