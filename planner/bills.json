@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5761.060000000005,
+    "checking_balance": 5700.480000000005,
     "travel_savings": 0,
     "weekly_budget_remaining": 1332.1699999999996,
     "flex_budget_remaining": 300,
@@ -2688,6 +2688,12 @@
       "vendor": "HP Instant Ink",
       "amount": -8.47,
       "category": "BILL"
+    },
+    {
+      "date": "2026-04-02",
+      "vendor": "Chewy",
+      "amount": -60.58,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -2752,7 +2758,7 @@
       "name": "Chewy",
       "frequency": "monthly",
       "amount": 61,
-      "next_due_date": "2026-04-02"
+      "next_due_date": "2026-05-02"
     },
     {
       "id": "citibank-1",
