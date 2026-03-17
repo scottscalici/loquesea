@@ -37,18 +37,21 @@
             <div id="progressBar" class="progress-bar" style="width: 0%"></div>
         </div>
 
-        <div class="stats-grid">
+     <div class="stats-grid" style="grid-template-columns: 1fr 1fr 1fr;">
             <div class="stat-box">
-                <span class="label">Remaining Total</span>
+                <span class="label">Main Left</span>
                 <span id="weeklyRemaining" class="stat-val">$0</span>
+            </div>
+            <div class="stat-box">
+                <span class="label">Flex Left</span>
+                <span id="flexRemaining" class="stat-val" style="color: var(--accent);">$0</span>
             </div>
             <div class="stat-box">
                 <span class="label">Today's Spend</span>
                 <span id="todaySpend" class="stat-val" style="color:#d32f2f;">$0</span>
             </div>
         </div>
-    </div>
-
+        
     <div class="history-card">
         <span class="history-title">Recent Spending</span>
         <div id="recentList"></div>
@@ -116,7 +119,7 @@
         } catch (e) { console.error(e); }
     }
 
-    function updateUI(data) {
+function updateUI(data) {
         const now = new Date();
         const y = now.getFullYear();
         const m = String(now.getMonth() + 1).padStart(2, '0');
@@ -125,42 +128,55 @@
         
         const dayOfWeek = now.getDay();
         const daysLeft = (dayOfWeek === 0) ? 1 : (8 - dayOfWeek);
+        
+        let lastResetDateStr = data.state.last_weekly_reset ? data.state.last_weekly_reset.substring(0, 10) : "";
 
-const todayItems = data.history.filter(item => {
+        // 1. FILTER TODAY'S STANDARD SPENDING (Ignores Flex)
+        const todayItems = data.history.filter(item => {
             let itemDateStr = item.date.substring(0, 10);
             const isToday = itemDateStr === todayStr;
             const cat = (item.category || "").toUpperCase();
             const vend = (item.vendor || "").toUpperCase();
             const what = (item.what || "").toUpperCase();
             
-            // The Amazon Shield
             const isAmazon = vend.includes("AMAZON") || vend.includes("AMZN");
             const isShieldWindow = now.getDate() >= 21;
             const isShielded = isAmazon && isShieldWindow;
+            
+            const isFlex = vend.includes("KROGER") || vend.includes("GAS") || vend.includes("GROCERY") || what.includes("GROCERY");
 
-            // NEW: The Flex Interceptor
-            const isFlex = vend.includes("KROGER") || 
-                           vend.includes("GAS") || 
-                           vend.includes("GROCERY") || 
-                           what.includes("GROCERY");
-
-            // Only count it if it's NOT a Bill, Income, Savings, Shielded Amazon, OR Flex
-            return isToday && 
-                   cat !== "BILL" && 
-                   cat !== "INCOME" && 
-                   cat !== "SAVINGS" && 
-                   vend !== "INCOME" && 
-                   !isShielded &&
-                   !isFlex; // Drops Flex purchases out of the daily calculation
+            return isToday && cat !== "BILL" && cat !== "INCOME" && cat !== "SAVINGS" && vend !== "INCOME" && !isShielded && !isFlex;
         });
-        
+
         const spentToday = todayItems.reduce((sum, item) => sum + Math.abs(item.amount), 0);
 
-        const weeklyRemaining = data.state.weekly_budget_remaining || 0;
-        const startOfDayTotal = weeklyRemaining + spentToday;
+        // 2. SCAN THE WEEK TO FIND TOTAL FLEX SPENT
+        let flexSpentThisWeek = 0;
+        data.history.forEach(item => {
+            let itemDateStr = item.date.substring(0, 10);
+            if (itemDateStr >= lastResetDateStr) {
+                const cat = (item.category || "").toUpperCase();
+                const vend = (item.vendor || "").toUpperCase();
+                const what = (item.what || "").toUpperCase();
+                
+                const isFlex = vend.includes("KROGER") || vend.includes("GAS") || vend.includes("GROCERY") || what.includes("GROCERY");
+                if (isFlex && cat !== "INCOME" && cat !== "SAVINGS" && cat !== "BILL") {
+                    flexSpentThisWeek += Math.abs(item.amount);
+                }
+            }
+        });
+
+        // 3. CALCULATE BALANCES & REFUND THE MAIN POOL
+        const flexBase = data.state.flex_budget_remaining || 300;
+        const currentFlexLeft = flexBase - flexSpentThisWeek;
+
+        const rawWeeklyRemaining = data.state.weekly_budget_remaining || 0;
+        const trueWeeklyRemaining = rawWeeklyRemaining + flexSpentThisWeek;
+
+        // 4. DAILY LIMIT MATH
+        const startOfDayTotal = trueWeeklyRemaining + spentToday;
         const dailyAllowanceGoal = startOfDayTotal / daysLeft;
 
-        // YEARLY BOOST LOGIC
         const endOfYear = new Date(y, 11, 31);
         let daysLeftInYear = Math.ceil((endOfYear - now) / (1000 * 60 * 60 * 24));
         if (daysLeftInYear <= 0) daysLeftInYear = 365; 
@@ -171,13 +187,15 @@ const todayItems = data.history.filter(item => {
         const availableToday = finalDailyGoal - spentToday;
         const pct = Math.max(0, Math.min((availableToday / finalDailyGoal) * 100, 100));
 
+        // 5. UPDATE THE SCREEN
         document.getElementById('dailyLimit').innerText = `$${Math.round(availableToday)}`;
         document.getElementById('dayStartBadge').innerText = `Goal: $${Math.round(finalDailyGoal)}/day`;
         document.getElementById('daysLeftMsg').innerText = `resets in ${daysLeft} days`;
-        document.getElementById('weeklyRemaining').innerText = `$${Math.round(weeklyRemaining).toLocaleString()}`;
+        document.getElementById('weeklyRemaining').innerText = `$${Math.round(trueWeeklyRemaining).toLocaleString()}`;
+        document.getElementById('flexRemaining').innerText = `$${Math.round(currentFlexLeft)}`;
         document.getElementById('todaySpend').innerText = `$${Math.round(spentToday)}`;
         document.getElementById('progressBar').style.width = pct + '%';
-
+    
         const dailyEl = document.getElementById('dailyLimit');
         if (availableToday <= 0) dailyEl.style.color = 'var(--danger)';
         else dailyEl.style.color = 'var(--primary)';
