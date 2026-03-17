@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5497.200000000005,
+    "checking_balance": 5463.2100000000055,
     "travel_savings": 0,
     "weekly_budget_remaining": 1332.1699999999996,
     "flex_budget_remaining": 300,
@@ -2700,6 +2700,12 @@
       "vendor": "Semco",
       "amount": -203.28,
       "category": "BILL"
+    },
+    {
+      "date": "2026-03-16",
+      "vendor": "Jax S",
+      "amount": -33.99,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -2897,7 +2903,7 @@
       "name": "Jax S",
       "frequency": "monthly",
       "amount": 35.99,
-      "next_due_date": "2026-03-16"
+      "next_due_date": "2026-04-16"
     },
     {
       "id": "luna-vet",
