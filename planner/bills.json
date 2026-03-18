@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4362.0900000000065,
+    "checking_balance": 4359.190000000007,
     "travel_savings": 0,
-    "weekly_budget_remaining": 859.0499999999997,
+    "weekly_budget_remaining": 856.1499999999997,
     "flex_budget_remaining": 300,
     "yearly_surplus_pool": 0,
     "daily_allowance_locked": 0,
@@ -2776,6 +2776,14 @@
       "vendor": "Mortgage",
       "amount": -614.01,
       "category": "BILL"
+    },
+    {
+      "date": "2026-03-18",
+      "vendor": "Tims",
+      "who": "Abbi",
+      "what": "",
+      "amount": -2.9,
+      "category": "MANUAL"
     }
   ],
   "bills": [
