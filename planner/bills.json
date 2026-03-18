@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4976.100000000007,
+    "checking_balance": 4362.0900000000065,
     "travel_savings": 0,
     "weekly_budget_remaining": 859.0499999999997,
     "flex_budget_remaining": 300,
@@ -2770,6 +2770,12 @@
       "vendor": "Paramount Plus",
       "amount": -13.99,
       "category": "BILL"
+    },
+    {
+      "date": "2026-03-18",
+      "vendor": "Mortgage",
+      "amount": -614.01,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -2995,7 +3001,7 @@
       "name": "Mortgage",
       "frequency": "bi-weekly",
       "amount": 614.01,
-      "next_due_date": "2026-03-18"
+      "next_due_date": "2026-04-01"
     },
     {
       "id": "nfhs",
