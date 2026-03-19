@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4343.600000000007,
+    "checking_balance": 4324.550000000007,
     "travel_savings": 0,
-    "weekly_budget_remaining": 840.5599999999997,
+    "weekly_budget_remaining": 821.5099999999998,
     "flex_budget_remaining": 300,
     "yearly_surplus_pool": 0,
     "daily_allowance_locked": 0,
@@ -2799,6 +2799,14 @@
       "who": "Grayson",
       "what": "",
       "amount": -5,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-03-19",
+      "vendor": "Jimmy John’s ",
+      "who": "Abbi",
+      "what": "",
+      "amount": -19.05,
       "category": "MANUAL"
     }
   ],
