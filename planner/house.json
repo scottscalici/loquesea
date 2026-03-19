@@ -664,18 +664,6 @@
       "next_due": "2026-04-01",
       "is_active": true,
       "time": "12:00"
-    },
-    {
-      "id": "id_1773830194441",
-      "title": "No meetings on drill day",
-      "type": "reminder",
-      "duration_minutes": 0,
-      "frequency_days": 0,
-      "next_due": "2026-03-18",
-      "is_active": true,
-      "is_one_off": true,
-      "time": "07:36",
-      "end_date": "2026-03-18"
     }
   ]
 }
