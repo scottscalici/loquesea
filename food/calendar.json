@@ -336,5 +336,15 @@
     "sides_included": [
       "Main Dish"
     ]
+  },
+  {
+    "date": "2026-03-23",
+    "meal": "Pasta ",
+    "sides_included": [
+      "Main Dish",
+      "Green Beans",
+      "Garlic bread ",
+      "Salad"
+    ]
   }
 ]
