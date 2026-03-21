@@ -12,7 +12,7 @@
     {
       "name": "Pigeon Forge Tournament",
       "target": 2500,
-      "current": 1700
+      "current": 2500
     },
     {
       "name": "Renovation",
@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3741.630000000007,
+    "checking_balance": 2941.630000000007,
     "travel_savings": 0,
     "weekly_budget_remaining": 612.5399999999998,
     "flex_budget_remaining": 300,
@@ -2882,6 +2882,14 @@
       "vendor": "Citibank 2",
       "amount": -150,
       "category": "BILL"
+    },
+    {
+      "date": "2026-03-21",
+      "vendor": "TO SAVINGS: Pigeon Forge Tournament ",
+      "who": "Grayson",
+      "what": "",
+      "amount": -800,
+      "category": "SAVINGS"
     }
   ],
   "bills": [
