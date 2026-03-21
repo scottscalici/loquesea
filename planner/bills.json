@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4058.1200000000063,
+    "checking_balance": 4015.5800000000063,
     "travel_savings": 0,
-    "weekly_budget_remaining": 655.0799999999998,
+    "weekly_budget_remaining": 612.5399999999998,
     "flex_budget_remaining": 300,
     "yearly_surplus_pool": 0,
     "daily_allowance_locked": 0,
@@ -2848,6 +2848,14 @@
       "what": "",
       "amount": -100,
       "category": "SAVINGS"
+    },
+    {
+      "date": "2026-03-20",
+      "vendor": "DQ",
+      "who": "Family",
+      "what": "",
+      "amount": -42.54,
+      "category": "MANUAL"
     }
   ],
   "bills": [
