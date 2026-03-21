@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3891.630000000007,
+    "checking_balance": 3741.630000000007,
     "travel_savings": 0,
     "weekly_budget_remaining": 612.5399999999998,
     "flex_budget_remaining": 300,
@@ -2876,6 +2876,12 @@
       "vendor": "AXA A",
       "amount": -44.49,
       "category": "BILL"
+    },
+    {
+      "date": "2026-03-22",
+      "vendor": "Citibank 2",
+      "amount": -150,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -2954,7 +2960,7 @@
       "name": "Citibank 2",
       "frequency": "monthly",
       "amount": 150,
-      "next_due_date": "2026-03-22"
+      "next_due_date": "2026-04-22"
     },
     {
       "id": "comcast",
