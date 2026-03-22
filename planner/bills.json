@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2442.0800000000067,
+    "checking_balance": 2438.9100000000067,
     "travel_savings": 0,
-    "weekly_budget_remaining": 511.8699999999999,
+    "weekly_budget_remaining": 508.6999999999999,
     "flex_budget_remaining": 300,
     "yearly_surplus_pool": 0,
     "daily_allowance_locked": 0,
@@ -2951,6 +2951,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -35.77,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-03-22",
+      "vendor": "Etsy",
+      "who": "Abbi",
+      "what": "",
+      "amount": -3.17,
       "category": "MANUAL"
     }
   ],
