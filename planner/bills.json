@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2845.830000000007,
+    "checking_balance": 2686.830000000007,
     "travel_savings": 0,
-    "weekly_budget_remaining": 508.6999999999999,
+    "weekly_budget_remaining": 349.6999999999999,
     "flex_budget_remaining": 300,
     "yearly_surplus_pool": 0,
     "daily_allowance_locked": 0,
@@ -2992,6 +2992,14 @@
       "what": "",
       "amount": -3500,
       "category": "SAVINGS"
+    },
+    {
+      "date": "2026-03-22",
+      "vendor": "Abercrombie",
+      "who": "Selfish ",
+      "what": "",
+      "amount": -159,
+      "category": "MANUAL"
     }
   ],
   "bills": [
