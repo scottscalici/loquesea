@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2438.9100000000067,
+    "checking_balance": 6382.910000000007,
     "travel_savings": 0,
     "weekly_budget_remaining": 508.6999999999999,
     "flex_budget_remaining": 300,
@@ -2959,6 +2959,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -3.17,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-03-22",
+      "vendor": "Income",
+      "who": "Family",
+      "what": "",
+      "amount": 3944,
       "category": "MANUAL"
     }
   ],
