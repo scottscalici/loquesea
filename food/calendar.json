@@ -346,5 +346,14 @@
       "Garlic bread ",
       "Salad"
     ]
+  },
+  {
+    "date": "2026-03-24",
+    "meal": "Chicken Bacon Ranch Wraps",
+    "sides_included": [
+      "Main Dish",
+      "Fresh Fruit",
+      "Chips"
+    ]
   }
 ]
