@@ -434,6 +434,75 @@
     ]
   },
   {
+    "name": "Burgers",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["American"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Burgers",
+                "hotdogs",
+                "buns",
+                "burger sauce",
+                "pickles",
+                "onions",
+                "tomatoes",
+                "lettuce",
+                "corn/green beans",
+                "fries/onion rings",
+              "hamburger buns",
+              "hotdog buns"
+            ]
+        },
+        {
+            "name": "Green Beans or Corn",
+            "type": "side",
+            "ingredients": []
+        },
+        {
+            "name": "Onion Rings or Fries",
+            "type": "side",
+            "ingredients": []
+        }
+    ]
+},
+  {
+    "name": "Burgers & Dogs",
+    "link": "PASTE_LINK_HERE",
+    "tags": ["American"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Burgers",
+                "hotdogs",
+                "burger sauce",
+                "pickles",
+                "onions",
+                "tomatoes",
+                "lettuce",
+              "hamburger buns",
+              "hotdog buns"
+            ]
+        },
+        {
+            "name": "Corn on the cob ",
+            "type": "side",
+            "ingredients": ["corn"]
+        },
+        {
+            "name": "Fries",
+            "type": "side",
+            "ingredients": [
+                "fries"
+            ]
+        }
+    ]
+},
+  {
     "name": "Cajun Shrimp & Sausage Skillet",
     "link": "https://thedomesticgeek.com/cajun-shrimp-sausage-skillet/",
     "tags": [
@@ -543,6 +612,26 @@
       }
     ]
   },
+  {
+    "name": "Cheesy Chicken Taco Rice",
+    "link": "https://www.tiktok.com/t/ZTYWNd2r8/",
+    "tags": ["Mexican", "Chicken"],
+    "components": [
+        {
+            "name": "Main Dish",
+            "type": "main",
+            "ingredients": [
+                "Cubed chicken (or ground)",
+                "rotel",
+                "tomato sauce",
+                "chicken broth",
+                "rice",
+                "shredded  cheese",
+                "SW Ranch"
+            ]
+        }
+    ]
+},
   {
     "name": "Chicken Alfredo",
     "link": "https://www.tiktok.com/t/ZTHsqX1VwaJoB-sG7Ov/",
@@ -2800,5 +2889,167 @@
         ]
       }
     ]
+  },
+  [
+  {
+    "name": "Chicken Bacon Ranch Wraps",
+    "link": "PASTE_LINK_HERE",
+    "tags": [
+      "Sandwich",
+      "Chicken",
+      "No-cook"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          "rotisserie chicken (or deli chicken)",
+          "precooked bacon",
+          "ranch dressing",
+          "shredded lettuce",
+          "shredded cheddar",
+          "large tortillas"
+        ]
+      },
+      {
+        "name": "Fresh Fruit",
+        "type": "side",
+        "ingredients": [
+          "grapes or apple slices"
+        ]
+      },
+      {
+        "name": "Chips",
+        "type": "side",
+        "ingredients": [
+          "potato chips"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Dump-and-Go Taco Soup",
+    "link": "PASTE_LINK_HERE",
+    "tags": [
+      "Soup",
+      "Mexican",
+      "One-pot"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          "rotisserie chicken (shredded)",
+          "canned black beans (rinsed)",
+          "canned corn (drained)",
+          "rotel tomatoes",
+          "chicken broth",
+          "taco seasoning"
+        ]
+      },
+      {
+        "name": "Toppings",
+        "type": "side",
+        "ingredients": [
+          "sour cream",
+          "shredded cheese",
+          "tortilla chips"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Black Bean & Corn Quesadillas",
+    "link": "PASTE_LINK_HERE",
+    "tags": [
+      "Vegetarian",
+      "Mexican"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          "flour tortillas",
+          "canned black beans",
+          "canned corn",
+          "shredded mexican cheese blend",
+          "salsa"
+        ]
+      },
+      {
+        "name": "Guacamole",
+        "type": "side",
+        "ingredients": [
+          "guacamole"
+        ]
+      },
+      {
+        "name": "Spanish Rice",
+        "type": "side",
+        "ingredients": [
+          "microwave spanish rice pouch"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "French Bread Pizzas",
+    "link": "PASTE_LINK_HERE",
+    "tags": [
+      "Vegetarian",
+      "American",
+      "Sheet"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          "french bread loaf (or split sub buns)",
+          "pizza sauce or marinara",
+          "shredded mozzarella",
+          "pepperoni (optional)"
+        ]
+      },
+      {
+        "name": "Side Salad",
+        "type": "side",
+        "ingredients": [
+          "bagged salad kit"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Sheet Pan Sausage & Peppers",
+    "link": "PASTE_LINK_HERE",
+    "tags": [
+      "Sheet",
+      "Sausage",
+      "Sandwich"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          "smoked sausage or kielbasa (sliced)",
+          "frozen sliced bell peppers and onions",
+          "olive oil",
+          "hoagie rolls"
+        ]
+      },
+      {
+        "name": "Fries",
+        "type": "side",
+        "ingredients": [
+          "frozen fries"
+        ]
+      }
+    ]
   }
+]
 ]
