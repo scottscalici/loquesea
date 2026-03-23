@@ -355,5 +355,15 @@
       "Fresh Fruit",
       "Chips"
     ]
+  },
+  {
+    "date": "2026-03-25",
+    "meal": "Cocktail Meatballs",
+    "sides_included": [
+      "Main Dish",
+      "Mashed potatoes",
+      "Corn",
+      "Egg noodle"
+    ]
   }
 ]
