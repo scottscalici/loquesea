@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2284.550000000007,
+    "checking_balance": 2269.550000000007,
     "travel_savings": 0,
-    "weekly_budget_remaining": 1179.2399999999998,
+    "weekly_budget_remaining": 1164.2399999999998,
     "flex_budget_remaining": 300,
     "yearly_surplus_pool": 0,
     "daily_allowance_locked": 0,
@@ -3166,6 +3166,14 @@
       "vendor": "Disney/Hulu/HBO",
       "amount": -32.99,
       "category": "BILL"
+    },
+    {
+      "date": "2026-03-25",
+      "vendor": "Venmo",
+      "who": "Abbi",
+      "what": "",
+      "amount": -15,
+      "category": "MANUAL"
     }
   ],
   "bills": [
