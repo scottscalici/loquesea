@@ -675,16 +675,6 @@
       "is_active": true
     },
     {
-      "id": "id_1774308016674",
-      "title": "Setup smart lamp in bedroom",
-      "type": "task",
-      "duration_minutes": 30,
-      "frequency_days": 1,
-      "next_due": "2026-03-26",
-      "is_active": true,
-      "time": "18:00"
-    },
-    {
       "id": "id_1774308108223",
       "title": "Refill soap in kitchen",
       "type": "task",
