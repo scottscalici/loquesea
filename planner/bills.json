@@ -38,9 +38,9 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2155.280000000007,
+    "checking_balance": 2116.110000000007,
     "travel_savings": 0,
-    "weekly_budget_remaining": 1049.9699999999998,
+    "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
     "yearly_surplus_pool": 0,
     "daily_allowance_locked": 0,
@@ -3197,6 +3197,14 @@
       "who": "Abbi ",
       "what": "",
       "amount": -25,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-03-25",
+      "vendor": "Life in Lilac?",
+      "who": "Abbi",
+      "what": "",
+      "amount": -39.17,
       "category": "MANUAL"
     }
   ],
