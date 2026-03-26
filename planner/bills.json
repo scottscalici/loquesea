@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2043.600000000007,
+    "checking_balance": 2031.600000000007,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -3222,6 +3222,14 @@
       "what": "",
       "amount": -44.97,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-03-26",
+      "vendor": "BONUS",
+      "who": "",
+      "what": "",
+      "amount": -12,
+      "category": "BONUS"
     }
   ],
   "bills": [
