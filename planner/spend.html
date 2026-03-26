@@ -55,7 +55,7 @@
     </div>
         
     <div class="history-card">
-        <span class="history-title">Recent Spending</span>
+        <span class="history-title">Recent Activity</span>
         <div id="recentList"></div>
     </div>
 
@@ -77,9 +77,10 @@
         });
     }
 
-    // Helper: Calculate General Spent since a specific date
-    function getGeneralSpentSince(history, sinceDateStr, now) {
-        let total = 0;
+    // Helper: Calculate General Spent & Bonus since a specific date
+    function getGeneralActivitySince(history, sinceDateStr, now) {
+        let spent = 0;
+        let bonus = 0;
         history.forEach(item => {
             let itemDateStr = item.date.substring(0, 10);
             if (itemDateStr >= sinceDateStr) {
@@ -92,19 +93,16 @@
                 const isShielded = isAmazon && isShieldWindow;
                 const isFlex = vend.includes("KROGER") || vend.includes("GAS") || vend.includes("GROCERY") || what.includes("GROCERY");
 
-                // NEW: If category is "BONUS", subtract it from the spent total (which adds to your budget)
                 if (cat === "BONUS") {
-                    total -= Math.abs(item.amount);
+                    bonus += Math.abs(item.amount);
                 }
-                // Normal spending
                 else if (cat !== "BILL" && cat !== "INCOME" && cat !== "SAVINGS" && vend !== "INCOME" && !isShielded && !isFlex) {
-                    total += Math.abs(item.amount);
+                    spent += Math.abs(item.amount);
                 }
             }
         });
-        return total;
+        return { spent, bonus };
     }
-
 
     // Helper: Calculate Flex Spent since a specific date
     function getFlexSpentSince(history, sinceDateStr) {
@@ -148,35 +146,31 @@
             
             let needsSave = false;
 
-            // 1. ONE-TIME MIGRATION TO NEW SYSTEM (If no monthly reset exists yet)
             if (!data.state.last_monthly_reset) {
-                data.state.monthly_general_pool = 2000; // Your $1500 for rest of March + $500 excess
+                data.state.monthly_general_pool = 2000; 
                 data.state.last_monthly_reset = now.toISOString();
                 data.state.last_weekly_reset = now.toISOString();
                 needsSave = true;
             } 
             else {
-                // 2. AUTOMATIC MONTHLY RESET (1st of the Month)
+                // AUTOMATIC MONTHLY RESET
                 if (currentMonthStr !== lastMonthlyResetStr) {
-                    let spentLastMonth = getGeneralSpentSince(data.history, data.state.last_monthly_reset.substring(0, 10), now);
-                    let leftoverGeneral = Math.max(0, (data.state.monthly_general_pool || 0) - spentLastMonth);
+                    let lastMonthActivity = getGeneralActivitySince(data.history, data.state.last_monthly_reset.substring(0, 10), now);
+                    let leftoverGeneral = Math.max(0, (data.state.monthly_general_pool || 0) - lastMonthActivity.spent + lastMonthActivity.bonus);
                     
                     const daysInNewMonth = new Date(y, now.getMonth() + 1, 0).getDate();
                     
-                    // New Base + Leftover
                     data.state.monthly_general_pool = (daysInNewMonth * 100) + leftoverGeneral;
                     data.state.last_monthly_reset = now.toISOString();
                     needsSave = true;
                 }
 
-                // 3. AUTOMATIC WEEKLY FLEX ROLLOVER (Mondays)
+                // AUTOMATIC WEEKLY FLEX ROLLOVER
                 if (now.getDay() === 1 && lastWeeklyReset !== todayStr) {
                     let flexSpent = getFlexSpentSince(data.history, lastWeeklyReset);
                     let flexLeft = Math.max(0, 300 - flexSpent);
                     
-                    // Add unused flex to the month's general pool
                     data.state.monthly_general_pool += flexLeft;
-                    
                     data.state.last_weekly_reset = now.toISOString();
                     needsSave = true;
                 }
@@ -200,30 +194,27 @@
         let lastWeeklyResetStr = data.state.last_weekly_reset.substring(0, 10);
         let lastMonthlyResetStr = data.state.last_monthly_reset.substring(0, 10);
 
-        // Calculate days left in month (including today)
         const daysInMonth = new Date(y, now.getMonth() + 1, 0).getDate();
         const daysLeftInMonth = daysInMonth - now.getDate() + 1;
 
-        // 1. GET SPENDING DATA
-        const generalSpentThisMonth = getGeneralSpentSince(data.history, lastMonthlyResetStr, now);
+        // 1. GET SPENDING & BONUS DATA
+        const monthActivity = getGeneralActivitySince(data.history, lastMonthlyResetStr, now);
+        const todayActivity = getGeneralActivitySince(data.history, todayStr, now);
         const flexSpentThisWeek = getFlexSpentSince(data.history, lastWeeklyResetStr);
-        const spentToday = getGeneralSpentSince(data.history, todayStr, now); // Today's spend is just general since todayStr
 
         // 2. CALCULATE REMAINING BALANCES
         const startOfMonthPool = data.state.monthly_general_pool || 0;
         
-        // True General Remaining (Start Pool - All General Spent This Month)
-        const trueMonthlyRemaining = startOfMonthPool - generalSpentThisMonth;
-        
-        // True Flex Remaining
+        // True General Remaining adds any bonuses to offset spending
+        const trueMonthlyRemaining = startOfMonthPool - monthActivity.spent + monthActivity.bonus;
         const currentFlexLeft = Math.max(0, 300 - flexSpentThisWeek);
 
         // 3. DAILY LIMIT MATH
-        // We add back today's spend to find out what you started the morning with
-        const startOfDayTotal = trueMonthlyRemaining + spentToday; 
+        // We only back out today's SPENDING to find the start-of-day pool. This forces today's bonus to be smoothly spread over remaining days.
+        const startOfDayTotal = trueMonthlyRemaining + todayActivity.spent; 
         const finalDailyGoal = startOfDayTotal / daysLeftInMonth;
         
-        const availableToday = finalDailyGoal - spentToday;
+        const availableToday = finalDailyGoal - todayActivity.spent;
         const pct = Math.max(0, Math.min((availableToday / finalDailyGoal) * 100, 100));
 
         // 4. UPDATE THE SCREEN
@@ -233,34 +224,39 @@
         
         document.getElementById('monthlyRemaining').innerText = `$${Math.round(trueMonthlyRemaining).toLocaleString()}`;
         document.getElementById('flexRemaining').innerText = `$${Math.round(currentFlexLeft)}`;
-        document.getElementById('todaySpend').innerText = `$${Math.round(spentToday)}`;
+        document.getElementById('todaySpend').innerText = `$${Math.round(todayActivity.spent)}`; // Only shows money out
         document.getElementById('progressBar').style.width = pct + '%';
     
         const dailyEl = document.getElementById('dailyLimit');
         if (availableToday <= 0) dailyEl.style.color = 'var(--danger)';
         else dailyEl.style.color = 'var(--primary)';
 
-        // 5. RENDER RECENT TRANSACTIONS
-        const spendingOnly = data.history.slice().reverse().filter(item => {
+        // 5. RENDER RECENT TRANSACTIONS (Includes Bonuses)
+        const displayItems = data.history.slice().reverse().filter(item => {
             const cat = (item.category || "").toUpperCase();
             const vend = (item.vendor || "").toUpperCase();
             return cat !== "BILL" && cat !== "INCOME" && cat !== "SAVINGS" && vend !== "INCOME";
         }).slice(0, 5);
 
         const list = document.getElementById('recentList');
-        list.innerHTML = spendingOnly.map(item => {
+        list.innerHTML = displayItems.map(item => {
             let dStr = item.date;
             try {
                 const parts = item.date.substring(0, 10).split('-');
                 dStr = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][parts[1]-1] + " " + parseInt(parts[2]);
             } catch(e) {}
 
+            const cat = (item.category || "").toUpperCase();
+            const isBonus = cat === "BONUS";
+            const amtClass = isBonus ? "hist-amt pos" : "hist-amt";
+            const prefix = isBonus ? "+" : "-";
+
             return `<div class="history-item">
                 <div>
-                    <span class="hist-desc">${item.vendor}</span>
+                    <span class="hist-desc">${item.vendor || cat}</span>
                     <span class="hist-date">${dStr} ${item.who ? '• ' + item.who : ''}</span>
                 </div>
-                <span class="hist-amt">-$${Math.abs(item.amount).toLocaleString()}</span>
+                <span class="${amtClass}">${prefix}$${Math.abs(item.amount).toLocaleString()}</span>
             </div>`;
         }).join('');
     }
