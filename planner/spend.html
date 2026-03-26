@@ -92,13 +92,19 @@
                 const isShielded = isAmazon && isShieldWindow;
                 const isFlex = vend.includes("KROGER") || vend.includes("GAS") || vend.includes("GROCERY") || what.includes("GROCERY");
 
-                if (cat !== "BILL" && cat !== "INCOME" && cat !== "SAVINGS" && vend !== "INCOME" && !isShielded && !isFlex) {
+                // NEW: If category is "BONUS", subtract it from the spent total (which adds to your budget)
+                if (cat === "BONUS") {
+                    total -= Math.abs(item.amount);
+                }
+                // Normal spending
+                else if (cat !== "BILL" && cat !== "INCOME" && cat !== "SAVINGS" && vend !== "INCOME" && !isShielded && !isFlex) {
                     total += Math.abs(item.amount);
                 }
             }
         });
         return total;
     }
+
 
     // Helper: Calculate Flex Spent since a specific date
     function getFlexSpentSince(history, sinceDateStr) {
