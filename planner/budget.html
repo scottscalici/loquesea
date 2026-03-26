@@ -22,13 +22,14 @@
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
         .btn-paid { background: #f0f0f0; border: none; padding: 8px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; cursor: pointer; }
         .inbox-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; }
+        .budget-grid { display: flex; gap: 15px; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <nav class="nav-bar">
         <a href="budget.html" class="nav-item active">CONTROL</a>
-        <a href="spend.html" class="nav-item">WEEKLY</a>
+        <a href="spend.html" class="nav-item">DAILY</a>
         <a href="projection.html" class="nav-item">PROJECTION</a>
         <a href="ledger.html" class="nav-item">LEDGER</a>
     </nav>
@@ -39,7 +40,18 @@
             <button onclick="undoLast()" style="float:right; background:none; border:none; color:var(--accent); font-size:0.7rem; cursor:pointer;">(UNDO LAST)</button>
         </span>
         <div class="balance-amt" id="mainBalance">$0.00</div>
-        <div id="weeklyBudgetContainer" style="margin-top: 10px;"></div>
+        
+        <div class="budget-grid">
+            <div>
+                <span class="label">Month Left</span>
+                <div id="monthlyRemaining" style="font-size: 1.2rem; font-weight: bold; color: var(--primary);">...</div>
+            </div>
+            <div>
+                <span class="label">Flex Left</span>
+                <div id="flexRemaining" style="font-size: 1.2rem; font-weight: bold; color: var(--accent);">...</div>
+            </div>
+        </div>
+
         <div id="amazonEscrowContainer"></div>
         <hr style="border:0; border-top:1px solid #eee; margin:15px 0;">
         <span class="label">Savings Goals</span>
@@ -60,6 +72,7 @@
             <option value="AE">American Eagle</option>
             <option value="Dining">Dining</option>
             <option value="Income">Income/Payday</option>
+            <option value="BONUS">Budget Bonus</option>
             <option value="SAVINGS_XFER">Transfer to Savings...</option>
             <option value="OTHER">Other...</option>
         </select>
@@ -85,8 +98,73 @@
     </div>
 
 <script>
-        const CONFIG = { owner: 'scottscalici', repo: 'loquesea', path: 'planner/bills.json' };
+    const CONFIG = { owner: 'scottscalici', repo: 'loquesea', path: 'planner/bills.json' };
     let data = null;
+
+    // Helper: Calculate General Activity (With $500 Amazon Escrow Logic built in)
+    function getGeneralActivitySince(history, sinceDateStr, now) {
+        let spent = 0;
+        let bonus = 0;
+        let amzShieldUsed = 0;
+        
+        // Ensure chronological order for accurate escrow tracking
+        const sortedHistory = [...history].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        sortedHistory.forEach(item => {
+            let itemDateStr = item.date.substring(0, 10);
+            if (itemDateStr >= sinceDateStr) {
+                const cat = (item.category || "").toUpperCase();
+                const vend = (item.vendor || "").toUpperCase();
+                const what = (item.what || "").toUpperCase();
+                const itemDate = new Date(item.date + "T12:00:00");
+                const absAmt = Math.abs(item.amount);
+                
+                const isAmazon = vend.includes("AMAZON") || vend.includes("AMZN");
+                const isShieldWindow = itemDate.getDate() >= 21;
+                const isFlex = vend.includes("KROGER") || vend.includes("GAS") || vend.includes("GROCERY") || what.includes("GROCERY");
+
+                if (cat === "BONUS" || vend === "BONUS") {
+                    bonus += absAmt;
+                }
+                else if (cat !== "BILL" && cat !== "INCOME" && cat !== "SAVINGS" && vend !== "INCOME" && !isFlex) {
+                    if (isAmazon && isShieldWindow) {
+                        // Apply the $500 cap logic
+                        if (amzShieldUsed < 500) {
+                            let availableShield = 500 - amzShieldUsed;
+                            let shieldedAmt = Math.min(absAmt, availableShield);
+                            amzShieldUsed += shieldedAmt;
+                            let unshieldedAmt = absAmt - shieldedAmt;
+                            spent += unshieldedAmt; 
+                        } else {
+                            spent += absAmt; 
+                        }
+                    } else {
+                        spent += absAmt;
+                    }
+                }
+            }
+        });
+        return { spent, bonus };
+    }
+
+    // Helper: Calculate Flex Spent 
+    function getFlexSpentSince(history, sinceDateStr) {
+        let total = 0;
+        history.forEach(item => {
+            let itemDateStr = item.date.substring(0, 10);
+            if (itemDateStr >= sinceDateStr) {
+                const cat = (item.category || "").toUpperCase();
+                const vend = (item.vendor || "").toUpperCase();
+                const what = (item.what || "").toUpperCase();
+                
+                const isFlex = vend.includes("KROGER") || vend.includes("GAS") || vend.includes("GROCERY") || what.includes("GROCERY");
+                if (isFlex && cat !== "INCOME" && cat !== "SAVINGS" && cat !== "BILL") {
+                    total += Math.abs(item.amount);
+                }
+            }
+        });
+        return total;
+    }
 
     async function init() {
         try {
@@ -97,20 +175,41 @@
             });
             const fileData = await resp.json();
             data = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
-
-            // 1. WEEKLY ROLLOVER (Monday Reset)
-            const lastResetStr = data.state.last_weekly_reset || "2026-01-12T00:00:00";
-            const lastReset = new Date(lastResetStr);
+            
             const now = new Date();
-            const currentMonday = new Date();
-            currentMonday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
-            currentMonday.setHours(0,0,0,0);
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const d = String(now.getDate()).padStart(2, '0');
+            const todayStr = `${y}-${m}-${d}`; 
+            const currentMonthStr = `${y}-${m}`;
 
-            if (lastReset < currentMonday) {
-                data.state.weekly_budget_remaining = (data.state.weekly_budget_remaining || 0) + 1000;
-                data.state.last_weekly_reset = currentMonday.toISOString();
-                await saveToGithub(data); 
+            let lastWeeklyReset = data.state.last_weekly_reset ? data.state.last_weekly_reset.substring(0, 10) : "";
+            let lastMonthlyResetStr = data.state.last_monthly_reset ? data.state.last_monthly_reset.substring(0, 7) : "";
+            let needsSave = false;
+
+            // RESET LOGIC (Matches Daily Dashboard)
+            if (data.state.last_monthly_reset) {
+                if (currentMonthStr !== lastMonthlyResetStr) {
+                    let lastMonthActivity = getGeneralActivitySince(data.history, data.state.last_monthly_reset.substring(0, 10), now);
+                    let leftoverGeneral = Math.max(0, (data.state.monthly_general_pool || 0) - lastMonthActivity.spent + lastMonthActivity.bonus);
+                    const daysInNewMonth = new Date(y, now.getMonth() + 1, 0).getDate();
+                    
+                    data.state.monthly_general_pool = (daysInNewMonth * 100) + leftoverGeneral;
+                    data.state.last_monthly_reset = now.toISOString();
+                    needsSave = true;
+                }
+
+                if (now.getDay() === 1 && lastWeeklyReset !== todayStr) {
+                    let flexSpent = getFlexSpentSince(data.history, lastWeeklyReset);
+                    let flexLeft = Math.max(0, 300 - flexSpent);
+                    
+                    data.state.monthly_general_pool += flexLeft;
+                    data.state.last_weekly_reset = now.toISOString();
+                    needsSave = true;
+                }
             }
+
+            if (needsSave) await saveToGithub(data);
 
             renderUI();
         } catch (e) { console.error("Load failed", e); }
@@ -118,9 +217,24 @@
 
     function renderUI() {
         if (!data) return;
+        const now = new Date();
+        
         document.getElementById('mainBalance').innerText = `$${(data.state.checking_balance || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-        const budgetRemaining = data.state.weekly_budget_remaining || 0;
-        document.getElementById('weeklyBudgetContainer').innerHTML = `<div style="font-size: 1.1rem; font-weight: bold; color: ${budgetRemaining < 0 ? 'var(--danger)' : 'var(--primary)'};">Weekly Spend Left: $${budgetRemaining.toLocaleString()}</div>`;
+        
+        let lastWeeklyResetStr = data.state.last_weekly_reset.substring(0, 10);
+        let lastMonthlyResetStr = data.state.last_monthly_reset.substring(0, 10);
+
+        const monthActivity = getGeneralActivitySince(data.history, lastMonthlyResetStr, now);
+        const flexSpentThisWeek = getFlexSpentSince(data.history, lastWeeklyResetStr);
+
+        const trueMonthlyRemaining = (data.state.monthly_general_pool || 0) - monthActivity.spent + monthActivity.bonus;
+        const currentFlexLeft = Math.max(0, 300 - flexSpentThisWeek);
+
+        const moEl = document.getElementById('monthlyRemaining');
+        moEl.innerText = `$${Math.round(trueMonthlyRemaining).toLocaleString()}`;
+        moEl.style.color = trueMonthlyRemaining < 0 ? 'var(--danger)' : 'var(--primary)';
+        
+        document.getElementById('flexRemaining').innerText = `$${Math.round(currentFlexLeft)}`;
         
         const savDiv = document.getElementById('savingsContainer');
         savDiv.innerHTML = '';
@@ -150,7 +264,7 @@
         }
     }
 
-        async function logTransaction() {
+    async function logTransaction() {
         const select = document.getElementById('vendorSelect');
         const amtInput = document.getElementById('amt');
         let amt = parseFloat(amtInput.value);
@@ -165,58 +279,21 @@
         // 1. Bank balance ALWAYS changes
         data.state.checking_balance += (isIncome ? absAmt : -absAmt);
 
-        // 2. Budget Logic: ONLY subtract if NOT Income, Savings, or a Bill
-        if (!isIncome && !isSavings && !isBill) {
-            const day = new Date().getDate();
-            const vendorLower = vendor.toLowerCase();
-            // This catches "Amazon", "Amzn", "Amazon.com", etc.
-            const isAmazon = vendorLower.includes("amazon") || vendorLower.includes("amzn");
-
-            // Shield Window: 21st to the end of the month
-            if (isAmazon && day >= 21) {
-                const currentMonth = new Date().toISOString().slice(0, 7);
-                
-                // Calculate how much Amazon has ALREADY been shielded this month
-                const amzAlreadyShielded = data.history.filter(h => {
-                    const hDate = new Date(h.date + "T12:00:00");
-                    const hVend = h.vendor.toLowerCase();
-                    return h.date.startsWith(currentMonth) && 
-                           (hVend.includes("amazon") || hVend.includes("amzn")) && 
-                           hDate.getDate() >= 21;
-                }).reduce((sum, h) => sum + Math.abs(h.amount), 0);
-
-                // How much of the $500 is left?
-                const remainingShield = Math.max(0, 500 - amzAlreadyShielded);
-                
-                // If the purchase is $60 and shield is $100, we subtract $0 from budget.
-                // If the purchase is $60 and shield is $20, we subtract $40 from budget.
-                const overShieldAmount = Math.max(0, absAmt - remainingShield);
-                data.state.weekly_budget_remaining -= overShieldAmount;
-            } else {
-                // Not Amazon or not in the window? Full hit to the budget.
-                data.state.weekly_budget_remaining -= absAmt;
-            }
-        }
-        
-
-
-
-
-                        
-
+        // 2. Savings goals processing
         if (isSavings) {
             const goalKey = vendor.replace("TO SAVINGS: ", "").trim();
             const goal = data.savings_goals.find(g => g.name.toLowerCase() === goalKey.toLowerCase());
             if (goal) goal.current += absAmt;
         }
 
-        data.history.push({ date: new Date().toLocaleDateString('en-CA'), 
-
+        // 3. Just log it to history! The budget readouts calculate automatically from this.
+        data.history.push({ 
+            date: new Date().toLocaleDateString('en-CA'), 
             vendor, 
             who: document.getElementById('who').value, 
             what: document.getElementById('what').value,
             amount: (isIncome ? absAmt : -absAmt), 
-            category: isSavings ? 'SAVINGS' : (isBill ? 'BILL' : 'MANUAL') 
+            category: isSavings ? 'SAVINGS' : (isBill ? 'BILL' : (vendor === 'BONUS' ? 'BONUS' : 'MANUAL')) 
         });
 
         amtInput.value = ''; document.getElementById('who').value = ''; document.getElementById('what').value = '';
@@ -293,29 +370,32 @@
     }
 
     function advanceDate(idx) {
-    let bill = data.bills[idx];
-    let d = new Date(bill.next_due_date + "T12:00:00");
-    const freq = (bill.frequency || "").toLowerCase();
+        let bill = data.bills[idx];
+        let d = new Date(bill.next_due_date + "T12:00:00");
+        const freq = (bill.frequency || "").toLowerCase();
 
-    if (freq === "monthly") d.setMonth(d.getMonth() + 1);
-    else if (freq === "annually" || freq === "annual") d.setFullYear(d.getFullYear() + 1);
-    else if (freq === "quarterly") d.setMonth(d.getMonth() + 3);
-    else if (freq === "weekly") d.setDate(d.getDate() + 7);
-    else d.setDate(d.getDate() + 14); // Default bi-weekly
+        if (freq === "monthly") d.setMonth(d.getMonth() + 1);
+        else if (freq === "annually" || freq === "annual") d.setFullYear(d.getFullYear() + 1);
+        else if (freq === "quarterly") d.setMonth(d.getMonth() + 3);
+        else if (freq === "weekly") d.setDate(d.getDate() + 7);
+        else d.setDate(d.getDate() + 14); 
 
-    bill.next_due_date = d.toISOString().split('T')[0];
-}
+        bill.next_due_date = d.toISOString().split('T')[0];
+    }
+
     function renderAmazonEscrow() {
         const amzDiv = document.getElementById('amazonEscrowContainer');
         const today = new Date();
         const currentMonth = today.toISOString().slice(0, 7); 
         const amzTotal = data.history.filter(h => {
             const hDate = new Date(h.date + "T12:00:00");
-            return h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon") && hDate.getDate() >= 21 && hDate.getDate() <= 27;
+            return h.date.startsWith(currentMonth) && h.vendor.toLowerCase().includes("amazon") && hDate.getDate() >= 21;
         }).reduce((sum, h) => sum + Math.abs(h.amount), 0);
-        const shieldActive = (today.getDate() >= 21 && today.getDate() <= 27);
+        
+        const shieldActive = (today.getDate() >= 21);
         const rem = Math.max(0, 500 - amzTotal);
         const over = Math.max(0, amzTotal - 500);
+        
         amzDiv.innerHTML = `<div style="margin-top: 10px; padding: 10px; background: #f9f9f9; border-radius: 8px;"><span class="label">Amazon Escrow ($500) - ${shieldActive ? 'ACTIVE' : 'INACTIVE'}</span><div style="display:flex; justify-content:space-between; font-size: 0.85rem;"><span>Used: $${amzTotal.toLocaleString()}</span><span style="font-weight:bold; color:${over > 0 ? 'var(--danger)' : 'var(--primary)'}">${over > 0 ? 'Over: $'+over : 'Left: $'+rem}</span></div></div>`;
     }
 
@@ -324,41 +404,34 @@
         if(!histDiv) return;
         histDiv.innerHTML = '';
         data.history.slice(-5).reverse().forEach(h => {
-            histDiv.innerHTML += `<div class="inbox-item"><div><b>${h.vendor}</b> ${h.who?`(${h.who})`:''}<br><small>${h.what || ''}</small></div><div style="font-weight:bold; color:${h.amount < 0 ? 'red' : 'green'}">$${Math.abs(h.amount).toLocaleString()}</div></div>`;
+            const isBonus = h.category === 'BONUS' || h.vendor === 'BONUS';
+            const prefix = isBonus ? "+" : (h.amount < 0 ? "-" : "");
+            histDiv.innerHTML += `<div class="inbox-item"><div><b>${h.vendor}</b> ${h.who?`(${h.who})`:''}<br><small>${h.what || ''}</small></div><div style="font-weight:bold; color:${h.amount < 0 && !isBonus ? 'red' : 'green'}">${prefix}$${Math.abs(h.amount).toLocaleString()}</div></div>`;
         });
     }
 
-   async function undoLast() {
-    if (!data.history.length || !confirm("Undo last transaction?")) return;
-    const last = data.history.pop();
-    const amount = Math.abs(last.amount);
-    
-    // 1. Always fix the bank balance
-    if (last.amount > 0) { 
-        data.state.checking_balance -= amount; 
-    } else {
-        data.state.checking_balance += amount;
+    async function undoLast() {
+        if (!data.history.length || !confirm("Undo last transaction?")) return;
+        const last = data.history.pop();
+        const amount = Math.abs(last.amount);
+        
+        // 1. Always fix the bank balance
+        if (last.amount > 0) { 
+            data.state.checking_balance -= amount; 
+        } else {
+            data.state.checking_balance += amount;
 
-        // 2. ONLY refund the weekly budget if it wasn't a Bill, Savings, or Shielded Amazon
-        const v = (last.vendor || "").toLowerCase();
-        const isAmazon = v.includes("amazon") || v.includes("amzn");
-        const hDate = new Date(last.date + "T12:00:00");
-        const isShielded = isAmazon && hDate.getDate() >= 21;
-
-        if (last.category === 'MANUAL' && !isShielded) {
-            data.state.weekly_budget_remaining += amount;
+            // 2. Fix Savings if it was a transfer
+            if (last.category === 'SAVINGS') {
+                const goalKey = last.vendor.replace("TO SAVINGS: ", "").trim();
+                const goal = data.savings_goals.find(g => g.name.toLowerCase() === goalKey.toLowerCase());
+                if (goal) goal.current -= amount;
+            }
         }
-
-        // 3. Fix Savings if it was a transfer
-        if (last.category === 'SAVINGS') {
-            const goalKey = last.vendor.replace("TO SAVINGS: ", "").trim();
-            const goal = data.savings_goals.find(g => g.name.toLowerCase() === goalKey.toLowerCase());
-            if (goal) goal.current -= amount;
-        }
+        
+        // Because the budget reads from history dynamically, simply popping the transaction from the array instantly fixes the budget calculation!
+        await sync();
     }
-    await sync();
-}
- 
 
     async function sync() {
         const dot = document.getElementById('syncStatus');
@@ -375,7 +448,7 @@
         const response = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`, {
             method: "PUT",
             headers: { "Authorization": `token ${TOKEN}`, "Content-Type": "application/json" },
-            body: JSON.stringify({ message: "Update", content: btoa(unescape(encodeURIComponent(JSON.stringify(updatedData, null, 2)))), sha: fileData.sha })
+            body: JSON.stringify({ message: "Update via Control Center", content: btoa(unescape(encodeURIComponent(JSON.stringify(updatedData, null, 2)))), sha: fileData.sha })
         });
         return response.ok;
     }
