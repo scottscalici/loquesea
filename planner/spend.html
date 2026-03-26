@@ -93,7 +93,8 @@
                 const isShielded = isAmazon && isShieldWindow;
                 const isFlex = vend.includes("KROGER") || vend.includes("GAS") || vend.includes("GROCERY") || what.includes("GROCERY");
 
-                if (cat === "BONUS") {
+                // NOW CHECKS BOTH CATEGORY AND VENDOR FOR "BONUS"
+                if (cat === "BONUS" || vend === "BONUS") {
                     bonus += Math.abs(item.amount);
                 }
                 else if (cat !== "BILL" && cat !== "INCOME" && cat !== "SAVINGS" && vend !== "INCOME" && !isShielded && !isFlex) {
@@ -153,7 +154,6 @@
                 needsSave = true;
             } 
             else {
-                // AUTOMATIC MONTHLY RESET
                 if (currentMonthStr !== lastMonthlyResetStr) {
                     let lastMonthActivity = getGeneralActivitySince(data.history, data.state.last_monthly_reset.substring(0, 10), now);
                     let leftoverGeneral = Math.max(0, (data.state.monthly_general_pool || 0) - lastMonthActivity.spent + lastMonthActivity.bonus);
@@ -165,7 +165,6 @@
                     needsSave = true;
                 }
 
-                // AUTOMATIC WEEKLY FLEX ROLLOVER
                 if (now.getDay() === 1 && lastWeeklyReset !== todayStr) {
                     let flexSpent = getFlexSpentSince(data.history, lastWeeklyReset);
                     let flexLeft = Math.max(0, 300 - flexSpent);
@@ -197,41 +196,34 @@
         const daysInMonth = new Date(y, now.getMonth() + 1, 0).getDate();
         const daysLeftInMonth = daysInMonth - now.getDate() + 1;
 
-        // 1. GET SPENDING & BONUS DATA
         const monthActivity = getGeneralActivitySince(data.history, lastMonthlyResetStr, now);
         const todayActivity = getGeneralActivitySince(data.history, todayStr, now);
         const flexSpentThisWeek = getFlexSpentSince(data.history, lastWeeklyResetStr);
 
-        // 2. CALCULATE REMAINING BALANCES
         const startOfMonthPool = data.state.monthly_general_pool || 0;
         
-        // True General Remaining adds any bonuses to offset spending
         const trueMonthlyRemaining = startOfMonthPool - monthActivity.spent + monthActivity.bonus;
         const currentFlexLeft = Math.max(0, 300 - flexSpentThisWeek);
 
-        // 3. DAILY LIMIT MATH
-        // We only back out today's SPENDING to find the start-of-day pool. This forces today's bonus to be smoothly spread over remaining days.
         const startOfDayTotal = trueMonthlyRemaining + todayActivity.spent; 
         const finalDailyGoal = startOfDayTotal / daysLeftInMonth;
         
         const availableToday = finalDailyGoal - todayActivity.spent;
         const pct = Math.max(0, Math.min((availableToday / finalDailyGoal) * 100, 100));
 
-        // 4. UPDATE THE SCREEN
         document.getElementById('dailyLimit').innerText = `$${Math.round(availableToday)}`;
         document.getElementById('dayStartBadge').innerText = `Goal: $${Math.round(finalDailyGoal)}/day`;
         document.getElementById('daysLeftMsg').innerText = `Month ends in ${daysLeftInMonth} days`;
         
         document.getElementById('monthlyRemaining').innerText = `$${Math.round(trueMonthlyRemaining).toLocaleString()}`;
         document.getElementById('flexRemaining').innerText = `$${Math.round(currentFlexLeft)}`;
-        document.getElementById('todaySpend').innerText = `$${Math.round(todayActivity.spent)}`; // Only shows money out
+        document.getElementById('todaySpend').innerText = `$${Math.round(todayActivity.spent)}`;
         document.getElementById('progressBar').style.width = pct + '%';
     
         const dailyEl = document.getElementById('dailyLimit');
         if (availableToday <= 0) dailyEl.style.color = 'var(--danger)';
         else dailyEl.style.color = 'var(--primary)';
 
-        // 5. RENDER RECENT TRANSACTIONS (Includes Bonuses)
         const displayItems = data.history.slice().reverse().filter(item => {
             const cat = (item.category || "").toUpperCase();
             const vend = (item.vendor || "").toUpperCase();
@@ -247,7 +239,10 @@
             } catch(e) {}
 
             const cat = (item.category || "").toUpperCase();
-            const isBonus = cat === "BONUS";
+            const vend = (item.vendor || "").toUpperCase();
+            
+            // NOW CHECKS BOTH HERE FOR THE UI DISPLAY
+            const isBonus = cat === "BONUS" || vend === "BONUS";
             const amtClass = isBonus ? "hist-amt pos" : "hist-amt";
             const prefix = isBonus ? "+" : "-";
 
