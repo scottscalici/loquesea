@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4197.240000000007,
+    "checking_balance": 4203.360000000007,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -3307,10 +3307,10 @@
     },
     {
       "date": "2026-03-27",
-      "vendor": "McDonald’s ",
-      "who": "Abbi",
+      "vendor": "Bocci ",
+      "who": "Grayson",
       "what": "",
-      "amount": -31.12,
+      "amount": -25,
       "category": "MANUAL"
     }
   ],
