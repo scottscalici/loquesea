@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2915.9100000000076,
+    "checking_balance": 2868.2400000000075,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -3358,6 +3358,14 @@
       "vendor": "Google Storage",
       "amount": -2.99,
       "category": "BILL"
+    },
+    {
+      "date": "2026-03-28",
+      "vendor": "Pizza",
+      "who": "Family",
+      "what": "",
+      "amount": -47.67,
+      "category": "MANUAL"
     }
   ],
   "bills": [
