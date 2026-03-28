@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4018.080000000007,
+    "checking_balance": 3950.080000000007,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -3326,6 +3326,12 @@
       "vendor": "Student Loan",
       "amount": -154.16,
       "category": "BILL"
+    },
+    {
+      "date": "2026-03-27",
+      "vendor": "D-Bat",
+      "amount": -68,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -3418,7 +3424,7 @@
       "name": "D-Bat",
       "frequency": "monthly",
       "amount": 68,
-      "next_due_date": "2026-03-27"
+      "next_due_date": "2026-04-27"
     },
     {
       "id": "disney-bundle",
