@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2868.2400000000075,
+    "checking_balance": 2838.2400000000075,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -3365,6 +3365,14 @@
       "who": "Family",
       "what": "",
       "amount": -47.67,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-03-29",
+      "vendor": "Kroger",
+      "who": "Grayson",
+      "what": "Gift ",
+      "amount": -30,
       "category": "MANUAL"
     }
   ],
