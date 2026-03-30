@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2583.3400000000074,
+    "checking_balance": 2515.3400000000074,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -3421,6 +3421,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -109.42,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-03-29",
+      "vendor": "Bullpen Something ",
+      "who": "Abbi",
+      "what": "",
+      "amount": -68,
       "category": "MANUAL"
     }
   ],
