@@ -447,17 +447,6 @@
       "end_date": "2026-05-31"
     },
     {
-      "id": "id_1772424090577",
-      "title": "Home automation setup",
-      "type": "reminder",
-      "duration_minutes": 0,
-      "frequency_days": 7,
-      "next_due": "2026-03-28",
-      "time": "23:00",
-      "is_active": true,
-      "end_date": "2026-06-20"
-    },
-    {
       "id": "id_1772424161696",
       "title": "Update team generator: swap, sorting update ",
       "type": "reminder",
