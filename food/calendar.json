@@ -384,5 +384,14 @@
       "Bacon or Sausage",
       "Eggs"
     ]
+  },
+  {
+    "date": "2026-04-01",
+    "meal": "Burgers & Dogs",
+    "sides_included": [
+      "Main Dish",
+      "Corn on the cob ",
+      "Fries"
+    ]
   }
 ]
