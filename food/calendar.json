@@ -374,5 +374,15 @@
       "Cottage Cheese",
       "Garlic / Cheesy Bread"
     ]
+  },
+  {
+    "date": "2026-03-31",
+    "meal": "Breakfast: Pancakes",
+    "sides_included": [
+      "Main Dish",
+      "Pancakes",
+      "Bacon or Sausage",
+      "Eggs"
+    ]
   }
 ]
