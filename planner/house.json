@@ -281,7 +281,7 @@
       "duration_minutes": 5,
       "frequency_days": 1,
       "flexibility_days": 0,
-      "next_due": "2026-03-29",
+      "next_due": "2026-03-31",
       "time": "21:30",
       "is_active": true
     },
@@ -334,7 +334,7 @@
       "type": "task",
       "duration_minutes": 2,
       "frequency_days": 1,
-      "next_due": "2026-03-29",
+      "next_due": "2026-03-31",
       "time": "21:00",
       "is_active": true
     },
