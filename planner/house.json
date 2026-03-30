@@ -112,7 +112,7 @@
       "frequency_days": 7,
       "anchor_day": "Friday",
       "flexibility_days": 1,
-      "next_due": "2026-03-27",
+      "next_due": "2026-04-03",
       "time": "16:15",
       "is_active": true
     },
@@ -365,7 +365,7 @@
       "type": "reminder",
       "duration_minutes": 5,
       "frequency_days": 14,
-      "next_due": "2026-03-28",
+      "next_due": "2026-04-04",
       "time": "12:00",
       "is_active": true,
       "anchor_day": "Saturday"
