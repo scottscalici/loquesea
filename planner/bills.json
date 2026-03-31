@@ -6,12 +6,12 @@
   "savings_goals": [
     {
       "name": "Cedar Point Tournament",
-      "target": 1500,
+      "target": 2000,
       "current": 1500
     },
     {
       "name": "Pigeon Forge Tournament",
-      "target": 2500,
+      "target": 3000,
       "current": 2500
     },
     {
