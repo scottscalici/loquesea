@@ -77,34 +77,52 @@
         });
     }
 
-    // Helper: Calculate General Spent & Bonus since a specific date
+// Helper: Calculate General Spent & Bonus since a specific date (With $500 Amazon Escrow Logic built in)
     function getGeneralActivitySince(history, sinceDateStr, now) {
         let spent = 0;
         let bonus = 0;
-        history.forEach(item => {
+        let amzShieldUsed = 0;
+        
+        // Ensure chronological order for accurate escrow tracking
+        const sortedHistory = [...history].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        sortedHistory.forEach(item => {
             let itemDateStr = item.date.substring(0, 10);
             if (itemDateStr >= sinceDateStr) {
                 const cat = (item.category || "").toUpperCase();
                 const vend = (item.vendor || "").toUpperCase();
                 const what = (item.what || "").toUpperCase();
+                const itemDate = new Date(item.date + "T12:00:00");
+                const absAmt = Math.abs(item.amount);
                 
                 const isAmazon = vend.includes("AMAZON") || vend.includes("AMZN");
-                const isShieldWindow = now.getDate() >= 21;
-                const isShielded = isAmazon && isShieldWindow;
+                const isShieldWindow = itemDate.getDate() >= 21;
                 const isFlex = vend.includes("KROGER") || vend.includes("GAS") || vend.includes("GROCERY") || what.includes("GROCERY");
 
                 // NOW CHECKS BOTH CATEGORY AND VENDOR FOR "BONUS"
                 if (cat === "BONUS" || vend === "BONUS") {
-                    bonus += Math.abs(item.amount);
+                    bonus += absAmt;
                 }
-                else if (cat !== "BILL" && cat !== "INCOME" && cat !== "SAVINGS" && vend !== "INCOME" && !isShielded && !isFlex) {
-                    spent += Math.abs(item.amount);
+                else if (cat !== "BILL" && cat !== "INCOME" && cat !== "SAVINGS" && vend !== "INCOME" && !isFlex) {
+                    if (isAmazon && isShieldWindow) {
+                        // Apply the $500 cap logic
+                        if (amzShieldUsed < 500) {
+                            let availableShield = 500 - amzShieldUsed;
+                            let shieldedAmt = Math.min(absAmt, availableShield);
+                            amzShieldUsed += shieldedAmt;
+                            let unshieldedAmt = absAmt - shieldedAmt;
+                            spent += unshieldedAmt; 
+                        } else {
+                            spent += absAmt; 
+                        }
+                    } else {
+                        spent += absAmt;
+                    }
                 }
             }
         });
         return { spent, bonus };
     }
-
     // Helper: Calculate Flex Spent since a specific date
     function getFlexSpentSince(history, sinceDateStr) {
         let total = 0;
