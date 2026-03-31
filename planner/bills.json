@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4756.730000000008,
+    "checking_balance": 4714.330000000008,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -3514,6 +3514,14 @@
       "what": "",
       "amount": -170,
       "category": "SAVINGS"
+    },
+    {
+      "date": "2026-03-31",
+      "vendor": "Emagine ",
+      "who": "Family",
+      "what": "",
+      "amount": -42.4,
+      "category": "MANUAL"
     }
   ],
   "bills": [
