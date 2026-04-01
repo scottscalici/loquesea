@@ -4,15 +4,23 @@
       { "id": "drib_01", "name": "Cross-Between-Behind", "video_url": "https://www.youtube.com/results?search_query=basketball+cross+between+behind+drill", "notes": "Stay low, eyes up. 3 sets of 10." }
     ],
     "Stationary": [
-      { "id": "drib_02", "name": "Pound Dribbles", "video_url": "https://www.youtube.com/results?search_query=basketball+pound+dribble+drill", "notes": "Shoulder height, pound it hard. 30 seconds each hand." }
+      { "id": "drib_02", "name": "Pound Dribbles", "video_url": "https://www.youtube.com/results?search_query=basketball+pound+dribble+drill", "notes": "Shoulder height, pound it hard. 30 seconds each hand." },
+      { "id": "drib_03", "name": "Stationary Dribbling Series", "video_url": "https://www.thehoopsgeek.com/basketball-drills/stationary-dribbling-drills/", "notes": "Pound dribbles. Knees slightly bent, chest up. Dribble hard at waist height." },
+      { "id": "drib_04", "name": "Steph Curry Warm Up Routine", "video_url": "https://www.thehoopsgeek.com/basketball-drills/steph-curry-warm-up-routine/", "notes": "Two-ball dribbling routine. Builds extreme coordination and handle speed." }
     ]
   },
   "Shooting": {
     "Catch and Shoot": [
-      { "id": "shoot_01", "name": "Star Drill", "video_url": "https://www.youtube.com/results?search_query=basketball+star+shooting+drill", "notes": "Game speed cuts to 5 spots. Make 10 total." }
+      { "id": "shoot_01", "name": "Star Drill", "video_url": "https://www.youtube.com/results?search_query=basketball+star+shooting+drill", "notes": "Game speed cuts to 5 spots. Make 10 total." },
+      { "id": "shoot_03", "name": "Warm Up Free Throw Line Shooting", "video_url": "https://www.thehoopsgeek.com/basketball-drills/warm-up-free-throw-line-shooting-drill/", "notes": "Catch and shoot coming off a curl cut near the free throw line. Good early practice drill." },
+      { "id": "shoot_04", "name": "Post Pass Shooting Drill", "video_url": "https://www.thehoopsgeek.com/basketball-drills/post-pass-shooting-drill/", "notes": "Continuous movement. Pass into the post, relocate, receive the kick-out, and shoot." }
     ],
     "Off the Dribble": [
       { "id": "shoot_02", "name": "1-Dribble Pull-Up", "video_url": "https://www.youtube.com/results?search_query=basketball+1+dribble+pull+up", "notes": "Explosive first step, balance before shooting." }
+    ],
+    "Game Speed": [
+      { "id": "shoot_05", "name": "Loop Shooting Drill", "video_url": "https://www.thehoopsgeek.com/basketball-drills/loop-shooting-drill/", "notes": "Combines cutting, passing, and shooting in a continuous loop." },
+      { "id": "shoot_06", "name": "7 Spot Shooting Drill", "video_url": "https://www.thehoopsgeek.com/basketball-drills/7-spot-shooting-drill/", "notes": "Competitive team drill. Two teams, one ball per team. Race to hit shots from 7 designated spots." }
     ]
   },
   "Agility and Conditioning": {
@@ -32,8 +40,15 @@
     ]
   },
   "Passing": {
-    "Stationary": [
-      { "id": "pass_01", "name": "Wall Passes (Chest & Bounce)", "video_url": "https://www.youtube.com/results?search_query=basketball+wall+passing+drill", "notes": "Step into the pass, snap wrists. 20 reps each." }
+    "Movement": [
+      { "id": "pass_02", "name": "Banana Drill", "video_url": "https://www.thehoopsgeek.com/basketball-drills/banana-drill/", "notes": "Continuous drill. Focus on hard, precise passes and correct timing on cuts." },
+      { "id": "pass_03", "name": "Star Passing Drill", "video_url": "https://www.thehoopsgeek.com/basketball-drills/star-passing-drill/", "notes": "5 stations. Pass and follow your pass to the next point of the star. Keep feet moving." },
+      { "id": "pass_04", "name": "3-Person Pass, Cut & Replace", "video_url": "https://www.thehoopsgeek.com/basketball-drills/3-person-pass-cut-replace/", "notes": "Read the floor, pass, cut hard to the rim, and fill the open spot. Maintain spacing." }
+    ],
+    "Stationary & Footwork": [
+      { "id": "pass_01", "name": "Wall Passes (Chest & Bounce)", "video_url": "https://www.youtube.com/results?search_query=basketball+wall+passing+drill", "notes": "Step into the pass, snap wrists. 20 reps each." },
+      { "id": "pass_05", "name": "Slide & Pass Drill", "video_url": "https://www.thehoopsgeek.com/basketball-drills/slide-pass-drill/", "notes": "Slide defensively without crossing feet, transition into a strong pass." },
+      { "id": "pass_06", "name": "Diamond Passing", "video_url": "https://www.thehoopsgeek.com/basketball-drills/diamond-passing/", "notes": "Use 5 cones. Works heavily on jump stops, maintaining balance, pivoting, and passing under control." }
     ]
   },
   "Rebounding": {
@@ -44,6 +59,39 @@
   "Defense": {
     "On-Ball": [
       { "id": "def_01", "name": "Zig-Zag Slides", "video_url": "https://www.youtube.com/results?search_query=basketball+zig+zag+defensive+drill", "notes": "Don't cross feet, chest up, active hands." }
+    ],
+    "Pressing & Trapping": [
+      { "id": "def_02", "name": "4 v 4 Transition Defense", "video_url": "https://www.thehoopsgeek.com/basketball-drills/4-v-4-transition-drill/", "notes": "Simulates a broken press. Defense must communicate, scramble, and stop the ball while outnumbered 3v4." },
+      { "id": "def_03", "name": "Diamond Press - Free Throw Drill", "video_url": "https://www.thehoopsgeek.com/basketball-drills/diamond-press-free-throw-drill/", "notes": "Set up the Diamond press immediately off a made free throw. Rotate players until a FT is made." },
+      { "id": "def_04", "name": "Diamond Press - Overload 6v4", "video_url": "https://www.thehoopsgeek.com/basketball-drills/diamond-press-half-court-overload-6v4/", "notes": "6 offensive players vs 4 defenders. Stresses defensive rotations, traps, and communication." }
+    ],
+    "Zone Concepts": [
+      { "id": "def_05", "name": "Box and 1 - Shell Drill", "video_url": "https://www.thehoopsgeek.com/basketball-drills/box-and-1-shell-drill/", "notes": "Focus on the 4 zone defenders. Shift together like you are connected by rubber bands. Do not break the box shape." },
+      { "id": "def_06", "name": "Box and 1 - Shadow Drill", "video_url": "https://www.thehoopsgeek.com/basketball-drills/box-and-1-shadow-drill/", "notes": "Focus on the Chaser. Stay connected hip-to-hip with the star player. Move feet, do not reach with hands." }
+    ]
+  },
+  "Offensive Concepts": {
+    "Horns Action": [
+      { "id": "off_01", "name": "Horns Matchup Drill (3v3)", "video_url": "https://www.thehoopsgeek.com/basketball-drills/horns-matchup-drill-3v3-competitive-game/", "notes": "Live 3v3 using only Horns entries. Work on spacing, timing, and defensive communication." },
+      { "id": "off_02", "name": "Horns 2v2 Read & Counter", "video_url": "https://www.thehoopsgeek.com/basketball-drills/horns-2v2-read-counter-drill/", "notes": "Make live reads out of the elbow entry while defenders apply tight ball pressure." }
+    ],
+    "Zoom Action": [
+      { "id": "off_03", "name": "Read and React: 3-Level Scoring", "video_url": "https://www.thehoopsgeek.com/basketball-drills/read-and-react-3-level-scoring-drill/", "notes": "Receiver catches off the handoff and must quickly decide to shoot the 3, pull-up mid-range, or finish at the rim." },
+      { "id": "off_04", "name": "Read & React: Bigman Drill", "video_url": "https://www.thehoopsgeek.com/basketball-drills/read-react-bigman-drill/", "notes": "Focuses on the big man making high-level passing decisions from the top of the key during Zoom action." },
+      { "id": "off_05", "name": "Numbers Advantage Drill", "video_url": "https://www.thehoopsgeek.com/basketball-drills/numbers-advantage-drill/", "notes": "Simulates the advantage created by Zoom. Force players to make quick decisions to score before the defense recovers." }
+    ],
+    "Pick & Roll": [
+      { "id": "off_06", "name": "Pick & Roll Passing Drill", "video_url": "https://www.thehoopsgeek.com/basketball-drills/pick-roll-passing-drill/", "notes": "Brush the screen, create separation, and focus on delivering accurate passes to the roll man." }
+    ]
+  },
+  "Transition & Outlet": {
+    "Pacing": [
+      { "id": "trans_02", "name": "22 in 2 Outlet Drill", "video_url": "https://www.thehoopsgeek.com/basketball-drills/22-in-2-outlet-drill/", "notes": "Score 22 points in 2 minutes. Grab ball out of the net, outlet before it hits the ground. Keep the pace furious." },
+      { "id": "trans_03", "name": "Outlet Pass Drill", "video_url": "https://www.thehoopsgeek.com/basketball-drills/outlet-pass-drill/", "notes": "Simple fundamentals. Rebound footwork, chin the ball, pivot, and hit the outlet target on the wing." }
+    ],
+    "Advantage Situations": [
+      { "id": "trans_01", "name": "3-on-2 Continuous Fast Break", "video_url": "https://www.thehoopsgeek.com/basketball-drills/3-on-2-continuous-fast-break/", "notes": "Continuous 3v2. Rebounder passes to the sideline and joins 2 waiting players to attack the other basket. 2 of the previous offensive players stay back to play defense." },
+      { "id": "trans_05", "name": "3 on 2 / 2 on 1 Outlet & Transition", "video_url": "https://www.thehoopsgeek.com/basketball-drills/3-on-2-2-on-1-outlet-transition-drill/", "notes": "Classic drill. Push 3v2 on the way down, then the two defenders transition into offense and push 2v1 the other way." }
     ]
   }
 }
