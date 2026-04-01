@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practice Planner</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --border: #e2e8f0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 16px;
+      line-height: 1.5;
+    }
+    h1, h2, h3 { margin-top: 0; }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+    button:active { opacity: 0.8; }
+    .outline-btn {
+      background-color: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+    .danger-btn {
+      background-color: #ef4444;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .drill-item {
+      border-bottom: 1px solid var(--border);
+      padding: 12px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .drill-item:last-child { border-bottom: none; }
+    .drill-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .drill-name { font-weight: bold; font-size: 1.1rem; }
+    .drill-notes { font-size: 0.9rem; color: #64748b; }
+    a.video-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      margin-top: 4px;
+    }
+    .add-btn { padding: 6px 12px; font-size: 14px; }
+    .routine-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+    .remove-btn {
+      background-color: #ef4444;
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Practice Planner</h1>
+
+  <div class="panel">
+    <h3>1. Categories</h3>
+    <div id="categories" class="button-grid">Loading...</div>
+  </div>
+
+  <div id="subcategory-panel" class="panel hidden">
+    <h3 id="subcategory-title">2. Subcategories</h3>
+    <div id="subcategories" class="button-grid"></div>
+  </div>
+
+  <div id="drills-panel" class="panel hidden">
+    <h3 id="drills-title">3. Drills</h3>
+    <div id="drills-list"></div>
+  </div>
+
+  <div class="panel">
+    <h3>📋 Today's Plan</h3>
+    <div id="routine-list"></div>
+    <button class="danger-btn" onclick="clearRoutine()">Clear Practice Plan</button>
+  </div>
+</div>
+
+<script>
+  const JSON_URL = 'https://raw.githubusercontent.com/scottscalici/loquesea/main/training/basketball.json';
+  let drillDatabase = {};
+  let currentRoutine = JSON.parse(localStorage.getItem('basketballRoutine')) || [];
+
+  // Fetch Data on Load
+  async function loadData() {
+    try {
+      const response = await fetch(JSON_URL);
+      drillDatabase = await response.json();
+      renderCategories();
+      renderRoutine();
+    } catch (error) {
+      document.getElementById('categories').innerHTML = '<p>Error loading drills. Make sure the JSON file is uploaded to GitHub.</p>';
+      console.error(error);
+    }
+  }
+
+  // 1. Render Top Level Categories
+  function renderCategories() {
+    const container = document.getElementById('categories');
+    container.innerHTML = '';
+    const categories = Object.keys(drillDatabase);
+    
+    categories.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.className = 'outline-btn';
+      btn.textContent = cat;
+      btn.onclick = () => {
+        document.getElementById('drills-panel').classList.add('hidden');
+        renderSubcategories(cat);
+      };
+      container.appendChild(btn);
+    });
+  }
+
+  // 2. Render Subcategories
+  function renderSubcategories(categoryName) {
+    const panel = document.getElementById('subcategory-panel');
+    const container = document.getElementById('subcategories');
+    const title = document.getElementById('subcategory-title');
+    
+    panel.classList.remove('hidden');
+    title.textContent = `2. ${categoryName} Options`;
+    container.innerHTML = '';
+    
+    const subcats = Object.keys(drillDatabase[categoryName]);
+    
+    subcats.forEach(sub => {
+      const btn = document.createElement('button');
+      btn.className = 'outline-btn';
+      btn.textContent = sub;
+      btn.onclick = () => renderDrills(categoryName, sub);
+      container.appendChild(btn);
+    });
+  }
+
+  // 3. Render Drills List
+  function renderDrills(categoryName, subcategoryName) {
+    const panel = document.getElementById('drills-panel');
+    const container = document.getElementById('drills-list');
+    const title = document.getElementById('drills-title');
+    
+    panel.classList.remove('hidden');
+    title.textContent = `3. ${subcategoryName} Drills`;
+    container.innerHTML = '';
+    
+    const drills = drillDatabase[categoryName][subcategoryName];
+    
+    drills.forEach(drill => {
+      const div = document.createElement('div');
+      div.className = 'drill-item';
+      
+      div.innerHTML = `
+        <div class="drill-header">
+          <div>
+            <div class="drill-name">${drill.name}</div>
+            <a href="${drill.video_url}" target="_blank" class="video-link">▶ Watch Video</a>
+          </div>
+          <button class="add-btn" onclick='addToRoutine(${JSON.stringify(drill).replace(/'/g, "&#39;")})'>+ Add</button>
+        </div>
+        <div class="drill-notes">${drill.notes}</div>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  // Handle Routine state and LocalStorage
+  function addToRoutine(drill) {
+    currentRoutine.push(drill);
+    saveAndRenderRoutine();
+  }
+
+  function removeFromRoutine(index) {
+    currentRoutine.splice(index, 1);
+    saveAndRenderRoutine();
+  }
+
+  function clearRoutine() {
+    if(confirm("Clear today's practice plan?")) {
+      currentRoutine = [];
+      saveAndRenderRoutine();
+    }
+  }
+
+  function saveAndRenderRoutine() {
+    localStorage.setItem('basketballRoutine', JSON.stringify(currentRoutine));
+    renderRoutine();
+  }
+
+  function renderRoutine() {
+    const container = document.getElementById('routine-list');
+    if (currentRoutine.length === 0) {
+      container.innerHTML = '<p style="color: #64748b;">Your practice plan is empty.</p>';
+      return;
+    }
+
+    container.innerHTML = '';
+    currentRoutine.forEach((drill, index) => {
+      const div = document.createElement('div');
+      div.className = 'routine-item';
+      div.innerHTML = `
+        <div>
+          <div style="font-weight: bold;">${drill.name}</div>
+          <a href="${drill.video_url}" target="_blank" class="video-link" style="font-size: 12px;">▶ Video</a>
+        </div>
+        <button class="remove-btn" onclick="removeFromRoutine(${index})">X</button>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  // Initialize
+  loadData();
+</script>
+
+</body>
+</html>
