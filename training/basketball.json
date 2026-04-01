@@ -1,1 +1,49 @@
-
+{
+  "Dribbling": {
+    "Combos": [
+      { "id": "drib_01", "name": "Cross-Between-Behind", "video_url": "https://www.youtube.com/results?search_query=basketball+cross+between+behind+drill", "notes": "Stay low, eyes up. 3 sets of 10." }
+    ],
+    "Stationary": [
+      { "id": "drib_02", "name": "Pound Dribbles", "video_url": "https://www.youtube.com/results?search_query=basketball+pound+dribble+drill", "notes": "Shoulder height, pound it hard. 30 seconds each hand." }
+    ]
+  },
+  "Shooting": {
+    "Catch and Shoot": [
+      { "id": "shoot_01", "name": "Star Drill", "video_url": "https://www.youtube.com/results?search_query=basketball+star+shooting+drill", "notes": "Game speed cuts to 5 spots. Make 10 total." }
+    ],
+    "Off the Dribble": [
+      { "id": "shoot_02", "name": "1-Dribble Pull-Up", "video_url": "https://www.youtube.com/results?search_query=basketball+1+dribble+pull+up", "notes": "Explosive first step, balance before shooting." }
+    ]
+  },
+  "Agility and Conditioning": {
+    "Footwork": [
+      { "id": "agil_01", "name": "Ladder Icky Shuffle", "video_url": "https://www.youtube.com/results?search_query=basketball+ladder+icky+shuffle", "notes": "Quick feet, pump arms." }
+    ],
+    "Sprints": [
+      { "id": "agil_02", "name": "Suicides", "video_url": "https://www.youtube.com/results?search_query=basketball+suicides", "notes": "Touch the line every time. Under 32 seconds." }
+    ]
+  },
+  "Finishing": {
+    "Through Contact": [
+      { "id": "fin_01", "name": "Pad Finishing", "video_url": "https://www.youtube.com/results?search_query=basketball+contact+finishing+drill", "notes": "Coach uses a football pad to bump the player in the air." }
+    ],
+    "Mikan": [
+      { "id": "fin_02", "name": "Reverse Mikan", "video_url": "https://www.youtube.com/results?search_query=basketball+reverse+mikan+drill", "notes": "Keep the ball high, use the backboard." }
+    ]
+  },
+  "Passing": {
+    "Stationary": [
+      { "id": "pass_01", "name": "Wall Passes (Chest & Bounce)", "video_url": "https://www.youtube.com/results?search_query=basketball+wall+passing+drill", "notes": "Step into the pass, snap wrists. 20 reps each." }
+    ]
+  },
+  "Rebounding": {
+    "Box Out": [
+      { "id": "reb_01", "name": "Circle Box Out", "video_url": "https://www.youtube.com/results?search_query=basketball+circle+box+out+drill", "notes": "Find the body, stay low, hands up." }
+    ]
+  },
+  "Defense": {
+    "On-Ball": [
+      { "id": "def_01", "name": "Zig-Zag Slides", "video_url": "https://www.youtube.com/results?search_query=basketball+zig+zag+defensive+drill", "notes": "Don't cross feet, chest up, active hands." }
+    ]
+  }
+}
