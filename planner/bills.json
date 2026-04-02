@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3852.6500000000083,
+    "checking_balance": 3850.6600000000085,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -3642,6 +3642,12 @@
       "what": "",
       "amount": -72.08,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-04-01",
+      "vendor": "SnowFreaks",
+      "amount": -1.99,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -3930,7 +3936,7 @@
       "name": "SnowFreaks",
       "frequency": "monthly",
       "amount": 1.99,
-      "next_due_date": "2026-04-01"
+      "next_due_date": "2026-05-01"
     },
     {
       "id": "spotify",
