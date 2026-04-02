@@ -533,17 +533,6 @@
       "is_active": true
     },
     {
-      "id": "id_1772424963023",
-      "title": "Flip washer door hinge",
-      "type": "task",
-      "duration_minutes": 0,
-      "frequency_days": 1,
-      "next_due": "2026-03-27",
-      "time": "12:00",
-      "is_active": true,
-      "end_date": "2026-04-05"
-    },
-    {
       "id": "id_1772424993396",
       "title": "Empty garbage",
       "type": "task",
