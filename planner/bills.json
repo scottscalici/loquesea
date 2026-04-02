@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3924.730000000008,
+    "checking_balance": 3852.6500000000083,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -3633,6 +3633,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -116.6,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-04-01",
+      "vendor": "Lululemon",
+      "who": "Abbi",
+      "what": "",
+      "amount": -72.08,
       "category": "MANUAL"
     }
   ],
