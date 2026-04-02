@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3850.6600000000085,
+    "checking_balance": 3700.6600000000085,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -3648,6 +3648,12 @@
       "vendor": "SnowFreaks",
       "amount": -1.99,
       "category": "BILL"
+    },
+    {
+      "date": "2026-04-02",
+      "vendor": "Citibank 1",
+      "amount": -150,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -3719,7 +3725,7 @@
       "name": "Citibank 1",
       "frequency": "monthly",
       "amount": 150,
-      "next_due_date": "2026-04-02"
+      "next_due_date": "2026-05-02"
     },
     {
       "id": "citibank-2",
