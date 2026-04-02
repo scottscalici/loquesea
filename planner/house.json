@@ -629,7 +629,7 @@
       "type": "task",
       "duration_minutes": 5,
       "frequency_days": 30,
-      "next_due": "2026-04-01",
+      "next_due": "2026-05-02",
       "is_active": true,
       "time": "12:00"
     },
