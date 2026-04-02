@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4491.730000000009,
+    "checking_balance": 4398.460000000008,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -3577,6 +3577,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -7.2,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-04-01",
+      "vendor": "Dick’s",
+      "who": "Abbi",
+      "what": "",
+      "amount": -93.27,
       "category": "MANUAL"
     }
   ],
