@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3194.4200000000087,
+    "checking_balance": 3109.930000000009,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -3729,6 +3729,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -30.26,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-04-04",
+      "vendor": "Pizza",
+      "who": "Abbi",
+      "what": "",
+      "amount": -84.49,
       "category": "MANUAL"
     }
   ],
