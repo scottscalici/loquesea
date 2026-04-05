@@ -393,5 +393,13 @@
       "Corn on the cob ",
       "Fries"
     ]
+  },
+  {
+    "date": "2026-04-08",
+    "meal": "Chicken Gyros",
+    "sides_included": [
+      "Main Dish",
+      "Fries"
+    ]
   }
 ]
