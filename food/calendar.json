@@ -408,5 +408,14 @@
     "sides_included": [
       "Main Dish"
     ]
+  },
+  {
+    "date": "2026-04-07",
+    "meal": "Ramen bake",
+    "sides_included": [
+      "Main Dish",
+      "Dumplings",
+      "Edamame"
+    ]
   }
 ]
