@@ -2,7 +2,11 @@
   "Dribbling": {
     "Combos": [
       { "id": "drib_01", "name": "Cross-Between-Behind", "video_url": "https://www.youtube.com/results?search_query=basketball+cross+between+behind+drill", "notes": "Stay low, eyes up. 3 sets of 10." },
-      { "id": "drib_01b", "name": "Best warmup", "video_url": "https://www.tiktok.com/t/ZTkksR9To/",  "notes": "Pro workout" }
+      { "id": "drib_01b", "name": "Best warmup", "video_url": "https://www.tiktok.com/t/ZTkksR9To/",  "notes": "Pro workout" },
+      { "id": "drib_05", "name": "Pound, Behind, Pound, Behind", "video_url": "https://www.youtube.com/results?search_query=basketball+pound+behind+dribble", "notes": "Execute the combo hard at each spot before attacking the rim." },
+      { "id": "drib_06", "name": "Pound, Pocket Pull, Pound, Pocket Pull", "video_url": "https://www.youtube.com/results?search_query=basketball+pocket+pull+dribble", "notes": "Keep the pocket pull tight and aggressive." },
+      { "id": "drib_07", "name": "Through, Cross, Pocket Pull, Cross", "video_url": "https://www.youtube.com/results?search_query=basketball+through+cross+pocket+pull", "notes": "Change speeds on the cross to sell the move." },
+      { "id": "drib_08", "name": "Shammgod", "video_url": "https://www.youtube.com/results?search_query=shammgod+tutorial", "notes": "Crafty move to weave past the defender. Throw it out with one hand, pull it back with the other." }
     ],
     "Stationary": [
       { "id": "drib_02", "name": "Pound Dribbles", "video_url": "https://www.youtube.com/results?search_query=basketball+pound+dribble+drill", "notes": "Shoulder height, pound it hard. 30 seconds each hand." },
@@ -28,8 +32,14 @@
     "Footwork": [
       { "id": "agil_01", "name": "Ladder Icky Shuffle", "video_url": "https://www.youtube.com/results?search_query=basketball+ladder+icky+shuffle", "notes": "Quick feet, pump arms." }
     ],
+    "Reaction": [
+      { "id": "agil_03", "name": "Tennis Ball Reaction Drops", "video_url": "https://www.youtube.com/results?search_query=basketball+tennis+ball+drop+drill", "notes": "Partners hold tennis balls and drop one randomly. Sprint and catch before it bounces twice." },
+      { "id": "agil_04", "name": "Defensive Reaction Slides", "video_url": "https://www.youtube.com/results?search_query=basketball+defensive+reaction+slides", "notes": "Coach points in random directions. Mirror the direction with proper defensive slides." }
+    ],
     "Sprints": [
-      { "id": "agil_02", "name": "Suicides", "video_url": "https://www.youtube.com/results?search_query=basketball+suicides", "notes": "Touch the line every time. Under 32 seconds." }
+      { "id": "agil_02", "name": "Suicides", "video_url": "https://www.youtube.com/results?search_query=basketball+suicides", "notes": "Touch the line every time. Under 32 seconds." },
+      { "id": "agil_05", "name": "Cone Sprints with Closeouts", "video_url": "https://www.youtube.com/results?search_query=basketball+closeout+sprints+drill", "notes": "Sprint to designated cones and chop feet to execute a proper defensive closeout." },
+      { "id": "agil_06", "name": "Fast Break Continuous", "video_url": "https://www.youtube.com/results?search_query=basketball+continuous+fast+break+drill", "notes": "Full-court continuous passing and layups at full game speed to build transition conditioning." }
     ]
   },
   "Finishing": {
@@ -38,6 +48,14 @@
     ],
     "Mikan": [
       { "id": "fin_02", "name": "Reverse Mikan", "video_url": "https://www.youtube.com/results?search_query=basketball+reverse+mikan+drill", "notes": "Keep the ball high, use the backboard." }
+    ],
+    "Perimeter Attack": [
+      { "id": "fin_03", "name": "5-Spot Attack: Standard Layup", "video_url": "https://www.youtube.com/results?search_query=basketball+5+spot+layup+drill", "notes": "Move through 5 perimeter spots. Perform combo, push to basket, and finish with a standard layup." },
+      { "id": "fin_04", "name": "5-Spot Attack: High Clear Pro Hop", "video_url": "https://www.youtube.com/results?search_query=basketball+pro+hop+high+clear", "notes": "Move through 5 perimeter spots. Perform combo, drive, execute a pro hop while clearing the ball high." },
+      { "id": "fin_05", "name": "5-Spot Attack: Cradle Finish", "video_url": "https://www.youtube.com/results?search_query=basketball+cradle+finish", "notes": "Move through 5 perimeter spots. Perform combo, drive, and cradle the ball tight to protect it on the finish." },
+      { "id": "fin_06", "name": "5-Spot Attack: Low Carry Finish", "video_url": "https://www.youtube.com/results?search_query=basketball+low+pickup+finish", "notes": "Move through 5 perimeter spots. Perform combo, drive, scoop and carry the ball low near the floor to avoid strips." },
+      { "id": "fin_07", "name": "5-Spot Attack: Spin Finish", "video_url": "https://www.youtube.com/results?search_query=basketball+spin+move+finish", "notes": "Move through 5 perimeter spots. Perform combo, drive, execute a controlled spin move past the defender to finish." },
+      { "id": "fin_08", "name": "5-Spot Attack: Euro Step", "video_url": "https://www.youtube.com/results?search_query=basketball+euro+step+finish", "notes": "Move through 5 perimeter spots. Perform combo, drive, and use a Euro step to weave past the defender." }
     ]
   },
   "Passing": {
