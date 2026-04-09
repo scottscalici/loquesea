@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": -173.4099999999916,
+    "checking_balance": -198.4099999999916,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -3988,6 +3988,14 @@
       "vendor": "Spotify",
       "amount": -18.99,
       "category": "BILL"
+    },
+    {
+      "date": "2026-04-09",
+      "vendor": "Starbucks",
+      "who": "Abbi",
+      "what": "",
+      "amount": -25,
+      "category": "MANUAL"
     }
   ],
   "bills": [
