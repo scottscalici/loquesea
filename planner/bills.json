@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 547.7300000000084,
+    "checking_balance": 519.9200000000085,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -3962,6 +3962,12 @@
       "vendor": "Ford F-150",
       "amount": -665.74,
       "category": "BILL"
+    },
+    {
+      "date": "2026-04-09",
+      "vendor": "AXA S",
+      "amount": -27.81,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -4005,7 +4011,7 @@
       "name": "AXA S",
       "frequency": "monthly",
       "amount": 27.81,
-      "next_due_date": "2026-04-09"
+      "next_due_date": "2026-05-09"
     },
     {
       "id": "beachbody",
