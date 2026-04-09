@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": -91.4199999999916,
+    "checking_balance": -154.4199999999916,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -3974,6 +3974,14 @@
       "vendor": "AXA S",
       "amount": -27.81,
       "category": "BILL"
+    },
+    {
+      "date": "2026-04-09",
+      "vendor": "Venmo",
+      "who": "Abbi",
+      "what": "Who knows",
+      "amount": -63,
+      "category": "MANUAL"
     }
   ],
   "bills": [
