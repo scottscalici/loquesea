@@ -609,7 +609,7 @@
       "type": "task",
       "duration_minutes": 5,
       "frequency_days": 1,
-      "next_due": "2026-04-03",
+      "next_due": "2026-04-12",
       "is_active": true,
       "time": "05:30"
     },
