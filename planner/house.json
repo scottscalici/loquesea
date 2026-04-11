@@ -496,7 +496,7 @@
       "type": "task",
       "duration_minutes": 5,
       "frequency_days": 7,
-      "next_due": "2026-04-03",
+      "next_due": "2026-04-17",
       "time": "15:00",
       "is_active": true,
       "anchor_day": "Friday"
