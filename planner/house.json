@@ -365,7 +365,7 @@
       "type": "reminder",
       "duration_minutes": 5,
       "frequency_days": 14,
-      "next_due": "2026-04-04",
+      "next_due": "2026-04-18",
       "time": "12:00",
       "is_active": true,
       "anchor_day": "Saturday"
