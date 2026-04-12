@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 1610.8000000000084,
+    "checking_balance": 1577.5300000000084,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4127,6 +4127,14 @@
       "who": "Abbi ",
       "what": "",
       "amount": -50.25,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-04-12",
+      "vendor": "Legacy",
+      "who": "Kinley",
+      "what": "",
+      "amount": -33.27,
       "category": "MANUAL"
     }
   ],
