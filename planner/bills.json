@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2194.9500000000085,
+    "checking_balance": 2169.9500000000085,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4073,6 +4073,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -28.12,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-04-11",
+      "vendor": "Starbucks",
+      "who": "Abbi",
+      "what": "",
+      "amount": -25,
       "category": "MANUAL"
     }
   ],
