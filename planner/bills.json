@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 1994.9900000000084,
+    "checking_balance": 1710.8400000000083,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4098,6 +4098,12 @@
       "what": "",
       "amount": -146.62,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-04-18",
+      "vendor": "DTE",
+      "amount": -284.15,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -4211,7 +4217,7 @@
       "name": "DTE",
       "frequency": "monthly",
       "amount": 450,
-      "next_due_date": "2026-04-18"
+      "next_due_date": "2026-05-18"
     },
     {
       "id": "fallbrooke",
