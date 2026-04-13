@@ -417,5 +417,16 @@
       "Dumplings",
       "Edamame"
     ]
+  },
+  {
+    "date": "2026-04-13",
+    "meal": "Pasta w/ Marinara",
+    "sides_included": [
+      "Main Dish",
+      "Garlic Bread",
+      "Salad",
+      "Veggie",
+      "Cottage Cheese"
+    ]
   }
 ]
