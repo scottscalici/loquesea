@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 1564.4500000000085,
+    "checking_balance": 1559.4500000000085,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4143,6 +4143,14 @@
       "who": "Scott",
       "what": "Lightbulbs ",
       "amount": -13.08,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-04-13",
+      "vendor": "Tims",
+      "who": "Abbi ",
+      "what": "",
+      "amount": -5,
       "category": "MANUAL"
     }
   ],
