@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4036.820000000008,
+    "checking_balance": 4002.830000000008,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4268,6 +4268,12 @@
       "vendor": "Rec Center",
       "amount": -70,
       "category": "BILL"
+    },
+    {
+      "date": "2026-04-16",
+      "vendor": "Jax S",
+      "amount": -33.99,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -4465,7 +4471,7 @@
       "name": "Jax S",
       "frequency": "monthly",
       "amount": 35.99,
-      "next_due_date": "2026-04-16"
+      "next_due_date": "2026-05-16"
     },
     {
       "id": "luna-vet",
