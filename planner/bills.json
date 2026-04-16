@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4964.020000000009,
+    "checking_balance": 4932.230000000009,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4238,6 +4238,12 @@
       "what": "",
       "amount": -6.23,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-04-06",
+      "vendor": "Weather App",
+      "amount": -31.79,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -4582,7 +4588,7 @@
       "name": "Weather App",
       "frequency": "annually",
       "amount": 29.99,
-      "next_due_date": "2026-04-06"
+      "next_due_date": "2027-04-06"
     },
     {
       "id": "zambombazo",
