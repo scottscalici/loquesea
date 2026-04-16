@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4211.420000000008,
+    "checking_balance": 4106.820000000008,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4256,6 +4256,12 @@
       "vendor": "UEA",
       "amount": -106.8,
       "category": "BILL"
+    },
+    {
+      "date": "2026-04-15",
+      "vendor": "WEA",
+      "amount": -104.6,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -4593,7 +4599,7 @@
       "name": "WEA",
       "frequency": "monthly",
       "amount": 104.6,
-      "next_due_date": "2026-04-15"
+      "next_due_date": "2026-05-15"
     },
     {
       "id": "weather",
