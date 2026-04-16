@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4002.830000000008,
+    "checking_balance": 3989.050000000008,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4274,6 +4274,14 @@
       "vendor": "Jax S",
       "amount": -33.99,
       "category": "BILL"
+    },
+    {
+      "date": "2026-04-16",
+      "vendor": "Amazon",
+      "who": "Grayson",
+      "what": "",
+      "amount": -13.78,
+      "category": "MANUAL"
     }
   ],
   "bills": [
