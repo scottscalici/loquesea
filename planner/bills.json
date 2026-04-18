@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3726.930000000009,
+    "checking_balance": 3691.430000000009,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4333,6 +4333,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -164.2,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-04-17",
+      "vendor": "Jersey Mike’s ",
+      "who": "Abbi",
+      "what": "",
+      "amount": -35.5,
       "category": "MANUAL"
     }
   ],
