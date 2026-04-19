@@ -436,5 +436,14 @@
       "Main Dish",
       "Green beans"
     ]
+  },
+  {
+    "date": "2026-04-20",
+    "meal": "Cheeseburger Sliders",
+    "sides_included": [
+      "Main Dish",
+      "Fries",
+      "Asparagus "
+    ]
   }
 ]
