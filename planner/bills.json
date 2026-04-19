@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3244.5100000000093,
+    "checking_balance": 3219.5100000000093,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4419,6 +4419,14 @@
       "who": "Grayson ",
       "what": "",
       "amount": -6.35,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-04-18",
+      "vendor": "Starbucks",
+      "who": "Abbi",
+      "what": "",
+      "amount": -25,
       "category": "MANUAL"
     }
   ],
