@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3250.860000000009,
+    "checking_balance": 3244.5100000000093,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4411,6 +4411,14 @@
       "who": "Grayson",
       "what": "",
       "amount": -20.97,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-04-18",
+      "vendor": "Jarritos ",
+      "who": "Grayson ",
+      "what": "",
+      "amount": -6.35,
       "category": "MANUAL"
     }
   ],
