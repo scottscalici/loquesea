@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3271.830000000009,
+    "checking_balance": 3250.860000000009,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4403,6 +4403,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -25.44,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-04-18",
+      "vendor": "McDonald’s ",
+      "who": "Grayson",
+      "what": "",
+      "amount": -20.97,
       "category": "MANUAL"
     }
   ],
