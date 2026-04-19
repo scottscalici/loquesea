@@ -461,5 +461,14 @@
       "Rice",
       "Naan"
     ]
+  },
+  {
+    "date": "2026-04-23",
+    "meal": "Breakfast: Pancakes",
+    "sides_included": [
+      "Main Dish",
+      "Bacon or Sausage",
+      "Eggs"
+    ]
   }
 ]
