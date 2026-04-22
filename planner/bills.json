@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2483.6900000000096,
+    "checking_balance": 2477.5900000000097,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4481,6 +4481,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -32.94,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-04-22",
+      "vendor": "Tims",
+      "who": "Abbi",
+      "what": "",
+      "amount": -6.1,
       "category": "MANUAL"
     }
   ],
