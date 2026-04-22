@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2516.6300000000097,
+    "checking_balance": 2483.6900000000096,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4474,6 +4474,14 @@
       "vendor": "Citibank 2",
       "amount": -150,
       "category": "BILL"
+    },
+    {
+      "date": "2026-04-22",
+      "vendor": "Dhgate",
+      "who": "Abbi",
+      "what": "",
+      "amount": -32.94,
+      "category": "MANUAL"
     }
   ],
   "bills": [
