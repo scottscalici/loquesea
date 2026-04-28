@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3216.0600000000104,
+    "checking_balance": 3148.0600000000104,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4572,6 +4572,12 @@
       "vendor": "Disney/Hulu/HBO",
       "amount": -32.99,
       "category": "BILL"
+    },
+    {
+      "date": "2026-04-27",
+      "vendor": "D-Bat",
+      "amount": -68,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -4664,7 +4670,7 @@
       "name": "D-Bat",
       "frequency": "monthly",
       "amount": 68,
-      "next_due_date": "2026-04-27"
+      "next_due_date": "2026-05-27"
     },
     {
       "id": "disney-bundle",
