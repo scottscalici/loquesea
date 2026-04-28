@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3249.05000000001,
+    "checking_balance": 3216.0600000000104,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4566,6 +4566,12 @@
       "what": "",
       "amount": -1000,
       "category": "SAVINGS"
+    },
+    {
+      "date": "2026-04-25",
+      "vendor": "Disney/Hulu/HBO",
+      "amount": -32.99,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -4665,7 +4671,7 @@
       "name": "Disney/Hulu/HBO",
       "frequency": "monthly",
       "amount": 32.99,
-      "next_due_date": "2026-04-25"
+      "next_due_date": "2026-05-25"
     },
     {
       "id": "doghuman",
