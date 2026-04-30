@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2802.0500000000106,
+    "checking_balance": 2188.040000000011,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4596,6 +4596,12 @@
       "vendor": "Comcast",
       "amount": -310,
       "category": "BILL"
+    },
+    {
+      "date": "2026-04-29",
+      "vendor": "Mortgage",
+      "amount": -614.01,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -4821,7 +4827,7 @@
       "name": "Mortgage",
       "frequency": "bi-weekly",
       "amount": 614.01,
-      "next_due_date": "2026-04-29"
+      "next_due_date": "2026-05-13"
     },
     {
       "id": "nfhs",
