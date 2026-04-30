@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4988.040000000011,
+    "checking_balance": 4833.880000000011,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4608,6 +4608,12 @@
       "vendor": "Scott Payday",
       "amount": 2800,
       "category": "INCOME"
+    },
+    {
+      "date": "2026-04-28",
+      "vendor": "Student Loan",
+      "amount": -154.16,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -4917,7 +4923,7 @@
       "name": "Student Loan",
       "frequency": "monthly",
       "amount": 154.16,
-      "next_due_date": "2026-04-28"
+      "next_due_date": "2026-05-28"
     },
     {
       "id": "t-mobile",
