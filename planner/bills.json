@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4133.880000000011,
+    "checking_balance": 4048.880000000011,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4637,6 +4637,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -100,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-04-30",
+      "vendor": "Kroger",
+      "who": "Family",
+      "what": "",
+      "amount": -85,
       "category": "MANUAL"
     }
   ],
