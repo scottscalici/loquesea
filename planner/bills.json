@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3939.430000000011,
+    "checking_balance": 3889.430000000011,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4660,6 +4660,12 @@
       "vendor": "Put money aside",
       "amount": -1,
       "category": "BILL"
+    },
+    {
+      "date": "2026-05-01",
+      "vendor": "Firstmark",
+      "amount": -50,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -4787,7 +4793,7 @@
       "name": "Firstmark",
       "frequency": "monthly",
       "amount": 50,
-      "next_due_date": "2026-05-01"
+      "next_due_date": "2026-06-01"
     },
     {
       "id": "ford-f150",
