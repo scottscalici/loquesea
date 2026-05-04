@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3940.430000000011,
+    "checking_balance": 3939.430000000011,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4654,6 +4654,12 @@
       "what": "",
       "amount": -108.45,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-04-24",
+      "vendor": "Put money aside",
+      "amount": -1,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -4921,7 +4927,7 @@
       "name": "Put money aside",
       "frequency": "bi-weekly",
       "amount": 1,
-      "next_due_date": "2026-04-24"
+      "next_due_date": "2026-05-08"
     },
     {
       "id": "secondary-mortgage",
