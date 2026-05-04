@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3179.9500000000116,
+    "checking_balance": 3000.9500000000116,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4796,6 +4796,12 @@
       "vendor": "Citibank 1",
       "amount": -150,
       "category": "BILL"
+    },
+    {
+      "date": "2026-05-04",
+      "vendor": "Beachbody",
+      "amount": -179,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -4846,7 +4852,7 @@
       "name": "Beachbody",
       "frequency": "annually",
       "amount": 179,
-      "next_due_date": "2026-05-04"
+      "next_due_date": "2027-05-04"
     },
     {
       "id": "chatgpt",
