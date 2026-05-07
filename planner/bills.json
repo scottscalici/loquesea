@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 1211.4800000000116,
+    "checking_balance": 1177.3100000000115,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4970,6 +4970,14 @@
       "vendor": "Apple Storage (User)",
       "amount": -9.99,
       "category": "BILL"
+    },
+    {
+      "date": "2026-05-07",
+      "vendor": "McDonald’s ",
+      "who": "Family",
+      "what": "",
+      "amount": -34.17,
+      "category": "MANUAL"
     }
   ],
   "bills": [
