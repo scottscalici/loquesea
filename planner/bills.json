@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 1221.4700000000116,
+    "checking_balance": 1211.4800000000116,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -4964,6 +4964,12 @@
       "what": "",
       "amount": -3.4,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-05-07",
+      "vendor": "Apple Storage (User)",
+      "amount": -9.99,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -4986,7 +4992,7 @@
       "name": "Apple Storage (User)",
       "frequency": "monthly",
       "amount": 9.99,
-      "next_due_date": "2026-05-07"
+      "next_due_date": "2026-06-07"
     },
     {
       "id": "apple-storage-2",
