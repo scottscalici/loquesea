@@ -5048,7 +5048,7 @@
       "name": "Chewy",
       "frequency": "monthly",
       "amount": 61,
-      "next_due_date": "2026-05-02"
+      "next_due_date": "2026-06-02"
     },
     {
       "id": "citibank-1",
@@ -5251,7 +5251,7 @@
       "name": "Put money aside",
       "frequency": "bi-weekly",
       "amount": 1,
-      "next_due_date": "2026-05-22"
+      "next_due_date": "2026-05-08"
     },
     {
       "id": "secondary-mortgage",
