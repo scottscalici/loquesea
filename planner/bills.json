@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3658.8600000000115,
+    "checking_balance": 3578.3700000000117,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5029,6 +5029,14 @@
       "who": "Scott",
       "what": "",
       "amount": -74.49,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-05-10",
+      "vendor": "Tournament entry",
+      "who": "Family",
+      "what": "",
+      "amount": -80.49,
       "category": "MANUAL"
     }
   ],
