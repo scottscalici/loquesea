@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 5010.430000000011,
+    "checking_balance": 4344.690000000011,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5010,6 +5010,12 @@
       "vendor": "AXA S",
       "amount": -27.81,
       "category": "BILL"
+    },
+    {
+      "date": "2026-05-09",
+      "vendor": "Ford F-150",
+      "amount": -665.74,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -5144,7 +5150,7 @@
       "name": "Ford F-150",
       "frequency": "monthly",
       "amount": 665.74,
-      "next_due_date": "2026-05-09"
+      "next_due_date": "2026-06-09"
     },
     {
       "id": "ford-mache",
