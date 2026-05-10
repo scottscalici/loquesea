@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2896.210000000012,
+    "checking_balance": 2893.210000000012,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5109,6 +5109,14 @@
       "who": "Grayson",
       "what": "",
       "amount": -41,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-05-10",
+      "vendor": "Coffee",
+      "who": "Scott",
+      "what": "",
+      "amount": -3,
       "category": "MANUAL"
     }
   ],
