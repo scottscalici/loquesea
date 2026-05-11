@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2626.220000000012,
+    "checking_balance": 1876.220000000012,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5131,6 +5131,14 @@
       "who": "",
       "what": "Cedar Point leftover",
       "amount": -250,
+      "category": "BONUS"
+    },
+    {
+      "date": "2026-05-11",
+      "vendor": "BONUS",
+      "who": "Family",
+      "what": "Cedar Point budget",
+      "amount": -750,
       "category": "BONUS"
     }
   ],
