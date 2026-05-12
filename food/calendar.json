@@ -470,5 +470,16 @@
       "Bacon or Sausage",
       "Eggs"
     ]
+  },
+  {
+    "date": "2026-05-12",
+    "meal": "Pasta w/ Marinara",
+    "sides_included": [
+      "Main Dish",
+      "Garlic Bread",
+      "Salad",
+      "Veggie",
+      "Cottage Cheese"
+    ]
   }
 ]
