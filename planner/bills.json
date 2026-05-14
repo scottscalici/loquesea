@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 1466.4500000000123,
+    "checking_balance": 1459.9500000000123,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5241,6 +5241,14 @@
       "who": "Family",
       "what": "",
       "amount": -101,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-05-14",
+      "vendor": "TPT",
+      "who": "Abbi",
+      "what": "",
+      "amount": -6.5,
       "category": "MANUAL"
     }
   ],
