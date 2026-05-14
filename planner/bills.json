@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 1308.4400000000123,
+    "checking_balance": 1274.2900000000122,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5288,6 +5288,14 @@
       "vendor": "Dog is Human",
       "amount": -41.45,
       "category": "BILL"
+    },
+    {
+      "date": "2026-05-14",
+      "vendor": "Amazon",
+      "who": "Abbi",
+      "what": "",
+      "amount": -34.15,
+      "category": "MANUAL"
     }
   ],
   "bills": [
