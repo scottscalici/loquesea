@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 1419.0900000000124,
+    "checking_balance": 1403.0900000000124,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5257,6 +5257,14 @@
       "who": "Scott",
       "what": "",
       "amount": -40.86,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-05-14",
+      "vendor": "Venmo",
+      "who": "Abbi",
+      "what": "",
+      "amount": -16,
       "category": "MANUAL"
     }
   ],
