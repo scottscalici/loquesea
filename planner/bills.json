@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3783.2500000000123,
+    "checking_balance": 3562.2500000000123,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5357,6 +5357,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -101.75,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-05-15",
+      "vendor": "Free people ",
+      "who": "Abbi",
+      "what": "",
+      "amount": -221,
       "category": "MANUAL"
     }
   ],
