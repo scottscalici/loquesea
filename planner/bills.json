@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3008.170000000013,
+    "checking_balance": 2960.8100000000127,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5451,6 +5451,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -39.12,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-05-17",
+      "vendor": "Pots?",
+      "who": "Abbi",
+      "what": "",
+      "amount": -47.36,
       "category": "MANUAL"
     }
   ],
