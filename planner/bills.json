@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3053.9600000000128,
+    "checking_balance": 3047.2900000000127,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5435,6 +5435,14 @@
       "who": "Scott",
       "what": "",
       "amount": -33.5,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-05-17",
+      "vendor": "Amazon",
+      "who": "Grayson",
+      "what": "",
+      "amount": -6.67,
       "category": "MANUAL"
     }
   ],
