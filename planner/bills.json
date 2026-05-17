@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3192.3900000000126,
+    "checking_balance": 3131.9600000000128,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5412,6 +5412,14 @@
       "vendor": "HP Instant Ink",
       "amount": -8.47,
       "category": "BILL"
+    },
+    {
+      "date": "2026-05-17",
+      "vendor": "Pizza",
+      "who": "Family",
+      "what": "",
+      "amount": -60.43,
+      "category": "MANUAL"
     }
   ],
   "bills": [
