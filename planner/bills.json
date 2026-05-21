@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2513.2200000000134,
+    "checking_balance": 2813.2200000000134,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5485,12 +5485,6 @@
       "date": "2026-05-21",
       "vendor": "Jax A",
       "amount": -33.99,
-      "category": "BILL"
-    },
-    {
-      "date": "2026-05-21",
-      "vendor": "T-Mobile",
-      "amount": -300,
       "category": "BILL"
     }
   ],
