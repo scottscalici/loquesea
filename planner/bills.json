@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2847.210000000013,
+    "checking_balance": 2813.2200000000134,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5480,6 +5480,12 @@
       "vendor": "AXA A",
       "amount": -44.49,
       "category": "BILL"
+    },
+    {
+      "date": "2026-05-21",
+      "vendor": "Jax A",
+      "amount": -33.99,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -5670,7 +5676,7 @@
       "name": "Jax A",
       "frequency": "monthly",
       "amount": 26.99,
-      "next_due_date": "2026-05-21"
+      "next_due_date": "2026-06-21"
     },
     {
       "id": "jax-s",
