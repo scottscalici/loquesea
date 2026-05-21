@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2891.700000000013,
+    "checking_balance": 2847.210000000013,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5474,6 +5474,12 @@
       "vendor": "Paramount Plus",
       "amount": -13.99,
       "category": "BILL"
+    },
+    {
+      "date": "2026-05-21",
+      "vendor": "AXA A",
+      "amount": -44.49,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -5510,7 +5516,7 @@
       "name": "AXA A",
       "frequency": "monthly",
       "amount": 44.49,
-      "next_due_date": "2026-05-21"
+      "next_due_date": "2026-06-21"
     },
     {
       "id": "axa-s",
