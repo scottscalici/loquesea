@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 1962.5100000000134,
+    "checking_balance": 1867.1100000000133,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5573,6 +5573,14 @@
       "who": "",
       "what": "",
       "amount": -80,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-05-21",
+      "vendor": "Nordstrom",
+      "who": "Abbi",
+      "what": "",
+      "amount": -95.4,
       "category": "MANUAL"
     }
   ],
