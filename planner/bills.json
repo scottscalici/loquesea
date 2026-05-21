@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 1567.0600000000131,
+    "checking_balance": 1574.0600000000131,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5609,10 +5609,10 @@
     },
     {
       "date": "2026-05-21",
-      "vendor": "Car wash",
-      "who": "",
+      "vendor": "Supercuts",
+      "who": "Grayson ",
       "what": "",
-      "amount": -39,
+      "amount": -32,
       "category": "MANUAL"
     }
   ],
