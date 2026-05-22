@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3534.060000000013,
+    "checking_balance": 3384.060000000013,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5630,6 +5630,12 @@
       "what": "",
       "amount": 2000,
       "category": "MANUAL"
+    },
+    {
+      "date": "2026-05-22",
+      "vendor": "Citibank 2",
+      "amount": -150,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -5708,7 +5714,7 @@
       "name": "Citibank 2",
       "frequency": "monthly",
       "amount": 150,
-      "next_due_date": "2026-05-22"
+      "next_due_date": "2026-06-22"
     },
     {
       "id": "comcast",
