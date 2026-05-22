@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3384.060000000013,
+    "checking_balance": 7184.060000000013,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5636,6 +5636,12 @@
       "vendor": "Citibank 2",
       "amount": -150,
       "category": "BILL"
+    },
+    {
+      "date": "2026-05-23",
+      "vendor": "Wife Payday",
+      "amount": 3800,
+      "category": "INCOME"
     }
   ],
   "bills": [
