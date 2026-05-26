@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3593.0800000000136,
+    "checking_balance": 3439.0800000000136,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5690,6 +5690,14 @@
       "vendor": "Comcast",
       "amount": -310,
       "category": "BILL"
+    },
+    {
+      "date": "2026-05-26",
+      "vendor": "BONUS",
+      "who": "Loan",
+      "what": "",
+      "amount": -154,
+      "category": "BONUS"
     }
   ],
   "bills": [
