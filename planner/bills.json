@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2533.4100000000135,
+    "checking_balance": 5333.4100000000135,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5752,6 +5752,12 @@
       "vendor": "D-Bat",
       "amount": -68,
       "category": "BILL"
+    },
+    {
+      "date": "2026-05-31",
+      "vendor": "Scott Payday",
+      "amount": 2800,
+      "category": "INCOME"
     }
   ],
   "bills": [
