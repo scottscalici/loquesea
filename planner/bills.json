@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 4406.8300000000145,
+    "checking_balance": 4400.3300000000145,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5861,6 +5861,14 @@
       "who": "Abbi",
       "what": "",
       "amount": -216.24,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-05-31",
+      "vendor": "Records",
+      "who": "",
+      "what": "",
+      "amount": -6.5,
       "category": "MANUAL"
     }
   ],
