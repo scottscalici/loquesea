@@ -481,5 +481,15 @@
       "Veggie",
       "Cottage Cheese"
     ]
+  },
+  {
+    "date": "2026-06-03",
+    "meal": "Brats ",
+    "sides_included": [
+      "Main Dish",
+      "Pretzels",
+      "Green Beans",
+      "Baked Beans"
+    ]
   }
 ]
