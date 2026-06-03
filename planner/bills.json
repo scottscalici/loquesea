@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3628.4800000000146,
+    "checking_balance": 3492.9600000000146,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5968,6 +5968,14 @@
       "vendor": "HP Instant Ink",
       "amount": -16.99,
       "category": "BILL"
+    },
+    {
+      "date": "2026-06-03",
+      "vendor": "AE",
+      "who": "Abbi",
+      "what": "",
+      "amount": -135.52,
+      "category": "MANUAL"
     }
   ],
   "bills": [
