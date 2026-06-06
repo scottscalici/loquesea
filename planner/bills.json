@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3181.100000000015,
+    "checking_balance": 2803.7800000000148,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -5996,6 +5996,12 @@
       "vendor": "GameChanger-Abbi",
       "amount": -26.49,
       "category": "BILL"
+    },
+    {
+      "date": "2026-06-05",
+      "vendor": "Secondary Mortgage",
+      "amount": -377.32,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -6270,7 +6276,7 @@
       "name": "Secondary Mortgage",
       "frequency": "monthly",
       "amount": 377.32,
-      "next_due_date": "2026-06-05"
+      "next_due_date": "2026-07-05"
     },
     {
       "id": "semco",
