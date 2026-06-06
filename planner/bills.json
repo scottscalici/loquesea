@@ -38,7 +38,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 6132.890000000016,
+    "checking_balance": 6078.2100000000155,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -6127,6 +6127,14 @@
       "who": "",
       "what": "",
       "amount": -2.84,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-06-06",
+      "vendor": "Owala",
+      "who": "",
+      "what": "",
+      "amount": -54.68,
       "category": "MANUAL"
     }
   ],
