@@ -5,19 +5,14 @@
   },
   "savings_goals": [
     {
-      "name": "Cedar Point Tournament",
-      "target": 2000,
+      "name": "Road Trip",
+      "target": 5000,
       "current": 2000
-    },
-    {
-      "name": "Pigeon Forge Tournament",
-      "target": 3000,
-      "current": 3000
     },
     {
       "name": "Renovation",
       "target": 10000,
-      "current": 30
+      "current": 80
     }
   ],
   "paydays": [
