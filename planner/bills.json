@@ -6419,7 +6419,7 @@
       "name": "Put money aside",
       "frequency": "bi-weekly",
       "amount": 1,
-      "next_due_date": "2026-06-05"
+      "next_due_date": "2026-06-19"
     },
     {
       "id": "secondary-mortgage",
