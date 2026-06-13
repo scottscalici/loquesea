@@ -33,7 +33,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3727.1600000000158,
+    "checking_balance": 3527.1600000000158,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -6201,6 +6201,14 @@
       "vendor": "ChatGPT",
       "amount": -21.19,
       "category": "BILL"
+    },
+    {
+      "date": "2026-06-12",
+      "vendor": "Training",
+      "who": "Kids",
+      "what": "",
+      "amount": -200,
+      "category": "MANUAL"
     }
   ],
   "bills": [
