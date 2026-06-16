@@ -33,7 +33,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3349.2800000000157,
+    "checking_balance": 3242.4800000000155,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -6223,6 +6223,12 @@
       "vendor": "Rec Center",
       "amount": -70,
       "category": "BILL"
+    },
+    {
+      "date": "2026-06-15",
+      "vendor": "UEA",
+      "amount": -106.8,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -6546,7 +6552,7 @@
       "name": "UEA",
       "frequency": "monthly",
       "amount": 106.8,
-      "next_due_date": "2026-06-15"
+      "next_due_date": "2026-07-15"
     },
     {
       "id": "water-sewer",
