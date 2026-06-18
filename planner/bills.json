@@ -33,7 +33,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 3101.890000000016,
+    "checking_balance": 3093.420000000016,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -6241,6 +6241,12 @@
       "vendor": "Jax S",
       "amount": -35.99,
       "category": "BILL"
+    },
+    {
+      "date": "2026-06-17",
+      "vendor": "HP Instant Ink",
+      "amount": -8.47,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -6424,7 +6430,7 @@
       "name": "HP Instant Ink",
       "frequency": "monthly",
       "amount": 8.47,
-      "next_due_date": "2026-06-17"
+      "next_due_date": "2026-07-17"
     },
     {
       "id": "jax-a",
