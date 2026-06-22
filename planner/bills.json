@@ -33,7 +33,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 2780.430000000016,
+    "checking_balance": 2630.430000000016,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -6259,6 +6259,12 @@
       "vendor": "T-Mobile",
       "amount": -300,
       "category": "BILL"
+    },
+    {
+      "date": "2026-06-22",
+      "vendor": "Citibank 2",
+      "amount": -150,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -6337,7 +6343,7 @@
       "name": "Citibank 2",
       "frequency": "monthly",
       "amount": 150,
-      "next_due_date": "2026-06-22"
+      "next_due_date": "2026-07-22"
     },
     {
       "id": "comcast",
