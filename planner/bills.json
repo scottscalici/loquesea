@@ -33,7 +33,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": -3594.429999999983,
+    "checking_balance": -3638.919999999983,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -6489,6 +6489,12 @@
       "vendor": "DTE",
       "amount": -450,
       "category": "BILL"
+    },
+    {
+      "date": "2026-07-21",
+      "vendor": "AXA A",
+      "amount": -44.49,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -6525,7 +6531,7 @@
       "name": "AXA A",
       "frequency": "monthly",
       "amount": 44.49,
-      "next_due_date": "2026-07-21"
+      "next_due_date": "2026-08-21"
     },
     {
       "id": "axa-s",
