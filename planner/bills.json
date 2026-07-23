@@ -33,7 +33,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 268.5900000000164,
+    "checking_balance": 316.6000000000164,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -6342,8 +6342,8 @@
     },
     {
       "date": "2026-07-01",
-      "vendor": "Firstmark",
-      "amount": -50,
+      "vendor": "SnowFreaks",
+      "amount": -1.99,
       "category": "BILL"
     }
   ],
@@ -6472,7 +6472,7 @@
       "name": "Firstmark",
       "frequency": "monthly",
       "amount": 50,
-      "next_due_date": "2026-08-01"
+      "next_due_date": "2026-07-01"
     },
     {
       "id": "ford-f150",
@@ -6633,7 +6633,7 @@
       "name": "SnowFreaks",
       "frequency": "monthly",
       "amount": 1.99,
-      "next_due_date": "2026-07-01"
+      "next_due_date": "2026-08-01"
     },
     {
       "id": "spotify",
