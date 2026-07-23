@@ -33,7 +33,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 34.090000000017426,
+    "checking_balance": 984.0900000000174,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -6514,6 +6514,14 @@
       "who": "Balance",
       "what": "",
       "amount": 4000,
+      "category": "MANUAL"
+    },
+    {
+      "date": "2026-07-23",
+      "vendor": "Income",
+      "who": "Balance ",
+      "what": "",
+      "amount": 950,
       "category": "MANUAL"
     }
   ],
