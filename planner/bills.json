@@ -33,7 +33,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 38.6100000000164,
+    "checking_balance": 24.620000000016397,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -6369,6 +6369,12 @@
       "vendor": "HP Instant Ink",
       "amount": -16.99,
       "category": "BILL"
+    },
+    {
+      "date": "2026-07-02",
+      "vendor": "NFHS",
+      "amount": -13.99,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -6601,7 +6607,7 @@
       "name": "NFHS",
       "frequency": "monthly",
       "amount": 13.99,
-      "next_due_date": "2026-07-02"
+      "next_due_date": "2026-08-02"
     },
     {
       "id": "paramount-plus",
