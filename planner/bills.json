@@ -33,7 +33,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 188.61000000001638,
+    "checking_balance": 38.6100000000164,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -6360,6 +6360,12 @@
     },
     {
       "date": "2026-07-02",
+      "vendor": "Citibank 1",
+      "amount": -150,
+      "category": "BILL"
+    },
+    {
+      "date": "2026-07-02",
       "vendor": "HP Instant Ink",
       "amount": -16.99,
       "category": "BILL"
@@ -6434,7 +6440,7 @@
       "name": "Citibank 1",
       "frequency": "monthly",
       "amount": 150,
-      "next_due_date": "2026-07-02"
+      "next_due_date": "2026-08-02"
     },
     {
       "id": "citibank-2",
