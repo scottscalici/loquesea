@@ -33,7 +33,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": -2759.5799999999836,
+    "checking_balance": -2774.5799999999836,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -6435,6 +6435,12 @@
       "vendor": "Semco",
       "amount": -250,
       "category": "BILL"
+    },
+    {
+      "date": "2026-07-15",
+      "vendor": "GameChanger-Abbi",
+      "amount": -15,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -6590,7 +6596,7 @@
       "name": "GameChanger-Abbi",
       "frequency": "monthly",
       "amount": 15,
-      "next_due_date": "2026-07-15"
+      "next_due_date": "2026-08-15"
     },
     {
       "id": "generation-genius",
