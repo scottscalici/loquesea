@@ -33,7 +33,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": -3130.4399999999832,
+    "checking_balance": -3143.429999999983,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -6471,6 +6471,12 @@
       "vendor": "HP Instant Ink",
       "amount": -8.47,
       "category": "BILL"
+    },
+    {
+      "date": "2026-07-17",
+      "vendor": "Paramount Plus",
+      "amount": -12.99,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -6710,7 +6716,7 @@
       "name": "Paramount Plus",
       "frequency": "monthly",
       "amount": 12.99,
-      "next_due_date": "2026-07-17"
+      "next_due_date": "2026-08-17"
     },
     {
       "id": "priority-waste",
