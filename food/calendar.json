@@ -509,5 +509,15 @@
       "Bacon or Sausage",
       "Eggs"
     ]
+  },
+  {
+    "date": "2026-07-27",
+    "meal": "Fajita Wraps",
+    "sides_included": [
+      "Main Dish",
+      "Chips & Salsa",
+      "Rice",
+      "Refried Beans"
+    ]
   }
 ]
