@@ -33,7 +33,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": 184.10000000001742,
+    "checking_balance": 158.0800000000174,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -6547,6 +6547,12 @@
       "vendor": "Disney/Hulu/HBO",
       "amount": -32.99,
       "category": "BILL"
+    },
+    {
+      "date": "2026-07-27",
+      "vendor": "Salt & Stone",
+      "amount": -26.02,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -6807,7 +6813,7 @@
       "name": "Salt & Stone",
       "frequency": "monthly",
       "amount": 26.02,
-      "next_due_date": "2026-07-27"
+      "next_due_date": "2026-08-27"
     },
     {
       "id": "savings",
