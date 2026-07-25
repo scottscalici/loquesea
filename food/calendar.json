@@ -499,5 +499,15 @@
       "Main Dish",
       "French Bread"
     ]
+  },
+  {
+    "date": "2026-07-26",
+    "meal": "Breakfast: Pancakes",
+    "sides_included": [
+      "Main Dish",
+      "Pancakes",
+      "Bacon or Sausage",
+      "Eggs"
+    ]
   }
 ]
