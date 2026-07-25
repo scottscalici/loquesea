@@ -491,5 +491,13 @@
       "Green Beans",
       "Baked Beans"
     ]
+  },
+  {
+    "date": "2026-07-25",
+    "meal": "Swamp Potatoes",
+    "sides_included": [
+      "Main Dish",
+      "French Bread"
+    ]
   }
 ]
