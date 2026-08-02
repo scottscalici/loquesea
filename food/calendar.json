@@ -519,5 +519,15 @@
       "Rice",
       "Refried Beans"
     ]
+  },
+  {
+    "date": "2026-08-02",
+    "meal": "BBQ Chicken",
+    "sides_included": [
+      "Main Dish",
+      "Noodles",
+      "Rice",
+      "Veggie"
+    ]
   }
 ]
