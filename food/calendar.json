@@ -529,5 +529,14 @@
       "Rice",
       "Veggie"
     ]
+  },
+  {
+    "date": "2026-08-03",
+    "meal": "Ramen bake",
+    "sides_included": [
+      "Main Dish",
+      "Dumplings",
+      "Edamame"
+    ]
   }
 ]
