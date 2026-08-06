@@ -33,7 +33,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": -211.9099999999826,
+    "checking_balance": -361.9099999999826,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -6571,6 +6571,12 @@
       "vendor": "Firstmark",
       "amount": -50,
       "category": "BILL"
+    },
+    {
+      "date": "2026-08-02",
+      "vendor": "Citibank 1",
+      "amount": -150,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -6642,7 +6648,7 @@
       "name": "Citibank 1",
       "frequency": "monthly",
       "amount": 150,
-      "next_due_date": "2026-08-02"
+      "next_due_date": "2026-09-02"
     },
     {
       "id": "citibank-2",
