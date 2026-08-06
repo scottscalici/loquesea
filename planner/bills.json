@@ -6838,7 +6838,7 @@
       "name": "Put money aside",
       "frequency": "bi-weekly",
       "amount": 1,
-      "next_due_date": "2026-07-31"
+      "next_due_date": "2026-08-14"
     },
     {
       "id": "secondary-mortgage",
