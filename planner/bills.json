@@ -33,7 +33,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": -1353.2399999999825,
+    "checking_balance": -1563.2399999999825,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -6589,6 +6589,12 @@
       "vendor": "Secondary Mortgage",
       "amount": -377.32,
       "category": "BILL"
+    },
+    {
+      "date": "2026-08-08",
+      "vendor": "Meemic",
+      "amount": -210,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -6800,7 +6806,7 @@
       "name": "Meemic",
       "frequency": "monthly",
       "amount": 210,
-      "next_due_date": "2026-08-08"
+      "next_due_date": "2026-09-08"
     },
     {
       "id": "mi-sos",
