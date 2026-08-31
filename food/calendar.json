@@ -552,5 +552,14 @@
     "sides_included": [
       "Main Dish"
     ]
+  },
+  {
+    "date": "2026-09-03",
+    "meal": "Turkey sausage orzo",
+    "sides_included": [
+      "Main Dish",
+      "Cottage Cheese",
+      "Garlic / Cheesy Bread"
+    ]
   }
 ]
