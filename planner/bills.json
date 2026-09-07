@@ -33,7 +33,7 @@
   "state": {
     "current_weekly_remaining": 568.74,
     "escrow_remaining": 500,
-    "checking_balance": -1616.1999999999825,
+    "checking_balance": -1633.1899999999825,
     "travel_savings": 0,
     "weekly_budget_remaining": 1010.7999999999998,
     "flex_budget_remaining": 300,
@@ -6601,6 +6601,12 @@
       "vendor": "Meemic",
       "amount": -212.96,
       "category": "BILL"
+    },
+    {
+      "date": "2026-08-02",
+      "vendor": "HP Instant Ink",
+      "amount": -16.99,
+      "category": "BILL"
     }
   ],
   "bills": [
@@ -6777,7 +6783,7 @@
       "name": "HP Instant Ink",
       "frequency": "monthly",
       "amount": 16.99,
-      "next_due_date": "2026-08-02"
+      "next_due_date": "2026-09-02"
     },
     {
       "id": "hp-ink-2",
