@@ -561,5 +561,13 @@
       "Cottage Cheese",
       "Garlic / Cheesy Bread"
     ]
+  },
+  {
+    "date": "2026-09-10",
+    "meal": "Cheesy Taco Rice",
+    "sides_included": [
+      "Main Dish",
+      "Nacho Chips"
+    ]
   }
 ]
