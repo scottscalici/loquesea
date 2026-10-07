@@ -75,7 +75,9 @@ function normalizeIngredient(ing) {
 
 const UNITS = ['lb', 'lbs', 'oz', 'pack', 'packs', 'pkg', 'can', 'cans', 'jar', 'jars', 'bag', 'bags',
     'box', 'boxes', 'bottle', 'bottles', 'bunch', 'bunches', 'head', 'heads', 'loaf', 'loaves',
-    'cup', 'cups', 'tbsp', 'tsp', 'clove', 'cloves', 'dozen', 'pouch', 'pouches', 'block', 'blocks'];
+    'cup', 'cups', 'tbsp', 'tsp', 'clove', 'cloves', 'dozen', 'pouch', 'pouches', 'block', 'blocks',
+    'gallon', 'gallons', 'gal', 'quart', 'quarts', 'pint', 'pints', 'carton', 'cartons', 'container', 'containers',
+    'tub', 'tubs', 'package', 'packages', 'packet', 'packets', 'stick', 'sticks', 'ct'];
 
 // "2 cans black beans (rinsed)" -> { item: "black beans", amount: "2 cans", note: "rinsed" }
 function parseIngredientLine(line) {
@@ -111,7 +113,8 @@ function ingredientLabel(ing) {
 
 const SINGULAR = { lbs: 'lb', packs: 'pack', cans: 'can', jars: 'jar', bags: 'bag', boxes: 'box',
     bottles: 'bottle', bunches: 'bunch', heads: 'head', loaves: 'loaf', cups: 'cup', cloves: 'clove',
-    pouches: 'pouch', blocks: 'block' };
+    pouches: 'pouch', blocks: 'block', gallons: 'gallon', quarts: 'quart', pints: 'pint', cartons: 'carton',
+    containers: 'container', tubs: 'tub', packages: 'package', packets: 'packet', sticks: 'stick' };
 const PLURAL = Object.fromEntries(Object.entries(SINGULAR).map(([p, s]) => [s, p]));
 
 // Adds up amounts like "1 pack" + "2 packs" -> "3 packs"; anything else is listed as-is.
@@ -136,4 +139,42 @@ function combineAmounts(amounts) {
 
 function escapeHtml(s) {
     return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// --- Store sections ------------------------------------------------------
+// Listed in the order you'd walk the store. food/items.json records each
+// item's section; guessSection() fills in new items until one is chosen.
+
+const SECTIONS = ['Produce', 'Bakery & Bread', 'Deli', 'Meat & Seafood', 'Dairy & Eggs',
+    'Pasta & Rice', 'Canned & Soups', 'International', 'Oils, Sauces & Condiments',
+    'Spices & Baking', 'Snacks & Chips', 'Frozen', 'Other'];
+
+// First match wins, so the more specific sections come first.
+const SECTION_RULES = [
+    ['Frozen', /\bfrozen\b|voila|\bfries\b|onion rings|egg rolls|dumplings?\b|garlic bread|texas toast|tater tots|ice cream|meatballs/],
+    ['Snacks & Chips', /(?<!chocolate )chips|crisps|pretzels|crackers|popcorn|nachos/],
+    ['International', /curry paste|coconut milk|saz[oó]n|aj[ií] amarillo|sofrito|miso|wonton|lo mein|ramen|stir fry noodles|tortillas?\b|taco shells|refried|hoisin|oyster sauce|soy sauce|sesame oil|chili oil|mirin|naan|seaweed/],
+    ['Spices & Baking', /(biscuit|cake|pancake|brownie|muffin|onion soup|sloppy joe|taco|chili) mix|seasoning/],
+    ['Produce', /salad mix|spring mix|salad greens/],
+    ['Canned & Soups', /applesauce|canned|broth|stock\b|soup|bisque|(?<!green )beans\b|chickpeas|rotel|tomato paste|tomato sauce|diced tomatoes|crushed tomatoes|pineapple chunks|evaporated milk/],
+    ['Pasta & Rice', /pasta|spaghetti|penne|rotini|fettuccine|orzo|ravioli|tortellini|noodles?\b|mac & cheese|\brice\b|quinoa|couscous|knorr|rice-a-roni|tuna helper|lasagna/],
+    ['Bakery & Bread', /bread|\bbuns?\b|\brolls?\b|baguette|pita|breadsticks|cornbread|bagels?/],
+    ['Deli', /rotisserie|salami|pepperoni|\bdeli\b|\bham\b|hummus|guacamole|cole slaw|salad kit|mashed potatoes|blue cheese dip|tzatziki/],
+    ['Meat & Seafood', /chicken|beef|steak|pork|turkey|sausage|bacon|brats|hot ?dogs|burger patties|shrimp|salmon|fish|flounder|crab|lobster|wings|kielbasa|\bmeat\b|tenderloin|chops/],
+    ['Spices & Baking', /seasoning|powder|spice|cumin|paprika|turmeric|coriander|garam masala|old bay|\bmsg\b|\bsalt\b|pepper flakes|\bflour\b|sugar|cornstarch|baking|\bmix\b|chocolate chips|gravy|au jus|ground ginger|sesame seeds/],
+    ['Oils, Sauces & Condiments', /sauce|ketchup|mayo|mustard|dressing|ranch|salsa|teriyaki|worcestershire|vinegar|glaze|\bjam\b|jelly|syrup|honey|paste|\bdip\b|queso|\boil\b|pickle|gherkins|olives|pepperoncini|banana peppers|peanut butter|alfredo|marinara|arrabbiata/],
+    ['Dairy & Eggs', /cheese|cheddar|mozzarella|parmesan|feta|cotija|provolone|milk|cream|butter\b|yogurt|\beggs?\b|velveeta|american/],
+    ['Produce', /lettuce|tomato|onion|pepper|garlic|ginger|potato|carrot|celery|broccoli|asparagus|spinach|cucumber|avocado|lemon|lime|cilantro|basil|green beans|corn\b|cabbage|bok choy|brussels|apple|grapes|blueberr|banana|jalape|salad|veggie|\bpeas\b|edamame|mushroom|zucchini|squash|fruit|herbs|plantain|potatoes/],
+];
+
+function guessSection(item) {
+    const s = item.toLowerCase();
+    const hit = SECTION_RULES.find(([, re]) => re.test(s));
+    return hit ? hit[0] : 'Other';
+}
+
+// Info about an item: { section, pantry?, regular? } from items.json, or a guess.
+function itemInfo(items, item) {
+    const saved = items[item.trim().toLowerCase()] || {};
+    return { section: guessSection(item), ...saved };
 }

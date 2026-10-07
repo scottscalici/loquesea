@@ -7,7 +7,7 @@
     <style>
         body { font-family: 'Segoe UI', sans-serif; margin: 20px; background: #f4f7f6; color: #333; }
         .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        .nav-bar { display: flex; justify-content: center; background: #2c3e50; padding: 10px; margin-bottom: 20px; border-radius: 8px; gap: 15px; }
+        .nav-bar { display: flex; justify-content: center; background: #2c3e50; padding: 10px; margin-bottom: 20px; border-radius: 8px; gap: 4px; }
         .nav-bar a { color: white; text-decoration: none; font-weight: bold; font-size: 0.85em; padding: 5px 10px; border-radius: 4px; }
         .nav-bar a.active { background: #3498db; }
         label { display: block; margin-top: 15px; font-weight: 600; font-size: 0.9em; color: #7f8c8d; }
@@ -21,9 +21,10 @@
 <body>
     <div class="container">
         <nav class="nav-bar">
-            <a href="recipes.html">1. Recipes</a>
-            <a href="planner.html" class="active">2. Plan</a>
-            <a href="view.html">3. View/Shop</a>
+        <a href="recipes.html">Recipes</a>
+        <a href="planner.html" class="active">Plan</a>
+        <a href="view.html">Calendar</a>
+        <a href="shop.html">Shop</a>
         </nav>
 
         <h2>Plan a Meal</h2>
@@ -70,6 +71,8 @@
                 return;
             }
             
+            const params = new URLSearchParams(location.search);
+            if (params.get('date')) document.getElementById('planDate').value = params.get('date');
             populateTags();
             populateGlobalSides();
             filterMeals(); 
@@ -167,7 +170,8 @@
                     return cal;
                 }, `Plan ${date}`);
                 statusDiv.innerHTML = '<span style="color:green">Success! Meal Added.</span>';
-                setTimeout(() => location.reload(), 1500);
+                // Coming from the calendar's "+ Plan a meal", go back to it.
+                setTimeout(() => new URLSearchParams(location.search).has('date') ? location.href = 'view.html' : location.reload(), 1200);
             } catch (err) {
                 statusDiv.innerHTML = `<span style="color:red">Error saving: ${escapeHtml(err.message)}</span>`;
             }

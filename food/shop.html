@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping List</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', -apple-system, sans-serif; margin: 0; padding: 12px 12px 90px; background: #f4f7f6; color: #333; }
+        .container { max-width: 600px; margin: auto; }
+        .nav-bar { display: flex; justify-content: center; background: #2c3e50; padding: 8px; margin-bottom: 14px; border-radius: 8px; gap: 4px; }
+        .nav-bar a { color: white; text-decoration: none; font-weight: bold; font-size: 0.85em; padding: 6px 10px; border-radius: 4px; }
+        .nav-bar a.active { background: #3498db; }
+        input, select { width: 100%; padding: 11px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; font-family: inherit; background: white; }
+        button { font-family: inherit; font-size: 15px; cursor: pointer; border: none; border-radius: 8px; font-weight: bold; padding: 11px 14px; }
+        .btn-primary { background: #27ae60; color: white; }
+        .btn-light { background: #ecf0f1; color: #2c3e50; }
+        .row { display: flex; gap: 8px; align-items: center; }
+
+        .ranges { display: flex; gap: 6px; margin-bottom: 8px; }
+        .ranges button { flex: 1; background: white; color: #2c3e50; border: 1px solid #d5dbdb; padding: 9px 6px; font-size: 14px; }
+        .ranges button.on { background: #2c3e50; color: white; border-color: #2c3e50; }
+        #customRange { display: none; margin-bottom: 8px; }
+        #customRange.open { display: flex; }
+        .summary { font-size: 0.85em; color: #7f8c8d; margin: 6px 2px 12px; }
+        .summary summary { cursor: pointer; }
+        .summary ul { margin: 6px 0 0; padding-left: 18px; }
+        .add-row { margin-bottom: 14px; }
+        .add-row button { flex: none; }
+
+        .section { background: white; border-radius: 12px; box-shadow: 0 1px 6px rgba(0,0,0,0.06); margin-bottom: 12px; overflow: hidden; }
+        .section h3 { margin: 0; padding: 10px 14px; font-size: 0.8em; text-transform: uppercase; letter-spacing: .05em; color: #7f8c8d; background: #fafbfb; border-bottom: 1px solid #eef0f0; display: flex; justify-content: space-between; }
+        .section.pantry h3 { color: #b9770e; background: #fef9e7; }
+        .section.done { opacity: .75; }
+        .item { display: flex; align-items: center; gap: 10px; padding: 11px 6px 11px 14px; border-bottom: 1px solid #f2f4f4; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .item:last-child { border-bottom: none; }
+        .check { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #bdc3c7; flex: none; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; }
+        .item.got .check { background: #27ae60; border-color: #27ae60; }
+        .item.got .name { text-decoration: line-through; color: #aaa; }
+        .what { flex: 1; min-width: 0; }
+        .name { font-size: 1.02em; }
+        .note { font-size: 0.85em; color: #7f8c8d; }
+        .for { display: block; font-size: 0.75em; color: #a6acaf; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .tagpill { font-size: 0.7em; background: #e8f6f3; color: #148f77; border-radius: 4px; padding: 1px 5px; margin-left: 4px; vertical-align: middle; }
+        .qty { font-weight: bold; color: #b9770e; background: #fef5e7; padding: 3px 8px; border-radius: 6px; white-space: nowrap; font-size: 0.85em; flex: none; }
+        .more { background: none; color: #95a5a6; font-size: 20px; padding: 4px 10px; flex: none; }
+        .empty { text-align: center; color: #95a5a6; padding: 30px 10px; }
+        .toggle-group { width: 100%; background: none; color: #7f8c8d; font-size: 0.85em; padding: 10px; }
+
+        .bottombar { position: fixed; left: 0; right: 0; bottom: 0; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); background: rgba(244,247,246,0.96); border-top: 1px solid #ddd; }
+        .bottombar .inner { max-width: 600px; margin: auto; display: flex; gap: 8px; }
+        .bottombar button { flex: 1; padding: 13px; }
+
+        #sheet-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: none; z-index: 20; }
+        #sheet { position: fixed; left: 0; right: 0; bottom: 0; background: white; border-radius: 16px 16px 0 0; padding: 18px 16px calc(18px + env(safe-area-inset-bottom)); z-index: 21; transform: translateY(110%); transition: transform .2s; max-width: 600px; margin: auto; }
+        #sheet { visibility: hidden; }
+        #sheet.open { transform: none; visibility: visible; }
+        #sheet h3 { margin: 0 0 4px; }
+        #sheet label { display: block; font-size: 0.85em; color: #7f8c8d; font-weight: 600; margin: 14px 0 5px; }
+        .switch { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f2f4f4; }
+        .switch small { display: block; color: #95a5a6; }
+        .switch input { width: 22px; height: 22px; flex: none; }
+        .sheet-actions { display: flex; gap: 8px; margin-top: 16px; }
+        .sheet-actions button { flex: 1; }
+        #toast { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); background: #2c3e50; color: white; padding: 10px 18px; border-radius: 20px; font-weight: 600; display: none; z-index: 30; max-width: 90%; text-align: center; }
+        #toast.error { background: #c0392b; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <nav class="nav-bar">
+        <a href="recipes.html">Recipes</a>
+        <a href="planner.html">Plan</a>
+        <a href="view.html">Calendar</a>
+        <a href="shop.html" class="active">Shop</a>
+    </nav>
+
+    <div class="ranges" id="ranges">
+        <button data-days="7">Next 7 days</button>
+        <button data-days="14">Next 2 weeks</button>
+        <button data-days="custom">Pick dates</button>
+    </div>
+    <div class="row" id="customRange">
+        <input type="date" id="start"> <span>to</span> <input type="date" id="end">
+    </div>
+    <details class="summary" id="summary"><summary>Loading...</summary><ul id="mealList"></ul></details>
+
+    <div class="row add-row">
+        <input type="text" id="addInput" placeholder="Add something else (e.g. 1 gallon milk)" autocomplete="off" list="itemOptions">
+        <button class="btn-primary" onclick="addExtra()">Add</button>
+    </div>
+
+    <div id="list"></div>
+</div>
+
+<div class="bottombar">
+    <div class="inner">
+        <button class="btn-light" onclick="newTrip()">New trip</button>
+        <button class="btn-primary" onclick="shareList()">Share / copy list</button>
+    </div>
+</div>
+
+<div id="sheet-bg" onclick="closeSheet()"></div>
+<div id="sheet">
+    <h3 id="sheetTitle"></h3>
+    <div class="note" id="sheetFor"></div>
+    <label>Store section</label>
+    <select id="sheetSection"></select>
+    <div class="switch">
+        <span>I usually have this<small>Shown under "Check you have these" instead of the main list</small></span>
+        <input type="checkbox" id="sheetPantry">
+    </div>
+    <div class="switch">
+        <span>Buy every trip<small>Added to every shopping list, even with no meal planned</small></span>
+        <input type="checkbox" id="sheetRegular">
+    </div>
+    <div class="sheet-actions">
+        <button class="btn-light" id="sheetSkip"></button>
+        <button class="btn-primary" onclick="saveSheet()">Done</button>
+    </div>
+</div>
+
+<div id="toast"></div>
+<datalist id="itemOptions"></datalist>
+
+<script src="common.js"></script>
+<script>
+    const TRIP_KEY = 'shop_trip_v1';
+    let mealsDb = [], calendarDb = [], itemsDb = {};
+    let trip = loadTrip();
+    let rows = [];          // current list rows, see buildRows()
+    let sheetKey = null;
+
+    function loadTrip() {
+        const blank = { days: 7, start: '', end: '', checked: {}, skipped: {}, extras: [] };
+        try { return { ...blank, ...JSON.parse(localStorage.getItem(TRIP_KEY) || '{}') }; } catch (e) { return blank; }
+    }
+    function saveTrip() {
+        try { localStorage.setItem(TRIP_KEY, JSON.stringify(trip)); } catch (e) { /* list still works, it just won't be remembered */ }
+    }
+
+    async function init() {
+        if (!getToken()) return;
+        try {
+            const [meals, cal] = await Promise.all([readJson('food/meals.json'), readJson('food/calendar.json')]);
+            mealsDb = meals.data;
+            calendarDb = cal.data;
+            itemsDb = await readJson('food/items.json').then(r => r.data, () => ({}));
+        } catch (e) {
+            document.querySelector('#summary summary').textContent = 'Could not load: ' + e.message;
+            return;
+        }
+        document.getElementById('itemOptions').innerHTML = [...new Set(mealsDb.flatMap(m => m.components.flatMap(c => c.ingredients.map(i => normalizeIngredient(i).item))))]
+            .sort().map(i => `<option value="${escapeHtml(i)}">`).join('');
+        document.getElementById('sheetSection').innerHTML = SECTIONS.map(s => `<option>${escapeHtml(s)}</option>`).join('');
+        setRange(trip.days, false);
+    }
+
+    // ---------- Date range ----------
+    function localDate(d) { return d.toLocaleDateString('en-CA'); }
+
+    function setRange(days, save = true) {
+        trip.days = days;
+        document.querySelectorAll('#ranges button').forEach(b => b.classList.toggle('on', String(b.dataset.days) === String(days)));
+        document.getElementById('customRange').classList.toggle('open', days === 'custom');
+        if (days !== 'custom') {
+            const start = new Date(), end = new Date();
+            end.setDate(end.getDate() + Number(days) - 1);
+            trip.start = localDate(start);
+            trip.end = localDate(end);
+        }
+        document.getElementById('start').value = trip.start;
+        document.getElementById('end').value = trip.end;
+        if (save) saveTrip();
+        render();
+    }
+    document.getElementById('ranges').addEventListener('click', e => {
+        const b = e.target.closest('button');
+        if (b) setRange(b.dataset.days === 'custom' ? 'custom' : Number(b.dataset.days));
+    });
+    ['start', 'end'].forEach(id => document.getElementById(id).addEventListener('change', e => {
+        trip[id] = e.target.value;
+        saveTrip();
+        render();
+    }));
+
+    // ---------- Building the list ----------
+    function findMeal(name) { return mealsDb.find(m => m.name.trim() === name.trim()); }
+
+    // A side added from another recipe (via Swap or the planner) is looked up in that recipe.
+    function findComponent(meal, name) {
+        const own = meal && meal.components.find(c => c.name === name);
+        if (own) return own;
+        const key = name.trim().toLowerCase();
+        for (const m of mealsDb) {
+            const c = m.components.find(c => c.type === 'side' && c.name.trim().toLowerCase() === key);
+            if (c) return c;
+        }
+        return null;
+    }
+
+    function buildRows() {
+        const planned = calendarDb.filter(p => p.date >= trip.start && p.date <= trip.end)
+            .sort((a, b) => a.date.localeCompare(b.date));
+        const tally = {};
+        const add = (ing, source, kind) => {
+            const key = ing.item.trim().toLowerCase();
+            const t = tally[key] || (tally[key] = { key, item: ing.item.trim(), amounts: [], sources: [], notes: new Set(), kind });
+            t.amounts.push(ing.amount || '');
+            if (!t.sources.includes(source)) t.sources.push(source);
+            if (ing.note) t.notes.add(ing.note);
+        };
+        planned.forEach(p => {
+            const meal = findMeal(p.meal);
+            const seen = new Set();
+            p.sides_included.forEach(sideName => {
+                const comp = findComponent(meal, sideName);
+                if (!comp) return;
+                comp.ingredients.map(normalizeIngredient).forEach(ing => {
+                    const key = ing.item.trim().toLowerCase();
+                    // The same item listed twice in one meal (e.g. main + side) is one purchase.
+                    if (seen.has(key) && !ing.amount) return;
+                    seen.add(key);
+                    add(ing, p.meal.trim(), 'meal');
+                });
+            });
+        });
+        Object.entries(itemsDb).forEach(([key, info]) => {
+            if (info.regular) add({ item: info.name || key, amount: info.amount }, 'every trip', 'regular');
+        });
+        trip.extras.forEach(ing => add(ing, 'added', 'extra'));
+
+        rows = Object.values(tally).map(t => {
+            const info = itemInfo(itemsDb, t.item);
+            const { parts, bare } = combineAmounts(t.amounts);
+            let qty = parts.join(' + ');
+            if (bare && parts.length) qty += ' + more';
+            else if (!parts.length && bare > 1) qty = `x${bare}`;
+            return { ...t, info, qty, isExtra: t.sources.length === 1 && t.sources[0] === 'added' };
+        });
+        return planned;
+    }
+
+    function render() {
+        const planned = buildRows();
+        const summary = document.querySelector('#summary summary');
+        const left = rows.filter(r => !trip.checked[r.key] && !trip.skipped[r.key] && !r.info.pantry).length;
+        summary.textContent = planned.length
+            ? `${planned.length} meal${planned.length > 1 ? 's' : ''} planned · ${left} item${left === 1 ? '' : 's'} left to get`
+            : 'No meals planned in these dates' + (rows.length ? ` · ${left} items left` : '');
+        document.getElementById('mealList').innerHTML = planned.map(p => {
+            const d = new Date(p.date + 'T12:00');
+            return `<li>${d.toLocaleDateString(undefined, { weekday: 'short', month: 'numeric', day: 'numeric' })}: ${escapeHtml(p.meal)}</li>`;
+        }).join('');
+
+        const groups = {};
+        const pantry = [], got = [], skipped = [];
+        rows.forEach(r => {
+            if (trip.skipped[r.key]) skipped.push(r);
+            else if (trip.checked[r.key]) got.push(r);
+            else if (r.info.pantry) pantry.push(r);
+            else (groups[r.info.section] ||= []).push(r);
+        });
+        const byName = (a, b) => a.item.localeCompare(b.item);
+        let html = SECTIONS.filter(s => groups[s]).map(s => section(s, groups[s].sort(byName))).join('');
+        if (pantry.length) html += section('Check you have these', pantry.sort(byName), 'pantry');
+        if (!html && rows.length) html = '<div class="empty">🎉 Everything\'s in the cart.</div>';
+        if (!rows.length) html = '<div class="empty">Nothing to buy yet. Plan some meals or add items above.</div>';
+        if (got.length) html += section(`In the cart (${got.length})`, got.sort(byName), 'done');
+        if (skipped.length) html += `<button class="toggle-group" onclick="this.nextElementSibling.hidden = !this.nextElementSibling.hidden">Skipped this trip (${skipped.length}) ▾</button>`
+            + `<div hidden>${section('Skipped', skipped.sort(byName), 'done')}</div>`;
+        document.getElementById('list').innerHTML = html;
+    }
+
+    function section(title, list, cls = '') {
+        return `<div class="section ${cls}"><h3><span>${escapeHtml(title)}</span><span>${list.length}</span></h3>${list.map(itemRow).join('')}</div>`;
+    }
+
+    function itemRow(r) {
+        const notes = r.notes.size ? ` <span class="note">(${escapeHtml([...r.notes].join('; '))})</span>` : '';
+        const pill = r.kind === 'regular' && r.sources.length === 1 ? '<span class="tagpill">every trip</span>'
+            : r.isExtra ? '<span class="tagpill">added</span>' : '';
+        const forText = r.sources.filter(s => s !== 'added' && s !== 'every trip').join(', ');
+        return `<div class="item ${trip.checked[r.key] ? 'got' : ''}" data-key="${escapeHtml(r.key)}">
+            <span class="check">✓</span>
+            <span class="what"><span class="name">${escapeHtml(r.item)}</span>${notes}${pill}${forText ? `<span class="for">${escapeHtml(forText)}</span>` : ''}</span>
+            ${r.qty ? `<span class="qty">${escapeHtml(r.qty)}</span>` : ''}
+            <button class="more" title="Options">⋯</button>
+        </div>`;
+    }
+
+    document.getElementById('list').addEventListener('click', e => {
+        const row = e.target.closest('.item');
+        if (!row) return;
+        const key = row.dataset.key;
+        if (e.target.closest('.more')) return openSheet(key);
+        if (trip.skipped[key]) delete trip.skipped[key];
+        else if (trip.checked[key]) delete trip.checked[key];
+        else trip.checked[key] = true;
+        saveTrip();
+        render();
+    });
+
+    // ---------- Extras and trips ----------
+    function addExtra() {
+        const input = document.getElementById('addInput');
+        const ing = parseIngredientLine(input.value);
+        if (!ing) return;
+        trip.extras.push(ing);
+        delete trip.checked[ing.item.toLowerCase()];
+        delete trip.skipped[ing.item.toLowerCase()];
+        input.value = '';
+        saveTrip();
+        render();
+        toast(`Added ${ing.item}`);
+    }
+    document.getElementById('addInput').addEventListener('keydown', e => { if (e.key === 'Enter') addExtra(); });
+
+    function newTrip() {
+        if (!confirm('Start a new trip? This clears checked items and things you added.')) return;
+        trip = { ...trip, checked: {}, skipped: {}, extras: [] };
+        setRange(trip.days);
+    }
+
+    function listText() {
+        const lines = [];
+        const active = rows.filter(r => !trip.checked[r.key] && !trip.skipped[r.key]);
+        const line = r => `- ${r.item}${r.qty ? ` (${r.qty})` : ''}`;
+        SECTIONS.forEach(s => {
+            const list = active.filter(r => !r.info.pantry && r.info.section === s).sort((a, b) => a.item.localeCompare(b.item));
+            if (list.length) lines.push(`${s.toUpperCase()}`, ...list.map(line), '');
+        });
+        const pantry = active.filter(r => r.info.pantry).sort((a, b) => a.item.localeCompare(b.item));
+        if (pantry.length) lines.push('CHECK YOU HAVE', ...pantry.map(line));
+        return lines.join('\n').trim();
+    }
+
+    async function shareList() {
+        const text = listText();
+        if (!text) return toast('Nothing left on the list');
+        if (navigator.share) {
+            try { await navigator.share({ title: 'Shopping list', text }); return; } catch (e) { if (e.name === 'AbortError') return; }
+        }
+        try { await navigator.clipboard.writeText(text); toast('List copied'); }
+        catch (e) { prompt('Copy your list:', text); }
+    }
+
+    // ---------- Item options sheet ----------
+    function openSheet(key) {
+        const r = rows.find(x => x.key === key);
+        if (!r) return;
+        sheetKey = key;
+        document.getElementById('sheetTitle').textContent = r.item;
+        document.getElementById('sheetFor').textContent = r.sources.length ? 'For: ' + r.sources.join(', ') : '';
+        document.getElementById('sheetSection').value = r.info.section;
+        document.getElementById('sheetPantry').checked = !!r.info.pantry;
+        document.getElementById('sheetRegular').checked = !!r.info.regular;
+        const skip = document.getElementById('sheetSkip');
+        skip.textContent = r.isExtra ? 'Remove' : trip.skipped[key] ? 'Put back on list' : 'Skip this trip';
+        skip.onclick = () => {
+            if (r.isExtra) trip.extras = trip.extras.filter(x => x.item.trim().toLowerCase() !== key);
+            else if (trip.skipped[key]) delete trip.skipped[key];
+            else { trip.skipped[key] = true; delete trip.checked[key]; }
+            saveTrip();
+            closeSheet();
+            render();
+        };
+        document.getElementById('sheet-bg').style.display = 'block';
+        document.getElementById('sheet').classList.add('open');
+    }
+
+    function closeSheet() {
+        document.getElementById('sheet').classList.remove('open');
+        document.getElementById('sheet-bg').style.display = 'none';
+        sheetKey = null;
+    }
+
+    // Section, pantry and "every trip" are remembered in food/items.json for future lists.
+    async function saveSheet() {
+        const key = sheetKey;
+        const r = rows.find(x => x.key === key);
+        const patch = {
+            section: document.getElementById('sheetSection').value,
+            pantry: document.getElementById('sheetPantry').checked,
+            regular: document.getElementById('sheetRegular').checked
+        };
+        closeSheet();
+        const before = itemsDb[key] || {};
+        const changed = patch.section !== r.info.section || patch.pantry !== !!before.pantry || patch.regular !== !!before.regular;
+        if (!changed) return;
+        // A hand-added item that becomes "every trip" moves over, keeping its amount.
+        const extra = trip.extras.find(x => x.item.trim().toLowerCase() === key);
+        const extraAmount = patch.regular && !before.regular && extra ? extra.amount : '';
+        if (extraAmount !== '' || (patch.regular && extra)) {
+            trip.extras = trip.extras.filter(x => x !== extra);
+            saveTrip();
+        }
+        const apply = items => {
+            const next = { ...(items[key] || {}) };
+            if (patch.section === guessSection(r.item)) delete next.section; else next.section = patch.section;
+            if (patch.pantry) next.pantry = true; else delete next.pantry;
+            if (patch.regular) {
+                next.regular = true;
+                next.name = r.item;
+                if (extraAmount) next.amount = extraAmount;
+            } else { delete next.regular; delete next.name; delete next.amount; }
+            if (Object.keys(next).length) items[key] = next; else delete items[key];
+            return Object.fromEntries(Object.keys(items).sort().map(k => [k, items[k]]));
+        };
+        itemsDb = apply({ ...itemsDb });
+        render();
+        try {
+            itemsDb = await updateJson('food/items.json', apply, `Shopping: update ${r.item}`);
+            render();
+        } catch (e) {
+            toast('Could not save: ' + e.message, true);
+        }
+    }
+
+    let toastTimer;
+    function toast(msg, error = false) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = error ? 'error' : '';
+        t.style.display = 'block';
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.style.display = 'none', error ? 5000 : 2000);
+    }
+
+    init();
+</script>
+</body>
+</html>
