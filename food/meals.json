@@ -1,6 +1,7 @@
 [
   {
     "name": "Balsamic Glazed Chicken and Potatoes",
+    "video": "",
     "link": "https://thedomesticgeek.com/balsamic-glazed-chicken-roast-potatoes/",
     "tags": [
       "Chicken",
@@ -11,22 +12,29 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "chicken breasts",
-          "petite potatoes"
+          {
+            "item": "chicken breasts"
+          },
+          {
+            "item": "petite potatoes"
+          }
         ]
       },
       {
         "name": "Green beans",
         "type": "side",
         "ingredients": [
-          "green beans"
+          {
+            "item": "green beans"
+          }
         ]
       }
     ]
   },
   {
     "name": "BBQ Chicken",
-    "link": "PASTE_LINK_HERE",
+    "video": "",
+    "link": "",
     "tags": [
       "Chicken",
       "Slow cooker"
@@ -36,67 +44,96 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "chicken",
-          "ketchup",
-          "worcestershire",
-          "brown sugar",
-          "chili powder",
-          "curry"
+          {
+            "item": "chicken"
+          },
+          {
+            "item": "ketchup"
+          },
+          {
+            "item": "Worcestershire"
+          },
+          {
+            "item": "brown sugar"
+          },
+          {
+            "item": "chili powder"
+          },
+          {
+            "item": "curry powder"
+          }
         ]
       },
       {
         "name": "Noodles",
         "type": "side",
         "ingredients": [
-          "noodles"
+          {
+            "item": "noodles"
+          }
         ]
       },
       {
         "name": "Rice",
         "type": "side",
         "ingredients": [
-          "rice"
+          {
+            "item": "rice"
+          }
         ]
       },
       {
         "name": "Veggie",
         "type": "side",
         "ingredients": [
-          "veggie"
+          {
+            "item": "veggies"
+          }
         ]
       }
     ]
   },
   {
     "name": "Beef Sirloin and Broccoli",
-    "link": "https://youtube.com/shorts/C00s2Cdc4sI?si=i2bEYPkgd9T0c82h",
+    "video": "https://youtube.com/shorts/C00s2Cdc4sI?si=i2bEYPkgd9T0c82h",
+    "link": "",
     "tags": [],
     "components": [
       {
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "flank steak",
-          "broccoli",
-          "corn on the cob"
+          {
+            "item": "flank steak"
+          },
+          {
+            "item": "broccoli"
+          }
         ]
       },
       {
-        "name": "Corn on the cob ",
+        "name": "Corn on the cob",
         "type": "side",
-        "ingredients": []
+        "ingredients": [
+          {
+            "item": "corn on the cob"
+          }
+        ]
       },
       {
         "name": "Seaweed crisps",
         "type": "side",
         "ingredients": [
-          "seaweed crisps"
+          {
+            "item": "seaweed crisps"
+          }
         ]
       }
     ]
   },
   {
     "name": "Beef Stir Fry",
+    "video": "",
     "link": "https://www.allrecipes.com/recipe/228823/quick-beef-stir-fry/",
     "tags": [
       "Beef",
@@ -108,39 +145,69 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "sliced beef (flank steak or sirloin)",
-          "soy sauce",
-          "cornstarch",
-          "garlic",
-          "ginger",
-          "bell peppers",
-          "broccoli",
-          "carrots",
-          "stir-fry sauce ingredients (oyster sauce",
-          "hoisin",
-          "sesame oil",
-          "brown sugar)"
+          {
+            "item": "flank steak",
+            "note": "or sirloin, sliced"
+          },
+          {
+            "item": "soy sauce"
+          },
+          {
+            "item": "cornstarch"
+          },
+          {
+            "item": "garlic"
+          },
+          {
+            "item": "ginger"
+          },
+          {
+            "item": "bell peppers"
+          },
+          {
+            "item": "broccoli"
+          },
+          {
+            "item": "carrots"
+          },
+          {
+            "item": "oyster sauce"
+          },
+          {
+            "item": "hoisin sauce"
+          },
+          {
+            "item": "sesame oil"
+          },
+          {
+            "item": "brown sugar"
+          }
         ]
       },
       {
         "name": "Jasmine Rice",
         "type": "side",
         "ingredients": [
-          "jasmine rice"
+          {
+            "item": "jasmine rice"
+          }
         ]
       },
       {
         "name": "Stir Fry Noodles",
         "type": "side",
         "ingredients": [
-          "stir fry noodles"
+          {
+            "item": "stir fry noodles"
+          }
         ]
       }
     ]
   },
   {
     "name": "Beef tips",
-    "link": "https://www.tiktok.com/t/ZThJCjTva/",
+    "video": "https://www.tiktok.com/t/ZThJCjTva/",
+    "link": "",
     "tags": [
       "Beef",
       "Slow cooker"
@@ -150,39 +217,53 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Beef tips (chuck roast/stew beef)",
-          "onion soup mix",
-          "broccoli"
+          {
+            "item": "beef tips",
+            "note": "chuck roast or stew beef"
+          },
+          {
+            "item": "onion soup mix"
+          },
+          {
+            "item": "broccoli"
+          }
         ]
       },
       {
         "name": "Mashed potatoes",
         "type": "side",
         "ingredients": [
-          "mashed potatoes"
+          {
+            "item": "mashed potatoes"
+          }
         ]
       },
       {
         "name": "Broccoli",
         "type": "side",
         "ingredients": [
-          "broccoli"
+          {
+            "item": "broccoli"
+          }
         ]
       },
       {
         "name": "Egg noodle",
         "type": "side",
         "ingredients": [
-          "egg noodles"
+          {
+            "item": "egg noodles"
+          }
         ]
       }
     ]
   },
   {
     "name": "Beef Tips 2",
-    "link": "https://youtu.be/ds3cAvfl3jk?si=UagmZxnpJaxvMvP2&t=127",
+    "video": "https://youtu.be/ds3cAvfl3jk?si=UagmZxnpJaxvMvP2&t=127",
+    "link": "",
     "tags": [
-      "Crockpot",
+      "Slow cooker",
       "Beef"
     ],
     "components": [
@@ -190,37 +271,100 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "beef stew meat",
-          "beef broth",
-          "gravy packs"
+          {
+            "item": "beef stew meat"
+          },
+          {
+            "item": "beef broth"
+          },
+          {
+            "item": "gravy packs"
+          }
         ]
       },
       {
         "name": "Green Beans",
         "type": "side",
         "ingredients": [
-          "green beans"
+          {
+            "item": "green beans"
+          }
         ]
       },
       {
         "name": "Mac & Cheese",
         "type": "side",
         "ingredients": [
-          "mac & cheese"
+          {
+            "item": "mac & cheese"
+          }
         ]
       },
       {
         "name": "Mashed/Baked Potatoes",
         "type": "side",
         "ingredients": [
-          "potatoes"
+          {
+            "item": "potatoes"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Black Bean & Corn Quesadillas",
+    "video": "",
+    "link": "",
+    "tags": [
+      "Vegetarian",
+      "Mexican"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "flour tortillas"
+          },
+          {
+            "item": "canned black beans"
+          },
+          {
+            "item": "canned corn"
+          },
+          {
+            "item": "shredded Mexican cheese"
+          },
+          {
+            "item": "salsa"
+          }
+        ]
+      },
+      {
+        "name": "Guacamole",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "guacamole"
+          }
+        ]
+      },
+      {
+        "name": "Spanish Rice",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "microwave Spanish rice pouch"
+          }
         ]
       }
     ]
   },
   {
     "name": "BLT with cucumber salad",
-    "link": "https://www.tiktok.com/t/ZTFQGUTFh/",
+    "video": "https://www.tiktok.com/t/ZTFQGUTFh/",
+    "link": "",
     "tags": [
       "Sandwich",
       "American"
@@ -230,40 +374,71 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Bread",
-          "Bacon",
-          "Lettuce",
-          "Tomatoes",
-          "Mayo",
-          "American Cheese"
+          {
+            "item": "bread"
+          },
+          {
+            "item": "bacon"
+          },
+          {
+            "item": "lettuce"
+          },
+          {
+            "item": "tomatoes"
+          },
+          {
+            "item": "mayo"
+          },
+          {
+            "item": "American cheese"
+          }
         ]
       },
       {
         "name": "Cucumber Salad",
         "type": "side",
         "ingredients": [
-          "cucumber",
-          "crab",
-          "seaweed",
-          "avocado",
-          "whipped cream cheese",
-          "sesame seeds",
-          "soy sauce",
-          "MSG"
+          {
+            "item": "cucumber"
+          },
+          {
+            "item": "crab"
+          },
+          {
+            "item": "seaweed"
+          },
+          {
+            "item": "avocado"
+          },
+          {
+            "item": "whipped cream cheese"
+          },
+          {
+            "item": "sesame seeds"
+          },
+          {
+            "item": "soy sauce"
+          },
+          {
+            "item": "MSG"
+          }
         ]
       },
       {
         "name": "Baked Beans",
         "type": "side",
         "ingredients": [
-          "baked beans"
+          {
+            "item": "baked beans"
+          }
         ]
       }
     ]
   },
   {
     "name": "BLT Wraps",
-    "link": "PASTE_LINK_HERE",
+    "video": "",
+    "link": "",
     "tags": [
       "Sandwich",
       "American"
@@ -273,33 +448,50 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "tortillas",
-          "bacon",
-          "lettuce",
-          "tomato",
-          "mayo",
-          "kettle chips"
+          {
+            "item": "tortillas"
+          },
+          {
+            "item": "bacon"
+          },
+          {
+            "item": "lettuce"
+          },
+          {
+            "item": "tomatoes"
+          },
+          {
+            "item": "mayo"
+          },
+          {
+            "item": "kettle chips"
+          }
         ]
       },
       {
         "name": "Kettle Chips",
         "type": "side",
         "ingredients": [
-          "kettle chips"
+          {
+            "item": "kettle chips"
+          }
         ]
       },
       {
         "name": "Pickle Spear",
         "type": "side",
         "ingredients": [
-          "pickle spears"
+          {
+            "item": "pickle spears"
+          }
         ]
       }
     ]
   },
   {
-    "name": "Brats ",
-    "link": "PASTE_LINK_HERE",
+    "name": "Brats",
+    "video": "",
+    "link": "",
     "tags": [
       "Sausage",
       "German"
@@ -309,75 +501,47 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "brats",
-          "sub rolls"
+          {
+            "item": "brats"
+          },
+          {
+            "item": "hoagie rolls"
+          }
         ]
       },
       {
         "name": "Pretzels",
         "type": "side",
         "ingredients": [
-          "pretzels"
+          {
+            "item": "pretzels"
+          }
         ]
       },
       {
         "name": "Green Beans",
         "type": "side",
         "ingredients": [
-          "green beans"
+          {
+            "item": "green beans"
+          }
         ]
       },
       {
         "name": "Baked Beans",
         "type": "side",
         "ingredients": [
-          "baked beans"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "Breakfast: Pancakes",
-    "link": "PASTE_LINK_HERE",
-    "tags": [
-      "Eggs",
-      "Breakfast"
-    ],
-    "components": [
-      {
-        "name": "Main Dish",
-        "type": "main",
-        "ingredients": []
-      },
-      {
-        "name": "Pancakes",
-        "type": "side",
-        "ingredients": [
-          "pancake mix",
-          "blueberries",
-          "chocolate chips"
-        ]
-      },
-      {
-        "name": "Bacon or Sausage",
-        "type": "side",
-        "ingredients": [
-          "bacon",
-          "sausage"
-        ]
-      },
-      {
-        "name": "Eggs",
-        "type": "side",
-        "ingredients": [
-          "eggs"
+          {
+            "item": "baked beans"
+          }
         ]
       }
     ]
   },
   {
     "name": "Breakfast: French Toast",
-    "link": "https://www.tiktok.com/t/ZThyKSVgY/",
+    "video": "https://www.tiktok.com/t/ZThyKSVgY/",
+    "link": "",
     "tags": [
       "Eggs",
       "Breakfast"
@@ -392,29 +556,92 @@
         "name": "French Toast",
         "type": "side",
         "ingredients": [
-          "texas toast",
-          "eggs"
-         ]
+          {
+            "item": "Texas toast"
+          },
+          {
+            "item": "eggs"
+          }
+        ]
       },
       {
         "name": "Bacon or Sausage",
         "type": "side",
         "ingredients": [
-          "bacon",
-          "sausage"
+          {
+            "item": "bacon"
+          },
+          {
+            "item": "sausage"
+          }
         ]
       },
       {
         "name": "Eggs",
         "type": "side",
         "ingredients": [
-          "eggs"
+          {
+            "item": "eggs"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Breakfast: Pancakes",
+    "video": "",
+    "link": "",
+    "tags": [
+      "Eggs",
+      "Breakfast"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": []
+      },
+      {
+        "name": "Pancakes",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "pancake mix"
+          },
+          {
+            "item": "blueberries"
+          },
+          {
+            "item": "chocolate chips"
+          }
+        ]
+      },
+      {
+        "name": "Bacon or Sausage",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "bacon"
+          },
+          {
+            "item": "sausage"
+          }
+        ]
+      },
+      {
+        "name": "Eggs",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "eggs"
+          }
         ]
       }
     ]
   },
   {
     "name": "Bruschetta Chicken Penne",
+    "video": "",
     "link": "https://thedomesticgeek.com/bruschetta-chicken-pasta/",
     "tags": [
       "One-pot",
@@ -426,84 +653,145 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "penne",
-          "chicken",
-          "cherry tomatoes"
+          {
+            "item": "penne"
+          },
+          {
+            "item": "chicken"
+          },
+          {
+            "item": "cherry tomatoes"
+          }
         ]
       }
     ]
   },
   {
     "name": "Burgers",
-    "link": "PASTE_LINK_HERE",
-    "tags": ["American"],
+    "video": "",
+    "link": "",
+    "tags": [
+      "American"
+    ],
     "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Burgers",
-                "hotdogs",
-                "buns",
-                "burger sauce",
-                "pickles",
-                "onions",
-                "tomatoes",
-                "lettuce",
-                "corn/green beans",
-                "fries/onion rings",
-              "hamburger buns",
-              "hotdog buns"
-            ]
-        },
-        {
-            "name": "Green Beans or Corn",
-            "type": "side",
-            "ingredients": []
-        },
-        {
-            "name": "Onion Rings or Fries",
-            "type": "side",
-            "ingredients": []
-        }
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "burger patties"
+          },
+          {
+            "item": "hot dogs"
+          },
+          {
+            "item": "buns"
+          },
+          {
+            "item": "burger sauce"
+          },
+          {
+            "item": "pickles"
+          },
+          {
+            "item": "onions"
+          },
+          {
+            "item": "tomatoes"
+          },
+          {
+            "item": "lettuce"
+          },
+          {
+            "item": "corn or green beans"
+          },
+          {
+            "item": "frozen fries or onion rings"
+          },
+          {
+            "item": "hamburger buns"
+          },
+          {
+            "item": "hot dog buns"
+          }
+        ]
+      },
+      {
+        "name": "Green Beans or Corn",
+        "type": "side",
+        "ingredients": []
+      },
+      {
+        "name": "Onion Rings or Fries",
+        "type": "side",
+        "ingredients": []
+      }
     ]
-},
+  },
   {
     "name": "Burgers & Dogs",
-    "link": "PASTE_LINK_HERE",
-    "tags": ["American"],
+    "video": "",
+    "link": "",
+    "tags": [
+      "American"
+    ],
     "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Burgers",
-                "hotdogs",
-                "burger sauce",
-                "pickles",
-                "onions",
-                "tomatoes",
-                "lettuce",
-              "hamburger buns",
-              "hotdog buns"
-            ]
-        },
-        {
-            "name": "Corn on the cob ",
-            "type": "side",
-            "ingredients": ["corn"]
-        },
-        {
-            "name": "Fries",
-            "type": "side",
-            "ingredients": [
-                "fries"
-            ]
-        }
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "burger patties"
+          },
+          {
+            "item": "hot dogs"
+          },
+          {
+            "item": "burger sauce"
+          },
+          {
+            "item": "pickles"
+          },
+          {
+            "item": "onions"
+          },
+          {
+            "item": "tomatoes"
+          },
+          {
+            "item": "lettuce"
+          },
+          {
+            "item": "hamburger buns"
+          },
+          {
+            "item": "hot dog buns"
+          }
+        ]
+      },
+      {
+        "name": "Corn on the cob",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "corn"
+          }
+        ]
+      },
+      {
+        "name": "Fries",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "frozen fries"
+          }
+        ]
+      }
     ]
-},
+  },
   {
     "name": "Cajun Shrimp & Sausage Skillet",
+    "video": "",
     "link": "https://thedomesticgeek.com/cajun-shrimp-sausage-skillet/",
     "tags": [
       "Cajun",
@@ -517,34 +805,50 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "smoked sausage",
-          "peeled shrimp",
-          "diced bell peppers and onion",
-          "celery",
-          "cajun seasoning"
+          {
+            "item": "smoked sausage"
+          },
+          {
+            "item": "peeled shrimp"
+          },
+          {
+            "item": "peppers and onions",
+            "note": "diced"
+          },
+          {
+            "item": "celery"
+          },
+          {
+            "item": "cajun seasoning"
+          }
         ]
       },
       {
         "name": "Rice",
         "type": "side",
         "ingredients": [
-          "rice"
+          {
+            "item": "rice"
+          }
         ]
       },
       {
         "name": "Cornbread",
         "type": "side",
         "ingredients": [
-          "cornbread"
+          {
+            "item": "cornbread"
+          }
         ]
       }
     ]
   },
   {
     "name": "Cheeseburger Sliders",
-    "link": "https://www.tiktok.com/t/ZTNNQ6nRX/",
+    "video": "https://www.tiktok.com/t/ZTNNQ6nRX/",
+    "link": "",
     "tags": [
-      "Sheet",
+      "Sheet pan",
       "Beef",
       "American"
     ],
@@ -553,88 +857,152 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Hawaiian Rolls",
-          "ground beef",
-          "american and colby jack slices",
-          "burger sauce",
-          "sesame seeds",
-          "chopped onion",
-          "asparagus"
+          {
+            "item": "Hawaiian rolls"
+          },
+          {
+            "item": "ground beef"
+          },
+          {
+            "item": "American and Colby jack slices"
+          },
+          {
+            "item": "burger sauce"
+          },
+          {
+            "item": "sesame seeds"
+          },
+          {
+            "item": "onions",
+            "note": "chopped"
+          },
+          {
+            "item": "asparagus"
+          }
         ]
       },
       {
         "name": "Fries",
         "type": "side",
         "ingredients": [
-          "fries"
+          {
+            "item": "frozen fries"
+          }
         ]
       },
       {
-        "name": "Asparagus ",
+        "name": "Asparagus",
         "type": "side",
         "ingredients": [
-          "asparagus"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "Cheesy Taco Rice",
-    "link": "https://www.tiktok.com/t/ZTrAHXDWc/",
-    "tags": [
-      "Mexican",
-      "One-Pot"
-    ],
-    "components": [
-      {
-        "name": "Main Dish",
-        "type": "main",
-        "ingredients": [
-          "Ground Turkey",
-          "Onion",
-          "Taco Seasoning",
-          "Rotel Tomatoes",
-          "Tomato Sauce",
-          "Beef Broth",
-          "Long Grain White Rice",
-          "Shredded Cheddar Cheese",
-          "Burrito size tortillas",
-          "Sour Cream",
-          "Guacamole"
-        ]
-      },
-      {
-        "name": "Nacho Chips",
-        "type": "side",
-        "ingredients": [
-          "tortilla chips"
+          {
+            "item": "asparagus"
+          }
         ]
       }
     ]
   },
   {
     "name": "Cheesy Chicken Taco Rice",
-    "link": "https://www.tiktok.com/t/ZTYWNd2r8/",
-    "tags": ["Mexican", "Chicken"],
+    "video": "https://www.tiktok.com/t/ZTYWNd2r8/",
+    "link": "",
+    "tags": [
+      "Mexican",
+      "Chicken"
+    ],
     "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Cubed chicken (or ground)",
-                "rotel",
-                "tomato sauce",
-                "chicken broth",
-                "rice",
-                "shredded  cheese",
-                "SW Ranch"
-            ]
-        }
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "cubed chicken",
+            "note": "or ground"
+          },
+          {
+            "item": "Rotel tomatoes"
+          },
+          {
+            "item": "tomato sauce"
+          },
+          {
+            "item": "chicken broth"
+          },
+          {
+            "item": "rice"
+          },
+          {
+            "item": "shredded cheese"
+          },
+          {
+            "item": "southwestern ranch"
+          }
+        ]
+      }
     ]
-},
+  },
+  {
+    "name": "Cheesy Taco Rice",
+    "video": "https://www.tiktok.com/t/ZTrAHXDWc/",
+    "link": "",
+    "tags": [
+      "Mexican",
+      "One-pot"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "ground turkey"
+          },
+          {
+            "item": "onions"
+          },
+          {
+            "item": "taco seasoning"
+          },
+          {
+            "item": "Rotel tomatoes"
+          },
+          {
+            "item": "tomato sauce"
+          },
+          {
+            "item": "beef broth"
+          },
+          {
+            "item": "long grain white rice"
+          },
+          {
+            "item": "shredded cheddar"
+          },
+          {
+            "item": "large flour tortillas"
+          },
+          {
+            "item": "sour cream"
+          },
+          {
+            "item": "guacamole"
+          }
+        ]
+      },
+      {
+        "name": "Nacho Chips",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "tortilla chips"
+          }
+        ]
+      }
+    ]
+  },
   {
     "name": "Chicken Alfredo",
-    "link": "https://www.tiktok.com/t/ZTHsqX1VwaJoB-sG7Ov/",
+    "video": "https://www.tiktok.com/t/ZTHsqX1VwaJoB-sG7Ov/",
+    "link": "",
     "tags": [
       "Chicken",
       "Pasta",
@@ -645,61 +1013,175 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Chicken",
-          "Fettuccini",
-          "alfredo jars (or heavy cream)"
+          {
+            "item": "chicken"
+          },
+          {
+            "item": "fettuccine"
+          },
+          {
+            "item": "alfredo sauce",
+            "note": "or heavy cream"
+          }
         ]
       },
       {
         "name": "Bread",
         "type": "side",
         "ingredients": [
-          "garlic bread"
+          {
+            "item": "garlic bread"
+          }
         ]
       },
       {
         "name": "Salad",
         "type": "side",
         "ingredients": [
-          "salad kit"
+          {
+            "item": "salad kit"
+          }
         ]
       },
       {
         "name": "Asparagus",
         "type": "side",
         "ingredients": [
-          "asparagus"
+          {
+            "item": "asparagus"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Chicken and Pasta w/Arrabbiata Sauce",
+    "video": "",
+    "link": "",
+    "tags": [],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "pasta"
+          },
+          {
+            "item": "arrabbiata sauce"
+          }
+        ]
+      },
+      {
+        "name": "Grilled Chicken",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "grilled chicken strips",
+            "note": "cooked"
+          }
+        ]
+      },
+      {
+        "name": "Sautéed spinach",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "spinach"
+          }
         ]
       }
     ]
   },
   {
     "name": "Chicken Bacon Ranch Mac N Cheese",
-    "link": "PASTE_LINK_HERE",
+    "video": "",
+    "link": "",
     "tags": [
       "Frozen Meal",
-      "One-Pot"
+      "One-pot"
     ],
     "components": [
       {
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Birds Eye Voila 42oz Chicken Bacon Ranch"
+          {
+            "item": "Birds Eye Voila Chicken Bacon Ranch",
+            "amount": "1 bag (42 oz)"
+          }
         ]
       },
       {
         "name": "Salad",
         "type": "side",
         "ingredients": [
-          "Salad"
+          {
+            "item": "salad"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Chicken Bacon Ranch Wraps",
+    "video": "",
+    "link": "",
+    "tags": [
+      "Sandwich",
+      "Chicken",
+      "No-cook"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "rotisserie chicken",
+            "note": "or deli chicken"
+          },
+          {
+            "item": "precooked bacon"
+          },
+          {
+            "item": "ranch dressing"
+          },
+          {
+            "item": "shredded lettuce"
+          },
+          {
+            "item": "shredded cheddar"
+          },
+          {
+            "item": "large flour tortillas"
+          }
+        ]
+      },
+      {
+        "name": "Fresh Fruit",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "grapes or apple slices"
+          }
+        ]
+      },
+      {
+        "name": "Chips",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "potato chips"
+          }
         ]
       }
     ]
   },
   {
     "name": "Chicken Cobbler",
-    "link": "https://www.tiktok.com/t/ZTrusRo41/",
+    "video": "https://www.tiktok.com/t/ZTrusRo41/",
+    "link": "",
     "tags": [
       "Chicken",
       "One-pot"
@@ -709,49 +1191,34 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Butter",
-          "rotisserie chicken",
-          "peas and carrots",
-          "red lobster biscuit mix",
-          "chicken stock",
-          "cream of chicken or celery soup"
+          {
+            "item": "butter"
+          },
+          {
+            "item": "rotisserie chicken"
+          },
+          {
+            "item": "peas and carrots"
+          },
+          {
+            "item": "Red Lobster biscuit mix"
+          },
+          {
+            "item": "chicken broth"
+          },
+          {
+            "item": "cream of chicken or celery soup"
+          }
         ]
       }
     ]
   },
   {
     "name": "Chicken Gyros",
-    "link": "https://www.tiktok.com/t/ZThy2GFWW/",
-    "tags": ["Greek", "Chicken"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Chicken thighs (or breasts)",
-                "Greek yogurt",
-                "garlic paste",
-                "Dijon mustard",
-                "lemon juice",
-                "tzatziki",
-                "pita",
-                "tomatoes"
-            ]
-        },
-        {
-            "name": "Fries",
-            "type": "side",
-            "ingredients": [
-                "French fries"
-            ]
-        }
-    ]
-},
-  {
-    "name": "Chicken Marinara Subs",
-    "link": "https://youtu.be/PPG-IpXfLo0?si=WhgH0ohotvrCMsY8&t=627",
+    "video": "https://www.tiktok.com/t/ZThy2GFWW/",
+    "link": "",
     "tags": [
-      "Crockpot",
+      "Greek",
       "Chicken"
     ],
     "components": [
@@ -759,58 +1226,95 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "chicken",
-          "marinara sauce",
-          "rolls",
-          "provolone"
+          {
+            "item": "chicken thighs",
+            "note": "or breasts"
+          },
+          {
+            "item": "Greek yogurt"
+          },
+          {
+            "item": "garlic paste"
+          },
+          {
+            "item": "Dijon mustard"
+          },
+          {
+            "item": "lemon juice"
+          },
+          {
+            "item": "tzatziki"
+          },
+          {
+            "item": "pita"
+          },
+          {
+            "item": "tomatoes"
+          }
+        ]
+      },
+      {
+        "name": "Fries",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "frozen fries"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Chicken Marinara Subs",
+    "video": "https://youtu.be/PPG-IpXfLo0?si=WhgH0ohotvrCMsY8&t=627",
+    "link": "",
+    "tags": [
+      "Slow cooker",
+      "Chicken"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "chicken"
+          },
+          {
+            "item": "marinara sauce"
+          },
+          {
+            "item": "rolls"
+          },
+          {
+            "item": "provolone"
+          }
         ]
       },
       {
         "name": "Noodles",
         "type": "side",
         "ingredients": [
-          "noodles"
+          {
+            "item": "noodles"
+          }
         ]
       },
       {
         "name": "Green Beans",
         "type": "side",
         "ingredients": [
-          "green beans"
+          {
+            "item": "green beans"
+          }
         ]
       }
     ]
   },
   {
-    "name": "Chicken and Pasta w/Arrabbiata Sauce",
-    "link": "PASTE_LINK_HERE",
-    "tags": [],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "pasta",
-                "arrabbiata sauce"
-            ]
-        },
-        {
-            "name": "Grilled Chicken",
-            "type": "side",
-            "ingredients": [
-                "grilled chicken strips (cooked)"
-            ]
-        },
-        {
-            "name": "Sautéed spinach",
-            "type": "side",
-            "ingredients": ["spinach"]
-        }
-    ]
-},
-  {
     "name": "Cocktail Meatballs",
-    "link": "https://www.youtube.com/watch?v=veaaoBi3YzM",
+    "video": "https://www.youtube.com/watch?v=veaaoBi3YzM",
+    "link": "",
     "tags": [
       "Slow cooker",
       "Meatballs",
@@ -821,40 +1325,53 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Frozen meatballs",
-          "grape jelly",
-          "BBQ sauce"
+          {
+            "item": "frozen meatballs"
+          },
+          {
+            "item": "grape jelly"
+          },
+          {
+            "item": "BBQ sauce"
+          }
         ]
       },
       {
         "name": "Mashed potatoes",
         "type": "side",
         "ingredients": [
-          "mashed potatoes"
+          {
+            "item": "mashed potatoes"
+          }
         ]
       },
       {
         "name": "Corn",
         "type": "side",
         "ingredients": [
-          "corn"
+          {
+            "item": "corn"
+          }
         ]
       },
       {
         "name": "Egg noodle",
         "type": "side",
         "ingredients": [
-          "egg noodles"
+          {
+            "item": "egg noodles"
+          }
         ]
       }
     ]
   },
   {
     "name": "Coconut Curry chicken",
-    "link": "https://www.tiktok.com/t/ZTHGxYPLkcfxJ-AXNX3/",
+    "video": "https://www.tiktok.com/t/ZTHGxYPLkcfxJ-AXNX3/",
+    "link": "",
     "tags": [
       "Indian",
-      "Crockpot",
+      "Slow cooker",
       "Chicken"
     ],
     "components": [
@@ -862,39 +1379,68 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "onion",
-          "bell pepper",
-          "baby carrots",
-          "petite potatoes",
-          "chicken breast",
-          "soy sauce",
-          "red curry paste",
-          "curry powder",
-          "brown sugar",
-          "ground ginger",
-          "turmeric",
-          "coconut milk"
+          {
+            "item": "onions"
+          },
+          {
+            "item": "bell peppers"
+          },
+          {
+            "item": "baby carrots"
+          },
+          {
+            "item": "petite potatoes"
+          },
+          {
+            "item": "chicken breasts"
+          },
+          {
+            "item": "soy sauce"
+          },
+          {
+            "item": "red curry paste"
+          },
+          {
+            "item": "curry powder"
+          },
+          {
+            "item": "brown sugar"
+          },
+          {
+            "item": "ground ginger"
+          },
+          {
+            "item": "turmeric"
+          },
+          {
+            "item": "coconut milk"
+          }
         ]
       },
       {
         "name": "Rice",
         "type": "side",
         "ingredients": [
-          "jasmine rice"
+          {
+            "item": "jasmine rice"
+          }
         ]
       },
       {
         "name": "Naan",
         "type": "side",
         "ingredients": [
-          "naan"
+          {
+            "item": "naan"
+          }
         ]
       }
     ]
   },
   {
-    "name": "Completo chileno ",
-    "link": "https://www.tiktok.com/t/ZTFbcwHFD/",
+    "name": "Completo chileno",
+    "video": "https://www.tiktok.com/t/ZTFbcwHFD/",
+    "link": "",
     "tags": [
       "Chilean"
     ],
@@ -903,27 +1449,40 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "hotdogs",
-          "mayo",
-          "avocado",
-          "diced tomatoes",
-          "buns"
+          {
+            "item": "hot dogs"
+          },
+          {
+            "item": "mayo"
+          },
+          {
+            "item": "avocado"
+          },
+          {
+            "item": "diced tomatoes"
+          },
+          {
+            "item": "buns"
+          }
         ]
       },
       {
         "name": "Fries",
         "type": "side",
         "ingredients": [
-          "fries"
+          {
+            "item": "frozen fries"
+          }
         ]
       }
     ]
   },
   {
-    "name": "Crockpot Chicken spaghetti ",
-    "link": "https://www.tiktok.com/t/ZTNNQ9F5e/",
+    "name": "Crockpot Chicken spaghetti",
+    "video": "https://www.tiktok.com/t/ZTNNQ9F5e/",
+    "link": "",
     "tags": [
-      "Crockpot",
+      "Slow cooker",
       "Chicken",
       "Pasta"
     ],
@@ -932,93 +1491,104 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Chicken breasts",
-          "BW Parmesan Garlic sauce",
-          "Alfredo sauce",
-          "Shredded Cheese",
-          "Spaghetti",
-          "Bacon topping"
+          {
+            "item": "chicken breasts"
+          },
+          {
+            "item": "BW Parmesan garlic sauce"
+          },
+          {
+            "item": "alfredo sauce"
+          },
+          {
+            "item": "shredded cheese"
+          },
+          {
+            "item": "spaghetti"
+          },
+          {
+            "item": "bacon topping"
+          }
         ]
       },
       {
         "name": "Garlic Bread",
         "type": "side",
         "ingredients": [
-          "Garlic bread"
+          {
+            "item": "garlic bread"
+          }
         ]
       },
       {
         "name": "Caesar Salad",
         "type": "side",
         "ingredients": [
-          "Caesar salad"
+          {
+            "item": "Caesar salad kit"
+          }
         ]
       }
     ]
   },
   {
-    "name": "Dumplings",
-    "link": "PASTE_LINK_HERE",
+    "name": "Dump-and-Go Taco Soup",
+    "video": "",
+    "link": "",
     "tags": [
-      "Asian"
+      "Soup",
+      "Mexican",
+      "One-pot"
     ],
     "components": [
       {
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "dumplings"
+          {
+            "item": "rotisserie chicken",
+            "note": "shredded"
+          },
+          {
+            "item": "canned black beans",
+            "note": "rinsed"
+          },
+          {
+            "item": "canned corn",
+            "note": "drained"
+          },
+          {
+            "item": "Rotel tomatoes"
+          },
+          {
+            "item": "chicken broth"
+          },
+          {
+            "item": "taco seasoning"
+          }
         ]
       },
       {
-        "name": "Egg Rolls",
+        "name": "Toppings",
         "type": "side",
         "ingredients": [
-          "egg rolls"
-        ]
-      },
-      {
-        "name": "Fried Rice",
-        "type": "side",
-        "ingredients": [
-          "frozen fried rice"
-        ]
-      },
-      {
-        "name": "Miso Soup",
-        "type": "side",
-        "ingredients": [
-          "miso soup"
+          {
+            "item": "sour cream"
+          },
+          {
+            "item": "shredded cheese"
+          },
+          {
+            "item": "tortilla chips"
+          }
         ]
       }
     ]
   },
   {
     "name": "Dumpling Bake",
-    "link": "https://www.tiktok.com/t/ZThyj1BGU/",
-    "tags": ["Asian", "One-pot"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Coconut milk",
-                "red curry paste",
-                "oyster sauce",
-                "frozen dumplings",
-                "bok choy"
-            ]
-        },
-        {
-            "name": "Rice ",
-            "type": "side",
-            "ingredients": ["rice"]
-        }
-    ]
-},
-  {
-    "name": "Dumpling Lasagna ",
-    "link": "https://www.tiktok.com/t/ZThYMjJwn/",
+    "video": "https://www.tiktok.com/t/ZThyj1BGU/",
+    "link": "",
     "tags": [
       "Asian",
       "One-pot"
@@ -1028,36 +1598,147 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Ground pork",
-          "green onion",
-          "oyster sauce",
-          "chili oil",
-          "chopped cabbage (Napa)",
-          "sesame oil",
-          "hoisin",
-          "wonton wrappers",
-          "mirin (rice vinegar)"
+          {
+            "item": "coconut milk"
+          },
+          {
+            "item": "red curry paste"
+          },
+          {
+            "item": "oyster sauce"
+          },
+          {
+            "item": "frozen dumplings"
+          },
+          {
+            "item": "bok choy"
+          }
+        ]
+      },
+      {
+        "name": "Rice",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "rice"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Dumpling Lasagna",
+    "video": "https://www.tiktok.com/t/ZThYMjJwn/",
+    "link": "",
+    "tags": [
+      "Asian",
+      "One-pot"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "ground pork"
+          },
+          {
+            "item": "green onion"
+          },
+          {
+            "item": "oyster sauce"
+          },
+          {
+            "item": "chili oil"
+          },
+          {
+            "item": "chopped cabbage (Napa)"
+          },
+          {
+            "item": "sesame oil"
+          },
+          {
+            "item": "hoisin sauce"
+          },
+          {
+            "item": "wonton wrappers"
+          },
+          {
+            "item": "mirin",
+            "note": "or rice vinegar"
+          }
         ]
       },
       {
         "name": "Green Beans",
         "type": "side",
         "ingredients": [
-          "green beans"
+          {
+            "item": "green beans"
+          }
         ]
       },
       {
         "name": "Miso Soup",
         "type": "side",
         "ingredients": [
-          "miso soup"
+          {
+            "item": "miso soup"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Dumplings",
+    "video": "",
+    "link": "",
+    "tags": [
+      "Asian"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "dumplings"
+          }
+        ]
+      },
+      {
+        "name": "Egg Rolls",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "egg rolls"
+          }
+        ]
+      },
+      {
+        "name": "Fried Rice",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "frozen fried rice"
+          }
+        ]
+      },
+      {
+        "name": "Miso Soup",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "miso soup"
+          }
         ]
       }
     ]
   },
   {
     "name": "Fajita Wraps",
-    "link": "PASTE_LINK_HERE",
+    "video": "",
+    "link": "",
     "tags": [
       "Frozen Meal",
       "Chicken",
@@ -1068,39 +1749,56 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "large tortillas",
-          "frozen voila fajita meal",
-          "sour cream",
-          "guac",
-          "salsa"
+          {
+            "item": "large flour tortillas"
+          },
+          {
+            "item": "frozen voila fajita meal"
+          },
+          {
+            "item": "sour cream"
+          },
+          {
+            "item": "guacamole"
+          },
+          {
+            "item": "salsa"
+          }
         ]
       },
       {
         "name": "Chips & Salsa",
         "type": "side",
         "ingredients": [
-          "chips"
+          {
+            "item": "chips"
+          }
         ]
       },
       {
         "name": "Rice",
         "type": "side",
         "ingredients": [
-          "rice"
+          {
+            "item": "rice"
+          }
         ]
       },
       {
         "name": "Refried Beans",
         "type": "side",
         "ingredients": [
-          "refried beans"
+          {
+            "item": "refried beans"
+          }
         ]
       }
     ]
   },
   {
     "name": "Flounder",
-    "link": "PASTE_LINK_HERE",
+    "video": "",
+    "link": "",
     "tags": [
       "Seafood"
     ],
@@ -1109,60 +1807,118 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Fish",
-          "lemon"
+          {
+            "item": "fish"
+          },
+          {
+            "item": "lemons"
+          }
         ]
       },
       {
         "name": "Quinoa",
         "type": "side",
         "ingredients": [
-          "quinoa"
+          {
+            "item": "quinoa"
+          }
         ]
       },
       {
         "name": "Noodles",
         "type": "side",
         "ingredients": [
-          "noodles"
+          {
+            "item": "noodles"
+          }
         ]
       },
       {
         "name": "Asparagus",
         "type": "side",
         "ingredients": [
-          "asparagus"
+          {
+            "item": "asparagus"
+          }
         ]
       }
     ]
   },
   {
-    "name": "Garlic Chicken",
-    "link": "PASTE_LINK_HERE",
+    "name": "French Bread Pizzas",
+    "video": "",
+    "link": "",
     "tags": [
-      "Frozen Meal",
-      "One-Pot"
+      "Vegetarian",
+      "American",
+      "Sheet pan"
     ],
     "components": [
       {
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Birds Eye Voila 42oz Garlic Chicken"
+          {
+            "item": "French bread",
+            "note": "or sub buns"
+          },
+          {
+            "item": "pizza sauce or marinara"
+          },
+          {
+            "item": "shredded mozzarella"
+          },
+          {
+            "item": "pepperoni",
+            "note": "optional"
+          }
+        ]
+      },
+      {
+        "name": "Side Salad",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "salad kit"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Garlic Chicken",
+    "video": "",
+    "link": "",
+    "tags": [
+      "Frozen Meal",
+      "One-pot"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "Birds Eye Voila Garlic Chicken",
+            "amount": "1 bag (42 oz)"
+          }
         ]
       },
       {
         "name": "Salad",
         "type": "side",
         "ingredients": [
-          "Salad"
+          {
+            "item": "salad"
+          }
         ]
       }
     ]
   },
   {
-    "name": "Grilled Cheese ",
-    "link": "PASTE_LINK_HERE",
+    "name": "Grilled Cheese",
+    "video": "",
+    "link": "",
     "tags": [
       "Vegetarian"
     ],
@@ -1171,63 +1927,97 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "sandwich bread",
-          "cheese"
+          {
+            "item": "sandwich bread"
+          },
+          {
+            "item": "cheese"
+          }
         ]
       },
       {
         "name": "Tomato Soup",
         "type": "side",
         "ingredients": [
-          "canned tomato soup"
+          {
+            "item": "canned tomato soup"
+          }
         ]
       },
       {
         "name": "Apple Slices",
         "type": "side",
         "ingredients": [
-          "apple slices"
+          {
+            "item": "apple slices"
+          }
         ]
       },
       {
         "name": "Crackers",
         "type": "side",
         "ingredients": [
-          "crackers"
+          {
+            "item": "crackers"
+          }
         ]
       }
     ]
   },
   {
-    "name": "Haitian Spaghetti ",
-    "link": "https://www.tiktok.com/t/ZThy24sGn/",
-    "tags": ["Haitian", "Pasta"],
+    "name": "Haitian Spaghetti",
+    "video": "https://www.tiktok.com/t/ZThy24sGn/",
+    "link": "",
+    "tags": [
+      "Haitian",
+      "Pasta"
+    ],
     "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Spaghetti",
-                "Smoked Sausage",
-                "peppers",
-                "onions",
-                "epis (use sofrito)",
-                "tomato paste",
-                "sazón",
-                "sazón completa"
-            ]
-        },
-        {
-            "name": "Baguette",
-            "type": "side",
-            "ingredients": [
-                "baguette"
-            ]
-        }
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "spaghetti"
+          },
+          {
+            "item": "smoked sausage"
+          },
+          {
+            "item": "peppers"
+          },
+          {
+            "item": "onions"
+          },
+          {
+            "item": "sofrito",
+            "note": "for the epis"
+          },
+          {
+            "item": "tomato paste"
+          },
+          {
+            "item": "sazón"
+          },
+          {
+            "item": "sazón completa"
+          }
+        ]
+      },
+      {
+        "name": "Baguette",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "baguette"
+          }
+        ]
+      }
     ]
-},
+  },
   {
     "name": "Herbed Chicken & Rice Soup",
+    "video": "",
     "link": "https://thedomesticgeek.com/herbed-chicken-rice-soup/",
     "tags": [
       "Soup",
@@ -1238,32 +2028,47 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "chicken",
-          "celery",
-          "carrot",
-          "long grain white rice",
-          "chicken broth"
+          {
+            "item": "chicken"
+          },
+          {
+            "item": "celery"
+          },
+          {
+            "item": "carrots"
+          },
+          {
+            "item": "long grain white rice"
+          },
+          {
+            "item": "chicken broth"
+          }
         ]
       },
       {
         "name": "Bread",
         "type": "side",
         "ingredients": [
-          "bread"
+          {
+            "item": "bread"
+          }
         ]
       },
       {
         "name": "Salad",
         "type": "side",
         "ingredients": [
-          "Salad"
+          {
+            "item": "salad"
+          }
         ]
       }
     ]
   },
   {
     "name": "Hot dogs",
-    "link": "PASTE_LINK_HERE",
+    "video": "",
+    "link": "",
     "tags": [
       "American"
     ],
@@ -1272,29 +2077,39 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "hotdogs",
-          "hotdog buns"
+          {
+            "item": "hot dogs"
+          },
+          {
+            "item": "hot dog buns"
+          }
         ]
       },
       {
         "name": "Onion rings",
         "type": "side",
         "ingredients": [
-          "frozen fries/onion rings"
+          {
+            "item": "frozen fries or onion rings"
+          }
         ]
       },
       {
         "name": "Corn on the cob",
         "type": "side",
         "ingredients": [
-          "frozen corn/on the cob"
+          {
+            "item": "frozen corn",
+            "note": "or on the cob"
+          }
         ]
       }
     ]
   },
   {
     "name": "Loaded Steak Potatoes",
-    "link": "https://www.tiktok.com/t/ZTHGk3kymNeK2-YiJ3v/",
+    "video": "https://www.tiktok.com/t/ZTHGk3kymNeK2-YiJ3v/",
+    "link": "",
     "tags": [
       "Steak",
       "Beef",
@@ -1305,26 +2120,42 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Large potatoes",
-          "steak (cubed)",
-          "tomato paste",
-          "heavy cream",
-          "shredded cheese",
-          "sour cream"
+          {
+            "item": "large potatoes"
+          },
+          {
+            "item": "steak",
+            "note": "cubed"
+          },
+          {
+            "item": "tomato paste"
+          },
+          {
+            "item": "heavy cream"
+          },
+          {
+            "item": "shredded cheese"
+          },
+          {
+            "item": "sour cream"
+          }
         ]
       },
       {
         "name": "Caesar salad",
         "type": "side",
         "ingredients": [
-          "Caesar salad kit"
+          {
+            "item": "Caesar salad kit"
+          }
         ]
       }
     ]
   },
   {
     "name": "Lobster Pasta",
-    "link": "https://www.tiktok.com/t/ZThFCbQ78/",
+    "video": "https://www.tiktok.com/t/ZThFCbQ78/",
+    "link": "",
     "tags": [
       "Pasta",
       "Seafood"
@@ -1334,11 +2165,22 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Cherry tomatoes",
-          "Lobster (claw crab meat)",
-          "lobster bisque",
-          "Parmesan cheese",
-          "spaghetti"
+          {
+            "item": "cherry tomatoes"
+          },
+          {
+            "item": "lobster",
+            "note": "or claw crab meat"
+          },
+          {
+            "item": "lobster bisque"
+          },
+          {
+            "item": "Parmesan cheese"
+          },
+          {
+            "item": "spaghetti"
+          }
         ]
       },
       {
@@ -1355,68 +2197,101 @@
   },
   {
     "name": "Lomo Saltado",
-    "link": "https://www.tiktok.com/t/ZTNcUJdKb/",
+    "video": "https://www.tiktok.com/t/ZTNcUJdKb/",
+    "link": "",
     "tags": [
       "Peruvian",
-      "One-Pot"
+      "One-pot"
     ],
     "components": [
       {
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Sirloin steak",
-          "red onion",
-          "Roma tomatoes",
-          "ají Amarillo",
-          "frozen French fries"
+          {
+            "item": "sirloin steak"
+          },
+          {
+            "item": "red onion"
+          },
+          {
+            "item": "Roma tomatoes"
+          },
+          {
+            "item": "ají amarillo"
+          },
+          {
+            "item": "frozen fries"
+          }
         ]
       },
       {
         "name": "Rice",
         "type": "side",
         "ingredients": [
-          "rice"
+          {
+            "item": "rice"
+          }
         ]
       }
     ]
   },
   {
     "name": "McRibs",
-    "link": "https://www.tiktok.com/t/ZThy2EvSd/",
-    "tags": ["American"],
+    "video": "https://www.tiktok.com/t/ZThy2EvSd/",
+    "link": "",
+    "tags": [
+      "American"
+    ],
     "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Ground pork",
-                "ketchup",
-                "brown sugar",
-                "bbq seasoning",
-                "pickles",
-                "hoagie rolls"
-            ]
-        },
-        {
-            "name": "Fries",
-            "type": "side",
-            "ingredients": [
-                "fries"
-            ]
-        },
-        {
-            "name": "Salad",
-            "type": "side",
-            "ingredients": [
-                "salad"
-            ]
-        }
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "ground pork"
+          },
+          {
+            "item": "ketchup"
+          },
+          {
+            "item": "brown sugar"
+          },
+          {
+            "item": "BBQ seasoning"
+          },
+          {
+            "item": "pickles"
+          },
+          {
+            "item": "hoagie rolls"
+          }
+        ]
+      },
+      {
+        "name": "Fries",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "frozen fries"
+          }
+        ]
+      },
+      {
+        "name": "Salad",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "salad"
+          }
+        ]
+      }
     ]
-},
+  },
   {
     "name": "Menemen (Turkish eggs)",
-    "link": "https://www.tiktok.com/t/ZTHsbJE6tTv2Q-01fiB/",
+    "video": "https://www.tiktok.com/t/ZTHsbJE6tTv2Q-01fiB/",
+    "link": "",
     "tags": [
       "Turkish",
       "Eggs",
@@ -1427,128 +2302,95 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Green Bell Pepper",
-          "Tomatoes",
-          "Eggs",
-          "Parmesan"
+          {
+            "item": "green bell pepper"
+          },
+          {
+            "item": "tomatoes"
+          },
+          {
+            "item": "eggs"
+          },
+          {
+            "item": "Parmesan cheese"
+          }
         ]
       },
       {
         "name": "Pita/Sourdough",
         "type": "side",
         "ingredients": [
-          "Pita or Sourdough"
+          {
+            "item": "pita or sourdough"
+          }
         ]
       },
       {
         "name": "Cheese with Honey",
         "type": "side",
         "ingredients": [
-          "Feta Block",
-          "Honey or Fig Jam"
+          {
+            "item": "feta cheese",
+            "note": "block"
+          },
+          {
+            "item": "honey or fig jam"
+          }
         ]
       }
     ]
   },
   {
     "name": "Mexican Hot Dogs",
-    "link": "https://www.tiktok.com/t/ZThy2osAE/",
-    "tags": ["Mexican", "American"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Hot dogs",
-                "buns",
-                "onion",
-                "peppers",
-                "tomatoes",
-                "jalapeños",
-                "shredded cheese"
-            ]
-        },
-        {
-            "name": "Fries",
-            "type": "side",
-            "ingredients": [
-                "fries"
-            ]
-        }
-    ]
-},
-  {
-    "name": "Mississippi Chicken (rolls) 6:50",
-    "link": "https://youtu.be/-jibPRw9H7w?si=oovSw9-cSYICoGTp&t=405",
-    "tags": ["Chicken", "Crockpot"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "chicken breasts",
-                "ranch seasoning",
-                "au jus mix",
-                "butter",
-                "pepperoncini peppers"
-            ]
-        },
-        {
-            "name": "Sandwiches/Rolls",
-            "type": "side",
-            "ingredients": ["sub buns"]
-        },
-        {
-            "name": "Chips/Pickles",
-            "type": "side",
-            "ingredients": ["chips", "pickle spears"]
-        },
-        {
-            "name": "Noodles",
-            "type": "side",
-            "ingredients": ["noodle pack"]
-        }
-    ]
-},
-  {
-    "name": "Mississippi Pot Roast",
-    "link": "https://www.tiktok.com/@vrogers17/video/6996649630243048709",
+    "video": "https://www.tiktok.com/t/ZThy2osAE/",
+    "link": "",
     "tags": [
-      "Slow Cooker",
-      "Beef",
-      "Chicken"
+      "Mexican",
+      "American"
     ],
     "components": [
       {
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Chicken or Beef",
-          "Au Jus",
-          "Ranch Seasoning",
-          "Pepperoncini",
-          "Butter"
+          {
+            "item": "hot dogs"
+          },
+          {
+            "item": "buns"
+          },
+          {
+            "item": "onions"
+          },
+          {
+            "item": "peppers"
+          },
+          {
+            "item": "tomatoes"
+          },
+          {
+            "item": "jalapeños"
+          },
+          {
+            "item": "shredded cheese"
+          }
         ]
       },
       {
-        "name": "Rice",
+        "name": "Fries",
         "type": "side",
         "ingredients": [
-          "rice"
-        ]
-      },
-      {
-        "name": "Roll",
-        "type": "side",
-        "ingredients": [
-          "Hoagie Roll"
+          {
+            "item": "frozen fries"
+          }
         ]
       }
     ]
   },
   {
-    "name": "Parmesan Garlic Chicken and Potatoes",
-    "link": "https://www.tiktok.com/t/ZTrAHGXrm/",
+    "name": "Mississippi Chicken (rolls) 6:50",
+    "video": "https://youtu.be/-jibPRw9H7w?si=oovSw9-cSYICoGTp&t=405",
+    "link": "",
     "tags": [
       "Chicken",
       "Slow cooker"
@@ -1558,201 +2400,436 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Petite Potatoes",
-          "Chicken Breasts",
-          "Parmesan Garlic Sauce (BW)",
-          "Shredde Mozzarella",
-          "Grated Parmesan"
+          {
+            "item": "chicken breasts"
+          },
+          {
+            "item": "ranch seasoning"
+          },
+          {
+            "item": "au jus mix"
+          },
+          {
+            "item": "butter"
+          },
+          {
+            "item": "pepperoncini"
+          }
+        ]
+      },
+      {
+        "name": "Sandwiches/Rolls",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "hoagie rolls"
+          }
+        ]
+      },
+      {
+        "name": "Chips/Pickles",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "chips"
+          },
+          {
+            "item": "pickle spears"
+          }
+        ]
+      },
+      {
+        "name": "Noodles",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "noodle pack"
+          }
         ]
       }
     ]
   },
   {
-    "name": "Pasta ",
-    "link": "PASTE_LINK_HERE",
-    "tags": ["Pasta", "Italian"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "pasta",
-                "marinara"
-            ]
-        },
-        {
-            "name": "Green Beans",
-            "type": "side",
-            "ingredients": [
-                "green beans"
-            ]
-        },
-        {
-            "name": "Garlic bread ",
-            "type": "side",
-            "ingredients": ["garlic bread"]
-        },
-        {
-            "name": "Salad",
-            "type": "side",
-            "ingredients": [
-                "salad"
-            ]
-        }
-    ]
-},
-  {
-    "name": "Pasta (Alfredo and spinach) ",
-    "link": "https://www.tiktok.com/t/ZTrutePok/",
-    "tags": ["Pasta", "Italian"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Tortellini (or replace with pasta / ravioli)",
-                "frozen spinach",
-                "Alfredo sauce",
-                "diced tomatoes"
-            ]
-        },
-        {
-            "name": "Breadsticks ",
-            "type": "side",
-            "ingredients": ["breadsticks"]
-        }
-    ]
-},
-  {
-    "name": "Pasta w/ Marinara",
-    "link": "PASTE_LINK_HERE",
-    "tags": ["Pasta", "Italian"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "pasta",
-                "marinara sauce"
-            ]
-        },
-        {
-            "name": "Garlic Bread",
-            "type": "side",
-            "ingredients": ["garlic bread"]
-        },
-        {
-            "name": "Salad",
-            "type": "side",
-            "ingredients": [
-                "salad"
-            ]
-        },
-              {
-            "name": "Veggie",
-            "type": "side",
-            "ingredients": [
-                "frozen veggie"
-            ]
-        },
-        {
-            "name": "Cottage Cheese",
-            "type": "side",
-            "ingredients": ["cottage cheese"]
-        }
-    ]
-},
-  {
-    "name": "Pasta Salad",
-    "link": "https://www.tiktok.com/t/ZTFhNMKEE/",
-    "tags": [],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Italian seasoning",
-                "Dijon mustard",
-                "pasta",
-                "diced ham",
-                "pepperoni",
-                "salami",
-                "mozzarella pearls",
-                "cherry tomatoes",
-                "red onion",
-                "banana peppers",
-                "lettuce",
-                ""
-            ]
-        }
-    ]
-},
-  {
-    "name": "Pastalaya",
-    "link": "https://www.tiktok.com/t/ZTrAHxf2N/",
+    "name": "Mississippi Pot Roast",
+    "video": "https://www.tiktok.com/@vrogers17/video/6996649630243048709",
+    "link": "",
     "tags": [
-      "Pasta",
-      "Cajun",
-      "One-Pot"
+      "Slow cooker",
+      "Beef",
+      "Chicken"
     ],
     "components": [
       {
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "bow tie pasta",
-          "smoked sausage",
-          "green pepper",
-          "onion",
-          "celery",
-          "tomato paste",
-          "chicken broth",
-          "cream of celery"
+          {
+            "item": "chicken or beef"
+          },
+          {
+            "item": "au jus mix"
+          },
+          {
+            "item": "ranch seasoning"
+          },
+          {
+            "item": "pepperoncini"
+          },
+          {
+            "item": "butter"
+          }
+        ]
+      },
+      {
+        "name": "Rice",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "rice"
+          }
+        ]
+      },
+      {
+        "name": "Roll",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "hoagie rolls"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Parmesan Garlic Chicken and Potatoes",
+    "video": "https://www.tiktok.com/t/ZTrAHGXrm/",
+    "link": "",
+    "tags": [
+      "Chicken",
+      "Slow cooker"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "petite potatoes"
+          },
+          {
+            "item": "chicken breasts"
+          },
+          {
+            "item": "BW Parmesan garlic sauce"
+          },
+          {
+            "item": "shredded mozzarella"
+          },
+          {
+            "item": "Parmesan cheese",
+            "note": "grated"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Pasta",
+    "video": "",
+    "link": "",
+    "tags": [
+      "Pasta",
+      "Italian"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "pasta"
+          },
+          {
+            "item": "marinara sauce"
+          }
+        ]
+      },
+      {
+        "name": "Green Beans",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "green beans"
+          }
+        ]
+      },
+      {
+        "name": "Garlic bread",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "garlic bread"
+          }
+        ]
+      },
+      {
+        "name": "Salad",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "salad"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Pasta (Alfredo and spinach)",
+    "video": "https://www.tiktok.com/t/ZTrutePok/",
+    "link": "",
+    "tags": [
+      "Pasta",
+      "Italian"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "tortellini",
+            "note": "or pasta / ravioli"
+          },
+          {
+            "item": "frozen spinach"
+          },
+          {
+            "item": "alfredo sauce"
+          },
+          {
+            "item": "diced tomatoes"
+          }
+        ]
+      },
+      {
+        "name": "Breadsticks",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "breadsticks"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Pasta Salad",
+    "video": "https://www.tiktok.com/t/ZTFhNMKEE/",
+    "link": "",
+    "tags": [],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "Italian seasoning"
+          },
+          {
+            "item": "Dijon mustard"
+          },
+          {
+            "item": "pasta"
+          },
+          {
+            "item": "diced ham"
+          },
+          {
+            "item": "pepperoni"
+          },
+          {
+            "item": "salami"
+          },
+          {
+            "item": "mozzarella pearls"
+          },
+          {
+            "item": "cherry tomatoes"
+          },
+          {
+            "item": "red onion"
+          },
+          {
+            "item": "banana peppers"
+          },
+          {
+            "item": "lettuce"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Pasta w/ Marinara",
+    "video": "",
+    "link": "",
+    "tags": [
+      "Pasta",
+      "Italian"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "pasta"
+          },
+          {
+            "item": "marinara sauce"
+          }
+        ]
+      },
+      {
+        "name": "Garlic Bread",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "garlic bread"
+          }
+        ]
+      },
+      {
+        "name": "Salad",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "salad"
+          }
+        ]
+      },
+      {
+        "name": "Veggie",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "frozen veggies"
+          }
+        ]
+      },
+      {
+        "name": "Cottage Cheese",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "cottage cheese"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Pastalaya",
+    "video": "https://www.tiktok.com/t/ZTrAHxf2N/",
+    "link": "",
+    "tags": [
+      "Pasta",
+      "Cajun",
+      "One-pot"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "bow tie pasta"
+          },
+          {
+            "item": "smoked sausage"
+          },
+          {
+            "item": "green bell pepper"
+          },
+          {
+            "item": "onions"
+          },
+          {
+            "item": "celery"
+          },
+          {
+            "item": "tomato paste"
+          },
+          {
+            "item": "chicken broth"
+          },
+          {
+            "item": "cream of celery soup"
+          }
         ]
       }
     ]
   },
   {
     "name": "Penne with marinara and sausage",
-    "link": "PASTE_LINK_HERE",
-    "tags": ["Italian", "Pasta"],
+    "video": "",
+    "link": "",
+    "tags": [
+      "Italian",
+      "Pasta"
+    ],
     "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "pasta",
-                "marinara",
-                "ground italian sausage",
-                "Parmesan cheese"
-            ]
-        },
-        {
-            "name": "Salad",
-            "type": "side",
-            "ingredients": [
-                "salad mix or lettuce"
-            ]
-        },
-        {
-            "name": "Green Beans",
-            "type": "side",
-            "ingredients": [
-                "green beans"
-            ]
-        },
-        {
-            "name": "Garlic bread",
-            "type": "side",
-            "ingredients": [
-                "garlic bread"
-            ]
-        }
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "pasta"
+          },
+          {
+            "item": "marinara sauce"
+          },
+          {
+            "item": "ground Italian sausage"
+          },
+          {
+            "item": "Parmesan cheese"
+          }
+        ]
+      },
+      {
+        "name": "Salad",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "salad mix or lettuce"
+          }
+        ]
+      },
+      {
+        "name": "Green Beans",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "green beans"
+          }
+        ]
+      },
+      {
+        "name": "Garlic bread",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "garlic bread"
+          }
+        ]
+      }
     ]
-},
+  },
   {
     "name": "Pineapple Meatballs",
-    "link": "https://youtu.be/ILE2nTP-eP0?si=0FN8DVdI-Lr8IeD6&t=619",
+    "video": "https://youtu.be/ILE2nTP-eP0?si=0FN8DVdI-Lr8IeD6&t=619",
+    "link": "",
     "tags": [
       "Meatballs"
     ],
@@ -1761,193 +2838,291 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "meatballs",
-          "pineapple chunks",
-          "diced peppers and onion",
-          "BBQ sauce"
+          {
+            "item": "frozen meatballs"
+          },
+          {
+            "item": "pineapple chunks"
+          },
+          {
+            "item": "peppers and onions",
+            "note": "diced"
+          },
+          {
+            "item": "BBQ sauce"
+          }
         ]
       },
       {
         "name": "Mashed Potatoes",
         "type": "side",
         "ingredients": [
-          "mashed potatoes"
+          {
+            "item": "mashed potatoes"
+          }
         ]
       },
       {
         "name": "Noodles",
         "type": "side",
         "ingredients": [
-          "noodles"
+          {
+            "item": "noodles"
+          }
         ]
       }
     ]
   },
   {
     "name": "Pork chops w/ lo mein",
-    "link": "https://youtu.be/5KsZdQWI6_c?si=zz9K73NwnL6MHMIV",
-    "tags": ["Pork", "Asian"],
+    "video": "https://youtu.be/5KsZdQWI6_c?si=zz9K73NwnL6MHMIV",
+    "link": "",
+    "tags": [
+      "Pork",
+      "Asian"
+    ],
     "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "pork chops",
-                "lo mein"
-            ]
-        },
-        {
-            "name": "Applesauce",
-            "type": "side",
-            "ingredients": [
-                "applesauce"
-            ]
-        },
-        {
-            "name": "Asparagus ",
-            "type": "side",
-            "ingredients": ["asparagus"]
-        },
-        {
-            "name": "Salad",
-            "type": "side",
-            "ingredients": [
-                "salad"
-            ]
-        }
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "pork chops"
+          },
+          {
+            "item": "lo mein"
+          }
+        ]
+      },
+      {
+        "name": "Applesauce",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "applesauce"
+          }
+        ]
+      },
+      {
+        "name": "Asparagus",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "asparagus"
+          }
+        ]
+      },
+      {
+        "name": "Salad",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "salad"
+          }
+        ]
+      }
     ]
-},
+  },
   {
     "name": "Pork Loin",
-    "link": "https://www.tiktok.com/t/ZTNQCxTQo/",
-    "tags": ["Pork", "Sheet"],
+    "video": "https://www.tiktok.com/t/ZTNQCxTQo/",
+    "link": "",
+    "tags": [
+      "Pork",
+      "Sheet pan"
+    ],
     "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Seasoned Pork loin"
-            ]
-        },
-        {
-            "name": "Applesauce",
-            "type": "side",
-            "ingredients": ["applesauce"]
-        },
-        {
-            "name": "Broccoli, carrots, potatoes ",
-            "type": "side",
-            "ingredients": ["broccoli", "carrots", "petite potatoes"]
-        },
-        {
-            "name": "Dinner Rolls",
-            "type": "side",
-            "ingredients": [
-                "dinner rolls"
-            ]
-        }
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "pork loin",
+            "note": "seasoned"
+          }
+        ]
+      },
+      {
+        "name": "Applesauce",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "applesauce"
+          }
+        ]
+      },
+      {
+        "name": "Broccoli, carrots, potatoes",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "broccoli"
+          },
+          {
+            "item": "carrots"
+          },
+          {
+            "item": "petite potatoes"
+          }
+        ]
+      },
+      {
+        "name": "Dinner Rolls",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "dinner rolls"
+          }
+        ]
+      }
     ]
-},
+  },
   {
     "name": "Pork tenderloin (bake in bag)",
-    "link": "PASTE_LINK_HERE",
-    "tags": ["Pork"],
+    "video": "",
+    "link": "",
+    "tags": [
+      "Pork"
+    ],
     "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Brown sugar bacon pork tenderloin x 2"
-            ]
-        },
-        {
-            "name": "Petite potatoes ",
-            "type": "side",
-            "ingredients": [
-              "petite potatoes with seasoning"
-            ]
-        },
-        {
-            "name": "Noodles",
-            "type": "side",
-            "ingredients": [
-                "knorrs noodles"
-            ]
-        }
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "brown sugar bacon pork tenderloin",
+            "amount": "2"
+          }
+        ]
+      },
+      {
+        "name": "Petite potatoes",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "petite potatoes",
+            "note": "with seasoning"
+          }
+        ]
+      },
+      {
+        "name": "Noodles",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "Knorr noodles"
+          }
+        ]
+      }
     ]
-},
+  },
   {
     "name": "Potato tacos",
-    "link": "https://www.tiktok.com/t/ZTMD3eTPD/",
-    "tags": ["Mexican", "One-pot"],
+    "video": "https://www.tiktok.com/t/ZTMD3eTPD/",
+    "link": "",
+    "tags": [
+      "Mexican",
+      "One-pot"
+    ],
     "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "1.5 lb. Petite potatoes",
-                "taco seasoning",
-                "ground beef",
-                "rotel tomatoes",
-                "shredded cheese",
-                "guacamole"
-            ]
-        },
-        {
-            "name": "Tortilla Chips",
-            "type": "side",
-            "ingredients": [
-                "tortilla chips"
-            ]
-        },
-        {
-            "name": "Queso",
-            "type": "side",
-            "ingredients": [
-                "queso"
-            ]
-        }
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "petite potatoes",
+            "amount": "1.5 lb"
+          },
+          {
+            "item": "taco seasoning"
+          },
+          {
+            "item": "ground beef"
+          },
+          {
+            "item": "Rotel tomatoes"
+          },
+          {
+            "item": "shredded cheese"
+          },
+          {
+            "item": "guacamole"
+          }
+        ]
+      },
+      {
+        "name": "Tortilla Chips",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "tortilla chips"
+          }
+        ]
+      },
+      {
+        "name": "Queso",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "queso"
+          }
+        ]
+      }
     ]
-},
+  },
   {
-    "name": "Quesadillas ",
-    "link": "PASTE_LINK_HERE",
-    "tags": ["Mexican"],
+    "name": "Quesadillas",
+    "video": "",
+    "link": "",
+    "tags": [
+      "Mexican"
+    ],
     "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "tortillas",
-                "queso"
-            ]
-        },
-        {
-            "name": "Spanish Rice",
-            "type": "side",
-            "ingredients": [
-                "spanish rice"
-            ]
-        },
-        {
-            "name": "Corn",
-            "type": "side",
-            "ingredients": [
-                "frozen corn"
-            ]
-        },
-        {
-            "name": "Salad",
-            "type": "side",
-            "ingredients": [
-                "salad"
-            ]
-        }
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "tortillas"
+          },
+          {
+            "item": "queso"
+          }
+        ]
+      },
+      {
+        "name": "Spanish Rice",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "Spanish rice"
+          }
+        ]
+      },
+      {
+        "name": "Corn",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "frozen corn"
+          }
+        ]
+      },
+      {
+        "name": "Salad",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "salad"
+          }
+        ]
+      }
     ]
-},
+  },
   {
     "name": "Ramen bake",
-    "link": "https://www.tiktok.com/t/ZT6KHdwQr/",
+    "video": "https://www.tiktok.com/t/ZT6KHdwQr/",
+    "link": "",
     "tags": [
       "Asian",
       "Noodles"
@@ -1957,149 +3132,275 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "red curry paste",
-          "peanut butter",
-          "sesame oil",
-          "coconut milk",
-          "soy sauce",
-          "chicken stock",
-          "ramen",
-          "bok choy",
-          "eggs"
+          {
+            "item": "red curry paste"
+          },
+          {
+            "item": "peanut butter"
+          },
+          {
+            "item": "sesame oil"
+          },
+          {
+            "item": "coconut milk"
+          },
+          {
+            "item": "soy sauce"
+          },
+          {
+            "item": "chicken broth"
+          },
+          {
+            "item": "ramen"
+          },
+          {
+            "item": "bok choy"
+          },
+          {
+            "item": "eggs"
+          }
         ]
       },
       {
         "name": "Dumplings",
         "type": "side",
         "ingredients": [
-          "dumplings"
+          {
+            "item": "dumplings"
+          }
         ]
       },
       {
         "name": "Edamame",
         "type": "side",
         "ingredients": [
-          "edamame"
+          {
+            "item": "edamame"
+          }
         ]
       }
     ]
   },
   {
     "name": "Ravioli",
-    "link": "PASTE_LINK_HERE",
-    "tags": ["Italian", "Pasta"],
+    "video": "",
+    "link": "",
+    "tags": [
+      "Italian",
+      "Pasta"
+    ],
     "components": [
       {
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Ravioli",
-          "sauce"
+          {
+            "item": "ravioli"
+          },
+          {
+            "item": "marinara sauce"
+          }
         ]
       },
       {
         "name": "Brussels Sprouts",
         "type": "side",
         "ingredients": [
-          "brussels sprouts"
+          {
+            "item": "Brussels sprouts"
+          }
         ]
       },
       {
         "name": "Garlic Bread",
         "type": "side",
         "ingredients": [
-          "garlic bread"
+          {
+            "item": "garlic bread"
+          }
         ]
       },
       {
         "name": "Salad",
         "type": "side",
         "ingredients": [
-          "salad"
+          {
+            "item": "salad"
+          }
         ]
       }
     ]
   },
   {
     "name": "Ropa vieja",
-    "link": "https://www.tiktok.com/t/ZTHsqpykMS6st-ZRYVZ/",
-    "tags": ["Steak", "Cuban"],
+    "video": "https://www.tiktok.com/t/ZTHsqpykMS6st-ZRYVZ/",
+    "link": "",
+    "tags": [
+      "Steak",
+      "Cuban"
+    ],
     "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Steak (flank or hanger)",
-                "peppers and onions",
-                "tomato paste",
-                "diced tomatoes",
-                "green olives",
-                "beef stock"
-            ]
-        },
-        {
-            "name": "Plantain Chips",
-            "type": "side",
-            "ingredients": [
-                "Plantain Chips"
-            ]
-        },
-        {
-            "name": "Rice",
-            "type": "side",
-            "ingredients": [
-                "Rice"
-            ]
-        },
-        {
-            "name": "Black beans",
-            "type": "side",
-            "ingredients": [
-                "Black beans"
-            ]
-        }
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "flank steak",
+            "note": "or hanger"
+          },
+          {
+            "item": "peppers and onions"
+          },
+          {
+            "item": "tomato paste"
+          },
+          {
+            "item": "diced tomatoes"
+          },
+          {
+            "item": "green olives"
+          },
+          {
+            "item": "beef broth"
+          }
+        ]
+      },
+      {
+        "name": "Plantain Chips",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "plantain chips"
+          }
+        ]
+      },
+      {
+        "name": "Rice",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "rice"
+          }
+        ]
+      },
+      {
+        "name": "Black beans",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "canned black beans"
+          }
+        ]
+      }
     ]
-},
+  },
   {
     "name": "Rotini",
-    "link": "PASTE_LINK_HERE",
-    "tags": ["Italian", "Pasta"],
+    "video": "",
+    "link": "",
+    "tags": [
+      "Italian",
+      "Pasta"
+    ],
     "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "pasta",
-                "marinara sauce",
-                "premade salad"
-            ]
-        },
-        {
-            "name": "Garlic Bread",
-            "type": "side",
-            "ingredients": [
-                "garlic bread"
-            ]
-        },
-        {
-            "name": "Green Beans",
-            "type": "side",
-            "ingredients": [
-                "green beans"
-            ]
-        },
-        {
-            "name": "Cottage Cheese",
-            "type": "side",
-            "ingredients": [
-                "cottage cheese"
-            ]
-        }
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "pasta"
+          },
+          {
+            "item": "marinara sauce"
+          },
+          {
+            "item": "salad kit"
+          }
+        ]
+      },
+      {
+        "name": "Garlic Bread",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "garlic bread"
+          }
+        ]
+      },
+      {
+        "name": "Green Beans",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "green beans"
+          }
+        ]
+      },
+      {
+        "name": "Cottage Cheese",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "cottage cheese"
+          }
+        ]
+      }
     ]
-},
+  },
+  {
+    "name": "Salisbury Steak",
+    "video": "",
+    "link": "",
+    "tags": [
+      "American",
+      "Beef"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "Salisbury steak"
+          }
+        ]
+      },
+      {
+        "name": "Mashed Potatoes",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "mashed potatoes"
+          }
+        ]
+      },
+      {
+        "name": "Corn",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "corn"
+          }
+        ]
+      },
+      {
+        "name": "Brussels Sprouts (balsamic glaze)",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "Brussels sprouts"
+          },
+          {
+            "item": "balsamic glaze"
+          }
+        ]
+      }
+    ]
+  },
   {
     "name": "Salmon",
-    "link": "PASTE_LINK_HERE",
+    "video": "",
+    "link": "",
     "tags": [
       "Seafood"
     ],
@@ -2108,84 +3409,110 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "salmon"
+          {
+            "item": "salmon"
+          }
         ]
       },
       {
-        "name": "Asparagus ",
+        "name": "Asparagus",
         "type": "side",
         "ingredients": [
-          "asparagus"
+          {
+            "item": "asparagus"
+          }
         ]
       },
       {
         "name": "Rice",
         "type": "side",
         "ingredients": [
-          "rice"
+          {
+            "item": "rice"
+          }
         ]
       },
       {
         "name": "Quinoa",
         "type": "side",
         "ingredients": [
-          "quinoa"
+          {
+            "item": "quinoa"
+          }
         ]
       }
     ]
   },
   {
-    "name": "Salisbury Steak",
-    "link": "PASTE_LINK_HERE",
-    "tags": ["American", "Beef"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Salisbury steak"
-            ]
-        },
-        {
-            "name": "Mashed Potatoes",
-            "type": "side",
-            "ingredients": [
-                "mashed potatoes"
-            ]
-        },
-        {
-            "name": "Corn",
-            "type": "side",
-            "ingredients": [
-                "corn"
-            ]
-        },
-        {
-            "name": "Brussels Sprouts (balsamic glaze)",
-            "type": "side",
-            "ingredients": ["brussels sprouts", "balsamic glaze"]
-        }
-    ]
-},
-  {
     "name": "Sausage and Rice",
-    "link": "https://www.tiktok.com/t/ZTMa9roFN/",
-    "tags": ["One-pot"],
+    "video": "https://www.tiktok.com/t/ZTMa9roFN/",
+    "link": "",
+    "tags": [
+      "One-pot"
+    ],
     "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Smoked sausage",
-                "onion",
-                "knorr's cheddar and broccoli sides x 2"
-            ]
-        }
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "smoked sausage"
+          },
+          {
+            "item": "onions"
+          },
+          {
+            "item": "Knorr cheddar broccoli sides",
+            "amount": "2"
+          }
+        ]
+      }
     ]
-},
+  },
   {
-    "name": "Shrimp Alfredo ",
-    "link": "PASTE_LINK_HERE",
+    "name": "Sheet Pan Sausage & Peppers",
+    "video": "",
+    "link": "",
+    "tags": [
+      "Sheet pan",
+      "Sausage",
+      "Sandwich"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "smoked sausage",
+            "note": "or kielbasa, sliced"
+          },
+          {
+            "item": "frozen peppers and onions"
+          },
+          {
+            "item": "olive oil"
+          },
+          {
+            "item": "hoagie rolls"
+          }
+        ]
+      },
+      {
+        "name": "Fries",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "frozen fries"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Shrimp Alfredo",
+    "video": "",
+    "link": "",
     "tags": [
       "Seafood",
       "Pasta",
@@ -2196,237 +3523,321 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "shrimp",
-          "Fettuccini",
-          "alfredo sauce"
+          {
+            "item": "shrimp"
+          },
+          {
+            "item": "fettuccine"
+          },
+          {
+            "item": "alfredo sauce"
+          }
         ]
       },
       {
         "name": "Garlic Bread",
         "type": "side",
         "ingredients": [
-          "garlic bread"
+          {
+            "item": "garlic bread"
+          }
         ]
       },
       {
-        "name": "Asparagus ",
+        "name": "Asparagus",
         "type": "side",
         "ingredients": [
-          "asparagus"
+          {
+            "item": "asparagus"
+          }
         ]
       },
       {
         "name": "House Salad",
         "type": "side",
         "ingredients": [
-          "salad kit"
+          {
+            "item": "salad kit"
+          }
         ]
       }
     ]
   },
   {
-    "name": "Shrimp Boil ",
-    "link": "https://youtu.be/xvRIlpOirSk?si=gRuySm94tGUGO4ag",
-    "tags": ["Shrimp", "Seafood", "Cajun"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "2 lemons",
-                "2 yellow onions",
-                "Old Bay",
-                "baby potatoes",
-                "corn on the cob",
-                "4 smoked pork sausages",
-                "shrimp"
-            ]
-        },
-        {
-            "name": "Video link ",
-            "type": "side",
-            "ingredients": []
-        }
-    ]
-},
-  {
-    "name": "Sloppy Joe",
-    "link": "PASTE_LINK_HERE",
-    "tags": ["American"],
+    "name": "Shrimp Boil",
+    "video": "https://youtu.be/xvRIlpOirSk?si=gRuySm94tGUGO4ag",
+    "link": "",
+    "tags": [
+      "Shrimp",
+      "Seafood",
+      "Cajun"
+    ],
     "components": [
       {
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "ground turkey",
-          "sloppy joe mix",
-          "buns"
+          {
+            "item": "lemons",
+            "amount": "2"
+          },
+          {
+            "item": "onions",
+            "amount": "2",
+            "note": "yellow"
+          },
+          {
+            "item": "Old Bay"
+          },
+          {
+            "item": "petite potatoes"
+          },
+          {
+            "item": "corn on the cob"
+          },
+          {
+            "item": "smoked sausage",
+            "amount": "4"
+          },
+          {
+            "item": "shrimp"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Sloppy Joe",
+    "video": "",
+    "link": "",
+    "tags": [
+      "American"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "ground turkey"
+          },
+          {
+            "item": "sloppy joe mix"
+          },
+          {
+            "item": "buns"
+          }
         ]
       },
       {
         "name": "Chips",
         "type": "side",
         "ingredients": [
-          "chips"
+          {
+            "item": "chips"
+          }
         ]
       },
-            {
+      {
         "name": "Green Beans",
         "type": "side",
         "ingredients": [
-          "green beans"
+          {
+            "item": "green beans"
+          }
         ]
       },
       {
         "name": "Salad Wedges",
         "type": "side",
         "ingredients": [
-          "lettuce wedge",
-          "salad toppings",
-          "bacon",
-          "crisps",
-          "cheese",
-          "ham",
-          "ranch"
+          {
+            "item": "lettuce wedge"
+          },
+          {
+            "item": "salad toppings"
+          },
+          {
+            "item": "bacon"
+          },
+          {
+            "item": "crisps"
+          },
+          {
+            "item": "cheese"
+          },
+          {
+            "item": "ham"
+          },
+          {
+            "item": "ranch dressing"
+          }
         ]
       }
     ]
   },
-  
   {
     "name": "Smashed Dumpling Tacos",
-    "link": "https://www.tiktok.com/t/ZThyj8koW/",
-    "tags": ["Mexican", "Asian"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Ground pork",
-                "green onion",
-                "sesame oil",
-                "soy sauce",
-                "Cole slaw",
-                "flour tortillas"
-            ]
-        },
-           {
-            "name": "Cilantro lime rice",
-            "type": "side",
-            "ingredients": [
-                "cilantro lime rice"
-            ]
-        }
-    ]
-},
-     {
-    "name": "Smashed McChicken Tacos",
-    "link": "https://www.tiktok.com/t/ZThy2Wvht/",
-    "tags": ["American", "Chicken"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Ground chicken",
-                "flour tortillas",
-                "sweet gherkins",
-                "shredded lettuce",
-                "Parmesan"
-            ]
-        },
-        {
-            "name": "Fries",
-            "type": "side",
-            "ingredients": [
-                "fries"
-            ]
-        }
-    ]
-},
-  {
-    "name": "Sonoran Hot Dogs",
-    "link": "https://www.tiktok.com/t/ZThy2WWNP/",
-    "tags": ["Mexican", "American"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Hot dogs",
-                "bacon",
-                "jalapeño salsa",
-                "bolillo buns",
-                "Mexican pinto beans",
-                "cotija cheese"
-            ]
-        },
-        {
-            "name": "Fries",
-            "type": "side",
-            "ingredients": [
-                "fries"
-            ]
-        }
-    ]
-},
-  {
-    "name": "Southwestern tortellini ",
-    "link": "https://www.tiktok.com/t/ZTNNPD7Vp/",
+    "video": "https://www.tiktok.com/t/ZThyj8koW/",
+    "link": "",
     "tags": [
-      "Chicken",
-      "One-Pot"
+      "Mexican",
+      "Asian"
     ],
     "components": [
       {
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Peppers and onions",
-          "cubed chicken",
-          "frozen tortellini",
-          "southwestern ranch new"
+          {
+            "item": "ground pork"
+          },
+          {
+            "item": "green onion"
+          },
+          {
+            "item": "sesame oil"
+          },
+          {
+            "item": "soy sauce"
+          },
+          {
+            "item": "cole slaw"
+          },
+          {
+            "item": "flour tortillas"
+          }
+        ]
+      },
+      {
+        "name": "Cilantro lime rice",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "cilantro lime rice"
+          }
         ]
       }
     ]
   },
   {
-    "name": "Spaghetti Aglio e olio",
-    "link": "https://www.tiktok.com/t/ZThebEsKn/",
+    "name": "Smashed McChicken Tacos",
+    "video": "https://www.tiktok.com/t/ZThy2Wvht/",
+    "link": "",
     "tags": [
-      "Italian",
-      "Pasta"
+      "American",
+      "Chicken"
     ],
     "components": [
       {
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Spaghetti",
-          "Olive oil",
-          "Garlic",
-          "Red pepper flakes"
+          {
+            "item": "ground chicken"
+          },
+          {
+            "item": "flour tortillas"
+          },
+          {
+            "item": "sweet gherkins"
+          },
+          {
+            "item": "shredded lettuce"
+          },
+          {
+            "item": "Parmesan cheese"
+          }
         ]
       },
       {
-        "name": "Garlic bread",
+        "name": "Fries",
         "type": "side",
         "ingredients": [
-          "garlic bread"
+          {
+            "item": "frozen fries"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Sonoran Hot Dogs",
+    "video": "https://www.tiktok.com/t/ZThy2WWNP/",
+    "link": "",
+    "tags": [
+      "Mexican",
+      "American"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "hot dogs"
+          },
+          {
+            "item": "bacon"
+          },
+          {
+            "item": "jalapeño salsa"
+          },
+          {
+            "item": "bolillo buns"
+          },
+          {
+            "item": "Mexican pinto beans"
+          },
+          {
+            "item": "cotija cheese"
+          }
         ]
       },
       {
-        "name": "Salad",
+        "name": "Fries",
         "type": "side",
         "ingredients": [
-          "salad"
+          {
+            "item": "frozen fries"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Southwestern tortellini",
+    "video": "https://www.tiktok.com/t/ZTNNPD7Vp/",
+    "link": "",
+    "tags": [
+      "Chicken",
+      "One-pot"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "peppers and onions"
+          },
+          {
+            "item": "cubed chicken"
+          },
+          {
+            "item": "frozen tortellini"
+          },
+          {
+            "item": "southwestern ranch"
+          }
         ]
       }
     ]
   },
   {
     "name": "Spaghetti & Meatballs",
-    "link": "PASTE_LINK_HERE",
+    "video": "",
+    "link": "",
     "tags": [
       "Pasta",
       "Meatballs",
@@ -2437,53 +3848,126 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Spaghetti",
-          "marinara",
-          "parmesan",
-          "meatballs"
+          {
+            "item": "spaghetti"
+          },
+          {
+            "item": "marinara sauce"
+          },
+          {
+            "item": "Parmesan cheese"
+          },
+          {
+            "item": "frozen meatballs"
+          }
         ]
       },
       {
         "name": "Salad",
         "type": "side",
         "ingredients": [
-          "salad"
+          {
+            "item": "salad"
+          }
         ]
       },
       {
         "name": "Bread",
         "type": "side",
         "ingredients": [
-          "bread"
+          {
+            "item": "bread"
+          }
         ]
       }
     ]
   },
   {
-    "name": "Spanish Chicken and Rice",
-    "link": "https://www.tiktok.com/t/ZTMUHav5f/",
+    "name": "Spaghetti Aglio e olio",
+    "video": "https://www.tiktok.com/t/ZThebEsKn/",
+    "link": "",
     "tags": [
-      "Chicken",
-      "One-Pot"
+      "Italian",
+      "Pasta"
     ],
     "components": [
       {
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Chicken breasts",
-          "Rotel tomatoes",
-          "Spanish Rice-A-Roni",
-          "Corn",
-          "Velveeta Queso Blanco",
-          "Evaporated Milk"
+          {
+            "item": "spaghetti"
+          },
+          {
+            "item": "olive oil"
+          },
+          {
+            "item": "garlic"
+          },
+          {
+            "item": "red pepper flakes"
+          }
+        ]
+      },
+      {
+        "name": "Garlic bread",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "garlic bread"
+          }
+        ]
+      },
+      {
+        "name": "Salad",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "salad"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Spanish Chicken and Rice",
+    "video": "https://www.tiktok.com/t/ZTMUHav5f/",
+    "link": "",
+    "tags": [
+      "Chicken",
+      "One-pot"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "chicken breasts"
+          },
+          {
+            "item": "Rotel tomatoes"
+          },
+          {
+            "item": "Spanish Rice-A-Roni"
+          },
+          {
+            "item": "corn"
+          },
+          {
+            "item": "Velveeta queso blanco"
+          },
+          {
+            "item": "evaporated milk"
+          }
         ]
       }
     ]
   },
   {
     "name": "Steak Bites",
-    "link": "https://www.tiktok.com/t/ZTNNPuLkR/",
+    "video": "https://www.tiktok.com/t/ZTNNPuLkR/",
+    "link": "",
     "tags": [
       "Steak",
       "Beef"
@@ -2493,27 +3977,34 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "strip steak"
+          {
+            "item": "strip steak"
+          }
         ]
       },
       {
-        "name": "Smashed potatoes ",
+        "name": "Smashed potatoes",
         "type": "side",
         "ingredients": [
-          "potatoes"
+          {
+            "item": "potatoes"
+          }
         ]
       },
       {
         "name": "Broccoli",
         "type": "side",
         "ingredients": [
-          "broccoli"
+          {
+            "item": "broccoli"
+          }
         ]
       }
     ]
   },
   {
     "name": "Stuffed Peppers",
+    "video": "",
     "link": "https://recipecenter.giantfood.com/recipes/231137/rice-and-ground-beef-stuffed-bell-peppers",
     "tags": [
       "Beef"
@@ -2523,19 +4014,32 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Bell Peppers",
-          "Ground Beef",
-          "Onion",
-          "Precooked Basmati Rice",
-          "Pasta Sauce",
-          "Shredded Italian Blend cheese"
+          {
+            "item": "bell peppers"
+          },
+          {
+            "item": "ground beef"
+          },
+          {
+            "item": "onions"
+          },
+          {
+            "item": "precooked basmati rice"
+          },
+          {
+            "item": "marinara sauce"
+          },
+          {
+            "item": "shredded Italian cheese"
+          }
         ]
       }
     ]
   },
   {
     "name": "Swamp Potatoes",
-    "link": "https://www.tiktok.com/t/ZTMKCLuwk/",
+    "video": "https://www.tiktok.com/t/ZTMKCLuwk/",
+    "link": "",
     "tags": [
       "Cajun"
     ],
@@ -2544,116 +4048,98 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Potatoes",
-          "Green Beans",
-          "Onion",
-          "Smoke Sausage",
-          "Onion Soup Mix",
-          "Butter"
+          {
+            "item": "potatoes"
+          },
+          {
+            "item": "green beans"
+          },
+          {
+            "item": "onions"
+          },
+          {
+            "item": "smoked sausage"
+          },
+          {
+            "item": "onion soup mix"
+          },
+          {
+            "item": "butter"
+          }
         ]
       },
       {
         "name": "Caesar salad",
         "type": "side",
         "ingredients": [
-          "Caesar Salad"
+          {
+            "item": "Caesar salad kit"
+          }
         ]
       },
       {
         "name": "French Bread",
         "type": "side",
         "ingredients": [
-          "French Bread"
+          {
+            "item": "French bread"
+          }
         ]
       }
     ]
   },
   {
     "name": "Sweet & Sour Pork tenderloin",
-    "link": "https://www.tiktok.com/t/ZThJXn2C9/",
+    "video": "https://www.tiktok.com/t/ZThJXn2C9/",
+    "link": "",
     "tags": [
       "Pork",
-      "Sheet"
+      "Sheet pan"
     ],
     "components": [
       {
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Pork tenderloins",
-          "sweet and sour (BW)",
-          "pineapple chunks",
-          "pepper and onion chopped"
+          {
+            "item": "pork tenderloin"
+          },
+          {
+            "item": "BW sweet and sour sauce"
+          },
+          {
+            "item": "pineapple chunks"
+          },
+          {
+            "item": "peppers and onions",
+            "note": "chopped"
+          }
         ]
       },
       {
         "name": "Rice",
         "type": "side",
         "ingredients": [
-          "rice"
+          {
+            "item": "rice"
+          }
         ]
       },
       {
         "name": "Broccoli",
         "type": "side",
         "ingredients": [
-          "broccoli"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "Tacos",
-    "link": "PASTE_LINK_HERE",
-    "tags": [
-      "Mexican"
-    ],
-    "components": [
-      {
-        "name": "Main Dish",
-        "type": "main",
-        "ingredients": [
-          "ground turkey",
-          "taco seasoning",
-          "tortillas",
-          "taco shells",
-          "shredded cheese",
-          "lettuce",
-          "tomato",
-          "sour cream",
-          "guacamole",
-          "salsa"
-        ]
-      },
-      {
-        "name": "Rice",
-        "type": "side",
-        "ingredients": [
-          "rice"
-        ]
-      },
-      {
-        "name": "Beans",
-        "type": "side",
-        "ingredients": [
-          "beans"
-        ]
-      },
-    
-
-      {
-        "name": "Tortilla Chips and queso",
-        "type": "side",
-        "ingredients": [
-          "tortilla chips",
-          "queso"
+          {
+            "item": "broccoli"
+          }
         ]
       }
     ]
   },
   {
     "name": "Taco Salad",
-    "link": "PASTE_LINK_HERE",
+    "video": "",
+    "link": "",
     "tags": [
       "Mexican"
     ],
@@ -2662,89 +4148,226 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "ground turkey",
-          "taco seasoning",
-          "lettuce",
-          "tomatoes",
-          "cheese",
-          "avocado",
-          "black beans",
-          "salsa",
-          "sour cream"
+          {
+            "item": "ground turkey"
+          },
+          {
+            "item": "taco seasoning"
+          },
+          {
+            "item": "lettuce"
+          },
+          {
+            "item": "tomatoes"
+          },
+          {
+            "item": "cheese"
+          },
+          {
+            "item": "avocado"
+          },
+          {
+            "item": "canned black beans"
+          },
+          {
+            "item": "salsa"
+          },
+          {
+            "item": "sour cream"
+          }
         ]
       },
       {
         "name": "Nacho Chips",
         "type": "side",
         "ingredients": [
-          "nachos"
+          {
+            "item": "nachos"
+          }
         ]
       }
     ]
   },
-        {
-    "name": "Teriyaki meatballs ",
-    "link": "https://www.tiktok.com/t/ZTrutyUPX/",
-    "tags": ["Meatballs"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "Meatballs",
-                "frozen peppers and onions",
-                "pineapple chunks",
-                "kinders sweet sesame teriyaki",
-                "jasmine rice"
-            ]
-        }
-    ]
-},
   {
-    "name": "Tomato Soup",
-    "link": "PASTE_LINK_HERE",
-    "tags": ["Soup"],
-    "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "canned crushed tomatoes",
-                "chicken or vegetable broth",
-                "garlic",
-                "onion",
-                "basil",
-                "heavy cream or milk (optional)"
-            ]
-        },
-        {
-            "name": "Grilled Cheese",
-            "type": "side",
-            "ingredients": ["sandwich bread",
-                "sliced cheese",
-                "butter"]
-        }
-    ]
-},
-  {
-    "name": "Tuna Helper",
-    "link": "PASTE_LINK_HERE",
+    "name": "Tacos",
+    "video": "",
+    "link": "",
     "tags": [
-      "Tuna",
-      "One-Pot"
+      "Mexican"
     ],
     "components": [
       {
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Tuna Helper"
+          {
+            "item": "ground turkey"
+          },
+          {
+            "item": "taco seasoning"
+          },
+          {
+            "item": "tortillas"
+          },
+          {
+            "item": "taco shells"
+          },
+          {
+            "item": "shredded cheese"
+          },
+          {
+            "item": "lettuce"
+          },
+          {
+            "item": "tomatoes"
+          },
+          {
+            "item": "sour cream"
+          },
+          {
+            "item": "guacamole"
+          },
+          {
+            "item": "salsa"
+          }
+        ]
+      },
+      {
+        "name": "Rice",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "rice"
+          }
+        ]
+      },
+      {
+        "name": "Beans",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "beans"
+          }
+        ]
+      },
+      {
+        "name": "Tortilla Chips and queso",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "tortilla chips"
+          },
+          {
+            "item": "queso"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Teriyaki meatballs",
+    "video": "https://www.tiktok.com/t/ZTrutyUPX/",
+    "link": "",
+    "tags": [
+      "Meatballs"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "frozen meatballs"
+          },
+          {
+            "item": "frozen peppers and onions"
+          },
+          {
+            "item": "pineapple chunks"
+          },
+          {
+            "item": "Kinder's sweet sesame teriyaki"
+          },
+          {
+            "item": "jasmine rice"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Tomato Soup",
+    "video": "",
+    "link": "",
+    "tags": [
+      "Soup"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "canned crushed tomatoes"
+          },
+          {
+            "item": "chicken or vegetable broth"
+          },
+          {
+            "item": "garlic"
+          },
+          {
+            "item": "onions"
+          },
+          {
+            "item": "basil"
+          },
+          {
+            "item": "heavy cream",
+            "note": "or milk, optional"
+          }
+        ]
+      },
+      {
+        "name": "Grilled Cheese",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "sandwich bread"
+          },
+          {
+            "item": "sliced cheese"
+          },
+          {
+            "item": "butter"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Tuna Helper",
+    "video": "",
+    "link": "",
+    "tags": [
+      "Tuna",
+      "One-pot"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "Tuna Helper"
+          }
         ]
       }
     ]
   },
   {
     "name": "Turkey sausage orzo",
+    "video": "",
     "link": "https://thedomesticgeek.com/turkey-sausage-broccolini-orzo/",
     "tags": [],
     "components": [
@@ -2752,69 +4375,110 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "turkey sausage",
-          "Orzo",
-          "Broccoli(ni)"
+          {
+            "item": "turkey sausage"
+          },
+          {
+            "item": "orzo"
+          },
+          {
+            "item": "broccoli",
+            "note": "or broccolini"
+          }
         ]
       },
       {
         "name": "Cottage Cheese",
         "type": "side",
         "ingredients": [
-          "cottage cheese"
+          {
+            "item": "cottage cheese"
+          }
         ]
       },
       {
         "name": "Garlic / Cheesy Bread",
         "type": "side",
         "ingredients": [
-          "garlic (cheesy) bread"
+          {
+            "item": "garlic bread",
+            "note": "cheesy"
+          }
         ]
       }
     ]
   },
   {
     "name": "Tuscan Chicken (Creamy Garlic Parmesan Chicken with Spinach and Tomatoes)",
+    "video": "",
     "link": "https://therecipecritic.com/creamy-tuscan-garlic-chicken/",
-    "tags": ["Chicken", "One-pot"],
+    "tags": [
+      "Chicken",
+      "One-pot"
+    ],
     "components": [
-        {
-            "name": "Main Dish",
-            "type": "main",
-            "ingredients": [
-                "chicken breasts",
-                "heavy cream (or milk + butter)",
-                "Parmesan cheese",
-                "garlic",
-                "cherry tomatoes",
-                "spinach",
-                "chicken broth",
-                "Italian seasoning",
-                "red pepper flakes (optional)"
-            ]
-        },
-        {
-            "name": "Jasmine Rice",
-            "type": "side",
-            "ingredients": [
-                "jasmine rice"
-            ]
-        },
-        {
-            "name": "Brussels sprouts",
-            "type": "side",
-            "ingredients": [
-                "Brussels sprouts"
-            ]
-        }
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "chicken breasts"
+          },
+          {
+            "item": "heavy cream",
+            "note": "or milk + butter"
+          },
+          {
+            "item": "Parmesan cheese"
+          },
+          {
+            "item": "garlic"
+          },
+          {
+            "item": "cherry tomatoes"
+          },
+          {
+            "item": "spinach"
+          },
+          {
+            "item": "chicken broth"
+          },
+          {
+            "item": "Italian seasoning"
+          },
+          {
+            "item": "red pepper flakes",
+            "note": "optional"
+          }
+        ]
+      },
+      {
+        "name": "Jasmine Rice",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "jasmine rice"
+          }
+        ]
+      },
+      {
+        "name": "Brussels sprouts",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "Brussels sprouts"
+          }
+        ]
+      }
     ]
-},
+  },
   {
     "name": "Vegetable Curry",
-    "link": "https://www.tiktok.com/t/ZTFh85Puq/",
+    "video": "https://www.tiktok.com/t/ZTFh85Puq/",
+    "link": "",
     "tags": [
       "Vegetarian",
-      "One-Pot",
+      "One-pot",
       "Indian"
     ],
     "components": [
@@ -2822,38 +4486,65 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "chickpeas",
-          "peas",
-          "sweet potatoes",
-          "bell pepper",
-          "broccoli",
-          "spinach",
-          "coconut milk",
-          "crushed tomatoes",
-          "turmeric",
-          "coriander",
-          "garam masala"
+          {
+            "item": "chickpeas"
+          },
+          {
+            "item": "peas"
+          },
+          {
+            "item": "sweet potatoes"
+          },
+          {
+            "item": "bell peppers"
+          },
+          {
+            "item": "broccoli"
+          },
+          {
+            "item": "spinach"
+          },
+          {
+            "item": "coconut milk"
+          },
+          {
+            "item": "canned crushed tomatoes"
+          },
+          {
+            "item": "turmeric"
+          },
+          {
+            "item": "coriander"
+          },
+          {
+            "item": "garam masala"
+          }
         ]
       },
       {
         "name": "Naan",
         "type": "side",
         "ingredients": [
-          "naan"
+          {
+            "item": "naan"
+          }
         ]
       },
       {
         "name": "Rice",
         "type": "side",
         "ingredients": [
-          "jasmine rice"
+          {
+            "item": "jasmine rice"
+          }
         ]
       }
     ]
   },
   {
     "name": "Wings (BBQ)",
-    "link": "https://www.tiktok.com/t/ZThRHvm9T/",
+    "video": "https://www.tiktok.com/t/ZThRHvm9T/",
+    "link": "",
     "tags": [
       "Chicken",
       "American"
@@ -2863,190 +4554,39 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": [
-          "Wings",
-          "Wing Sauce"
+          {
+            "item": "wings"
+          },
+          {
+            "item": "wing sauce"
+          }
         ]
       },
       {
         "name": "Celery",
         "type": "side",
         "ingredients": [
-          "Celery"
+          {
+            "item": "celery"
+          }
         ]
       },
       {
         "name": "Carrots",
         "type": "side",
         "ingredients": [
-          "Carrots"
+          {
+            "item": "carrots"
+          }
         ]
       },
       {
         "name": "Blue Cheese Dip",
         "type": "side",
         "ingredients": [
-          "Blue Cheese Dip"
-        ]
-      }
-    ]
-  },
-
-  {
-    "name": "Chicken Bacon Ranch Wraps",
-    "link": "PASTE_LINK_HERE",
-    "tags": [
-      "Sandwich",
-      "Chicken",
-      "No-cook"
-    ],
-    "components": [
-      {
-        "name": "Main Dish",
-        "type": "main",
-        "ingredients": [
-          "rotisserie chicken (or deli chicken)",
-          "precooked bacon",
-          "ranch dressing",
-          "shredded lettuce",
-          "shredded cheddar",
-          "large tortillas"
-        ]
-      },
-      {
-        "name": "Fresh Fruit",
-        "type": "side",
-        "ingredients": [
-          "grapes or apple slices"
-        ]
-      },
-      {
-        "name": "Chips",
-        "type": "side",
-        "ingredients": [
-          "potato chips"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "Dump-and-Go Taco Soup",
-    "link": "PASTE_LINK_HERE",
-    "tags": [
-      "Soup",
-      "Mexican",
-      "One-pot"
-    ],
-    "components": [
-      {
-        "name": "Main Dish",
-        "type": "main",
-        "ingredients": [
-          "rotisserie chicken (shredded)",
-          "canned black beans (rinsed)",
-          "canned corn (drained)",
-          "rotel tomatoes",
-          "chicken broth",
-          "taco seasoning"
-        ]
-      },
-      {
-        "name": "Toppings",
-        "type": "side",
-        "ingredients": [
-          "sour cream",
-          "shredded cheese",
-          "tortilla chips"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "Black Bean & Corn Quesadillas",
-    "link": "PASTE_LINK_HERE",
-    "tags": [
-      "Vegetarian",
-      "Mexican"
-    ],
-    "components": [
-      {
-        "name": "Main Dish",
-        "type": "main",
-        "ingredients": [
-          "flour tortillas",
-          "canned black beans",
-          "canned corn",
-          "shredded mexican cheese blend",
-          "salsa"
-        ]
-      },
-      {
-        "name": "Guacamole",
-        "type": "side",
-        "ingredients": [
-          "guacamole"
-        ]
-      },
-      {
-        "name": "Spanish Rice",
-        "type": "side",
-        "ingredients": [
-          "microwave spanish rice pouch"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "French Bread Pizzas",
-    "link": "PASTE_LINK_HERE",
-    "tags": [
-      "Vegetarian",
-      "American",
-      "Sheet"
-    ],
-    "components": [
-      {
-        "name": "Main Dish",
-        "type": "main",
-        "ingredients": [
-          "french bread loaf (or split sub buns)",
-          "pizza sauce or marinara",
-          "shredded mozzarella",
-          "pepperoni (optional)"
-        ]
-      },
-      {
-        "name": "Side Salad",
-        "type": "side",
-        "ingredients": [
-          "bagged salad kit"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "Sheet Pan Sausage & Peppers",
-    "link": "PASTE_LINK_HERE",
-    "tags": [
-      "Sheet",
-      "Sausage",
-      "Sandwich"
-    ],
-    "components": [
-      {
-        "name": "Main Dish",
-        "type": "main",
-        "ingredients": [
-          "smoked sausage or kielbasa (sliced)",
-          "frozen sliced bell peppers and onions",
-          "olive oil",
-          "hoagie rolls"
-        ]
-      },
-      {
-        "name": "Fries",
-        "type": "side",
-        "ingredients": [
-          "frozen fries"
+          {
+            "item": "blue cheese dip"
+          }
         ]
       }
     ]

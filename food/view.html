@@ -21,6 +21,8 @@
         /* Meal Items & Links */
         .calendar-meal { background: #3498db; color: white; padding: 4px; border-radius: 3px; margin-top: 3px; font-size: 0.85em; }
         .calendar-meal a { color: white; text-decoration: none; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .calendar-meal .links { display: flex; gap: 6px; margin-top: 2px; font-size: 0.9em; }
+        .calendar-meal .links a { display: inline; }
         
         /* Action Buttons */
         .meal-actions { display: flex; gap: 2px; margin-top: 4px; }
@@ -39,8 +41,12 @@
         .swap-modal { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; color: #333; }
 
         /* Shopping List */
-        .ingredient-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
-        .qty { font-weight: bold; color: #d48806; background: #fff1b8; padding: 2px 8px; border-radius: 5px; }
+        .ingredient-item { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid #eee; cursor: pointer; }
+        .ingredient-item input { margin-top: 3px; width: 18px; height: 18px; flex: none; }
+        .ingredient-item .what { flex: 1; }
+        .ingredient-item .for { display: block; font-size: 0.78em; color: #95a5a6; }
+        .ingredient-item.got .what { text-decoration: line-through; color: #aaa; }
+        .qty { font-weight: bold; color: #d48806; background: #fff1b8; padding: 2px 8px; border-radius: 5px; white-space: nowrap; }
 
         @media print {
             .nav-bar, .btn-nav, .meal-actions, .shopping-controls, .jump-link, .btn-print, #swap-overlay { display: none !important; }
@@ -53,7 +59,7 @@
 
 <div class="container">
     <nav class="nav-bar">
-        <a href="convert.html">1. Add</a>
+        <a href="recipes.html">1. Recipes</a>
         <a href="planner.html">2. Plan</a>
         <a href="view.html" class="active">3. View/Shop</a>
     </nav>
@@ -89,10 +95,11 @@
     <div class="swap-modal">
         <h3>Swap Sides</h3>
         <p id="swap-meal-name" style="font-weight: bold; color:#3498db;"></p>
-        <p id="current-sides-list" style="font-size: 0.9em; font-style: italic;"></p>
         <hr>
-        <label>Pick replacement side:</label>
-        <select id="all-sides-picker" style="width:100%; padding:10px; margin-top:10px; border-radius: 5px;"></select>
+        <label>Replace:</label>
+        <select id="swap-out-picker" style="width:100%; padding:10px; margin-top:6px; border-radius: 5px; font-size:16px;"></select>
+        <label style="display:block; margin-top:12px;">With:</label>
+        <select id="all-sides-picker" style="width:100%; padding:10px; margin-top:6px; border-radius: 5px; font-size:16px;"></select>
         <div style="display:flex; gap:10px; margin-top:20px;">
             <button onclick="confirmSwap()" class="primary" style="margin:0;">Confirm Swap</button>
             <button onclick="closeSwap()" style="background:#95a5a6; color:white; padding:10px; border-radius:6px; flex:1;">Cancel</button>
@@ -100,60 +107,57 @@
     </div>
 </div>
 
+<script src="common.js"></script>
 <script>
-    const REPO = 'scottscalici/loquesea';
-    const TOKEN = localStorage.getItem('gh_token');
-    let mealsDb = [], calendarDb = [], calendarSha = '', currentStartDate = new Date();
+    let mealsDb = [], calendarDb = [], currentStartDate = new Date();
     let activeSwapIndex = null;
 
-    // Helper to fetch from GitHub API with Authorization
-    async function fetchData(path) {
-        const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
-            headers: { 'Authorization': `token ${TOKEN}` }
-        });
-        if(!res.ok) throw new Error("GitHub Error");
-        const data = await res.json();
-        if(path === 'food/calendar.json') calendarSha = data.sha; 
-        return JSON.parse(atob(data.content));
-    }
-
     async function init() {
-        if (!TOKEN) { alert("Token missing. Please set it in the Planner."); return; }
+        if (!getToken()) { alert("Token missing. Please set it in the Planner."); return; }
         try {
-            [mealsDb, calendarDb] = await Promise.all([
-                fetchData('food/meals.json'),
-                fetchData('food/calendar.json')
-            ]);
+            const [meals, cal] = await Promise.all([readJson('food/meals.json'), readJson('food/calendar.json')]);
+            mealsDb = meals.data;
+            calendarDb = cal.data;
             renderCalendarGrid();
         } catch (e) {
             document.getElementById('cal-title').innerText = "Sync Failed";
         }
     }
 
+    function findMeal(name) {
+        return mealsDb.find(db => db.name.trim() === name.trim());
+    }
+
     function renderCalendarGrid() {
         const grid = document.getElementById('calendarGrid');
         grid.innerHTML = '';
         const todayStr = new Date().toLocaleDateString('en-CA');
-        
+
         for(let i=0; i<14; i++) {
             const d = new Date(currentStartDate);
             d.setDate(currentStartDate.getDate() + i);
             const dateStr = d.toLocaleDateString('en-CA');
             const dayMeals = calendarDb.filter(p => p.date === dateStr);
-            
+
             const dayBox = document.createElement('div');
             dayBox.className = `calendar-day ${dateStr === todayStr ? 'today' : ''}`;
             dayBox.innerHTML = `<strong>${d.getMonth()+1}/${d.getDate()}</strong>`;
-            
+
             dayMeals.forEach(m => {
-                const mealData = mealsDb.find(db => db.name.trim() === m.meal.trim());
-                const link = mealData ? mealData.link : "#";
+                const mealData = findMeal(m.meal);
+                const main = mealData && (mealData.video || mealData.link);
                 const dbIndex = calendarDb.indexOf(m);
+                const editUrl = `recipes.html?edit=${encodeURIComponent(mealData ? mealData.name : '')}`;
 
                 const item = document.createElement('div');
                 item.className = 'calendar-meal';
                 item.innerHTML = `
-                    <a href="${link}" target="_blank">${m.meal}</a>
+                    <a href="${escapeHtml(main || editUrl)}" ${main ? 'target="_blank"' : ''}>${escapeHtml(m.meal)}</a>
+                    <div class="links">
+                        ${mealData && mealData.video ? `<a href="${escapeHtml(mealData.video)}" target="_blank" title="Video">🎬</a>` : ''}
+                        ${mealData && mealData.link ? `<a href="${escapeHtml(mealData.link)}" target="_blank" title="Recipe">📄</a>` : ''}
+                        ${mealData ? `<a href="${escapeHtml(editUrl)}" title="Edit recipe">✏️</a>` : ''}
+                    </div>
                     <div class="meal-actions">
                         <button class="act-btn btn-swap" onclick="openSwap(${dbIndex})">Swap</button>
                         <button class="act-btn btn-move" onclick="moveMeal(${dbIndex})">Move</button>
@@ -169,55 +173,64 @@
         document.getElementById('cal-title').innerText = `${currentStartDate.getMonth()+1}/${currentStartDate.getDate()} - ${rangeEnd.getMonth()+1}/${rangeEnd.getDate()}`;
     }
 
-    async function updateGitHub() {
-        const res = await fetch(`https://api.github.com/repos/${REPO}/contents/food/calendar.json`, {
-            method: 'PUT',
-            headers: { 'Authorization': `token ${TOKEN}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                message: "Calendar Update",
-                content: btoa(JSON.stringify(calendarDb, null, 2)),
-                sha: calendarSha
-            })
-        });
-        if(res.ok) location.reload();
-        else alert("GitHub Save Failed.");
+    // Applies `change(entry)` to the latest saved copy of the entry (`change` returns false to delete it).
+    async function updateEntry(index, change, message) {
+        const target = calendarDb[index];
+        const same = e => e.date === target.date && e.meal === target.meal
+            && JSON.stringify(e.sides_included) === JSON.stringify(target.sides_included);
+        try {
+            await updateJson('food/calendar.json', cal => {
+                const i = cal.findIndex(same);
+                if (i < 0) throw new Error('That meal was already changed somewhere else. Reloading.');
+                if (change(cal[i]) === false) cal.splice(i, 1);
+                return cal;
+            }, message);
+        } catch (e) {
+            alert("GitHub Save Failed. " + e.message);
+        }
+        location.reload();
     }
 
     // --- Action Functions ---
     function deleteMeal(index) {
-        if(confirm("Remove this meal?")) {
-            calendarDb.splice(index, 1);
-            updateGitHub();
-        }
+        if(confirm("Remove this meal?")) updateEntry(index, () => false, "Calendar Update");
     }
 
     function moveMeal(index) {
         const newDate = prompt("Enter new date (YYYY-MM-DD):", calendarDb[index].date);
-        if(newDate) {
-            calendarDb[index].date = newDate;
-            updateGitHub();
-        }
+        if (!newDate) return;
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(newDate.trim())) return alert("Use the format YYYY-MM-DD.");
+        updateEntry(index, e => { e.date = newDate.trim(); }, "Calendar Update");
+    }
+
+    function allSideNames() {
+        const sides = new Set();
+        mealsDb.forEach(m => m.components.forEach(c => { if (c.type === 'side') sides.add(c.name); }));
+        return [...sides].sort((a, b) => a.localeCompare(b));
     }
 
     function openSwap(index) {
         activeSwapIndex = index;
         const entry = calendarDb[index];
         document.getElementById('swap-meal-name').innerText = entry.meal;
-        document.getElementById('current-sides-list').innerText = "Current Sides: " + entry.sides_included.filter(s => s !== "Main Dish").join(", ");
-
-        const sidePicker = document.getElementById('all-sides-picker');
-        const allPossibleSides = new Set();
-        mealsDb.forEach(m => m.components.forEach(c => { if(c.type === 'side') allPossibleSides.add(c.name); }));
-
-        sidePicker.innerHTML = [...allPossibleSides].sort().map(s => `<option value="${s}">${s}</option>`).join('');
+        const current = entry.sides_included.filter(s => s !== "Main Dish");
+        document.getElementById('swap-out-picker').innerHTML =
+            current.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('')
+            + '<option value="">(nothing, just add a side)</option>';
+        document.getElementById('all-sides-picker').innerHTML =
+            allSideNames().map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
         document.getElementById('swap-overlay').style.display = 'flex';
     }
 
     async function confirmSwap() {
+        const out = document.getElementById('swap-out-picker').value;
         const newSide = document.getElementById('all-sides-picker').value;
-        calendarDb[activeSwapIndex].sides_included = ["Main Dish", newSide];
         closeSwap();
-        await updateGitHub();
+        await updateEntry(activeSwapIndex, e => {
+            const sides = e.sides_included.filter(s => s !== out && s !== newSide);
+            sides.push(newSide);
+            e.sides_included = sides;
+        }, "Calendar Update");
     }
 
     function closeSwap() { document.getElementById('swap-overlay').style.display = 'none'; }
@@ -225,23 +238,57 @@
     function resetToToday() { currentStartDate = new Date(); renderCalendarGrid(); }
 
     // --- Shopping List Logic ---
+    // A side added from another recipe (via Swap or the planner) is looked up in that recipe.
+    function findComponent(meal, name) {
+        const own = meal && meal.components.find(c => c.name === name);
+        if (own) return own;
+        const key = name.trim().toLowerCase();
+        for (const m of mealsDb) {
+            const c = m.components.find(c => c.type === 'side' && c.name.trim().toLowerCase() === key);
+            if (c) return c;
+        }
+        return null;
+    }
+
     function generateShoppingList() {
         const s = document.getElementById('start').value, e = document.getElementById('end').value;
         if(!s || !e) return alert("Select dates.");
         const planned = calendarDb.filter(p => p.date >= s && p.date <= e);
-        const tally = {};
+        const tally = {};   // lowercased item -> { item, amounts[], meals Set, notes Set }
         planned.forEach(p => {
-            const meal = mealsDb.find(m => m.name.trim() === p.meal.trim());
-            if (meal) meal.components.forEach(comp => {
-                if (p.sides_included.includes(comp.name)) comp.ingredients.forEach(ing => {
-                    tally[ing.trim()] = (tally[ing.trim()] || 0) + 1;
+            const meal = findMeal(p.meal);
+            const seen = new Set();
+            p.sides_included.forEach(sideName => {
+                const comp = findComponent(meal, sideName);
+                if (!comp) return;
+                comp.ingredients.map(normalizeIngredient).forEach(ing => {
+                    const key = ing.item.trim().toLowerCase();
+                    // The same item listed twice in one meal (e.g. main + side) is one purchase.
+                    if (seen.has(key) && !ing.amount) return;
+                    seen.add(key);
+                    const t = tally[key] || (tally[key] = { item: ing.item.trim(), amounts: [], meals: new Set(), notes: new Set() });
+                    t.amounts.push(ing.amount || '');
+                    t.meals.add(p.meal.trim());
+                    if (ing.note) t.notes.add(ing.note);
                 });
             });
         });
         document.getElementById('shopping-list-box').style.display = 'block';
         const sorted = Object.keys(tally).sort();
-        document.getElementById('list-display').innerHTML = sorted.length > 0 
-            ? sorted.map(ing => `<div class="ingredient-item"><span>${ing}</span>${tally[ing]>1?`<span class="qty">x${tally[ing]}</span>`:''}</div>`).join('')
+        document.getElementById('list-display').innerHTML = sorted.length > 0
+            ? sorted.map(key => {
+                const t = tally[key];
+                const { parts, bare } = combineAmounts(t.amounts);
+                let qty = parts.join(' + ');
+                if (bare && parts.length) qty += ' + more';
+                else if (!parts.length && bare > 1) qty = `x${bare}`;
+                const notes = t.notes.size ? ` <small>(${escapeHtml([...t.notes].join('; '))})</small>` : '';
+                return `<label class="ingredient-item">
+                    <input type="checkbox" onchange="this.parentElement.classList.toggle('got', this.checked)">
+                    <span class="what">${escapeHtml(t.item)}${notes}<span class="for">${escapeHtml([...t.meals].join(', '))}</span></span>
+                    ${qty ? `<span class="qty">${escapeHtml(qty)}</span>` : ''}
+                </label>`;
+            }).join('')
             : "No meals found for this range.";
     }
 

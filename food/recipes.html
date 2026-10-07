@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipes</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', -apple-system, sans-serif; margin: 0; padding: 12px 12px 90px; background: #f4f7f6; color: #333; }
+        .container { max-width: 600px; margin: auto; }
+        .nav-bar { display: flex; justify-content: center; background: #2c3e50; padding: 8px; margin-bottom: 14px; border-radius: 8px; gap: 6px; }
+        .nav-bar a { color: white; text-decoration: none; font-weight: bold; font-size: 0.85em; padding: 6px 10px; border-radius: 4px; }
+        .nav-bar a.active { background: #3498db; }
+        h2 { margin: 6px 0 12px; }
+        input, select, textarea { width: 100%; padding: 11px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; font-family: inherit; background: white; }
+        label { display: block; margin: 14px 0 5px; font-weight: 600; font-size: 0.85em; color: #7f8c8d; }
+        button { font-family: inherit; font-size: 15px; cursor: pointer; border: none; border-radius: 8px; font-weight: bold; padding: 11px 14px; }
+        .btn-primary { background: #27ae60; color: white; }
+        .btn-blue { background: #3498db; color: white; }
+        .btn-light { background: #ecf0f1; color: #2c3e50; }
+        .btn-danger { background: none; color: #e74c3c; border: 1px solid #e74c3c; width: 100%; margin-top: 24px; }
+        .row { display: flex; gap: 8px; align-items: center; }
+
+        /* List view */
+        .recipe { display: block; width: 100%; text-align: left; background: white; padding: 12px 14px; margin-bottom: 8px; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); font-weight: normal; }
+        .recipe .name { font-weight: 600; font-size: 1.02em; color: #2c3e50; }
+        .recipe .meta { font-size: 0.8em; color: #95a5a6; margin-top: 3px; }
+        .badge { display: inline-block; background: #fdebd0; color: #b9770e; border-radius: 4px; padding: 0 5px; font-size: 0.9em; }
+        .count { color: #95a5a6; font-size: 0.85em; margin: 4px 2px 10px; }
+
+        /* Editor */
+        .card { background: white; padding: 14px; border-radius: 12px; box-shadow: 0 1px 6px rgba(0,0,0,0.06); margin-bottom: 14px; }
+        .card-head { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+        .card-head .title { font-weight: bold; color: #2c3e50; flex: 1; }
+        .side-name { font-weight: bold; }
+        .ing { display: flex; gap: 6px; margin-bottom: 6px; }
+        .ing .item { flex: 1; min-width: 0; }
+        .ing .amount { width: 100px; flex: none; padding-left: 9px; padding-right: 6px; }
+        .ing .amount::placeholder { color: #ccd1d1; font-style: italic; }
+        .x { background: none; color: #bdc3c7; font-size: 20px; padding: 4px 8px; flex: none; }
+        .x:hover { color: #e74c3c; }
+        .ing-head { display: flex; gap: 6px; font-size: 0.72em; color: #95a5a6; text-transform: uppercase; letter-spacing: .04em; margin: 4px 0; }
+        .ing-head span:first-child { flex: 1; }
+        .ing-head span:last-child { width: 128px; }
+        .add-links { display: flex; gap: 8px; margin-top: 4px; }
+        .add-links button { flex: 1; padding: 9px; font-size: 14px; }
+        .paste-box { display: none; margin-top: 8px; }
+        .paste-box.open { display: block; }
+        .paste-box textarea { min-height: 110px; }
+        .hint { font-size: 0.8em; color: #95a5a6; margin: 4px 2px; }
+        .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+        .tag { background: #d6eaf8; color: #21618c; border-radius: 14px; padding: 4px 6px 4px 11px; font-size: 0.9em; display: flex; align-items: center; }
+        .tag button { background: none; padding: 0 4px 0 6px; color: #21618c; font-size: 16px; }
+        .savebar { position: fixed; left: 0; right: 0; bottom: 0; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); background: rgba(244,247,246,0.96); border-top: 1px solid #ddd; }
+        .savebar .inner { max-width: 600px; margin: auto; display: flex; gap: 8px; }
+        .savebar button { flex: 1; padding: 14px; font-size: 16px; }
+        #toast { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); background: #2c3e50; color: white; padding: 10px 18px; border-radius: 20px; font-weight: 600; display: none; z-index: 10; max-width: 90%; text-align: center; }
+        #toast.error { background: #c0392b; }
+        .open-link { padding: 11px 12px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <nav class="nav-bar">
+        <a href="recipes.html" class="active">1. Recipes</a>
+        <a href="planner.html">2. Plan</a>
+        <a href="view.html">3. View/Shop</a>
+    </nav>
+
+    <!-- List of recipes -->
+    <section id="listView">
+        <div class="row">
+            <input type="search" id="search" placeholder="Search recipes or ingredients..." oninput="renderList()">
+            <button class="btn-primary" style="flex:none" onclick="openEditor(null)">+ New</button>
+        </div>
+        <div class="count" id="count">Loading...</div>
+        <div id="recipeList"></div>
+    </section>
+
+    <!-- Add / edit one recipe -->
+    <section id="editView" class="hidden">
+        <button class="btn-light" onclick="closeEditor()">← Recipes</button>
+        <h2 id="editTitle">New Recipe</h2>
+
+        <div class="card">
+            <label style="margin-top:0">Name</label>
+            <input type="text" id="mealName" placeholder="e.g. Chicken Alfredo" autocomplete="off">
+
+            <label>🎬 Video <span style="font-weight:normal">(TikTok, YouTube... optional)</span></label>
+            <div class="row">
+                <input type="url" id="mealVideo" placeholder="https://www.tiktok.com/..." autocomplete="off">
+                <a class="open-link btn-light" data-for="mealVideo" href="#" target="_blank">Open</a>
+            </div>
+
+            <label>📄 Recipe page <span style="font-weight:normal">(optional)</span></label>
+            <div class="row">
+                <input type="url" id="mealLink" placeholder="https://..." autocomplete="off">
+                <a class="open-link btn-light" data-for="mealLink" href="#" target="_blank">Open</a>
+            </div>
+
+            <label>Tags</label>
+            <div class="tags" id="tagChips"></div>
+            <input type="text" id="tagInput" list="tagOptions" placeholder="Add a tag (Chicken, Slow cooker...)" autocomplete="off">
+        </div>
+
+        <div id="components"></div>
+
+        <button class="btn-blue" style="width:100%" onclick="addSide()">+ Add a side</button>
+        <p class="hint">Sides can be swapped in or out when you plan the meal.</p>
+
+        <button class="btn-danger" id="deleteBtn" onclick="deleteRecipe()">Delete this recipe</button>
+    </section>
+</div>
+
+<div class="savebar hidden" id="saveBar">
+    <div class="inner">
+        <button class="btn-light" onclick="closeEditor()">Cancel</button>
+        <button class="btn-primary" id="saveBtn" onclick="saveRecipe()">Save</button>
+    </div>
+</div>
+
+<div id="toast"></div>
+
+<datalist id="itemOptions"></datalist>
+<datalist id="tagOptions"></datalist>
+<datalist id="sideOptions"></datalist>
+<datalist id="amountOptions">
+    <option value="1"><option value="2"><option value="1 pack"><option value="2 packs">
+    <option value="1 can"><option value="2 cans"><option value="1 bag"><option value="1 jar">
+    <option value="1 box"><option value="1 bottle"><option value="1 lb"><option value="2 lb">
+</datalist>
+
+<script src="common.js"></script>
+<script>
+    let meals = [];
+    let editing = null;     // name of the recipe being edited, null for a new one
+    let tags = [];
+
+    async function init() {
+        if (!getToken()) return toast('A GitHub token is needed to load recipes.', true);
+        try {
+            meals = (await readJson('food/meals.json')).data;
+        } catch (e) {
+            document.getElementById('count').textContent = 'Could not load recipes. ' + e.message;
+            return;
+        }
+        refreshOptions();
+        renderList();
+        const params = new URLSearchParams(location.search);
+        if (params.has('edit')) openEditor(params.get('edit'));
+        if (params.has('new')) openEditor(null);
+    }
+
+    function refreshOptions() {
+        const items = new Set(), tagSet = new Set(), sides = new Set();
+        meals.forEach(m => {
+            m.tags.forEach(t => tagSet.add(t));
+            m.components.forEach(c => {
+                if (c.type === 'side') sides.add(c.name);
+                c.ingredients.forEach(i => items.add(normalizeIngredient(i).item));
+            });
+        });
+        const fill = (id, set) => document.getElementById(id).innerHTML =
+            [...set].sort((a, b) => a.localeCompare(b)).map(v => `<option value="${escapeHtml(v)}">`).join('');
+        fill('itemOptions', items);
+        fill('tagOptions', tagSet);
+        fill('sideOptions', sides);
+    }
+
+    // ---------- List ----------
+    function renderList() {
+        const q = document.getElementById('search').value.trim().toLowerCase();
+        const shown = meals.filter(m => !q
+            || m.name.toLowerCase().includes(q)
+            || m.tags.some(t => t.toLowerCase().includes(q))
+            || m.components.some(c => c.ingredients.some(i => normalizeIngredient(i).item.toLowerCase().includes(q))));
+        document.getElementById('count').textContent = q ? `${shown.length} of ${meals.length} recipes` : `${meals.length} recipes`;
+        document.getElementById('recipeList').innerHTML = shown.map(m => {
+            const sides = m.components.filter(c => c.type === 'side').length;
+            const ingCount = m.components.reduce((n, c) => n + c.ingredients.length, 0);
+            const meta = [m.tags.join(', '), `${ingCount} ingredients`, sides ? `${sides} side${sides > 1 ? 's' : ''}` : '']
+                .filter(Boolean).map(escapeHtml).join(' · ');
+            return `<button class="recipe" data-name="${escapeHtml(m.name)}">
+                <div class="name">${escapeHtml(m.name)}</div>
+                <div class="meta">${m.video ? '🎬 ' : ''}${m.link ? '📄 ' : ''}${meta}${m.video || m.link ? '' : ' <span class="badge">no link</span>'}</div>
+            </button>`;
+        }).join('');
+    }
+
+    document.getElementById('recipeList').addEventListener('click', e => {
+        const btn = e.target.closest('.recipe');
+        if (btn) openEditor(btn.dataset.name);
+    });
+
+    // ---------- Editor ----------
+    function openEditor(name) {
+        const meal = name ? meals.find(m => m.name === name) : null;
+        if (name && !meal) return toast(`Couldn't find "${name}"`, true);
+        editing = meal ? meal.name : null;
+
+        document.getElementById('editTitle').textContent = meal ? 'Edit Recipe' : 'New Recipe';
+        document.getElementById('mealName').value = meal ? meal.name : '';
+        document.getElementById('mealVideo').value = meal ? meal.video || '' : '';
+        document.getElementById('mealLink').value = meal ? meal.link || '' : '';
+        document.getElementById('deleteBtn').classList.toggle('hidden', !meal);
+        tags = meal ? [...meal.tags] : [];
+        renderTags();
+        updateOpenLinks();
+
+        const box = document.getElementById('components');
+        box.innerHTML = '';
+        const comps = meal ? meal.components : [{ name: 'Main Dish', type: 'main', ingredients: [] }];
+        comps.forEach(c => box.appendChild(componentCard(c)));
+        if (!meal) box.querySelector('.ing-list').appendChild(ingredientRow());
+
+        show(true);
+        window.scrollTo(0, 0);
+        if (!meal) document.getElementById('mealName').focus();
+    }
+
+    function closeEditor() {
+        if (location.search) history.replaceState(null, '', location.pathname);
+        show(false);
+    }
+
+    function show(editor) {
+        document.getElementById('listView').classList.toggle('hidden', editor);
+        document.getElementById('editView').classList.toggle('hidden', !editor);
+        document.getElementById('saveBar').classList.toggle('hidden', !editor);
+    }
+
+    function componentCard(comp) {
+        const card = document.createElement('div');
+        card.className = 'card component';
+        card.dataset.type = comp.type;
+        card.dataset.origName = comp.name;
+        const isMain = comp.type === 'main';
+        card.innerHTML = `
+            <div class="card-head">
+                ${isMain
+                    ? '<div class="title">Main dish</div>'
+                    : `<input type="text" class="side-name" list="sideOptions" placeholder="Side name (e.g. Garlic bread)" autocomplete="off">
+                       <button class="x" title="Remove side">✕</button>`}
+            </div>
+            <div class="ing-head"><span>Ingredient</span><span>Amount</span></div>
+            <div class="ing-list"></div>
+            <div class="add-links">
+                <button class="btn-light add-one">+ Ingredient</button>
+                <button class="btn-light paste-toggle">Paste a list</button>
+            </div>
+            <div class="paste-box">
+                <textarea placeholder="One per line or separated by commas, e.g.&#10;1 pack chicken breasts&#10;2 cans black beans&#10;shredded cheese"></textarea>
+                <button class="btn-blue paste-add" style="width:100%; margin-top:6px">Add these</button>
+            </div>`;
+        if (!isMain) {
+            const nameInput = card.querySelector('.side-name');
+            nameInput.value = comp.name;
+            nameInput.addEventListener('change', () => prefillSide(card));
+            card.querySelector('.card-head .x').onclick = () => {
+                if (card.querySelector('.ing-list').children.length === 0 || confirm('Remove this side?')) card.remove();
+            };
+        }
+        const list = card.querySelector('.ing-list');
+        comp.ingredients.map(normalizeIngredient).forEach(i => list.appendChild(ingredientRow(i)));
+        card.querySelector('.add-one').onclick = () => {
+            const row = ingredientRow();
+            list.appendChild(row);
+            row.querySelector('.item').focus();
+        };
+        card.querySelector('.paste-toggle').onclick = () => {
+            const box = card.querySelector('.paste-box');
+            box.classList.toggle('open');
+            if (box.classList.contains('open')) box.querySelector('textarea').focus();
+        };
+        card.querySelector('.paste-add').onclick = () => {
+            const ta = card.querySelector('.paste-box textarea');
+            const lines = ta.value.split(/\n|,(?![^(]*\))/).map(parseIngredientLine).filter(Boolean);
+            // Replace a lone empty row instead of leaving it dangling above the pasted items.
+            [...list.children].forEach(r => { if (!r.querySelector('.item').value.trim()) r.remove(); });
+            lines.forEach(i => list.appendChild(ingredientRow(i)));
+            ta.value = '';
+            card.querySelector('.paste-box').classList.remove('open');
+            if (lines.length) toast(`Added ${lines.length} ingredient${lines.length > 1 ? 's' : ''}`);
+        };
+        return card;
+    }
+
+    // A side typed with a name used in another recipe starts with that recipe's ingredients.
+    function prefillSide(card) {
+        const list = card.querySelector('.ing-list');
+        if ([...list.querySelectorAll('.item')].some(i => i.value.trim())) return;
+        const name = card.querySelector('.side-name').value.trim().toLowerCase();
+        for (const m of meals) {
+            const side = m.components.find(c => c.type === 'side' && c.name.toLowerCase() === name && c.ingredients.length);
+            if (side) {
+                list.innerHTML = '';
+                side.ingredients.map(normalizeIngredient).forEach(i => list.appendChild(ingredientRow(i)));
+                return;
+            }
+        }
+        if (!list.children.length) list.appendChild(ingredientRow());
+    }
+
+    function ingredientRow(ing = { item: '' }) {
+        const row = document.createElement('div');
+        row.className = 'ing';
+        row.innerHTML = `
+            <input type="text" class="item" list="itemOptions" placeholder="e.g. chicken breasts" autocomplete="off">
+            <input type="text" class="amount" list="amountOptions" placeholder="amount" autocomplete="off">
+            <button class="x" title="Remove">✕</button>`;
+        row.querySelector('.item').value = ingredientLabel(ing);
+        row.querySelector('.amount').value = ing.amount || '';
+        row.querySelector('.x').onclick = () => row.remove();
+        // Enter on the last row adds another, so a list can be typed without touching buttons.
+        row.querySelector('.amount').addEventListener('keydown', e => {
+            if (e.key !== 'Enter') return;
+            e.preventDefault();
+            if (row.nextElementSibling) return row.nextElementSibling.querySelector('.item').focus();
+            row.closest('.component').querySelector('.add-one').click();
+        });
+        row.querySelector('.item').addEventListener('keydown', e => {
+            if (e.key === 'Enter') { e.preventDefault(); row.querySelector('.amount').focus(); }
+        });
+        return row;
+    }
+
+    function addSide() {
+        const card = componentCard({ name: '', type: 'side', ingredients: [] });
+        delete card.dataset.origName;
+        document.getElementById('components').appendChild(card);
+        card.querySelector('.side-name').focus();
+    }
+
+    // ---------- Tags ----------
+    function renderTags() {
+        document.getElementById('tagChips').innerHTML = tags.map((t, i) =>
+            `<span class="tag">${escapeHtml(t)}<button onclick="removeTag(${i})" title="Remove">✕</button></span>`).join('');
+    }
+    function removeTag(i) { tags.splice(i, 1); renderTags(); }
+    function addTagFromInput() {
+        const input = document.getElementById('tagInput');
+        input.value.split(',').map(t => t.trim()).filter(Boolean).forEach(t => {
+            if (!tags.some(x => x.toLowerCase() === t.toLowerCase())) tags.push(t);
+        });
+        input.value = '';
+        renderTags();
+    }
+    const tagInput = document.getElementById('tagInput');
+    tagInput.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addTagFromInput(); } });
+    tagInput.addEventListener('change', addTagFromInput);
+
+    function updateOpenLinks() {
+        document.querySelectorAll('.open-link').forEach(a => {
+            const url = document.getElementById(a.dataset.for).value.trim();
+            a.href = url || '#';
+            a.style.visibility = /^https?:\/\//.test(url) ? 'visible' : 'hidden';
+        });
+    }
+    ['mealVideo', 'mealLink'].forEach(id => document.getElementById(id).addEventListener('input', updateOpenLinks));
+
+    // ---------- Save / delete ----------
+    function collectRecipe() {
+        addTagFromInput();
+        const name = document.getElementById('mealName').value.trim().replace(/\s+/g, ' ');
+        if (!name) throw new Error('Give the recipe a name.');
+        const sideRenames = {};
+        const components = [...document.querySelectorAll('#components .component')].map(card => {
+            const isMain = card.dataset.type === 'main';
+            const compName = isMain ? 'Main Dish' : card.querySelector('.side-name').value.trim().replace(/\s+/g, ' ');
+            const ingredients = [...card.querySelectorAll('.ing')].map(row => {
+                const label = row.querySelector('.item').value.trim();
+                if (!label) return null;
+                // Only the note is split out of the item box; amounts come from the amount box.
+                const noteMatch = label.match(/^(.*?)\s*\(([^)]*)\)\s*$/);
+                const ing = { item: noteMatch ? noteMatch[1] : label };
+                const amount = row.querySelector('.amount').value.trim();
+                if (amount) ing.amount = amount;
+                if (noteMatch && noteMatch[2].trim()) ing.note = noteMatch[2].trim();
+                return ing;
+            }).filter(Boolean);
+            if (!isMain && !compName) {
+                if (ingredients.length) throw new Error('Every side needs a name.');
+                return null;
+            }
+            if (card.dataset.origName && card.dataset.origName !== compName) sideRenames[card.dataset.origName] = compName;
+            return { name: compName, type: card.dataset.type, ingredients };
+        }).filter(Boolean);
+        const names = components.map(c => c.name.toLowerCase());
+        if (new Set(names).size !== names.length) throw new Error('Two sides have the same name.');
+        const meal = {
+            name,
+            video: document.getElementById('mealVideo').value.trim(),
+            link: document.getElementById('mealLink').value.trim(),
+            tags: [...tags],
+            components
+        };
+        return { meal, sideRenames };
+    }
+
+    async function saveRecipe() {
+        let recipe;
+        try { recipe = collectRecipe(); } catch (e) { return toast(e.message, true); }
+        const { meal, sideRenames } = recipe;
+        const original = editing;
+        const btn = document.getElementById('saveBtn');
+        btn.disabled = true; btn.textContent = 'Saving...';
+        try {
+            meals = await updateJson('food/meals.json', all => {
+                if (all.some(m => m.name.toLowerCase() === meal.name.toLowerCase() && m.name !== original)) {
+                    throw new Error(`There's already a recipe called "${meal.name}".`);
+                }
+                const idx = original ? all.findIndex(m => m.name === original) : -1;
+                if (idx >= 0) all[idx] = meal; else all.push(meal);
+                return all.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+            }, original ? `Edit recipe: ${meal.name}` : `Add recipe: ${meal.name}`);
+
+            // Keep planned days pointing at the right recipe and sides after a rename.
+            const renamed = original && original !== meal.name;
+            if (renamed || Object.keys(sideRenames).length) {
+                await updateJson('food/calendar.json', cal => {
+                    cal.forEach(e => {
+                        if (e.meal !== original) return;
+                        e.meal = meal.name;
+                        e.sides_included = e.sides_included.map(s => sideRenames[s] || s);
+                    });
+                    return cal;
+                }, `Rename recipe: ${meal.name}`);
+            }
+            editing = meal.name;
+            refreshOptions();
+            renderList();
+            closeEditor();
+            toast(`Saved "${meal.name}"`);
+        } catch (e) {
+            toast(e.message, true);
+        } finally {
+            btn.disabled = false; btn.textContent = 'Save';
+        }
+    }
+
+    async function deleteRecipe() {
+        if (!editing || !confirm(`Delete "${editing}"? Days already planned with it stay on the calendar.`)) return;
+        const name = editing;
+        try {
+            meals = await updateJson('food/meals.json', all => all.filter(m => m.name !== name), `Delete recipe: ${name}`);
+            refreshOptions();
+            renderList();
+            closeEditor();
+            toast(`Deleted "${name}"`);
+        } catch (e) {
+            toast(e.message, true);
+        }
+    }
+
+    let toastTimer;
+    function toast(msg, error = false) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = error ? 'error' : '';
+        t.style.display = 'block';
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.style.display = 'none', error ? 5000 : 2500);
+    }
+
+    init();
+</script>
+</body>
+</html>
