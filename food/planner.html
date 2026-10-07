@@ -7,7 +7,7 @@
     <style>
         body { font-family: 'Segoe UI', sans-serif; margin: 20px; background: #f4f7f6; color: #333; }
         .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        .nav-bar { display: flex; justify-content: center; background: #2c3e50; padding: 10px; margin-bottom: 20px; border-radius: 8px; gap: 15px; }
+        .nav-bar { display: flex; justify-content: center; background: #2c3e50; padding: 10px; margin-bottom: 20px; border-radius: 8px; gap: 4px; }
         .nav-bar a { color: white; text-decoration: none; font-weight: bold; font-size: 0.85em; padding: 5px 10px; border-radius: 4px; }
         .nav-bar a.active { background: #3498db; }
         label { display: block; margin-top: 15px; font-weight: 600; font-size: 0.9em; color: #7f8c8d; }
@@ -21,9 +21,10 @@
 <body>
     <div class="container">
         <nav class="nav-bar">
-            <a href="convert.html">1. Add</a>
-            <a href="planner.html" class="active">2. Plan</a>
-            <a href="view.html">3. View/Shop</a>
+        <a href="recipes.html">Recipes</a>
+        <a href="planner.html" class="active">Plan</a>
+        <a href="view.html">Calendar</a>
+        <a href="shop.html">Shop</a>
         </nav>
 
         <h2>Plan a Meal</h2>
@@ -41,6 +42,7 @@
         <select id="mealSelect" onchange="loadComponents()">
             <option value="">-- Choose Meal --</option>
         </select>
+        <a href="recipes.html?new" style="display:block; margin-top:8px; font-size:0.85em; color:#3498db;">Not listed? Add a new recipe →</a>
 
         <div id="componentsArea" class="components-box" style="display:none;">
             <label style="margin-top:0;">4. Confirm Sides</label>
@@ -56,20 +58,21 @@
         <div id="status"></div>
     </div>
 
+    <script src="common.js"></script>
     <script>
-        const REPO = 'scottscalici/loquesea';
-        let GITHUB_TOKEN = localStorage.getItem('gh_token');
         let allMeals = [];
 
         async function init() {
-            if (!GITHUB_TOKEN) {
-                const token = prompt("Enter GitHub Token:");
-                if (token) { localStorage.setItem('gh_token', token); GITHUB_TOKEN = token; }
+            if (!getToken()) return;
+            try {
+                allMeals = (await readJson('food/meals.json')).data;
+            } catch (e) {
+                document.getElementById('status').innerHTML = `<span style="color:red">${escapeHtml(e.message)}</span>`;
+                return;
             }
-
-            const res = await fetch(`https://raw.githubusercontent.com/${REPO}/main/food/meals.json?t=${Date.now()}`);
-            allMeals = await res.json();
             
+            const params = new URLSearchParams(location.search);
+            if (params.get('date')) document.getElementById('planDate').value = params.get('date');
             populateTags();
             populateGlobalSides();
             filterMeals(); 
@@ -131,8 +134,8 @@
             // Filter out "Main Dish" from being uncheckable, but keep it in the list
             list.innerHTML = meal.components.map((c, i) => `
                 <div class="side-row">
-                    <input type="checkbox" class="comp-cb" id="c-${i}" value="${c.name}" ${c.type === 'main' ? 'checked disabled' : 'checked'}>
-                    <label for="c-${i}" style="margin-left:10px; font-weight:normal; margin-top:0;">${c.name} ${c.type === 'main' ? '(Main)' : ''}</label>
+                    <input type="checkbox" class="comp-cb" id="c-${i}" value="${escapeHtml(c.name)}" ${c.type === 'main' ? 'checked disabled' : 'checked'}>
+                    <label for="c-${i}" style="margin-left:10px; font-weight:normal; margin-top:0;">${escapeHtml(c.name)} ${c.type === 'main' ? '(Main)' : ''}</label>
                 </div>`).join('');
         }
 
@@ -145,8 +148,8 @@
             const id = Date.now();
             const newSideHtml = `
                 <div class="side-row" style="border-color: #3498db;">
-                    <input type="checkbox" class="comp-cb" id="new-${id}" value="${sideName}" checked>
-                    <label for="new-${id}" style="margin-left:10px; font-weight:normal; margin-top:0;">${sideName} <small>(Added)</small></label>
+                    <input type="checkbox" class="comp-cb" id="new-${id}" value="${escapeHtml(sideName)}" checked>
+                    <label for="new-${id}" style="margin-left:10px; font-weight:normal; margin-top:0;">${escapeHtml(sideName)} <small>(Added)</small></label>
                 </div>`;
             list.insertAdjacentHTML('beforeend', newSideHtml);
             picker.value = ""; // Reset picker
@@ -158,33 +161,19 @@
             const mealName = document.getElementById('mealSelect').value;
             if (!date || !mealName) return alert("Select date and meal.");
 
-            statusDiv.innerHTML = "Processing...";
+            statusDiv.innerHTML = "Saving...";
             const selected = Array.from(document.querySelectorAll('.comp-cb:checked')).map(cb => cb.value);
-            const url = `https://api.github.com/repos/${REPO}/contents/food/calendar.json`;
 
             try {
-                const getRes = await fetch(url, { headers: { 'Authorization': `token ${GITHUB_TOKEN}` } });
-                const fileData = await getRes.json();
-                const content = JSON.parse(atob(fileData.content));
-                
-                content.push({ date, meal: mealName, sides_included: selected });
-
-                const putRes = await fetch(url, {
-                    method: 'PUT',
-                    headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        message: `Plan ${date}`, 
-                        content: btoa(JSON.stringify(content, null, 2)), 
-                        sha: fileData.sha 
-                    })
-                });
-
-                if (putRes.ok) {
-                    statusDiv.innerHTML = '<span style="color:green">Success! Meal Added.</span>';
-                    setTimeout(() => location.reload(), 1500);
-                }
+                await updateJson('food/calendar.json', cal => {
+                    cal.push({ date, meal: mealName, sides_included: selected });
+                    return cal;
+                }, `Plan ${date}`);
+                statusDiv.innerHTML = '<span style="color:green">Success! Meal Added.</span>';
+                // Coming from the calendar's "+ Plan a meal", go back to it.
+                setTimeout(() => new URLSearchParams(location.search).has('date') ? location.href = 'view.html' : location.reload(), 1200);
             } catch (err) {
-                statusDiv.innerHTML = '<span style="color:red">Error saving.</span>';
+                statusDiv.innerHTML = `<span style="color:red">Error saving: ${escapeHtml(err.message)}</span>`;
             }
         }
         init();

@@ -3,247 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meal Manager & Calendar</title>
+    <title>Meal Calendar</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; margin: 20px; background: #f4f7f6; color: #333; }
-        .container { max-width: 900px; margin: auto; }
-        .nav-bar { display: flex; justify-content: center; background: #2c3e50; padding: 10px; margin-bottom: 20px; border-radius: 8px; gap: 15px; }
-        .nav-bar a { color: white; text-decoration: none; font-weight: bold; font-size: 0.9em; padding: 5px 10px; border-radius: 4px; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', -apple-system, sans-serif; margin: 0; padding: 12px; background: #f4f7f6; color: #333; }
+        .container { max-width: 600px; margin: auto; }
+        .nav-bar { display: flex; justify-content: center; background: #2c3e50; padding: 8px; margin-bottom: 14px; border-radius: 8px; gap: 4px; }
+        .nav-bar a { color: white; text-decoration: none; font-weight: bold; font-size: 0.85em; padding: 6px 10px; border-radius: 4px; }
         .nav-bar a.active { background: #3498db; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        
-        /* Calendar Grid */
-        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
-        .calendar-day { background: white; border: 1px solid #ddd; min-height: 110px; padding: 5px; border-radius: 4px; font-size: 0.8em; }
-        .calendar-day.today { background: #fffbe6; border: 2px solid #f1c40f; }
-        
-        /* Meal Items & Links */
-        .calendar-meal { background: #3498db; color: white; padding: 4px; border-radius: 3px; margin-top: 3px; font-size: 0.85em; }
-        .calendar-meal a { color: white; text-decoration: none; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        
-        /* Action Buttons */
-        .meal-actions { display: flex; gap: 2px; margin-top: 4px; }
-        .act-btn { border: none; padding: 2px 4px; border-radius: 3px; cursor: pointer; font-size: 0.7em; color: white; font-weight: bold; flex: 1; text-align: center; }
-        .btn-swap { background: #2980b9; }
-        .btn-move { background: #f39c12; }
-        .btn-del { background: #e74c3c; }
+        button { font-family: inherit; cursor: pointer; border: none; border-radius: 8px; font-weight: bold; }
 
-        /* General Buttons */
-        button { cursor: pointer; border: none; border-radius: 6px; font-weight: bold; }
-        .btn-nav { background: #34495e; color: white; padding: 8px 15px; }
-        .primary { background: #27ae60; color: white; padding: 12px 20px; width: 100%; font-size: 16px; margin-top: 10px; }
+        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px; }
+        .cal-header h3 { margin: 0; font-size: 1.05em; text-align: center; }
+        .btn-nav { background: #34495e; color: white; padding: 9px 14px; font-size: 14px; }
+        .jump { display: block; text-align: center; font-size: 0.85em; color: #3498db; margin: 0 0 12px; }
 
-        /* Modal / Overlay */
-        #swap-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000; }
-        .swap-modal { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; color: #333; }
+        .day { display: flex; gap: 10px; background: white; border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+        .day.today { border: 2px solid #f1c40f; background: #fffdf0; }
+        .day.past { opacity: .6; }
+        .date { width: 46px; flex: none; text-align: center; color: #7f8c8d; padding-top: 2px; }
+        .date .dow { font-size: 0.75em; text-transform: uppercase; font-weight: 700; letter-spacing: .04em; }
+        .date .num { font-size: 1.35em; font-weight: 700; color: #2c3e50; line-height: 1.1; }
+        .date .mon { font-size: 0.7em; }
+        .meals { flex: 1; min-width: 0; }
+        .meal + .meal { border-top: 1px solid #eef0f0; margin-top: 8px; padding-top: 8px; }
+        .meal-top { display: flex; align-items: baseline; gap: 6px; }
+        .meal-name { font-weight: 600; color: #2c3e50; text-decoration: none; flex: 1; min-width: 0; font-size: 1.02em; }
+        .meal-links { display: flex; gap: 2px; flex: none; }
+        .meal-links a { text-decoration: none; font-size: 1.1em; padding: 2px 4px; }
+        .sides { font-size: 0.82em; color: #7f8c8d; margin-top: 2px; }
+        .meal-actions { display: flex; gap: 6px; margin-top: 7px; }
+        .act-btn { padding: 6px 10px; font-size: 0.78em; background: #ecf0f1; color: #2c3e50; }
+        .act-btn.del { color: #c0392b; }
+        .plan-link { display: inline-block; color: #3498db; text-decoration: none; font-size: 0.9em; padding: 4px 0; }
+        .add-another { font-size: 0.8em; margin-top: 6px; }
+        .shop-link { display: block; text-align: center; background: #27ae60; color: white; text-decoration: none; font-weight: bold; padding: 13px; border-radius: 10px; margin-top: 14px; }
+        #moveDate { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; }
 
-        /* Shopping List */
-        .ingredient-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
-        .qty { font-weight: bold; color: #d48806; background: #fff1b8; padding: 2px 8px; border-radius: 5px; }
+        #swap-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: flex-end; z-index: 1000; }
+        .swap-modal { background: white; padding: 18px 16px calc(18px + env(safe-area-inset-bottom)); border-radius: 16px 16px 0 0; width: 100%; max-width: 600px; }
+        .swap-modal h3 { margin: 0 0 4px; }
+        .swap-modal label { display: block; margin-top: 12px; font-size: 0.85em; color: #7f8c8d; font-weight: 600; }
+        .swap-modal select { width: 100%; padding: 11px; margin-top: 5px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; }
+        .swap-actions { display: flex; gap: 8px; margin-top: 18px; }
+        .swap-actions button { flex: 1; padding: 13px; font-size: 15px; }
 
         @media print {
-            .nav-bar, .btn-nav, .meal-actions, .shopping-controls, .jump-link, .btn-print, #swap-overlay { display: none !important; }
-            .calendar-day { min-height: 80px; border: 1px solid #000; }
-            .card { box-shadow: none; border: 1px solid #000; }
+            .nav-bar, .btn-nav, .jump, .meal-actions, .meal-links, .plan-link, .shop-link, #swap-overlay { display: none !important; }
+            .day { box-shadow: none; border: 1px solid #000; break-inside: avoid; opacity: 1; }
         }
     </style>
 </head>
 <body>
-
 <div class="container">
     <nav class="nav-bar">
-        <a href="convert.html">1. Add</a>
-        <a href="planner.html">2. Plan</a>
-        <a href="view.html" class="active">3. View/Shop</a>
+        <a href="recipes.html">Recipes</a>
+        <a href="planner.html">Plan</a>
+        <a href="view.html" class="active">Calendar</a>
+        <a href="shop.html">Shop</a>
     </nav>
 
-    <div class="card">
-        <div class="cal-header">
-            <button class="btn-nav" onclick="changeWeek(-14)">← Prev</button>
-            <h3 id="cal-title" style="margin:0;">Syncing...</h3>
-            <button class="btn-nav" onclick="changeWeek(14)">Next →</button>
-        </div>
-        <div class="calendar-grid" id="calendarGrid"></div>
-        <div style="text-align: center; margin-top: 15px;">
-            <a href="#" class="jump-link" onclick="resetToToday()" style="font-size:0.8em; color:#3498db;">Jump to Today</a><br>
-            <button class="btn-print" onclick="window.print()" style="margin-top:10px; background:#9b59b6; color:white; padding:8px 15px; border-radius:5px;">🖨️ Print View</button>
-        </div>
+    <div class="cal-header">
+        <button class="btn-nav" onclick="changeWeek(-7)">← Prev</button>
+        <h3 id="cal-title">Syncing...</h3>
+        <button class="btn-nav" onclick="changeWeek(7)">Next →</button>
     </div>
+    <a href="#" class="jump" onclick="resetToToday(); return false;">Jump to today</a>
 
-    <div class="card shopping-controls">
-        <h3>🛒 Shopping List Generator</h3>
-        <div style="display:flex; gap:10px; align-items: center;">
-            <input type="date" id="start"> <span>to</span> <input type="date" id="end">
-        </div>
-        <button class="primary" onclick="generateShoppingList()">Generate Grocery List</button>
-    </div>
-
-    <div class="card" id="shopping-list-box" style="display:none;">
-        <h3>Ingredients Needed</h3>
-        <div id="list-display"></div>
-    </div>
+    <div id="days"></div>
+    <a class="shop-link" href="shop.html">🛒 Shopping list</a>
 </div>
 
-<div id="swap-overlay">
+<input type="date" id="moveDate">
+
+<div id="swap-overlay" onclick="if (event.target === this) closeSwap()">
     <div class="swap-modal">
-        <h3>Swap Sides</h3>
-        <p id="swap-meal-name" style="font-weight: bold; color:#3498db;"></p>
-        <p id="current-sides-list" style="font-size: 0.9em; font-style: italic;"></p>
-        <hr>
-        <label>Pick replacement side:</label>
-        <select id="all-sides-picker" style="width:100%; padding:10px; margin-top:10px; border-radius: 5px;"></select>
-        <div style="display:flex; gap:10px; margin-top:20px;">
-            <button onclick="confirmSwap()" class="primary" style="margin:0;">Confirm Swap</button>
-            <button onclick="closeSwap()" style="background:#95a5a6; color:white; padding:10px; border-radius:6px; flex:1;">Cancel</button>
+        <h3>Swap a side</h3>
+        <div id="swap-meal-name" style="color:#3498db; font-weight:600;"></div>
+        <label>Replace</label>
+        <select id="swap-out-picker"></select>
+        <label>With</label>
+        <select id="all-sides-picker"></select>
+        <div class="swap-actions">
+            <button onclick="closeSwap()" style="background:#ecf0f1; color:#2c3e50;">Cancel</button>
+            <button onclick="confirmSwap()" style="background:#27ae60; color:white;">Swap</button>
         </div>
     </div>
 </div>
 
+<script src="common.js"></script>
 <script>
-    const REPO = 'scottscalici/loquesea';
-    const TOKEN = localStorage.getItem('gh_token');
-    let mealsDb = [], calendarDb = [], calendarSha = '', currentStartDate = new Date();
+    const DAYS_SHOWN = 14;
+    let mealsDb = [], calendarDb = [];
+    let currentStartDate = startOfToday();
     let activeSwapIndex = null;
 
-    // Helper to fetch from GitHub API with Authorization
-    async function fetchData(path) {
-        const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
-            headers: { 'Authorization': `token ${TOKEN}` }
-        });
-        if(!res.ok) throw new Error("GitHub Error");
-        const data = await res.json();
-        if(path === 'food/calendar.json') calendarSha = data.sha; 
-        return JSON.parse(atob(data.content));
-    }
+    function startOfToday() { const d = new Date(); d.setHours(0, 0, 0, 0); return d; }
 
     async function init() {
-        if (!TOKEN) { alert("Token missing. Please set it in the Planner."); return; }
+        if (!getToken()) return;
         try {
-            [mealsDb, calendarDb] = await Promise.all([
-                fetchData('food/meals.json'),
-                fetchData('food/calendar.json')
-            ]);
-            renderCalendarGrid();
+            const [meals, cal] = await Promise.all([readJson('food/meals.json'), readJson('food/calendar.json')]);
+            mealsDb = meals.data;
+            calendarDb = cal.data;
+            render();
         } catch (e) {
             document.getElementById('cal-title').innerText = "Sync Failed";
         }
     }
 
-    function renderCalendarGrid() {
-        const grid = document.getElementById('calendarGrid');
-        grid.innerHTML = '';
-        const todayStr = new Date().toLocaleDateString('en-CA');
-        
-        for(let i=0; i<14; i++) {
+    function findMeal(name) {
+        return mealsDb.find(db => db.name.trim() === name.trim());
+    }
+
+    function render() {
+        const todayStr = startOfToday().toLocaleDateString('en-CA');
+        let html = '';
+        for (let i = 0; i < DAYS_SHOWN; i++) {
             const d = new Date(currentStartDate);
             d.setDate(currentStartDate.getDate() + i);
             const dateStr = d.toLocaleDateString('en-CA');
-            const dayMeals = calendarDb.filter(p => p.date === dateStr);
-            
-            const dayBox = document.createElement('div');
-            dayBox.className = `calendar-day ${dateStr === todayStr ? 'today' : ''}`;
-            dayBox.innerHTML = `<strong>${d.getMonth()+1}/${d.getDate()}</strong>`;
-            
-            dayMeals.forEach(m => {
-                const mealData = mealsDb.find(db => db.name.trim() === m.meal.trim());
-                const link = mealData ? mealData.link : "#";
-                const dbIndex = calendarDb.indexOf(m);
-
-                const item = document.createElement('div');
-                item.className = 'calendar-meal';
-                item.innerHTML = `
-                    <a href="${link}" target="_blank">${m.meal}</a>
-                    <div class="meal-actions">
-                        <button class="act-btn btn-swap" onclick="openSwap(${dbIndex})">Swap</button>
-                        <button class="act-btn btn-move" onclick="moveMeal(${dbIndex})">Move</button>
-                        <button class="act-btn btn-del" onclick="deleteMeal(${dbIndex})">Del</button>
-                    </div>
-                `;
-                dayBox.appendChild(item);
-            });
-            grid.appendChild(dayBox);
+            const dayMeals = calendarDb.map((m, idx) => ({ m, idx })).filter(x => x.m.date === dateStr);
+            const cls = dateStr === todayStr ? 'today' : dateStr < todayStr ? 'past' : '';
+            html += `<div class="day ${cls}">
+                <div class="date">
+                    <div class="dow">${d.toLocaleDateString(undefined, { weekday: 'short' })}</div>
+                    <div class="num">${d.getDate()}</div>
+                    <div class="mon">${d.toLocaleDateString(undefined, { month: 'short' })}</div>
+                </div>
+                <div class="meals">
+                    ${dayMeals.map(({ m, idx }) => mealHtml(m, idx)).join('')}
+                    <a class="plan-link ${dayMeals.length ? 'add-another' : ''}" href="planner.html?date=${dateStr}">${dayMeals.length ? '+ Add another' : '+ Plan a meal'}</a>
+                </div>
+            </div>`;
         }
-        const rangeEnd = new Date(currentStartDate);
-        rangeEnd.setDate(currentStartDate.getDate() + 13);
-        document.getElementById('cal-title').innerText = `${currentStartDate.getMonth()+1}/${currentStartDate.getDate()} - ${rangeEnd.getMonth()+1}/${rangeEnd.getDate()}`;
+        document.getElementById('days').innerHTML = html;
+
+        const end = new Date(currentStartDate);
+        end.setDate(currentStartDate.getDate() + DAYS_SHOWN - 1);
+        const fmt = d => d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        document.getElementById('cal-title').innerText = `${fmt(currentStartDate)} – ${fmt(end)}`;
     }
 
-    async function updateGitHub() {
-        const res = await fetch(`https://api.github.com/repos/${REPO}/contents/food/calendar.json`, {
-            method: 'PUT',
-            headers: { 'Authorization': `token ${TOKEN}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                message: "Calendar Update",
-                content: btoa(JSON.stringify(calendarDb, null, 2)),
-                sha: calendarSha
-            })
-        });
-        if(res.ok) location.reload();
-        else alert("GitHub Save Failed.");
+    function mealHtml(m, idx) {
+        const meal = findMeal(m.meal);
+        const editUrl = meal ? `recipes.html?edit=${encodeURIComponent(meal.name)}` : '';
+        const main = meal && (meal.video || meal.link);
+        const sides = m.sides_included.filter(s => s !== 'Main Dish');
+        const nameTag = main
+            ? `<a class="meal-name" href="${escapeHtml(main)}" target="_blank">${escapeHtml(m.meal)}</a>`
+            : editUrl ? `<a class="meal-name" href="${escapeHtml(editUrl)}">${escapeHtml(m.meal)}</a>`
+            : `<span class="meal-name">${escapeHtml(m.meal)}</span>`;
+        return `<div class="meal">
+            <div class="meal-top">
+                ${nameTag}
+                <span class="meal-links">
+                    ${meal && meal.video ? `<a href="${escapeHtml(meal.video)}" target="_blank" title="Video">🎬</a>` : ''}
+                    ${meal && meal.link ? `<a href="${escapeHtml(meal.link)}" target="_blank" title="Recipe">📄</a>` : ''}
+                    ${editUrl ? `<a href="${escapeHtml(editUrl)}" title="Edit recipe">✏️</a>` : ''}
+                </span>
+            </div>
+            ${sides.length ? `<div class="sides">with ${escapeHtml(sides.join(', '))}</div>` : ''}
+            <div class="meal-actions">
+                <button class="act-btn" onclick="openSwap(${idx})">Swap side</button>
+                <button class="act-btn" onclick="moveMeal(${idx})">Move</button>
+                <button class="act-btn del" onclick="deleteMeal(${idx})">Remove</button>
+            </div>
+        </div>`;
+    }
+
+    // Applies `change(entry)` to the latest saved copy of the entry (`change` returns false to delete it).
+    async function updateEntry(index, change, message) {
+        const target = calendarDb[index];
+        const same = e => e.date === target.date && e.meal === target.meal
+            && JSON.stringify(e.sides_included) === JSON.stringify(target.sides_included);
+        document.getElementById('cal-title').innerText = 'Saving...';
+        try {
+            calendarDb = await updateJson('food/calendar.json', cal => {
+                const i = cal.findIndex(same);
+                if (i < 0) throw new Error('That meal was already changed somewhere else.');
+                if (change(cal[i]) === false) cal.splice(i, 1);
+                return cal;
+            }, message);
+            render();
+        } catch (e) {
+            alert("GitHub Save Failed. " + e.message);
+            location.reload();
+        }
     }
 
     // --- Action Functions ---
     function deleteMeal(index) {
-        if(confirm("Remove this meal?")) {
-            calendarDb.splice(index, 1);
-            updateGitHub();
-        }
+        if (confirm(`Remove ${calendarDb[index].meal} from ${calendarDb[index].date}?`)) updateEntry(index, () => false, "Calendar Update");
     }
 
     function moveMeal(index) {
-        const newDate = prompt("Enter new date (YYYY-MM-DD):", calendarDb[index].date);
-        if(newDate) {
-            calendarDb[index].date = newDate;
-            updateGitHub();
+        const picker = document.getElementById('moveDate');
+        picker.value = calendarDb[index].date;
+        picker.onchange = () => {
+            const newDate = picker.value;
+            if (newDate && newDate !== calendarDb[index].date) updateEntry(index, e => { e.date = newDate; }, "Calendar Update");
+        };
+        try {
+            picker.showPicker();
+        } catch (e) {
+            // Older browsers without showPicker() fall back to typing the date.
+            const typed = prompt("Enter new date (YYYY-MM-DD):", calendarDb[index].date);
+            if (!typed) return;
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(typed.trim())) return alert("Use the format YYYY-MM-DD.");
+            picker.value = typed.trim();
+            picker.onchange();
         }
+    }
+
+    function allSideNames() {
+        const sides = new Set();
+        mealsDb.forEach(m => m.components.forEach(c => { if (c.type === 'side') sides.add(c.name); }));
+        return [...sides].sort((a, b) => a.localeCompare(b));
     }
 
     function openSwap(index) {
         activeSwapIndex = index;
         const entry = calendarDb[index];
         document.getElementById('swap-meal-name').innerText = entry.meal;
-        document.getElementById('current-sides-list').innerText = "Current Sides: " + entry.sides_included.filter(s => s !== "Main Dish").join(", ");
-
-        const sidePicker = document.getElementById('all-sides-picker');
-        const allPossibleSides = new Set();
-        mealsDb.forEach(m => m.components.forEach(c => { if(c.type === 'side') allPossibleSides.add(c.name); }));
-
-        sidePicker.innerHTML = [...allPossibleSides].sort().map(s => `<option value="${s}">${s}</option>`).join('');
+        const current = entry.sides_included.filter(s => s !== "Main Dish");
+        document.getElementById('swap-out-picker').innerHTML =
+            current.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('')
+            + '<option value="">(nothing, just add a side)</option>';
+        document.getElementById('all-sides-picker').innerHTML =
+            allSideNames().map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
         document.getElementById('swap-overlay').style.display = 'flex';
     }
 
     async function confirmSwap() {
+        const out = document.getElementById('swap-out-picker').value;
         const newSide = document.getElementById('all-sides-picker').value;
-        calendarDb[activeSwapIndex].sides_included = ["Main Dish", newSide];
         closeSwap();
-        await updateGitHub();
+        await updateEntry(activeSwapIndex, e => {
+            const sides = e.sides_included.filter(s => s !== out && s !== newSide);
+            sides.push(newSide);
+            e.sides_included = sides;
+        }, "Calendar Update");
     }
 
     function closeSwap() { document.getElementById('swap-overlay').style.display = 'none'; }
-    function changeWeek(days) { currentStartDate.setDate(currentStartDate.getDate() + days); renderCalendarGrid(); }
-    function resetToToday() { currentStartDate = new Date(); renderCalendarGrid(); }
-
-    // --- Shopping List Logic ---
-    function generateShoppingList() {
-        const s = document.getElementById('start').value, e = document.getElementById('end').value;
-        if(!s || !e) return alert("Select dates.");
-        const planned = calendarDb.filter(p => p.date >= s && p.date <= e);
-        const tally = {};
-        planned.forEach(p => {
-            const meal = mealsDb.find(m => m.name.trim() === p.meal.trim());
-            if (meal) meal.components.forEach(comp => {
-                if (p.sides_included.includes(comp.name)) comp.ingredients.forEach(ing => {
-                    tally[ing.trim()] = (tally[ing.trim()] || 0) + 1;
-                });
-            });
-        });
-        document.getElementById('shopping-list-box').style.display = 'block';
-        const sorted = Object.keys(tally).sort();
-        document.getElementById('list-display').innerHTML = sorted.length > 0 
-            ? sorted.map(ing => `<div class="ingredient-item"><span>${ing}</span>${tally[ing]>1?`<span class="qty">x${tally[ing]}</span>`:''}</div>`).join('')
-            : "No meals found for this range.";
-    }
+    function changeWeek(days) { currentStartDate.setDate(currentStartDate.getDate() + days); render(); }
+    function resetToToday() { currentStartDate = startOfToday(); render(); }
 
     init();
 </script>

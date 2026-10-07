@@ -5,7 +5,7 @@
     "sides_included": [
       "Main Dish",
       "Mashed potatoes",
-      "BroccoliÃ‚Â ",
+      "Broccoli",
       "Egg noodle"
     ]
   },
@@ -90,7 +90,7 @@
   },
   {
     "date": "2026-01-28",
-    "meal": "Breakfast",
+    "meal": "Breakfast: Pancakes",
     "sides_included": [
       "Main Dish",
       "Pancakes",
@@ -141,7 +141,7 @@
   },
   {
     "date": "2026-01-21",
-    "meal": "Dumpling Lasagna ",
+    "meal": "Dumpling Lasagna",
     "sides_included": [
       "Main Dish",
       "Green Beans",
@@ -175,21 +175,21 @@
   },
   {
     "date": "2026-01-30",
-    "meal": "Teriyaki meatballs ",
+    "meal": "Teriyaki meatballs",
     "sides_included": [
       "Main Dish"
     ]
   },
   {
     "date": "2026-04-22",
-    "meal": "Teriyaki meatballs ",
+    "meal": "Teriyaki meatballs",
     "sides_included": [
       "Main Dish"
     ]
   },
   {
     "date": "2026-02-02",
-    "meal": "Quesadillas ",
+    "meal": "Quesadillas",
     "sides_included": [
       "Main Dish",
       "Spanish Rice",
@@ -217,7 +217,7 @@
   },
   {
     "date": "2026-03-15",
-    "meal": "Crockpot Chicken spaghetti ",
+    "meal": "Crockpot Chicken spaghetti",
     "sides_included": [
       "Main Dish",
       "Garlic Bread",
@@ -226,7 +226,7 @@
   },
   {
     "date": "2026-02-17",
-    "meal": "Haitian Spaghetti ",
+    "meal": "Haitian Spaghetti",
     "sides_included": [
       "Main Dish",
       "Baguette"
@@ -289,7 +289,7 @@
     "meal": "Dumpling Bake",
     "sides_included": [
       "Main Dish",
-      "Rice "
+      "Rice"
     ]
   },
   {
@@ -339,11 +339,11 @@
   },
   {
     "date": "2026-03-23",
-    "meal": "Pasta ",
+    "meal": "Pasta",
     "sides_included": [
       "Main Dish",
       "Green Beans",
-      "Garlic bread ",
+      "Garlic bread",
       "Salad"
     ]
   },
@@ -390,7 +390,7 @@
     "meal": "Burgers & Dogs",
     "sides_included": [
       "Main Dish",
-      "Corn on the cob ",
+      "Corn on the cob",
       "Fries"
     ]
   },
@@ -443,7 +443,7 @@
     "sides_included": [
       "Main Dish",
       "Fries",
-      "Asparagus "
+      "Asparagus"
     ]
   },
   {
@@ -484,7 +484,7 @@
   },
   {
     "date": "2026-06-03",
-    "meal": "Brats ",
+    "meal": "Brats",
     "sides_included": [
       "Main Dish",
       "Pretzels",
