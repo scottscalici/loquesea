@@ -579,5 +579,15 @@
       "Bacon or Sausage",
       "Eggs"
     ]
+  },
+  {
+    "date": "2026-10-06",
+    "meal": "Breakfast: French Toast",
+    "sides_included": [
+      "Main Dish",
+      "French Toast",
+      "Bacon or Sausage",
+      "Eggs"
+    ]
   }
 ]
