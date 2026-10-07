@@ -3,13 +3,24 @@
 const REPO = 'scottscalici/loquesea';
 const API = `https://api.github.com/repos/${REPO}/contents/`;
 
-function getToken() {
+function getToken(message = 'Enter GitHub Token:') {
     let token = localStorage.getItem('gh_token');
     if (!token) {
-        token = prompt('Enter GitHub Token:');
+        token = prompt(message);
         if (token) localStorage.setItem('gh_token', token.trim());
     }
     return token;
+}
+
+// A saved token that has expired or been deleted gets a 401; ask for a new one and retry once.
+async function githubFetch(url, options = {}) {
+    const send = () => fetch(url, { ...options, headers: { ...options.headers, 'Authorization': `token ${getToken()}` } });
+    let res = await send();
+    if (res.status === 401) {
+        localStorage.removeItem('gh_token');
+        if (getToken('GitHub rejected the saved token (it may have expired). Paste a new token:')) res = await send();
+    }
+    return res;
 }
 
 // btoa/atob only handle Latin-1, which garbled accented characters on every save.
@@ -28,10 +39,7 @@ function decodeBase64(b64) {
 }
 
 async function readJson(path) {
-    const res = await fetch(`${API}${path}?t=${Date.now()}`, {
-        headers: { 'Authorization': `token ${getToken()}` },
-        cache: 'no-store'
-    });
+    const res = await githubFetch(`${API}${path}?t=${Date.now()}`, { cache: 'no-store' });
     if (!res.ok) throw new Error(`Could not load ${path} (${res.status})`);
     const file = await res.json();
     return { data: JSON.parse(decodeBase64(file.content)), sha: file.sha };
@@ -43,9 +51,9 @@ async function updateJson(path, mutate, message) {
     for (let attempt = 0; attempt < 2; attempt++) {
         const { data, sha } = await readJson(path);
         const updated = mutate(data) ?? data;
-        const res = await fetch(API + path, {
+        const res = await githubFetch(API + path, {
             method: 'PUT',
-            headers: { 'Authorization': `token ${getToken()}`, 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 message,
                 content: encodeBase64(JSON.stringify(updated, null, 2) + '\n'),
