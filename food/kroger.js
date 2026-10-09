@@ -1,9 +1,10 @@
 // Kroger features for the Shop page: pick a store, link items to products,
-// and send the list to the Kroger cart. Talks to Kroger through the Netlify
-// functions in netlify/functions, which hold the Kroger keys.
+// and send the list to the Kroger cart. Talks to Kroger through the site's
+// functions (lib/kroger-core.mjs), which hold the Kroger keys: /api/kroger on
+// Cloudflare Pages, /.netlify/functions/kroger on Netlify.
 // Uses rows, trip, itemsDb, saveTrip, render and toast from shop.html.
 
-const KROGER_FN = '/.netlify/functions/kroger';
+const KROGER_FN = location.hostname.endsWith('netlify.app') ? '/.netlify/functions/kroger' : '/api/kroger';
 const AUTH_KEY = 'kroger_auth';
 const PENDING_KEY = 'kroger_pending';
 const WEIGHT_UNITS = ['lb', 'lbs', 'oz', 'cup', 'cups', 'tbsp', 'tsp', 'clove', 'cloves'];
@@ -41,7 +42,7 @@ async function krogerApi(action, { params = {}, body, token } = {}) {
         headers: { ...(body && { 'Content-Type': 'application/json' }), ...(token && { 'Authorization': `Bearer ${token}` }) },
         body: body ? JSON.stringify(body) : undefined
     });
-    if (res.status === 404) throw Object.assign(new Error('Kroger only works on the Netlify version of this site.'), { status: 404 });
+    if (res.status === 404) throw Object.assign(new Error('Kroger only works on the Cloudflare (pages.dev) version of this site.'), { status: 404 });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw Object.assign(new Error(data.error || `Kroger error (${res.status})`), { status: res.status });
     return data;
