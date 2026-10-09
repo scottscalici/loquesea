@@ -55,7 +55,8 @@ async function updateJson(path, mutate, message) {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                message,
+                // [skip ci] tells Netlify (and Cloudflare) not to redeploy for a data save.
+                message: `${message} [skip ci]`,
                 content: encodeBase64(JSON.stringify(updated, null, 2) + '\n'),
                 sha
             })
