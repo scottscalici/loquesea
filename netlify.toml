@@ -3,7 +3,7 @@
   publish = "."
   functions = "netlify/functions"
   # Skip deploying when a commit only changes data (.json) files. The pages save
-  # recipes, meal plans and settings as commits, and read them straight from
-  # GitHub, so those commits don't need a new deploy (each production deploy
+  # recipes, meal plans, budgets and settings as commits and read them straight
+  # from GitHub, so those commits don't need a new deploy (each production deploy
   # costs Netlify credits). Exit code 0 means "skip this build".
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':(exclude)*.json'"
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':(exclude)*.json' ':(exclude)netlify.toml'"

@@ -506,7 +506,7 @@ const timeRaw = document.getElementById('newItemTime').value;
         const res = await fetch(API_URL, {
           method: 'PUT',
           headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: "Update via App", content, sha: currentSha })
+          body: JSON.stringify({ message: "Update via App [skip ci]", content, sha: currentSha })
         });
         if (!res.ok) throw new Error("Failed to save");
         const d = await res.json();

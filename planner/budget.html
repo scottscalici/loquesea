@@ -448,7 +448,7 @@
         const response = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.path}`, {
             method: "PUT",
             headers: { "Authorization": `token ${TOKEN}`, "Content-Type": "application/json" },
-            body: JSON.stringify({ message: "Update via Control Center", content: btoa(unescape(encodeURIComponent(JSON.stringify(updatedData, null, 2)))), sha: fileData.sha })
+            body: JSON.stringify({ message: "Update via Control Center [skip ci]", content: btoa(unescape(encodeURIComponent(JSON.stringify(updatedData, null, 2)))), sha: fileData.sha })
         });
         return response.ok;
     }
