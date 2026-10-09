@@ -1,0 +1,4 @@
+# The site is plain HTML served from the repo root; there is no build step.
+[build]
+  publish = "."
+  functions = "netlify/functions"
