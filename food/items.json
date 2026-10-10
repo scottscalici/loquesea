@@ -594,6 +594,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0002800021760"
     }
   },
+  "chopped cabbage (napa)": {
+    "kroger": {
+      "upc": "0000000004552",
+      "productId": "0000000004552",
+      "description": "Fresh Cabbage Napa Cabbage",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0000000004552"
+    }
+  },
   "coconut milk": {
     "kroger": {
       "upc": "0001111085735",
