@@ -74,6 +74,15 @@
   "chili powder": {
     "pantry": true
   },
+  "coconut milk": {
+    "kroger": {
+      "upc": "0001111085735",
+      "productId": "0001111085735",
+      "description": "Simple Truth Organic® Unsweetened Coconut Milk",
+      "size": "13.5 fl oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111085735"
+    }
+  },
   "coriander": {
     "pantry": true
   },
