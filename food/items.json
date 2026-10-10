@@ -409,6 +409,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0080717654009"
     }
   },
+  "egg noodles": {
+    "kroger": {
+      "upc": "0001111085126",
+      "productId": "0001111085126",
+      "description": "Kroger® Extra Wide Egg Noodles",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111085126"
+    }
+  },
   "eggs": {
     "kroger": {
       "upc": "0001111013737",
