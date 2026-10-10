@@ -242,6 +242,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0061611203195"
     }
   },
+  "hoagie rolls": {
+    "kroger": {
+      "upc": "0001111011514",
+      "productId": "0001111011514",
+      "description": "Kroger® White Hoagie Rolls",
+      "size": "6 ct / 14.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111011514"
+    }
+  },
   "hoisin sauce": {
     "pantry": true
   },
