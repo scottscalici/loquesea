@@ -884,6 +884,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111012948"
     }
   },
+  "pepperoni": {
+    "kroger": {
+      "upc": "0001111099380",
+      "productId": "0001111099380",
+      "description": "Kroger® Sliced Pepperoni",
+      "size": "6 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111099380"
+    }
+  },
   "peppers and onions": {
     "kroger": {
       "upc": "0001111089786",
