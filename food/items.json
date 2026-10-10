@@ -1003,6 +1003,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111012446"
     }
   },
+  "frozen veggies": {
+    "kroger": {
+      "upc": "0001450002129",
+      "productId": "0001450002129",
+      "description": "Birds Eye Steamfresh Carrots, Broccoli and Cauliflower, Frozen Vegetables",
+      "size": "10.8 oz (306g)",
+      "image": "https://www.kroger.com/product/images/medium/front/0001450002129"
+    }
+  },
   "garam masala": {
     "pantry": true,
     "kroger": {
