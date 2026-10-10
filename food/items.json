@@ -454,6 +454,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0007373100415"
     }
   },
+  "french bread": {
+    "kroger": {
+      "upc": "0004157322506",
+      "productId": "0004157322506",
+      "description": "Bakery Fresh Crisp & Soft French Bread",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0004157322506"
+    }
+  },
   "frozen fries": {
     "kroger": {
       "upc": "0001111005578",
