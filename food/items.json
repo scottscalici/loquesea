@@ -65,6 +65,15 @@
   "balsamic glaze": {
     "pantry": true
   },
+  "bbq sauce": {
+    "kroger": {
+      "upc": "0001340991810",
+      "productId": "0001340991810",
+      "description": "Sweet Baby Ray's® BBQ Sauce",
+      "size": "18 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001340991810"
+    }
+  },
   "bbq seasoning": {
     "pantry": true
   },
