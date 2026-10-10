@@ -2283,6 +2283,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111096787"
     }
   },
+  "sofrito": {
+    "kroger": {
+      "upc": "0004133102146",
+      "productId": "0004133102146",
+      "description": "Goya® Sofrito Tomato Sauce",
+      "size": "12 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0004133102146"
+    }
+  },
   "sour cream": {
     "kroger": {
       "upc": "0007342001614",
