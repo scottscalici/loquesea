@@ -68,6 +68,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0020094700000"
     }
   },
+  "chicken broth": {
+    "kroger": {
+      "upc": "0005100012114",
+      "productId": "0005100012114",
+      "description": "Swanson Chicken Broth",
+      "size": "32 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0005100012114"
+    }
+  },
   "chickpeas": {
     "kroger": {
       "upc": "0001111010648",
