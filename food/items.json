@@ -59,6 +59,15 @@
   "ketchup": {
     "pantry": true
   },
+  "large flour tortillas": {
+    "kroger": {
+      "upc": "0002733110111",
+      "productId": "0002733110111",
+      "description": "La Banderita Burrito Grande Extra Large Flour Tortilla",
+      "size": "8 ct",
+      "image": "https://www.kroger.com/product/images/medium/front/0002733110111"
+    }
+  },
   "lemon juice": {
     "pantry": true
   },
