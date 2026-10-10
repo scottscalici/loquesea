@@ -538,6 +538,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111004968"
     }
   },
+  "chicken thighs": {
+    "kroger": {
+      "upc": "0025313650000",
+      "productId": "0025313650000",
+      "description": "Heritage Farm® Boneless Skinless Chicken Thighs",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0025313650000"
+    }
+  },
   "chickpeas": {
     "kroger": {
       "upc": "0001111010648",
