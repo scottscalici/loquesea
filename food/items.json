@@ -1296,6 +1296,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111011751"
     }
   },
+  "jalapeño salsa": {
+    "kroger": {
+      "upc": "0089097500134",
+      "productId": "0089097500134",
+      "description": "Cocina Fresca Cantina Style Mild Jalapeno Salsa",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0089097500134"
+    }
+  },
   "jasmine rice": {
     "kroger": {
       "upc": "0001111015343",
