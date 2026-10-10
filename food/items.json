@@ -651,7 +651,14 @@
     }
   },
   "hoisin sauce": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001111085181",
+      "productId": "0001111085181",
+      "description": "Kroger® Hoisin Sauce",
+      "size": "15.3 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111085181"
+    }
   },
   "hot dog buns": {
     "kroger": {
