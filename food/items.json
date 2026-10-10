@@ -644,6 +644,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0005410001160"
     }
   },
+  "pineapple chunks": {
+    "kroger": {
+      "upc": "0001111083141",
+      "productId": "0001111083141",
+      "description": "Kroger® Canned Pineapple Chunks in Pineapple Juice",
+      "size": "20 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111083141"
+    }
+  },
   "plantain chips": {
     "kroger": {
       "upc": "0007102600031",
