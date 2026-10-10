@@ -129,7 +129,14 @@
     }
   },
   "balsamic glaze": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001111086908",
+      "productId": "0001111086908",
+      "description": "Private Selection® Balsamic Glaze",
+      "size": "8.45 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111086908"
+    }
   },
   "bbq sauce": {
     "kroger": {
