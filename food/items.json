@@ -994,6 +994,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111089785"
     }
   },
+  "frozen tortellini": {
+    "kroger": {
+      "upc": "0001111012446",
+      "productId": "0001111012446",
+      "description": "Kroger® Cheese Tortellini BIG DEAL!",
+      "size": "48 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111012446"
+    }
+  },
   "garam masala": {
     "pantry": true,
     "kroger": {
