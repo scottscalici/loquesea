@@ -8,6 +8,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0000000004080"
     }
   },
+  "bacon": {
+    "kroger": {
+      "upc": "0001111097209",
+      "productId": "0001111097209",
+      "description": "Kroger® Thick Cut Naturally Hardwood Smoked Bacon",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111097209"
+    }
+  },
   "balsamic glaze": {
     "pantry": true
   },
