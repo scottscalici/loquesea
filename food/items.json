@@ -677,7 +677,14 @@
     }
   },
   "cornstarch": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0076172007104",
+      "productId": "0076172007104",
+      "description": "Argo® 100% Pure Corn Starch",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0076172007104"
+    }
   },
   "cottage cheese": {
     "kroger": {
