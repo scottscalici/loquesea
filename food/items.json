@@ -2146,6 +2146,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0004133103884"
     }
   },
+  "seaweed": {
+    "kroger": {
+      "upc": "0001111008837",
+      "productId": "0001111008837",
+      "description": "Kroger® Roasted Seaweed Snack with Sea Salt",
+      "size": "0.4 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111008837"
+    }
+  },
   "sesame oil": {
     "pantry": true,
     "kroger": {
