@@ -448,6 +448,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111011618"
     }
   },
+  "canned tomato soup": {
+    "kroger": {
+      "upc": "0005100012939",
+      "productId": "0005100012939",
+      "description": "Campbell's Condensed Tomato Soup",
+      "size": "4 ct / 10.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0005100012939"
+    }
+  },
   "carrots": {
     "kroger": {
       "upc": "0001111091620",
