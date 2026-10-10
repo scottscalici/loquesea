@@ -2513,6 +2513,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0002100003355"
     }
   },
+  "whipped cream cheese": {
+    "kroger": {
+      "upc": "0001111058088",
+      "productId": "0001111058088",
+      "description": "Kroger® Original Whipped Cream Cheese Spread",
+      "size": "8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111058088"
+    }
+  },
   "wonton wrappers": {
     "kroger": {
       "upc": "0001115223004",
