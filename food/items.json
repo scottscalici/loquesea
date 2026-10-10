@@ -23,6 +23,15 @@
   "cajun seasoning": {
     "pantry": true
   },
+  "canned black beans": {
+    "kroger": {
+      "upc": "0001111010647",
+      "productId": "0001111010647",
+      "description": "Kroger® Black Beans",
+      "size": "15.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111010647"
+    }
+  },
   "chili oil": {
     "pantry": true
   },
