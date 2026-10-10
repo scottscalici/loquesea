@@ -2374,6 +2374,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0073762802525"
     }
   },
+  "strip steak": {
+    "kroger": {
+      "upc": "0025551200000",
+      "productId": "0025551200000",
+      "description": "Choice Boneless Beef Strip Steak",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0025551200000"
+    }
+  },
   "sweet potatoes": {
     "kroger": {
       "upc": "0000000004816",
