@@ -585,6 +585,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0002840019914"
     }
   },
+  "chocolate chips": {
+    "kroger": {
+      "upc": "0002800021760",
+      "productId": "0002800021760",
+      "description": "Nestle Toll House Milk Chocolate Morsels Chocolate Chips",
+      "size": "11.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0002800021760"
+    }
+  },
   "coconut milk": {
     "kroger": {
       "upc": "0001111085735",
