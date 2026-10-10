@@ -1792,6 +1792,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0007098550000"
     }
   },
+  "pizza sauce or marinara": {
+    "kroger": {
+      "upc": "0001111071295",
+      "productId": "0001111071295",
+      "description": "Kroger® Parlor Style Pizza Sauce",
+      "size": "14 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111071295"
+    }
+  },
   "plantain chips": {
     "kroger": {
       "upc": "0007102600031",
