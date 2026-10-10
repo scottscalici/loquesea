@@ -608,5 +608,14 @@
       "Rice",
       "Black beans"
     ]
+  },
+  {
+    "date": "2026-10-08",
+    "meal": "Vegetable Curry",
+    "sides_included": [
+      "Main Dish",
+      "Naan",
+      "Rice"
+    ]
   }
 ]
