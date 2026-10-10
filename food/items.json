@@ -2504,6 +2504,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0004411512840"
     }
   },
+  "velveeta queso blanco": {
+    "kroger": {
+      "upc": "0002100003355",
+      "productId": "0002100003355",
+      "description": "Velveeta Queso Blanco Cheese",
+      "size": "32 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0002100003355"
+    }
+  },
   "wonton wrappers": {
     "kroger": {
       "upc": "0001115223004",
