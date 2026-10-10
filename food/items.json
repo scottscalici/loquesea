@@ -2090,6 +2090,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0003100011305"
     }
   },
+  "salmon": {
+    "kroger": {
+      "upc": "0001111069779",
+      "productId": "0001111069779",
+      "description": "Kroger® Wild Caught Pink Salmon Boneless and Skin On BIG DEAL!",
+      "size": "32 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111069779"
+    }
+  },
   "salsa": {
     "kroger": {
       "upc": "0001111066759",
