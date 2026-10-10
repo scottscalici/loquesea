@@ -411,6 +411,15 @@
   "ground ginger": {
     "pantry": true
   },
+  "ground pork": {
+    "kroger": {
+      "upc": "0007603335213",
+      "productId": "0007603335213",
+      "description": "Carando® Sweet Italian Ground Pork Sausage",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0007603335213"
+    }
+  },
   "ground turkey": {
     "kroger": {
       "upc": "0001111066271",
