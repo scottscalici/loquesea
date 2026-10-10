@@ -238,6 +238,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001450001421"
     }
   },
+  "blue cheese dip": {
+    "kroger": {
+      "upc": "0007020050421",
+      "productId": "0007020050421",
+      "description": "Marzetti® Chunky Blue Cheese Dressing & Dip",
+      "size": "13 fl oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0007020050421"
+    }
+  },
   "bok choy": {
     "kroger": {
       "upc": "0000000004545",
