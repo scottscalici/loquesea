@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lo Que Sea</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', -apple-system, sans-serif; margin: 0; padding: 20px 14px; background: #f4f7f6; color: #333; }
+        .container { max-width: 600px; margin: auto; }
+        h1 { margin: 4px 0 2px; color: #2c3e50; }
+        .sub { color: #7f8c8d; margin: 0 0 18px; }
+        h2 { font-size: 0.8em; text-transform: uppercase; letter-spacing: .06em; color: #7f8c8d; margin: 22px 2px 8px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        a.tile { display: block; background: white; border-radius: 12px; padding: 16px 14px; text-decoration: none; color: #2c3e50; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+        a.tile .icon { font-size: 1.6em; display: block; margin-bottom: 6px; }
+        a.tile b { display: block; }
+        a.tile span.d { font-size: 0.8em; color: #95a5a6; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Lo Que Sea</h1>
+    <p class="sub">para lo que sea</p>
+
+    <h2>Meals</h2>
+    <div class="grid">
+        <a class="tile" href="food/view.html"><span class="icon">📅</span><b>Calendar</b><span class="d">What's for dinner</span></a>
+        <a class="tile" href="food/shop.html"><span class="icon">🛒</span><b>Shop</b><span class="d">Grocery list &amp; Kroger</span></a>
+        <a class="tile" href="food/planner.html"><span class="icon">🍽️</span><b>Plan</b><span class="d">Add a meal to a day</span></a>
+        <a class="tile" href="food/recipes.html"><span class="icon">📖</span><b>Recipes</b><span class="d">Add &amp; edit</span></a>
+    </div>
+
+    <h2>Everything else</h2>
+    <div class="grid">
+        <a class="tile" href="planner/index.html"><span class="icon">🧱</span><b>Dashboard</b><span class="d">Lego Dashboard 2026</span></a>
+        <a class="tile" href="planner/house.html"><span class="icon">🏠</span><b>House &amp; Life</b><span class="d">Manager</span></a>
+        <a class="tile" href="planner/budget.html"><span class="icon">💵</span><b>Budget</b><span class="d">Control Center</span></a>
+        <a class="tile" href="training/basketball.html"><span class="icon">🏀</span><b>Practice Planner</b><span class="d">Basketball</span></a>
+    </div>
+</div>
+</body>
+</html>
