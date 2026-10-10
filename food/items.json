@@ -635,6 +635,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111079542"
     }
   },
+  "pickles": {
+    "kroger": {
+      "upc": "0005410001160",
+      "productId": "0005410001160",
+      "description": "Vlasic Ovals Hamburger Dill Pickle Chips, Keto Friendly",
+      "size": "16 oza",
+      "image": "https://www.kroger.com/product/images/medium/front/0005410001160"
+    }
+  },
   "plantain chips": {
     "kroger": {
       "upc": "0007102600031",
