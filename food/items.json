@@ -150,6 +150,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111011457"
     }
   },
+  "burger patties": {
+    "kroger": {
+      "upc": "0001111000915",
+      "productId": "0001111000915",
+      "description": "Kroger® 100% Pure Beef Quarter Pound Burgers",
+      "size": "8 ct / 32 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111000915"
+    }
+  },
   "burger sauce": {
     "kroger": {
       "upc": "0001111003307",
