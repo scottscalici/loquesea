@@ -1792,6 +1792,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0007098550000"
     }
   },
+  "pita or sourdough": {
+    "kroger": {
+      "upc": "0007411700014",
+      "productId": "0007411700014",
+      "description": "Joseph's™ Original Pita Bread 1 Pack of 4",
+      "size": "4 ct / 11 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0007411700014"
+    }
+  },
   "pizza sauce or marinara": {
     "kroger": {
       "upc": "0001111071295",
