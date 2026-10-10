@@ -557,6 +557,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111011473"
     }
   },
+  "green bell pepper": {
+    "kroger": {
+      "upc": "0001111087220",
+      "productId": "0001111087220",
+      "description": "Kroger® Frozen Green Peppers Chopped",
+      "size": "10 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111087220"
+    }
+  },
   "green olives": {
     "kroger": {
       "upc": "0070581472112",
