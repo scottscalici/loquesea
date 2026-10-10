@@ -406,6 +406,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111050170"
     }
   },
+  "shredded cheese": {
+    "kroger": {
+      "upc": "0001111050204",
+      "productId": "0001111050204",
+      "description": "Kroger® Mexican Style Blend Shredded Cheese",
+      "size": "8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111050204"
+    }
+  },
   "shredded lettuce": {
     "kroger": {
       "upc": "0001111091613",
