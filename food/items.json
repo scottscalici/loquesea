@@ -531,6 +531,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0004139000105"
     }
   },
+  "spaghetti": {
+    "kroger": {
+      "upc": "0001111085004",
+      "productId": "0001111085004",
+      "description": "Kroger® Spaghetti",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111085004"
+    }
+  },
   "spinach": {
     "kroger": {
       "upc": "0001111091649",
