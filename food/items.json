@@ -1360,6 +1360,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0004100000887"
     }
   },
+  "knorr noodles": {
+    "kroger": {
+      "upc": "0004100002802",
+      "productId": "0004100002802",
+      "description": "Knorr Teriyaki Lo Mein Noodles Pasta Side",
+      "size": "4.6 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0004100002802"
+    }
+  },
   "large flour tortillas": {
     "kroger": {
       "upc": "0002733110111",
