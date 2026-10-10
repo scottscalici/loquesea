@@ -8,3 +8,5 @@ lib
 netlify
 netlify.toml
 node_modules
+.gitignore
+.wrangler
