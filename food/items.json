@@ -295,6 +295,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111068480"
     }
   },
+  "salad": {
+    "kroger": {
+      "upc": "0001111091037",
+      "productId": "0001111091037",
+      "description": "Kroger® Classic Garden Salad Bag",
+      "size": "24 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111091037"
+    }
+  },
   "sazón": {
     "pantry": true
   },
