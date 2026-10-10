@@ -2265,6 +2265,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111058287"
     }
   },
+  "sloppy joe mix": {
+    "kroger": {
+      "upc": "0002700044193",
+      "productId": "0002700044193",
+      "description": "Manwich Sloppy Joe Sauce Bold Flavor Canned Sauce",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0002700044193"
+    }
+  },
   "smoked sausage": {
     "kroger": {
       "upc": "0001111096787",
