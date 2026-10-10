@@ -265,6 +265,24 @@
       "image": "https://www.kroger.com/product/images/medium/front/0000000004545"
     }
   },
+  "bolillo buns": {
+    "kroger": {
+      "upc": "0004157323222",
+      "productId": "0004157323222",
+      "description": "Bakery Fresh White Bolillo Rolls",
+      "size": "4 ct / 14 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0004157323222"
+    }
+  },
+  "bow tie pasta": {
+    "kroger": {
+      "upc": "0001111085165",
+      "productId": "0001111085165",
+      "description": "Kroger® Bow Ties Pasta",
+      "size": "12 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111085165"
+    }
+  },
   "bread": {
     "kroger": {
       "upc": "0001111008489",
