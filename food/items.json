@@ -119,6 +119,15 @@
   "italian seasoning": {
     "pantry": true
   },
+  "jasmine rice": {
+    "kroger": {
+      "upc": "0001111015343",
+      "productId": "0001111015343",
+      "description": "Kroger® Jasmine Rice",
+      "size": "5 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111015343"
+    }
+  },
   "ketchup": {
     "pantry": true
   },
