@@ -251,6 +251,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111005578"
     }
   },
+  "frozen meatballs": {
+    "kroger": {
+      "upc": "0001111015720",
+      "productId": "0001111015720",
+      "description": "Kroger® Homestyle Meatballs Party Size",
+      "size": "4 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111015720"
+    }
+  },
   "garam masala": {
     "pantry": true,
     "kroger": {
