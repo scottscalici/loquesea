@@ -1388,7 +1388,14 @@
     }
   },
   "lemon juice": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001111070205",
+      "productId": "0001111070205",
+      "description": "Kroger® 100% Lemon Juice",
+      "size": "15 fl oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111070205"
+    }
   },
   "lemons": {
     "kroger": {
