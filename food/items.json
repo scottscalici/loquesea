@@ -1544,7 +1544,14 @@
     }
   },
   "msg": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0004780000054",
+      "productId": "0004780000054",
+      "description": "Accent Flavor Enhancer, Kosher",
+      "size": "4.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0004780000054"
+    }
   },
   "naan": {
     "kroger": {
