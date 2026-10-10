@@ -405,6 +405,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111013416"
     }
   },
+  "mashed potatoes": {
+    "kroger": {
+      "upc": "0002970000141",
+      "productId": "0002970000141",
+      "description": "Idahoan Buttery Homestyle Mashed Potatoes pouch",
+      "size": "4 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0002970000141"
+    }
+  },
   "mayo": {
     "pantry": true
   },
