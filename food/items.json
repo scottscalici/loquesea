@@ -1158,6 +1158,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111096920"
     }
   },
+  "ground chicken": {
+    "kroger": {
+      "upc": "0007274506369",
+      "productId": "0007274506369",
+      "description": "Perdue® NAE Tray Pack Ground Chicken",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0007274506369"
+    }
+  },
   "ground ginger": {
     "pantry": true
   },
