@@ -47,6 +47,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111089870"
     }
   },
+  "arrabbiata sauce": {
+    "kroger": {
+      "upc": "0085002473502",
+      "productId": "0085002473502",
+      "description": "Carbone Arrabbiata Sauce 24 oz",
+      "size": "24 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0085002473502"
+    }
+  },
   "asparagus": {
     "kroger": {
       "upc": "0000000004080",
