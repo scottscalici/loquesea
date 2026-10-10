@@ -1506,6 +1506,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0007639703150"
     }
   },
+  "microwave spanish rice pouch": {
+    "kroger": {
+      "upc": "0005480042484",
+      "productId": "0005480042484",
+      "description": "Ben's Original Ready Rice Spanish Style Flavored Rice, Easy Dinner Side, 17.3 oz Pouch",
+      "size": "17.3 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0005480042484"
+    }
+  },
   "mirin": {
     "pantry": true
   },
