@@ -310,6 +310,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111089786"
     }
   },
+  "petite potatoes": {
+    "kroger": {
+      "upc": "0001111079542",
+      "productId": "0001111079542",
+      "description": "Fresh Potatoes Private Selection® Petite Gold Gourmet Potatoes",
+      "size": "1.5 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111079542"
+    }
+  },
   "plantain chips": {
     "kroger": {
       "upc": "0007102600031",
