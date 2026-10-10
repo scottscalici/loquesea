@@ -5,6 +5,15 @@
   "bbq seasoning": {
     "pantry": true
   },
+  "beef broth": {
+    "kroger": {
+      "upc": "0001111008596",
+      "productId": "0001111008596",
+      "description": "Kroger® Fat Free Beef Broth",
+      "size": "32 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111008596"
+    }
+  },
   "brown sugar": {
     "pantry": true
   },
