@@ -32,6 +32,15 @@
   "dijon mustard": {
     "pantry": true
   },
+  "flank steak": {
+    "kroger": {
+      "upc": "0024239600000",
+      "productId": "0024239600000",
+      "description": "Choice Boneless Beef Flank Steak (1 Steak)",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0024239600000"
+    }
+  },
   "garam masala": {
     "pantry": true
   },
