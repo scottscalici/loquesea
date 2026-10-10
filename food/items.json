@@ -394,6 +394,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111011971"
     }
   },
+  "tomatoes": {
+    "kroger": {
+      "upc": "0000000004799",
+      "productId": "0000000004799",
+      "description": "Fresh Tomatoes Fresh Large Hothouse Grown Premium Red Tomato",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0000000004799"
+    }
+  },
   "turmeric": {
     "pantry": true,
     "kroger": {
