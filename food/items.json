@@ -89,6 +89,15 @@
   "oyster sauce": {
     "pantry": true
   },
+  "peppers and onions": {
+    "kroger": {
+      "upc": "0001111089786",
+      "productId": "0001111089786",
+      "description": "Kroger® Frozen 3 Pepper & Onion Blend",
+      "size": "12 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111089786"
+    }
+  },
   "potato chips": {
     "kroger": {
       "upc": "0002840019914",
