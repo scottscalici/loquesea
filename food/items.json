@@ -1882,6 +1882,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111009477"
     }
   },
+  "provolone": {
+    "kroger": {
+      "upc": "0001111058716",
+      "productId": "0001111058716",
+      "description": "Kroger® Smoke Flavored Provolone Sliced Cheese",
+      "size": "8 slices / 6 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111058716"
+    }
+  },
   "queso": {
     "kroger": {
       "upc": "0007287807151",
