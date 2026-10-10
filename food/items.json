@@ -2202,6 +2202,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111050204"
     }
   },
+  "shredded italian cheese": {
+    "kroger": {
+      "upc": "0001111050205",
+      "productId": "0001111050205",
+      "description": "Kroger® Italian Style Blend Shredded Cheese",
+      "size": "8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111050205"
+    }
+  },
   "shredded lettuce": {
     "kroger": {
       "upc": "0001111091613",
