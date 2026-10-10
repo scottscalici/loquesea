@@ -1152,7 +1152,14 @@
     }
   },
   "sesame seeds": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001111068394",
+      "productId": "0001111068394",
+      "description": "Kroger® Sesame Seed Shaker",
+      "size": "2.12 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111068394"
+    }
   },
   "shredded cheddar": {
     "kroger": {
