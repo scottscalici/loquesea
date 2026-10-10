@@ -1424,6 +1424,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111091629"
     }
   },
+  "lo mein": {
+    "kroger": {
+      "upc": "0007286923095",
+      "productId": "0007286923095",
+      "description": "Wei-Chuan Wei Chuan Organic Chinese Lo Mein",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0007286923095"
+    }
+  },
   "long grain white rice": {
     "kroger": {
       "upc": "0001111089875",
