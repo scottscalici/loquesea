@@ -202,6 +202,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111069231"
     }
   },
+  "beef tips": {
+    "kroger": {
+      "upc": "0024153500000",
+      "productId": "0024153500000",
+      "description": "Choice Sirloin Tip Beef Steak",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0024153500000"
+    }
+  },
   "bell peppers": {
     "kroger": {
       "upc": "0001111089786",
