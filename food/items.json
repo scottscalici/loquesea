@@ -2467,6 +2467,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0007373100415"
     }
   },
+  "tuna helper": {
+    "kroger": {
+      "upc": "0065272971058",
+      "productId": "0065272971058",
+      "description": "Tuna Helper Cheesy Pasta",
+      "size": "5.3 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0065272971058"
+    }
+  },
   "turmeric": {
     "pantry": true,
     "kroger": {
