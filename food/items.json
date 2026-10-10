@@ -1059,6 +1059,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111012981"
     }
   },
+  "ginger": {
+    "kroger": {
+      "upc": "0007096900440",
+      "productId": "0007096900440",
+      "description": "Spice World Minced Ginger 10 oz",
+      "size": "10 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0007096900440"
+    }
+  },
   "grapes or apple slices": {
     "kroger": {
       "upc": "0001111065652",
