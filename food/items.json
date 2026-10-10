@@ -438,6 +438,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0061611203195"
     }
   },
+  "heavy cream": {
+    "kroger": {
+      "upc": "0001111050315",
+      "productId": "0001111050315",
+      "description": "Kroger® Heavy Whipping Cream Pint",
+      "size": "1 pt",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111050315"
+    }
+  },
   "hoagie rolls": {
     "kroger": {
       "upc": "0001111011514",
