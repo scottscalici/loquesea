@@ -1086,6 +1086,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111065652"
     }
   },
+  "gravy packs": {
+    "kroger": {
+      "upc": "0005210009860",
+      "productId": "0005210009860",
+      "description": "McCormick Brown Gravy Mix, 0.87 oz",
+      "size": "0.87 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0005210009860"
+    }
+  },
   "green beans": {
     "kroger": {
       "upc": "0001111011473",
