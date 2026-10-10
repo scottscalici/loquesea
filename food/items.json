@@ -667,6 +667,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001450000937"
     }
   },
+  "cornbread": {
+    "kroger": {
+      "upc": "0001111026023",
+      "productId": "0001111026023",
+      "description": "Bakery Fresh Cornbread",
+      "size": "15.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111026023"
+    }
+  },
   "cornstarch": {
     "pantry": true
   },
