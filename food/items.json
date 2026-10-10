@@ -1044,6 +1044,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111012988"
     }
   },
+  "red onion": {
+    "kroger": {
+      "upc": "0000000004082",
+      "productId": "0000000004082",
+      "description": "Fresh Onions Jumbo Red Onions",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0000000004082"
+    }
+  },
   "red pepper flakes": {
     "pantry": true,
     "kroger": {
