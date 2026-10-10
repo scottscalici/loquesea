@@ -758,6 +758,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111013619"
     }
   },
+  "cucumber": {
+    "kroger": {
+      "upc": "0000000004062",
+      "productId": "0000000004062",
+      "description": "Cucumber",
+      "size": "1 ct",
+      "image": "https://www.kroger.com/product/images/medium/front/0000000004062"
+    }
+  },
   "curry powder": {
     "pantry": true,
     "kroger": {
