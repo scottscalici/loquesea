@@ -1012,6 +1012,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001450002129"
     }
   },
+  "frozen voila fajita meal": {
+    "kroger": {
+      "upc": "0001450001513",
+      "productId": "0001450001513",
+      "description": "Birds Eye Voila! Chicken Fajita Family Size Frozen Skillet Meal",
+      "size": "42 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001450001513"
+    }
+  },
   "garam masala": {
     "pantry": true,
     "kroger": {
