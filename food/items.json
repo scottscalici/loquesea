@@ -362,6 +362,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111045045"
     }
   },
+  "cubed chicken": {
+    "kroger": {
+      "upc": "0001111013619",
+      "productId": "0001111013619",
+      "description": "Kroger® Frozen Fully Cooked Boneless Skinless Diced Chicken Breast",
+      "size": "22 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111013619"
+    }
+  },
   "curry powder": {
     "pantry": true
   },
