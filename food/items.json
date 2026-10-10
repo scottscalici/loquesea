@@ -2127,7 +2127,14 @@
     }
   },
   "sazón": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0007152428254",
+      "productId": "0007152428254",
+      "description": "La Preferida® Sazon All Purpose Seasoning",
+      "size": "8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0007152428254"
+    }
   },
   "sazón completa": {
     "pantry": true
