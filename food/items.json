@@ -59,6 +59,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111011618"
     }
   },
+  "chickpeas": {
+    "kroger": {
+      "upc": "0001111010648",
+      "productId": "0001111010648",
+      "description": "Kroger® Garbanzo Beans",
+      "size": "15.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111010648"
+    }
+  },
   "chili oil": {
     "pantry": true
   },
