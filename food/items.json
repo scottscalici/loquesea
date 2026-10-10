@@ -671,6 +671,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0002840019914"
     }
   },
+  "potatoes": {
+    "kroger": {
+      "upc": "0000000004072",
+      "productId": "0000000004072",
+      "description": "Fresh Potatoes Russet Potato",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0000000004072"
+    }
+  },
   "precooked bacon": {
     "kroger": {
       "upc": "0001111097205",
