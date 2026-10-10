@@ -1140,6 +1140,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0000000004068"
     }
   },
+  "grilled chicken strips": {
+    "kroger": {
+      "upc": "0001111013618",
+      "productId": "0001111013618",
+      "description": "Kroger® Frozen Fully Cooked Grilled Chicken Breast Strips",
+      "size": "22 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111013618"
+    }
+  },
   "ground beef": {
     "kroger": {
       "upc": "0001111096920",
