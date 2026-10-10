@@ -875,6 +875,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111089736"
     }
   },
+  "pepperoncini": {
+    "kroger": {
+      "upc": "0001111012948",
+      "productId": "0001111012948",
+      "description": "Kroger® Whole Pepperoncini Peppers",
+      "size": "16 fl oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111012948"
+    }
+  },
   "peppers and onions": {
     "kroger": {
       "upc": "0001111089786",
