@@ -1442,6 +1442,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111098065"
     }
   },
+  "lobster bisque": {
+    "kroger": {
+      "upc": "0007795869030",
+      "productId": "0007795869030",
+      "description": "Panera Bread Ready-to-Heat Lobster Bisque Soup Cup",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0007795869030"
+    }
+  },
   "long grain white rice": {
     "kroger": {
       "upc": "0001111089875",
