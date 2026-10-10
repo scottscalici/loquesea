@@ -719,6 +719,15 @@
   "lemon juice": {
     "pantry": true
   },
+  "lemons": {
+    "kroger": {
+      "upc": "0000000004053",
+      "productId": "0000000004053",
+      "description": "Fresh Citrus Fresh Large Lemon - Each",
+      "size": "1 each",
+      "image": "https://www.kroger.com/product/images/medium/front/0000000004053"
+    }
+  },
   "lettuce": {
     "kroger": {
       "upc": "0001111091613",
