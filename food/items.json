@@ -319,6 +319,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111058033"
     }
   },
+  "pasta": {
+    "kroger": {
+      "upc": "0001111085033",
+      "productId": "0001111085033",
+      "description": "Kroger® Penne Rigate Pasta",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111085033"
+    }
+  },
   "peas": {
     "kroger": {
       "upc": "0001111089736",
