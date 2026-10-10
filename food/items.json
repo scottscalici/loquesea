@@ -1,4 +1,13 @@
 {
+  "alfredo sauce": {
+    "kroger": {
+      "upc": "0001111085100",
+      "productId": "0001111085100",
+      "description": "Kroger® Roasted Garlic Alfredo Sauce",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111085100"
+    }
+  },
   "asparagus": {
     "kroger": {
       "upc": "0000000004080",
