@@ -147,6 +147,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0005410000845"
     }
   },
+  "basil": {
+    "kroger": {
+      "upc": "0001111000296",
+      "productId": "0001111000296",
+      "description": "Kroger® Basil Leaves Shaker",
+      "size": "0.43 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111000296"
+    }
+  },
   "bbq sauce": {
     "kroger": {
       "upc": "0001340991810",
