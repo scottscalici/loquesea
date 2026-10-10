@@ -269,6 +269,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111091649"
     }
   },
+  "sweet potatoes": {
+    "kroger": {
+      "upc": "0000000004816",
+      "productId": "0000000004816",
+      "description": "Fresh Potatoes Sweet Potato",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0000000004816"
+    }
+  },
   "texas toast": {
     "section": "Bakery & Bread"
   },
