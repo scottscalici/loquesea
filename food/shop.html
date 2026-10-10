@@ -93,6 +93,11 @@
         .kstep b { min-width: 24px; text-align: center; }
         .klinkbtn { flex: none; padding: 8px 14px; }
         .btn-kroger { background: #1f4e9c; color: white; }
+        .kbar { height: 8px; background: #e5e8e8; border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+        .kbar span { display: block; height: 100%; background: #27ae60; }
+        .kqueue { display: flex !important; gap: 8px; padding: 0 !important; }
+        .kqueue button { flex: 1; padding: 13px; }
+        .klinkall { display: block; width: 100%; background: white; color: #1f4e9c; border: 1px dashed #aeb6bf; margin-bottom: 12px; font-size: 14px; }
         #toast { position: fixed; top: 64px; left: 50%; transform: translateX(-50%); background: #2c3e50; color: white; padding: 10px 18px; border-radius: 20px; font-weight: 600; display: none; z-index: 30; max-width: 90%; text-align: center; }
         #toast.error { background: #c0392b; }
     </style>
@@ -121,6 +126,7 @@
         <button class="btn-primary" onclick="addExtra()">Add</button>
     </div>
 
+    <button class="klinkall" onclick="openLinkAll()">🔗 Link Kroger products for all your ingredients</button>
     <div id="list"></div>
 </div>
 

@@ -5,8 +5,6 @@
 wrangler.jsonc
 worker.js
 lib
-netlify
-netlify.toml
 node_modules
 .gitignore
 .wrangler

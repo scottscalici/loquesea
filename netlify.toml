@@ -1,9 +1,0 @@
-# The site is plain HTML served from the repo root; there is no build step.
-[build]
-  publish = "."
-  functions = "netlify/functions"
-  # Skip deploying when a commit only changes data (.json) files. The pages save
-  # recipes, meal plans, budgets and settings as commits and read them straight
-  # from GitHub, so those commits don't need a new deploy (each production deploy
-  # costs Netlify credits). Exit code 0 means "skip this build".
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':(exclude)*.json' ':(exclude)netlify.toml'"
