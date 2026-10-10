@@ -399,6 +399,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0070581472112"
     }
   },
+  "ground beef": {
+    "kroger": {
+      "upc": "0001111096920",
+      "productId": "0001111096920",
+      "description": "Kroger® 93/7 Ground Beef Tray 1 LB",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111096920"
+    }
+  },
   "ground ginger": {
     "pantry": true
   },
