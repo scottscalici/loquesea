@@ -704,6 +704,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111045045"
     }
   },
+  "crab": {
+    "kroger": {
+      "upc": "0001111061835",
+      "productId": "0001111061835",
+      "description": "Kroger Crab Select Leg Style Imitation Crab Meat",
+      "size": "8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111061835"
+    }
+  },
   "cubed chicken": {
     "kroger": {
       "upc": "0001111013619",
