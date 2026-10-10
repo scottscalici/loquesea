@@ -17,6 +17,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0000000004080"
     }
   },
+  "avocado": {
+    "kroger": {
+      "upc": "0000000004046",
+      "productId": "0000000004046",
+      "description": "Fresh Avocados Fresh Medium Ripe Avocado",
+      "size": "1 each",
+      "image": "https://www.kroger.com/product/images/medium/front/0000000004046"
+    }
+  },
   "bacon": {
     "kroger": {
       "upc": "0001111097209",
