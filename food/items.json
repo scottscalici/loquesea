@@ -567,7 +567,14 @@
     }
   },
   "chili powder": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001111011749",
+      "productId": "0001111011749",
+      "description": "Smart Way™ Chili Powder",
+      "size": "1.98 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111011749"
+    }
   },
   "chips": {
     "kroger": {
