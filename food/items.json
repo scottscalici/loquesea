@@ -1188,6 +1188,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111091613"
     }
   },
+  "shredded mozzarella": {
+    "kroger": {
+      "upc": "0001111050159",
+      "productId": "0001111050159",
+      "description": "Kroger® Mozzarella Shredded Cheese",
+      "size": "8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111050159"
+    }
+  },
   "smoked sausage": {
     "kroger": {
       "upc": "0001111096787",
