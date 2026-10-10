@@ -481,6 +481,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111005578"
     }
   },
+  "frozen fries or onion rings": {
+    "kroger": {
+      "upc": "0001111013833",
+      "productId": "0001111013833",
+      "description": "Kroger® Thick Cut Frozen Onion Rings",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111013833"
+    }
+  },
   "frozen meatballs": {
     "kroger": {
       "upc": "0001111015720",
@@ -488,6 +497,15 @@
       "description": "Kroger® Homestyle Meatballs Party Size",
       "size": "4 lb",
       "image": "https://www.kroger.com/product/images/medium/front/0001111015720"
+    }
+  },
+  "frozen peppers and onions": {
+    "kroger": {
+      "upc": "0001111089786",
+      "productId": "0001111089786",
+      "description": "Kroger® Frozen 3 Pepper & Onion Blend",
+      "size": "12 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111089786"
     }
   },
   "garam masala": {
