@@ -60,7 +60,14 @@
     }
   },
   "brown sugar": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001111085585",
+      "productId": "0001111085585",
+      "description": "Kroger® Light Brown Sugar",
+      "size": "32 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111085585"
+    }
   },
   "butter": {
     "pantry": true,
