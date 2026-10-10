@@ -575,6 +575,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0070581472112"
     }
   },
+  "green onion": {
+    "kroger": {
+      "upc": "0000000004068",
+      "productId": "0000000004068",
+      "description": "Green Onions",
+      "size": "1 each",
+      "image": "https://www.kroger.com/product/images/medium/front/0000000004068"
+    }
+  },
   "ground beef": {
     "kroger": {
       "upc": "0001111096920",
