@@ -931,6 +931,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111084961"
     }
   },
+  "frozen dumplings": {
+    "kroger": {
+      "upc": "0080717671322",
+      "productId": "0080717671322",
+      "description": "CJ Bibigo Bibigo Frozen Mandu Pork & Vegetable Dumplings",
+      "size": "24.0 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0080717671322"
+    }
+  },
   "frozen fries": {
     "kroger": {
       "upc": "0001111005578",
