@@ -985,6 +985,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111089786"
     }
   },
+  "frozen spinach": {
+    "kroger": {
+      "upc": "0001111089785",
+      "productId": "0001111089785",
+      "description": "Kroger® Frozen Spinach Chopped",
+      "size": "12 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111089785"
+    }
+  },
   "garam masala": {
     "pantry": true,
     "kroger": {
