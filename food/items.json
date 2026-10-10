@@ -1209,6 +1209,13 @@
     }
   },
   "worcestershire": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001111066985",
+      "productId": "0001111066985",
+      "description": "Kroger® Worcestershire Sauce",
+      "size": "10 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111066985"
+    }
   }
 }
