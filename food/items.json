@@ -109,6 +109,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111011618"
     }
   },
+  "carrots": {
+    "kroger": {
+      "upc": "0001111091620",
+      "productId": "0001111091620",
+      "description": "Kroger® Cut and Peeled Baby Carrots",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111091620"
+    }
+  },
   "chicken": {
     "kroger": {
       "upc": "0020094700000",
