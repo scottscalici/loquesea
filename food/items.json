@@ -152,6 +152,15 @@
   "oyster sauce": {
     "pantry": true
   },
+  "peas": {
+    "kroger": {
+      "upc": "0001111089736",
+      "productId": "0001111089736",
+      "description": "Kroger® Frozen Sweet Green Peas",
+      "size": "12 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111089736"
+    }
+  },
   "peppers and onions": {
     "kroger": {
       "upc": "0001111089786",
