@@ -53,6 +53,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111097209"
     }
   },
+  "baked beans": {
+    "kroger": {
+      "upc": "0003940001977",
+      "productId": "0003940001977",
+      "description": "Bush's Best Bush's Brown Sugar Hickory Baked Beans 28 oz",
+      "size": "28 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0003940001977"
+    }
+  },
   "balsamic glaze": {
     "pantry": true
   },
