@@ -2356,6 +2356,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111091649"
     }
   },
+  "steak": {
+    "kroger": {
+      "upc": "0028888900000",
+      "productId": "0028888900000",
+      "description": "Kroger Mercado Kroger® Thin Sliced Strip Steaks",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0028888900000"
+    }
+  },
   "sweet potatoes": {
     "kroger": {
       "upc": "0000000004816",
