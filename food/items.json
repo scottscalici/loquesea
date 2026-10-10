@@ -623,6 +623,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0061611203195"
     }
   },
+  "hamburger buns": {
+    "kroger": {
+      "upc": "0005040073942",
+      "productId": "0005040073942",
+      "description": "Ball Park White Burger Buns",
+      "size": "8 ct / 15 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0005040073942"
+    }
+  },
   "heavy cream": {
     "kroger": {
       "upc": "0001111050315",
