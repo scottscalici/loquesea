@@ -341,6 +341,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111011383"
     }
   },
+  "corn on the cob": {
+    "kroger": {
+      "upc": "0001111018183",
+      "productId": "0001111018183",
+      "description": "Fresh Corn Kroger® Sweet Corn on the Cob",
+      "size": "4 ct",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111018183"
+    }
+  },
   "cornstarch": {
     "pantry": true
   },
