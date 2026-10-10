@@ -1168,7 +1168,14 @@
     }
   },
   "ground ginger": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001111068284",
+      "productId": "0001111068284",
+      "description": "Kroger® Ground Ginger Shaker",
+      "size": "1.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111068284"
+    }
   },
   "ground pork": {
     "kroger": {
