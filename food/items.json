@@ -143,6 +143,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111089786"
     }
   },
+  "plantain chips": {
+    "kroger": {
+      "upc": "0007102600031",
+      "productId": "0007102600031",
+      "description": "Chifles Plantain Chips Original",
+      "size": "9 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0007102600031"
+    }
+  },
   "potato chips": {
     "kroger": {
       "upc": "0002840019914",
