@@ -1068,6 +1068,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0007096900440"
     }
   },
+  "grape jelly": {
+    "kroger": {
+      "upc": "0004180050150",
+      "productId": "0004180050150",
+      "description": "Welch's® Concord Grape Jelly",
+      "size": "30 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0004180050150"
+    }
+  },
   "grapes or apple slices": {
     "kroger": {
       "upc": "0001111065652",
