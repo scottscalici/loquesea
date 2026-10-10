@@ -2449,6 +2449,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0000000004799"
     }
   },
+  "tortellini": {
+    "kroger": {
+      "upc": "0001111012404",
+      "productId": "0001111012404",
+      "description": "Kroger® Cheese Tortellini",
+      "size": "19 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111012404"
+    }
+  },
   "tortilla chips": {
     "kroger": {
       "upc": "0001111010996",
