@@ -1666,6 +1666,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111085033"
     }
   },
+  "peanut butter": {
+    "kroger": {
+      "upc": "0005150024769",
+      "productId": "0005150024769",
+      "description": "Jif Creamy Peanut Butter",
+      "size": "80 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0005150024769"
+    }
+  },
   "peas": {
     "kroger": {
       "upc": "0001111089736",
@@ -1673,6 +1682,15 @@
       "description": "Kroger® Frozen Sweet Green Peas",
       "size": "12 oz",
       "image": "https://www.kroger.com/product/images/medium/front/0001111089736"
+    }
+  },
+  "peas and carrots": {
+    "kroger": {
+      "upc": "0001111089741",
+      "productId": "0001111089741",
+      "description": "Kroger® Frozen Peas & Carrots",
+      "size": "12 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111089741"
     }
   },
   "pepperoncini": {
