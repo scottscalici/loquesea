@@ -2329,6 +2329,24 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111085004"
     }
   },
+  "spanish rice": {
+    "kroger": {
+      "upc": "0001111004409",
+      "productId": "0001111004409",
+      "description": "Kroger® 90 Second Spanish Rice Pouch",
+      "size": "8.8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111004409"
+    }
+  },
+  "spanish rice-a-roni": {
+    "kroger": {
+      "upc": "0001530043053",
+      "productId": "0001530043053",
+      "description": "Rice-A-Roni Spanish Rice 6.8 oz",
+      "size": "6.8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001530043053"
+    }
+  },
   "spinach": {
     "kroger": {
       "upc": "0001111091649",
