@@ -260,6 +260,15 @@
   "soy sauce": {
     "pantry": true
   },
+  "spinach": {
+    "kroger": {
+      "upc": "0001111091649",
+      "productId": "0001111091649",
+      "description": "Kroger® Tender Baby Spinach Bag Salad",
+      "size": "10 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111091649"
+    }
+  },
   "texas toast": {
     "section": "Bakery & Bread"
   },
