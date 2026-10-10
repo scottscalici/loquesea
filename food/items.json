@@ -283,6 +283,15 @@
   "oyster sauce": {
     "pantry": true
   },
+  "parmesan cheese": {
+    "kroger": {
+      "upc": "0001111058033",
+      "productId": "0001111058033",
+      "description": "Kroger® Parmesan Grated Cheese",
+      "size": "8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111058033"
+    }
+  },
   "peas": {
     "kroger": {
       "upc": "0001111089736",
