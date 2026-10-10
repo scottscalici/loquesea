@@ -658,6 +658,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111018183"
     }
   },
+  "corn or green beans": {
+    "kroger": {
+      "upc": "0001450000937",
+      "productId": "0001450000937",
+      "description": "Birds Eye Mixed Vegetables, Corn, Carrots, Green Beans & Peas, Frozen Vegetables",
+      "size": "80 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001450000937"
+    }
+  },
   "cornstarch": {
     "pantry": true
   },
