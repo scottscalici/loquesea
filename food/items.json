@@ -532,7 +532,14 @@
     }
   },
   "mayo": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0002100002688",
+      "productId": "0002100002688",
+      "description": "Miracle Whip Mayo-Like Dressing",
+      "size": "12 fo",
+      "image": "https://www.kroger.com/product/images/medium/front/0002100002688"
+    }
   },
   "mirin": {
     "pantry": true
