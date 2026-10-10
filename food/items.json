@@ -138,6 +138,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111086908"
     }
   },
+  "banana peppers": {
+    "kroger": {
+      "upc": "0005410000845",
+      "productId": "0005410000845",
+      "description": "Vlasic Mild Banana Pepper Rings Keto Friendly",
+      "size": "12 oza",
+      "image": "https://www.kroger.com/product/images/medium/front/0005410000845"
+    }
+  },
   "bbq sauce": {
     "kroger": {
       "upc": "0001340991810",
