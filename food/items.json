@@ -558,6 +558,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0000000004816"
     }
   },
+  "taco seasoning": {
+    "kroger": {
+      "upc": "0004600081566",
+      "productId": "0004600081566",
+      "description": "Old El Paso™ Original Taco Seasoning Mix Value Size",
+      "size": "6.25 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0004600081566"
+    }
+  },
   "texas toast": {
     "section": "Bakery & Bread"
   },
