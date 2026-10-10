@@ -437,6 +437,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111089875"
     }
   },
+  "rotel tomatoes": {
+    "kroger": {
+      "upc": "0006414428243",
+      "productId": "0006414428243",
+      "description": "ROTEL Original Diced Tomatoes and Green Chilies",
+      "size": "10 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0006414428243"
+    }
+  },
   "rotisserie chicken": {
     "kroger": {
       "upc": "0001111068480",
