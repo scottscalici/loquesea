@@ -1,10 +1,10 @@
 // Kroger features for the Shop page: pick a store, link items to products,
 // and send the list to the Kroger cart. Talks to Kroger through the site's
-// Kroger helper (lib/kroger-core.mjs), which holds the Kroger keys: /api/kroger
-// on Cloudflare (worker.js), /.netlify/functions/kroger on Netlify.
+// Kroger helper at /api/kroger (worker.js + lib/kroger-core.mjs), which holds the
+// Kroger keys on Cloudflare.
 // Uses rows, trip, itemsDb, saveTrip, render and toast from shop.html.
 
-const KROGER_FN = location.hostname.endsWith('netlify.app') ? '/.netlify/functions/kroger' : '/api/kroger';
+const KROGER_FN = '/api/kroger';
 const AUTH_KEY = 'kroger_auth';
 const PENDING_KEY = 'kroger_pending';
 const WEIGHT_UNITS = ['lb', 'lbs', 'oz', 'cup', 'cups', 'tbsp', 'tsp', 'clove', 'cloves'];
