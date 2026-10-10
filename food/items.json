@@ -777,6 +777,15 @@
   "mirin": {
     "pantry": true
   },
+  "miso soup": {
+    "kroger": {
+      "upc": "0004318200098",
+      "productId": "0004318200098",
+      "description": "Edward & Sons Edward & Son Miso-Cup Instant Soup 3 Count",
+      "size": "2.9 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0004318200098"
+    }
+  },
   "msg": {
     "pantry": true
   },
