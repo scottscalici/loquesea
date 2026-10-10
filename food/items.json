@@ -604,7 +604,14 @@
     "pantry": true
   },
   "sesame oil": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001111014132",
+      "productId": "0001111014132",
+      "description": "Kroger® Pure Sesame Oil",
+      "size": "7.5 fl oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111014132"
+    }
   },
   "sesame seeds": {
     "pantry": true
