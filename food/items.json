@@ -463,6 +463,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0004157322506"
     }
   },
+  "frozen corn": {
+    "kroger": {
+      "upc": "0001111084961",
+      "productId": "0001111084961",
+      "description": "Kroger® Frozen Super Sweet Corn",
+      "size": "12 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111084961"
+    }
+  },
   "frozen fries": {
     "kroger": {
       "upc": "0001111005578",
