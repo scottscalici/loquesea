@@ -1177,6 +1177,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111068284"
     }
   },
+  "ground italian sausage": {
+    "kroger": {
+      "upc": "0001111097038",
+      "productId": "0001111097038",
+      "description": "Kroger® Sweet Ground Italian Sausage",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111097038"
+    }
+  },
   "ground pork": {
     "kroger": {
       "upc": "0007603335213",
