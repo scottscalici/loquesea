@@ -936,6 +936,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111079542"
     }
   },
+  "pickle spears": {
+    "kroger": {
+      "upc": "0000930000080",
+      "productId": "0000930000080",
+      "description": "Mt. Olive Kosher Dill Pickle Spears",
+      "size": "24 fl oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0000930000080"
+    }
+  },
   "pickles": {
     "kroger": {
       "upc": "0005410001160",
