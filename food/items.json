@@ -520,6 +520,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0005100012114"
     }
   },
+  "chicken or beef": {
+    "kroger": {
+      "upc": "0020094700000",
+      "productId": "0020094700000",
+      "description": "Simple Truth® Natural Boneless Skinless Fresh Chicken Breast BIG DEAL! (Limit 2 at sale price)",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0020094700000"
+    }
+  },
   "chickpeas": {
     "kroger": {
       "upc": "0001111010648",
