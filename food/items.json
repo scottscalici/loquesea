@@ -1095,6 +1095,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0005210009860"
     }
   },
+  "greek yogurt": {
+    "kroger": {
+      "upc": "0001111010717",
+      "productId": "0001111010717",
+      "description": "Kroger® Plain Nonfat Greek Yogurt Tub",
+      "size": "32 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111010717"
+    }
+  },
   "green beans": {
     "kroger": {
       "upc": "0001111011473",
