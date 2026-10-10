@@ -2155,6 +2155,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111008837"
     }
   },
+  "seaweed crisps": {
+    "kroger": {
+      "upc": "0088329862657",
+      "productId": "0088329862657",
+      "description": "Yang Ban Korean Traditional Original Flavor Seaweed Chips",
+      "size": "1.76 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0088329862657"
+    }
+  },
   "sesame oil": {
     "pantry": true,
     "kroger": {
