@@ -2501,6 +2501,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0065272971058"
     }
   },
+  "turkey sausage": {
+    "kroger": {
+      "upc": "0001111096789",
+      "productId": "0001111096789",
+      "description": "Kroger® Hardwood Smoked Sausage Turkey Link 13 OZ",
+      "size": "13 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111096789"
+    }
+  },
   "turmeric": {
     "pantry": true,
     "kroger": {
