@@ -160,6 +160,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111065652"
     }
   },
+  "green beans": {
+    "kroger": {
+      "upc": "0001111011473",
+      "productId": "0001111011473",
+      "description": "Kroger® Cut Green Beans",
+      "size": "14.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111011473"
+    }
+  },
   "green olives": {
     "kroger": {
       "upc": "0070581472112",
