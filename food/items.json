@@ -2247,6 +2247,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111064984"
     }
   },
+  "sirloin steak": {
+    "kroger": {
+      "upc": "0020590550000",
+      "productId": "0020590550000",
+      "description": "Private Selection® Angus Beef Petite Sirloin Steak Family Pack",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0020590550000"
+    }
+  },
   "smoked sausage": {
     "kroger": {
       "upc": "0001111096787",
