@@ -2256,6 +2256,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0020590550000"
     }
   },
+  "sliced cheese": {
+    "kroger": {
+      "upc": "0001111058287",
+      "productId": "0001111058287",
+      "description": "Kroger® Colby Jack Sliced Cheese",
+      "size": "8 slices / 6 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111058287"
+    }
+  },
   "smoked sausage": {
     "kroger": {
       "upc": "0001111096787",
