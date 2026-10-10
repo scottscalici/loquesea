@@ -283,6 +283,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111085165"
     }
   },
+  "brats": {
+    "kroger": {
+      "upc": "0001111097261",
+      "productId": "0001111097261",
+      "description": "Kroger® Classic Bratwurst",
+      "size": "5 ct / 18 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111097261"
+    }
+  },
   "bread": {
     "kroger": {
       "upc": "0001111008489",
