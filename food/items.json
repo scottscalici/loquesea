@@ -139,6 +139,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0081000687205"
     }
   },
+  "garlic bread": {
+    "kroger": {
+      "upc": "0001111015904",
+      "productId": "0001111015904",
+      "description": "Kroger® Garlic Texas Toast",
+      "size": "8 ct",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111015904"
+    }
+  },
   "garlic paste": {
     "pantry": true
   },
