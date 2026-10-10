@@ -211,6 +211,15 @@
   "lemon juice": {
     "pantry": true
   },
+  "marinara sauce": {
+    "kroger": {
+      "upc": "0001111013416",
+      "productId": "0001111013416",
+      "description": "Kroger® Marinara Pasta Sauce",
+      "size": "24 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111013416"
+    }
+  },
   "mayo": {
     "pantry": true
   },
