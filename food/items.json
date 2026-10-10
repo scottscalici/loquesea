@@ -83,6 +83,15 @@
   "red pepper flakes": {
     "pantry": true
   },
+  "rotisserie chicken": {
+    "kroger": {
+      "upc": "0001111068480",
+      "productId": "0001111068480",
+      "description": "Private Selection® Classic Seasoned Whole Roasted Chicken Cold",
+      "size": "32 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111068480"
+    }
+  },
   "sazón": {
     "pantry": true
   },
