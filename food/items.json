@@ -679,7 +679,14 @@
     }
   },
   "italian seasoning": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001111011751",
+      "productId": "0001111011751",
+      "description": "Smart Way™ Italian Seasoning",
+      "size": "0.60 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111011751"
+    }
   },
   "jasmine rice": {
     "kroger": {
