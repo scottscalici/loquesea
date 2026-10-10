@@ -1460,6 +1460,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111089875"
     }
   },
+  "mac & cheese": {
+    "kroger": {
+      "upc": "0002100065883",
+      "productId": "0002100065883",
+      "description": "Kraft Original Mac & Cheese",
+      "size": "7.25 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0002100065883"
+    }
+  },
   "marinara sauce": {
     "kroger": {
       "upc": "0001111013416",
