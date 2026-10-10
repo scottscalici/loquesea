@@ -350,7 +350,14 @@
     }
   },
   "turmeric": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001732400294",
+      "productId": "0001732400294",
+      "description": "Spice Islands Turmeric, Kosher",
+      "size": "2.2 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001732400294"
+    }
   },
   "worcestershire": {
     "pantry": true
