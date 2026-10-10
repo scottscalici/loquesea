@@ -208,6 +208,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111010647"
     }
   },
+  "canned corn": {
+    "kroger": {
+      "upc": "0001111011383",
+      "productId": "0001111011383",
+      "description": "Kroger® Sweet Golden Corn",
+      "size": "15.25 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111011383"
+    }
+  },
   "canned crushed tomatoes": {
     "kroger": {
       "upc": "0001111011618",
