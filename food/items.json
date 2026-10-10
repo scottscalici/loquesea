@@ -105,6 +105,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111011457"
     }
   },
+  "burger sauce": {
+    "kroger": {
+      "upc": "0001111003307",
+      "productId": "0001111003307",
+      "description": "Kroger® Burger Special Sauce",
+      "size": "11 fl oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111003307"
+    }
+  },
   "butter": {
     "pantry": true,
     "kroger": {
