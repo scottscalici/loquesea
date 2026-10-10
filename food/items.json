@@ -823,6 +823,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0080717654009"
     }
   },
+  "edamame": {
+    "kroger": {
+      "upc": "0001450001352",
+      "productId": "0001450001352",
+      "description": "Birds Eye Steamfresh Edamame in the Pod, Frozen Vegetables",
+      "size": "10 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001450001352"
+    }
+  },
   "egg noodles": {
     "kroger": {
       "upc": "0001111085126",
