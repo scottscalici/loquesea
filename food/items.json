@@ -1197,6 +1197,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111050159"
     }
   },
+  "shrimp": {
+    "kroger": {
+      "upc": "0001111064984",
+      "productId": "0001111064984",
+      "description": "Kroger® Large Raw Shrimp Peeled & Deveined Tail Off",
+      "size": "12 ounces",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111064984"
+    }
+  },
   "smoked sausage": {
     "kroger": {
       "upc": "0001111096787",
