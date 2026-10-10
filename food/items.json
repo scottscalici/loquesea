@@ -2420,7 +2420,14 @@
     }
   },
   "texas toast": {
-    "section": "Bakery & Bread"
+    "section": "Bakery & Bread",
+    "kroger": {
+      "upc": "0001111008729",
+      "productId": "0001111008729",
+      "description": "Kroger® Texas Toast Bread",
+      "size": "20 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111008729"
+    }
   },
   "tomato paste": {
     "kroger": {
