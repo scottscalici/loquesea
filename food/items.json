@@ -218,6 +218,15 @@
   "texas toast": {
     "section": "Bakery & Bread"
   },
+  "tomato paste": {
+    "kroger": {
+      "upc": "0001111011971",
+      "productId": "0001111011971",
+      "description": "Kroger® Tomato Paste",
+      "size": "6 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111011971"
+    }
+  },
   "turmeric": {
     "pantry": true
   },
