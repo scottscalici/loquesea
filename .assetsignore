@@ -1,0 +1,10 @@
+# Repo files that shouldn't be served as part of the website.
+.git
+.github
+.assetsignore
+wrangler.jsonc
+worker.js
+lib
+netlify
+netlify.toml
+node_modules

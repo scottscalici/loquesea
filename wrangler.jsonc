@@ -1,0 +1,15 @@
+// Cloudflare Worker that serves this repo's pages and runs the Kroger helper.
+// Cloudflare builds and deploys it from GitHub (Workers Builds): main goes live,
+// other branches get a preview URL.
+{
+  "name": "loquesea",
+  "main": "worker.js",
+  "compatibility_date": "2026-10-01",
+  // Serve the site's HTML/JS/JSON straight from the repo; see .assetsignore.
+  "assets": { "directory": ".", "binding": "ASSETS" },
+  "workers_dev": true,
+  "preview_urls": true,
+  // KROGER_CLIENT_ID / KROGER_CLIENT_SECRET are set in the Cloudflare dashboard;
+  // keep them on each deploy.
+  "keep_vars": true
+}
