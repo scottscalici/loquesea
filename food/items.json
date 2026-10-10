@@ -1305,6 +1305,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0089097500134"
     }
   },
+  "jalapeños": {
+    "kroger": {
+      "upc": "0000930000016",
+      "productId": "0000930000016",
+      "description": "Mt. Olive Diced Jalapeño Peppers",
+      "size": "12 fl oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0000930000016"
+    }
+  },
   "jasmine rice": {
     "kroger": {
       "upc": "0001111015343",
