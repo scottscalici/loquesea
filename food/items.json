@@ -940,6 +940,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0080717671322"
     }
   },
+  "frozen fried rice": {
+    "kroger": {
+      "upc": "0001111004162",
+      "productId": "0001111004162",
+      "description": "Kroger® Chinese Inspirations Vegetable Fried Rice",
+      "size": "22 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111004162"
+    }
+  },
   "frozen fries": {
     "kroger": {
       "upc": "0001111005578",
