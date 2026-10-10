@@ -1982,6 +1982,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111011745"
     }
   },
+  "refried beans": {
+    "kroger": {
+      "upc": "0001111086503",
+      "productId": "0001111086503",
+      "description": "Kroger® Traditional Refried Beans",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111086503"
+    }
+  },
   "rice": {
     "kroger": {
       "upc": "0001111089875",
