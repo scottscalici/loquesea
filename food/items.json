@@ -777,6 +777,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111015429"
     }
   },
+  "diced ham": {
+    "kroger": {
+      "upc": "0001111097035",
+      "productId": "0001111097035",
+      "description": "Kroger® Diced Ham",
+      "size": "8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111097035"
+    }
+  },
   "diced tomatoes": {
     "kroger": {
       "upc": "0001111011975",
