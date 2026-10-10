@@ -811,7 +811,14 @@
     "pantry": true
   },
   "olive oil": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001111004415",
+      "productId": "0001111004415",
+      "description": "Kroger® Extra Virgin Olive Oil",
+      "size": "25.4 fl oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111004415"
+    }
   },
   "onions": {
     "kroger": {
