@@ -220,6 +220,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111089786"
     }
   },
+  "birds eye voila chicken bacon ranch": {
+    "kroger": {
+      "upc": "0001450001995",
+      "productId": "0001450001995",
+      "description": "Birds Eye Voila! Chicken Bacon Ranch Mac & Cheese Family Size Frozen Skillet Meal",
+      "size": "42 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001450001995"
+    }
+  },
   "bok choy": {
     "kroger": {
       "upc": "0000000004545",
