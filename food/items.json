@@ -127,6 +127,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111060376"
     }
   },
+  "cherry tomatoes": {
+    "kroger": {
+      "upc": "0001111091686",
+      "productId": "0001111091686",
+      "description": "Fresh Tomatoes Kroger® Fresh Grape Tomatoes",
+      "size": "10 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111091686"
+    }
+  },
   "chicken": {
     "kroger": {
       "upc": "0020094700000",
