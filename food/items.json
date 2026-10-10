@@ -391,7 +391,14 @@
     }
   },
   "dijon mustard": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001111081088",
+      "productId": "0001111081088",
+      "description": "Kroger® Dijon Mustard",
+      "size": "12 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111081088"
+    }
   },
   "eggs": {
     "kroger": {
