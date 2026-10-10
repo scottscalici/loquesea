@@ -38,6 +38,15 @@
   "garlic paste": {
     "pantry": true
   },
+  "grapes or apple slices": {
+    "kroger": {
+      "upc": "0001111065652",
+      "productId": "0001111065652",
+      "description": "Private Selection® Holiday Seedless Red Grapes",
+      "size": "32 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111065652"
+    }
+  },
   "ground ginger": {
     "pantry": true
   },
