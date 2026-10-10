@@ -707,6 +707,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0007110000551"
     }
   },
+  "red curry paste": {
+    "kroger": {
+      "upc": "0001111012988",
+      "productId": "0001111012988",
+      "description": "Private Selection® Thai Style Red Curry Paste",
+      "size": "4.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111012988"
+    }
+  },
   "red pepper flakes": {
     "pantry": true
   },
