@@ -731,6 +731,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0005100001161"
     }
   },
+  "cream of chicken or celery soup": {
+    "kroger": {
+      "upc": "0005100001161",
+      "productId": "0005100001161",
+      "description": "Campbell's Condensed Cream Of Celery Soup",
+      "size": "10.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0005100001161"
+    }
+  },
   "cubed chicken": {
     "kroger": {
       "upc": "0001111013619",
