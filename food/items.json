@@ -8,6 +8,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111085100"
     }
   },
+  "applesauce": {
+    "kroger": {
+      "upc": "0001111089870",
+      "productId": "0001111089870",
+      "description": "Kroger® Cinnamon Applesauce",
+      "size": "48 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111089870"
+    }
+  },
   "asparagus": {
     "kroger": {
       "upc": "0000000004080",
