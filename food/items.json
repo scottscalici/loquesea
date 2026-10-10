@@ -47,6 +47,15 @@
   "curry powder": {
     "pantry": true
   },
+  "diced tomatoes": {
+    "kroger": {
+      "upc": "0001111011975",
+      "productId": "0001111011975",
+      "description": "Kroger Petite Diced Tomatoes",
+      "size": "14.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111011975"
+    }
+  },
   "dijon mustard": {
     "pantry": true
   },
