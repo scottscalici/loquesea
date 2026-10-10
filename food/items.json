@@ -1,4 +1,13 @@
 {
+  "asparagus": {
+    "kroger": {
+      "upc": "0000000004080",
+      "productId": "0000000004080",
+      "description": "Green Asparagus",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0000000004080"
+    }
+  },
   "balsamic glaze": {
     "pantry": true
   },
