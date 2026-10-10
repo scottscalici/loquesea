@@ -1819,6 +1819,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111064148"
     }
   },
+  "pork loin": {
+    "kroger": {
+      "upc": "0007080021635",
+      "productId": "0007080021635",
+      "description": "Smithfield Applewood Smoked Bacon Dry Rubbed Pork Loin Filet",
+      "size": "23 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0007080021635"
+    }
+  },
   "potato chips": {
     "kroger": {
       "upc": "0002840019914",
