@@ -175,6 +175,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0081372402796"
     }
   },
+  "beans": {
+    "kroger": {
+      "upc": "0001111010646",
+      "productId": "0001111010646",
+      "description": "Kroger® Pinto Beans",
+      "size": "15.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111010646"
+    }
+  },
   "beef broth": {
     "kroger": {
       "upc": "0001111008596",
