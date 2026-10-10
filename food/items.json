@@ -11,6 +11,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111085100"
     }
   },
+  "american and colby jack slices": {
+    "kroger": {
+      "upc": "0001111050526",
+      "productId": "0001111050526",
+      "description": "Kroger® Colby Jack Sliced Cheese",
+      "size": "16 slices / 12 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111050526"
+    }
+  },
   "applesauce": {
     "kroger": {
       "upc": "0001111089870",
