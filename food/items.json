@@ -529,6 +529,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0020094700000"
     }
   },
+  "chicken or vegetable broth": {
+    "kroger": {
+      "upc": "0001111004968",
+      "productId": "0001111004968",
+      "description": "Kroger® Fat Free Vegetable Broth",
+      "size": "32 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111004968"
+    }
+  },
   "chickpeas": {
     "kroger": {
       "upc": "0001111010648",
