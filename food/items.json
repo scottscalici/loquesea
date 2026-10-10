@@ -26,6 +26,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0000000004080"
     }
   },
+  "au jus mix": {
+    "kroger": {
+      "upc": "0001111071977",
+      "productId": "0001111071977",
+      "description": "Kroger® Au Jus Gravy Mix",
+      "size": "1 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111071977"
+    }
+  },
   "avocado": {
     "kroger": {
       "upc": "0000000004046",
