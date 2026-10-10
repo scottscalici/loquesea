@@ -229,6 +229,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001450001995"
     }
   },
+  "birds eye voila garlic chicken": {
+    "kroger": {
+      "upc": "0001450001421",
+      "productId": "0001450001421",
+      "description": "Birds Eye Voila! Garlic Chicken Family Size Frozen Skillet Meal",
+      "size": "42 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001450001421"
+    }
+  },
   "bok choy": {
     "kroger": {
       "upc": "0000000004545",
