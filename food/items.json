@@ -80,6 +80,15 @@
   "oyster sauce": {
     "pantry": true
   },
+  "precooked bacon": {
+    "kroger": {
+      "upc": "0001111097205",
+      "productId": "0001111097205",
+      "description": "Kroger® Fully Cooked Natural Smoke Traditional Bacon",
+      "size": "2.1 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111097205"
+    }
+  },
   "red pepper flakes": {
     "pantry": true
   },
