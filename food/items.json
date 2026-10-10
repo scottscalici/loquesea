@@ -1516,7 +1516,14 @@
     }
   },
   "mirin": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001115202140",
+      "productId": "0001115202140",
+      "description": "Kikkoman Manjo Aji Mirin Cooking Rice Wine",
+      "size": "10 fl oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001115202140"
+    }
   },
   "miso soup": {
     "kroger": {
@@ -1525,6 +1532,15 @@
       "description": "Edward & Sons Edward & Son Miso-Cup Instant Soup 3 Count",
       "size": "2.9 oz",
       "image": "https://www.kroger.com/product/images/medium/front/0004318200098"
+    }
+  },
+  "mozzarella pearls": {
+    "kroger": {
+      "upc": "0003114200480",
+      "productId": "0003114200480",
+      "description": "BelGioioso® Fresh Mozzarella Pearls Cheese",
+      "size": "8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0003114200480"
     }
   },
   "msg": {
