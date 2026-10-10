@@ -118,6 +118,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111091620"
     }
   },
+  "celery": {
+    "kroger": {
+      "upc": "0001111060376",
+      "productId": "0001111060376",
+      "description": "Fresh Celery Private Selection® Long Celery Sticks",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111060376"
+    }
+  },
   "chicken": {
     "kroger": {
       "upc": "0020094700000",
