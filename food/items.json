@@ -2137,7 +2137,14 @@
     }
   },
   "sazón completa": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0004133103884",
+      "productId": "0004133103884",
+      "description": "Goya Sazonador Total Seasoning",
+      "size": "11 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0004133103884"
+    }
   },
   "sesame oil": {
     "pantry": true,
