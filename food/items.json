@@ -166,7 +166,14 @@
     }
   },
   "bbq seasoning": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0081372402796",
+      "productId": "0081372402796",
+      "description": "Watkins Yellowstone Cowboy BBQ Seasoning and Rub",
+      "size": "5.3 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0081372402796"
+    }
   },
   "beef broth": {
     "kroger": {
