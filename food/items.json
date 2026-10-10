@@ -2495,6 +2495,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001732400294"
     }
   },
+  "tzatziki": {
+    "kroger": {
+      "upc": "0004411512840",
+      "productId": "0004411512840",
+      "description": "Cedar's Cucumber Garlic Dill Tzatziki",
+      "size": "12 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0004411512840"
+    }
+  },
   "wonton wrappers": {
     "kroger": {
       "upc": "0001115223004",
