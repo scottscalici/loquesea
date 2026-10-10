@@ -101,6 +101,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111097209"
     }
   },
+  "bacon topping": {
+    "kroger": {
+      "upc": "0001111097750",
+      "productId": "0001111097750",
+      "description": "Kroger® Real Bacon Bits",
+      "size": "2.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111097750"
+    }
+  },
   "baked beans": {
     "kroger": {
       "upc": "0003940001977",
