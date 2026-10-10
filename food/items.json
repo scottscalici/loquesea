@@ -1936,6 +1936,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111068848"
     }
   },
+  "ravioli": {
+    "kroger": {
+      "upc": "0001111012401",
+      "productId": "0001111012401",
+      "description": "Kroger® Cheese Ravioli",
+      "size": "25 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111012401"
+    }
+  },
   "red curry paste": {
     "kroger": {
       "upc": "0001111012988",
