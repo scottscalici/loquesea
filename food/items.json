@@ -713,6 +713,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111061835"
     }
   },
+  "crackers": {
+    "kroger": {
+      "upc": "0001111009090",
+      "productId": "0001111009090",
+      "description": "Kroger® Original Saltines Crackers",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111009090"
+    }
+  },
   "cubed chicken": {
     "kroger": {
       "upc": "0001111013619",
