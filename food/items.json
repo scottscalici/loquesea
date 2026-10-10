@@ -1259,6 +1259,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111085181"
     }
   },
+  "honey or fig jam": {
+    "kroger": {
+      "upc": "0001111003564",
+      "productId": "0001111003564",
+      "description": "Private Selection® Honey Fig Spread",
+      "size": "10 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111003564"
+    }
+  },
   "hot dog buns": {
     "kroger": {
       "upc": "0005040075116",
