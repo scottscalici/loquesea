@@ -220,6 +220,15 @@
   "hoisin sauce": {
     "pantry": true
   },
+  "hot dogs": {
+    "kroger": {
+      "upc": "0005450019322",
+      "productId": "0005450019322",
+      "description": "Ball Park Beef Hot Dogs",
+      "size": "8 count",
+      "image": "https://www.kroger.com/product/images/medium/front/0005450019322"
+    }
+  },
   "italian seasoning": {
     "pantry": true
   },
