@@ -2529,6 +2529,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0004411512840"
     }
   },
+  "veggies": {
+    "kroger": {
+      "upc": "0001450001119",
+      "productId": "0001450001119",
+      "description": "Birds Eye®  Steamfresh® Antioxidant Blend Frozen Vegetables",
+      "size": "10.8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001450001119"
+    }
+  },
   "velveeta queso blanco": {
     "kroger": {
       "upc": "0002100003355",
