@@ -197,6 +197,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111006721"
     }
   },
+  "corn": {
+    "kroger": {
+      "upc": "0001111011383",
+      "productId": "0001111011383",
+      "description": "Kroger® Sweet Golden Corn",
+      "size": "15.25 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111011383"
+    }
+  },
   "cornstarch": {
     "pantry": true
   },
