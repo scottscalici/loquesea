@@ -859,6 +859,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111013737"
     }
   },
+  "evaporated milk": {
+    "kroger": {
+      "upc": "0001111088301",
+      "productId": "0001111088301",
+      "description": "Kroger Regular Evaporated Milk",
+      "size": "12 fl oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111088301"
+    }
+  },
   "fettuccine": {
     "kroger": {
       "upc": "0001111012807",
