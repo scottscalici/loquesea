@@ -95,6 +95,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111089786"
     }
   },
+  "bok choy": {
+    "kroger": {
+      "upc": "0000000004545",
+      "productId": "0000000004545",
+      "description": "Bok Choy",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0000000004545"
+    }
+  },
   "bread": {
     "kroger": {
       "upc": "0001111008489",
