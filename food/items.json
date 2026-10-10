@@ -372,7 +372,14 @@
     }
   },
   "curry powder": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001111015429",
+      "productId": "0001111015429",
+      "description": "Simple Truth Organic® Curry Powder Shaker",
+      "size": "1.70 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111015429"
+    }
   },
   "diced tomatoes": {
     "kroger": {
