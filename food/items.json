@@ -603,6 +603,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0000000004552"
     }
   },
+  "cilantro lime rice": {
+    "kroger": {
+      "upc": "0001111005930",
+      "productId": "0001111005930",
+      "description": "Kroger® 90 Second Cilantro Lime Rice",
+      "size": "8.8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111005930"
+    }
+  },
   "coconut milk": {
     "kroger": {
       "upc": "0001111085735",
