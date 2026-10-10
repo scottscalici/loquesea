@@ -87,6 +87,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111085585"
     }
   },
+  "brussels sprouts": {
+    "kroger": {
+      "upc": "0001111089725",
+      "productId": "0001111089725",
+      "description": "Kroger® Frozen Brussels Sprouts",
+      "size": "12 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111089725"
+    }
+  },
   "buns": {
     "kroger": {
       "upc": "0001111011457",
