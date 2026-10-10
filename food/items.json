@@ -820,6 +820,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111004415"
     }
   },
+  "onion soup mix": {
+    "kroger": {
+      "upc": "0004100000362",
+      "productId": "0004100000362",
+      "description": "Lipton ® Onion Recipe Secrets Soup And Dip Mix",
+      "size": "2 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0004100000362"
+    }
+  },
   "onions": {
     "kroger": {
       "upc": "0001111089791",
