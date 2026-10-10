@@ -233,6 +233,15 @@
   "ground ginger": {
     "pantry": true
   },
+  "guacamole": {
+    "kroger": {
+      "upc": "0061611203195",
+      "productId": "0061611203195",
+      "description": "Wholly Guacamole Wholly® Guacamole Classic Minis Mild",
+      "size": "net wt 12 oz (340g)",
+      "image": "https://www.kroger.com/product/images/medium/front/0061611203195"
+    }
+  },
   "hoisin sauce": {
     "pantry": true
   },
