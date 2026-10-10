@@ -2081,6 +2081,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0028832900000"
     }
   },
+  "salisbury steak": {
+    "kroger": {
+      "upc": "0003100011305",
+      "productId": "0003100011305",
+      "description": "Banquet Family Size Salisbury Steaks and Brown Gravy, Frozen Meal",
+      "size": "27 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0003100011305"
+    }
+  },
   "salsa": {
     "kroger": {
       "upc": "0001111066759",
