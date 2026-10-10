@@ -1954,6 +1954,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111012988"
     }
   },
+  "red lobster biscuit mix": {
+    "kroger": {
+      "upc": "0004144960123",
+      "productId": "0004144960123",
+      "description": "Red Lobster Cheddar Bay Biscuit Mix",
+      "size": "11.36 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0004144960123"
+    }
+  },
   "red onion": {
     "kroger": {
       "upc": "0000000004082",
