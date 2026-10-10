@@ -1693,6 +1693,24 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111089741"
     }
   },
+  "peeled shrimp": {
+    "kroger": {
+      "upc": "0001111008068",
+      "productId": "0001111008068",
+      "description": "Simple Truth® Jumbo Raw Shrimp Peeled & Deveined Tail Off",
+      "size": "16 ounces",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111008068"
+    }
+  },
+  "penne": {
+    "kroger": {
+      "upc": "0001111085033",
+      "productId": "0001111085033",
+      "description": "Kroger® Penne Rigate Pasta",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111085033"
+    }
+  },
   "pepperoncini": {
     "kroger": {
       "upc": "0001111012948",
