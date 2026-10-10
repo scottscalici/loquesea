@@ -1117,6 +1117,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111066759"
     }
   },
+  "sandwich bread": {
+    "kroger": {
+      "upc": "0001111008489",
+      "productId": "0001111008489",
+      "description": "Private Selection® 100% Whole Wheat Bread Wide Pan",
+      "size": "24 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111008489"
+    }
+  },
   "sazón": {
     "pantry": true
   },
