@@ -113,6 +113,15 @@
   "sesame seeds": {
     "pantry": true
   },
+  "shredded cheddar": {
+    "kroger": {
+      "upc": "0001111050170",
+      "productId": "0001111050170",
+      "description": "Kroger® Mild Cheddar Shredded Cheese",
+      "size": "8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111050170"
+    }
+  },
   "shredded lettuce": {
     "kroger": {
       "upc": "0001111091613",
