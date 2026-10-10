@@ -272,6 +272,15 @@
   "cornstarch": {
     "pantry": true
   },
+  "cottage cheese": {
+    "kroger": {
+      "upc": "0001111045045",
+      "productId": "0001111045045",
+      "description": "Kroger® 2% Low Fat Small Curd Cottage Cheese",
+      "size": "24 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111045045"
+    }
+  },
   "curry powder": {
     "pantry": true
   },
