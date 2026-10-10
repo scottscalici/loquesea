@@ -89,6 +89,15 @@
   "oyster sauce": {
     "pantry": true
   },
+  "potato chips": {
+    "kroger": {
+      "upc": "0002840019914",
+      "productId": "0002840019914",
+      "description": "Lay's® Classic Potato Chips",
+      "size": "8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0002840019914"
+    }
+  },
   "precooked bacon": {
     "kroger": {
       "upc": "0001111097205",
