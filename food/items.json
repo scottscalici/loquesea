@@ -686,6 +686,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0076172007104"
     }
   },
+  "cotija cheese": {
+    "kroger": {
+      "upc": "0007456200110",
+      "productId": "0007456200110",
+      "description": "Cacique® Cotija Part Skim Milk Cheese",
+      "size": "10 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0007456200110"
+    }
+  },
   "cottage cheese": {
     "kroger": {
       "upc": "0001111045045",
