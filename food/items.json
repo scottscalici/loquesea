@@ -1873,6 +1873,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111013822"
     }
   },
+  "pretzels": {
+    "kroger": {
+      "upc": "0001111009477",
+      "productId": "0001111009477",
+      "description": "Kroger® Pretzel Mini Twists",
+      "size": "15 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111009477"
+    }
+  },
   "queso": {
     "kroger": {
       "upc": "0007287807151",
