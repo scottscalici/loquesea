@@ -1415,6 +1415,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111091613"
     }
   },
+  "lettuce wedge": {
+    "kroger": {
+      "upc": "0001111091629",
+      "productId": "0001111091629",
+      "description": "Fresh Romaine Lettuce Kroger® Romaine Lettuce Hearts",
+      "size": "18 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111091629"
+    }
+  },
   "long grain white rice": {
     "kroger": {
       "upc": "0001111089875",
