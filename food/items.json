@@ -172,6 +172,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111060376"
     }
   },
+  "cheese": {
+    "kroger": {
+      "upc": "0002100060464",
+      "productId": "0002100060464",
+      "description": "Kraft Singles American Sliced Cheese",
+      "size": "16 ct",
+      "image": "https://www.kroger.com/product/images/medium/front/0002100060464"
+    }
+  },
   "cherry tomatoes": {
     "kroger": {
       "upc": "0001111091686",
