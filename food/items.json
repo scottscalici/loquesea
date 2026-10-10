@@ -29,6 +29,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0002100060464"
     }
   },
+  "apple slices": {
+    "kroger": {
+      "upc": "0000000003283",
+      "productId": "0000000003283",
+      "description": "Fresh Apples Large Honeycrisp Apple – Each",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0000000003283"
+    }
+  },
   "applesauce": {
     "kroger": {
       "upc": "0001111089870",
