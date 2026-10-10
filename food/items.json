@@ -1126,6 +1126,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111008489"
     }
   },
+  "sausage": {
+    "kroger": {
+      "upc": "0001111069979",
+      "productId": "0001111069979",
+      "description": "Private Selection® Original Pork and Beef Smoked Sausage",
+      "size": "4 ct / 13 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111069979"
+    }
+  },
   "sazón": {
     "pantry": true
   },
