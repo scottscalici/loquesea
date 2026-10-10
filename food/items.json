@@ -2410,6 +2410,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0004600081566"
     }
   },
+  "taco shells": {
+    "kroger": {
+      "upc": "0004600045395",
+      "productId": "0004600045395",
+      "description": "Old El Paso™ Stand 'N Stuff Bold Nacho Cheese Flavored Taco Shells",
+      "size": "10 ct / 0.54 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0004600045395"
+    }
+  },
   "texas toast": {
     "section": "Bakery & Bread"
   },
