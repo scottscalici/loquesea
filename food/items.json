@@ -314,6 +314,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0024239600000"
     }
   },
+  "flour tortillas": {
+    "kroger": {
+      "upc": "0007373100415",
+      "productId": "0007373100415",
+      "description": "Mission Super Soft Flour Tortillas, Soft Taco Size, 10 Count",
+      "size": "17.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0007373100415"
+    }
+  },
   "frozen fries": {
     "kroger": {
       "upc": "0001111005578",
