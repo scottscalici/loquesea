@@ -808,7 +808,14 @@
     }
   },
   "old bay": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0007032800523",
+      "productId": "0007032800523",
+      "description": "OLD BAY Classic Seafood Seasoning",
+      "size": "6 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0007032800523"
+    }
   },
   "olive oil": {
     "pantry": true,
