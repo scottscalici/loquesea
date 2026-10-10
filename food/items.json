@@ -1378,6 +1378,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0002733110111"
     }
   },
+  "large potatoes": {
+    "kroger": {
+      "upc": "0000000004072",
+      "productId": "0000000004072",
+      "description": "Fresh Potatoes Russet Potato",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0000000004072"
+    }
+  },
   "lemon juice": {
     "pantry": true
   },
