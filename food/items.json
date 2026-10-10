@@ -886,6 +886,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111012807"
     }
   },
+  "fish": {
+    "kroger": {
+      "upc": "0001111086003",
+      "productId": "0001111086003",
+      "description": "Kroger® Farm Raised Tilapia Fillets Frozen BIG DEAL!",
+      "size": "32 ounces",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111086003"
+    }
+  },
   "flank steak": {
     "kroger": {
       "upc": "0024239600000",
