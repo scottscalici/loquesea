@@ -412,7 +412,14 @@
     }
   },
   "cajun seasoning": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001111011744",
+      "productId": "0001111011744",
+      "description": "Smart Way™ Cajun Seasoning",
+      "size": "3.88 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111011744"
+    }
   },
   "canned black beans": {
     "kroger": {
