@@ -805,6 +805,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111081088"
     }
   },
+  "dinner rolls": {
+    "kroger": {
+      "upc": "0003967737730",
+      "productId": "0003967737730",
+      "description": "The Cheesecake Factory At Home® Brown Bread Wheat Dinner Rolls",
+      "size": "8 ct / 11.2 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0003967737730"
+    }
+  },
   "dumplings": {
     "kroger": {
       "upc": "0080717654009",
