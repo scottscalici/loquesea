@@ -469,6 +469,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111096787"
     }
   },
+  "sour cream": {
+    "kroger": {
+      "upc": "0007342001614",
+      "productId": "0007342001614",
+      "description": "Daisy Pure and Natural Squeeze Sour Cream",
+      "size": "14 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0007342001614"
+    }
+  },
   "soy sauce": {
     "pantry": true
   },
