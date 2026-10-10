@@ -740,6 +740,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0005100001161"
     }
   },
+  "crisps": {
+    "kroger": {
+      "upc": "0001111013773",
+      "productId": "0001111013773",
+      "description": "Simple Truth® Cheddar Cheese Crisps",
+      "size": "1.98 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111013773"
+    }
+  },
   "cubed chicken": {
     "kroger": {
       "upc": "0001111013619",
