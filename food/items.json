@@ -137,6 +137,15 @@
   "red pepper flakes": {
     "pantry": true
   },
+  "rice": {
+    "kroger": {
+      "upc": "0001111089875",
+      "productId": "0001111089875",
+      "description": "Kroger® Enriched Long Grain White Rice",
+      "size": "32 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111089875"
+    }
+  },
   "rotisserie chicken": {
     "kroger": {
       "upc": "0001111068480",
