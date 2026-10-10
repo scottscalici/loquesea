@@ -798,6 +798,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0087668100454"
     }
   },
+  "noodle pack": {
+    "kroger": {
+      "upc": "0004100002246",
+      "productId": "0004100002246",
+      "description": "Knorr ® Chicken Fettuccine Pasta Side",
+      "size": "4.3 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0004100002246"
+    }
+  },
   "noodles": {
     "kroger": {
       "upc": "0004100002286",
