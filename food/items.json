@@ -588,6 +588,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0007143001702"
     }
   },
+  "salsa": {
+    "kroger": {
+      "upc": "0001111066759",
+      "productId": "0001111066759",
+      "description": "Kroger® Mild Traditional Salsa",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111066759"
+    }
+  },
   "sazón": {
     "pantry": true
   },
