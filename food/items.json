@@ -110,6 +110,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111097750"
     }
   },
+  "baguette": {
+    "kroger": {
+      "upc": "0001111062655",
+      "productId": "0001111062655",
+      "description": "Private Selection® French Baguette",
+      "size": "10.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111062655"
+    }
+  },
   "baked beans": {
     "kroger": {
       "upc": "0003940001977",
