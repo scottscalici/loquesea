@@ -2072,6 +2072,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111090929"
     }
   },
+  "salami": {
+    "kroger": {
+      "upc": "0028832900000",
+      "productId": "0028832900000",
+      "description": "Kroger® Hard Salami Deli Sliced",
+      "size": "1 pk",
+      "image": "https://www.kroger.com/product/images/medium/front/0028832900000"
+    }
+  },
   "salsa": {
     "kroger": {
       "upc": "0001111066759",
