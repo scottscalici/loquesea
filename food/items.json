@@ -1433,6 +1433,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0007286923095"
     }
   },
+  "lobster": {
+    "kroger": {
+      "upc": "0001111098065",
+      "productId": "0001111098065",
+      "description": "Private Selection® Wild Caught Claw Crabmeat",
+      "size": "8 ounces",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111098065"
+    }
+  },
   "long grain white rice": {
     "kroger": {
       "upc": "0001111089875",
