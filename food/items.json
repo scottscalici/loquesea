@@ -1291,6 +1291,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111011971"
     }
   },
+  "tomato sauce": {
+    "kroger": {
+      "upc": "0001111011972",
+      "productId": "0001111011972",
+      "description": "Kroger Tomato Sauce",
+      "size": "15 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111011972"
+    }
+  },
   "tomatoes": {
     "kroger": {
       "upc": "0000000004799",
