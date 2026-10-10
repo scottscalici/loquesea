@@ -1639,6 +1639,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0007889530001"
     }
   },
+  "pancake mix": {
+    "kroger": {
+      "upc": "0001600019428",
+      "productId": "0001600019428",
+      "description": "Bisquick Betty Crocker™ Bisquick™ Shake 'n Pour Buttermilk Pancake Mix",
+      "size": "10.6 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001600019428"
+    }
+  },
   "parmesan cheese": {
     "kroger": {
       "upc": "0001111058033",
