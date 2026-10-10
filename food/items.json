@@ -427,6 +427,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111013737"
     }
   },
+  "fettuccine": {
+    "kroger": {
+      "upc": "0001111012807",
+      "productId": "0001111012807",
+      "description": "Kroger® Fettuccine",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111012807"
+    }
+  },
   "flank steak": {
     "kroger": {
       "upc": "0024239600000",
