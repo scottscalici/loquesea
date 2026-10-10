@@ -993,7 +993,14 @@
     }
   },
   "red pepper flakes": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001111011745",
+      "productId": "0001111011745",
+      "description": "Smart Way™ Crushed Red Pepper",
+      "size": "1.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111011745"
+    }
   },
   "rice": {
     "kroger": {
