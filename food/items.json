@@ -868,6 +868,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111088301"
     }
   },
+  "feta cheese": {
+    "kroger": {
+      "upc": "0001111062856",
+      "productId": "0001111062856",
+      "description": "Private Selection® Traditional Feta Crumbles",
+      "size": "6 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111062856"
+    }
+  },
   "fettuccine": {
     "kroger": {
       "upc": "0001111012807",
