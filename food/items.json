@@ -522,7 +522,14 @@
     }
   },
   "soy sauce": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0004139000105",
+      "productId": "0004139000105",
+      "description": "Kikkoman® Less Sodium Soy Sauce",
+      "size": "10 fl oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0004139000105"
+    }
   },
   "spinach": {
     "kroger": {
