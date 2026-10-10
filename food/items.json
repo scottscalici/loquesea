@@ -121,7 +121,14 @@
     }
   },
   "garam masala": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0081000687205",
+      "productId": "0081000687205",
+      "description": "Nomad Blends Garam Masala Seasoning",
+      "size": "2.9 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0081000687205"
+    }
   },
   "garlic paste": {
     "pantry": true
