@@ -557,7 +557,14 @@
     }
   },
   "chili oil": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0007613209010",
+      "productId": "0007613209010",
+      "description": "Sun Luck La Yu Chili Oil",
+      "size": "5 fl oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0007613209010"
+    }
   },
   "chili powder": {
     "pantry": true
