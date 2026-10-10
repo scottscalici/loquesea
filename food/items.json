@@ -689,6 +689,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111097205"
     }
   },
+  "queso": {
+    "kroger": {
+      "upc": "0007287807151",
+      "productId": "0007287807151",
+      "description": "Herdez ® Queso Blanco Cheese Dip with Jalapenos , 15 oz.",
+      "size": "net wt 15 oz (425g)",
+      "image": "https://www.kroger.com/product/images/medium/front/0007287807151"
+    }
+  },
   "ranch dressing": {
     "kroger": {
       "upc": "0007110000551",
