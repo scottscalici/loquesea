@@ -50,6 +50,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111010647"
     }
   },
+  "canned crushed tomatoes": {
+    "kroger": {
+      "upc": "0001111011618",
+      "productId": "0001111011618",
+      "description": "Kroger Crushed Tomatoes in Puree",
+      "size": "28 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111011618"
+    }
+  },
   "chili oil": {
     "pantry": true
   },
