@@ -728,6 +728,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0000000004799"
     }
   },
+  "tortilla chips": {
+    "kroger": {
+      "upc": "0001111010996",
+      "productId": "0001111010996",
+      "description": "Kroger® White Corn Restaurant Style Tortilla Chips",
+      "size": "13 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111010996"
+    }
+  },
   "turmeric": {
     "pantry": true,
     "kroger": {
