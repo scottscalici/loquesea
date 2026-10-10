@@ -909,6 +909,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111099380"
     }
   },
+  "peppers": {
+    "kroger": {
+      "upc": "0001111018181",
+      "productId": "0001111018181",
+      "description": "Kroger® Mini Sweet Peppers",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111018181"
+    }
+  },
   "peppers and onions": {
     "kroger": {
       "upc": "0001111089786",
