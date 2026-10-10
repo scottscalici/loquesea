@@ -432,6 +432,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0087668100454"
     }
   },
+  "noodles": {
+    "kroger": {
+      "upc": "0004100002286",
+      "productId": "0004100002286",
+      "description": "Knorr ® Cheddar Broccoli Pasta Sides",
+      "size": "4.3 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0004100002286"
+    }
+  },
   "old bay": {
     "pantry": true
   },
