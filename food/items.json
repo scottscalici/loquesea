@@ -321,6 +321,15 @@
   "ground ginger": {
     "pantry": true
   },
+  "ground turkey": {
+    "kroger": {
+      "upc": "0001111066271",
+      "productId": "0001111066271",
+      "description": "Kroger® Ground Turkey with Natural Flavorings 85% Fresh Tray Pack",
+      "size": "3 lbs",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111066271"
+    }
+  },
   "guacamole": {
     "kroger": {
       "upc": "0061611203195",
