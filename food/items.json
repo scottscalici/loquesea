@@ -1864,6 +1864,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111097205"
     }
   },
+  "precooked basmati rice": {
+    "kroger": {
+      "upc": "0001111013822",
+      "productId": "0001111013822",
+      "description": "Kroger® 90 Second Basmati Rice Pouch",
+      "size": "8.8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111013822"
+    }
+  },
   "queso": {
     "kroger": {
       "upc": "0007287807151",
