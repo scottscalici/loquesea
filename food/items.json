@@ -54,7 +54,14 @@
     "pantry": true
   },
   "butter": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001111089305",
+      "productId": "0001111089305",
+      "description": "Kroger® Unsalted Butter Sticks",
+      "size": "4 sticks / 16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111089305"
+    }
   },
   "cajun seasoning": {
     "pantry": true
