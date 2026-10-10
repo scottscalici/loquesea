@@ -1213,6 +1213,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0061611203195"
     }
   },
+  "ham": {
+    "kroger": {
+      "upc": "0001111097035",
+      "productId": "0001111097035",
+      "description": "Kroger® Diced Ham",
+      "size": "8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111097035"
+    }
+  },
   "hamburger buns": {
     "kroger": {
       "upc": "0005040073942",
