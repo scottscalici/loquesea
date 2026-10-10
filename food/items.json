@@ -1026,6 +1026,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0007110000551"
     }
   },
+  "ranch seasoning": {
+    "kroger": {
+      "upc": "0001111068848",
+      "productId": "0001111068848",
+      "description": "Kroger® Ranch Salad Dressing and Seasoning Mix Packet",
+      "size": "1 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111068848"
+    }
+  },
   "red curry paste": {
     "kroger": {
       "upc": "0001111012988",
