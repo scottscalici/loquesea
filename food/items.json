@@ -84,7 +84,14 @@
     }
   },
   "coriander": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001111006721",
+      "productId": "0001111006721",
+      "description": "Simple Truth Organic GROUND CORIANDER - SIMPLE TRUTH ORGANIC - 1.49 OZ",
+      "size": "1.49",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111006721"
+    }
   },
   "cornstarch": {
     "pantry": true
