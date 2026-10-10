@@ -1333,6 +1333,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001300000605"
     }
   },
+  "kettle chips": {
+    "kroger": {
+      "upc": "0001111002994",
+      "productId": "0001111002994",
+      "description": "Kroger® Original Kettle Cooked Potato Chips",
+      "size": "8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111002994"
+    }
+  },
   "large flour tortillas": {
     "kroger": {
       "upc": "0002733110111",
