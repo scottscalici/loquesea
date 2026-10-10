@@ -83,6 +83,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111065652"
     }
   },
+  "green olives": {
+    "kroger": {
+      "upc": "0070581472112",
+      "productId": "0070581472112",
+      "description": "Early California® Pimiento Stuffed Manzilla Green Olives",
+      "size": "5.75 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0070581472112"
+    }
+  },
   "ground ginger": {
     "pantry": true
   },
