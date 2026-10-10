@@ -598,5 +598,15 @@
       "Fresh Fruit",
       "Chips"
     ]
+  },
+  {
+    "date": "2026-10-10",
+    "meal": "Ropa vieja",
+    "sides_included": [
+      "Main Dish",
+      "Plantain Chips",
+      "Rice",
+      "Black beans"
+    ]
   }
 ]
