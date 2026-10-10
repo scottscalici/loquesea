@@ -208,6 +208,15 @@
   "olive oil": {
     "pantry": true
   },
+  "onions": {
+    "kroger": {
+      "upc": "0001111089791",
+      "productId": "0001111089791",
+      "description": "Kroger® Frozen Onions Chopped",
+      "size": "12 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111089791"
+    }
+  },
   "oyster sauce": {
     "pantry": true
   },
