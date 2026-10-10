@@ -1222,6 +1222,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0005040073942"
     }
   },
+  "hawaiian rolls": {
+    "kroger": {
+      "upc": "0007343500004",
+      "productId": "0007343500004",
+      "description": "KING'S HAWAIIAN Original Hawaiian Sweet Rolls 12 Count",
+      "size": "12 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0007343500004"
+    }
+  },
   "heavy cream": {
     "kroger": {
       "upc": "0001111050315",
