@@ -69,6 +69,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111085585"
     }
   },
+  "buns": {
+    "kroger": {
+      "upc": "0001111011457",
+      "productId": "0001111011457",
+      "description": "Private Selection® Brioche Buns Extra Large",
+      "size": "8 ct / 24 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111011457"
+    }
+  },
   "butter": {
     "pantry": true,
     "kroger": {
