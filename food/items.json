@@ -224,6 +224,15 @@
   "dijon mustard": {
     "pantry": true
   },
+  "eggs": {
+    "kroger": {
+      "upc": "0001111013737",
+      "productId": "0001111013737",
+      "description": "Kroger® Cage Free Grade A Large White Eggs",
+      "size": "12 ct",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111013737"
+    }
+  },
   "flank steak": {
     "kroger": {
       "upc": "0024239600000",
