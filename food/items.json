@@ -2477,6 +2477,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001732400294"
     }
   },
+  "wonton wrappers": {
+    "kroger": {
+      "upc": "0001115223004",
+      "productId": "0001115223004",
+      "description": "Dynasty Won Ton Wrappers",
+      "size": "12 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001115223004"
+    }
+  },
   "worcestershire": {
     "pantry": true,
     "kroger": {
