@@ -1555,6 +1555,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0087668100454"
     }
   },
+  "nachos": {
+    "kroger": {
+      "upc": "0001111010996",
+      "productId": "0001111010996",
+      "description": "Kroger® White Corn Restaurant Style Tortilla Chips",
+      "size": "13 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111010996"
+    }
+  },
   "noodle pack": {
     "kroger": {
       "upc": "0004100002246",
@@ -1609,6 +1618,15 @@
       "description": "Kroger® Frozen Onions Chopped",
       "size": "12 oz",
       "image": "https://www.kroger.com/product/images/medium/front/0001111089791"
+    }
+  },
+  "orzo": {
+    "kroger": {
+      "upc": "0001111014950",
+      "productId": "0001111014950",
+      "description": "Kroger® Orzo Pasta",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111014950"
     }
   },
   "oyster sauce": {
