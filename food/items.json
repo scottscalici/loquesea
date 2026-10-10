@@ -229,6 +229,15 @@
   "lemon juice": {
     "pantry": true
   },
+  "lettuce": {
+    "kroger": {
+      "upc": "0001111091613",
+      "productId": "0001111091613",
+      "description": "Kroger® Shredded Iceberg Lettuce",
+      "size": "8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111091613"
+    }
+  },
   "marinara sauce": {
     "kroger": {
       "upc": "0001111013416",
