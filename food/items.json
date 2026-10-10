@@ -193,6 +193,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111008596"
     }
   },
+  "beef stew meat": {
+    "kroger": {
+      "upc": "0001111069231",
+      "productId": "0001111069231",
+      "description": "Kroger® Natural Fresh Choice Beef For Stew Meat",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111069231"
+    }
+  },
   "bell peppers": {
     "kroger": {
       "upc": "0001111089786",
