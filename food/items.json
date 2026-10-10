@@ -124,6 +124,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111089305"
     }
   },
+  "caesar salad kit": {
+    "kroger": {
+      "upc": "0007143001702",
+      "productId": "0007143001702",
+      "description": "Dole Ultimate Caesar Premium Salad Kit",
+      "size": "11.3 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0007143001702"
+    }
+  },
   "cajun seasoning": {
     "pantry": true
   },
