@@ -1909,6 +1909,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111091238"
     }
   },
+  "ramen": {
+    "kroger": {
+      "upc": "0004178900231",
+      "productId": "0004178900231",
+      "description": "Maruchan Ramen® Noodle Soup, Chicken Flavor Instant Noodles",
+      "size": "1 ea",
+      "image": "https://www.kroger.com/product/images/medium/front/0004178900231"
+    }
+  },
   "ranch dressing": {
     "kroger": {
       "upc": "0007110000551",
