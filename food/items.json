@@ -23,6 +23,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111089786"
     }
   },
+  "broccoli": {
+    "kroger": {
+      "upc": "0001111060319",
+      "productId": "0001111060319",
+      "description": "Kroger® Broccoli Florets 12 Oz",
+      "size": "12 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111060319"
+    }
+  },
   "brown sugar": {
     "pantry": true
   },
