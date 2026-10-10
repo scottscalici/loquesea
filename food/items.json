@@ -301,6 +301,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111008489"
     }
   },
+  "breadsticks": {
+    "kroger": {
+      "upc": "0001111081079",
+      "productId": "0001111081079",
+      "description": "Kroger® Garlic Frozen Bread",
+      "size": "6 ct / 10.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111081079"
+    }
+  },
   "broccoli": {
     "kroger": {
       "upc": "0001111060319",
@@ -318,6 +327,15 @@
       "description": "Kroger® Light Brown Sugar",
       "size": "32 oz",
       "image": "https://www.kroger.com/product/images/medium/front/0001111085585"
+    }
+  },
+  "brown sugar bacon pork tenderloin": {
+    "kroger": {
+      "upc": "0001111069474",
+      "productId": "0001111069474",
+      "description": "Kroger® Brown Sugar and Bacon Pork Tenderloin",
+      "size": "18 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111069474"
     }
   },
   "brussels sprouts": {
