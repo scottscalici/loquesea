@@ -179,6 +179,15 @@
   "msg": {
     "pantry": true
   },
+  "naan": {
+    "kroger": {
+      "upc": "0087668100454",
+      "productId": "0087668100454",
+      "description": "Stonefire® Original Naan Dippers® Bite Size Flatbread, 7.05 Oz, ~20 Count",
+      "size": "7.05 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0087668100454"
+    }
+  },
   "old bay": {
     "pantry": true
   },
