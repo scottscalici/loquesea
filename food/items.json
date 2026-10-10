@@ -698,7 +698,14 @@
     }
   },
   "ketchup": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001300000605",
+      "productId": "0001300000605",
+      "description": "Heinz Tomato Ketchup",
+      "size": "32 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001300000605"
+    }
   },
   "large flour tortillas": {
     "kroger": {
