@@ -2063,6 +2063,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111060506"
     }
   },
+  "salad toppings": {
+    "kroger": {
+      "upc": "0001111090929",
+      "productId": "0001111090929",
+      "description": "Kroger® Salad Toppers Dried Cranberries and Toasted Sliced Almonds",
+      "size": "3 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111090929"
+    }
+  },
   "salsa": {
     "kroger": {
       "upc": "0001111066759",
