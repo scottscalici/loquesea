@@ -2000,6 +2000,24 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111089875"
     }
   },
+  "rolls": {
+    "kroger": {
+      "upc": "0001111013240",
+      "productId": "0001111013240",
+      "description": "Private Selection® Hawaiian Dinner Rolls",
+      "size": "12 ct / 16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111013240"
+    }
+  },
+  "roma tomatoes": {
+    "kroger": {
+      "upc": "0000000004087",
+      "productId": "0000000004087",
+      "description": "Fresh Tomatoes Fresh Roma Tomato",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0000000004087"
+    }
+  },
   "rotel tomatoes": {
     "kroger": {
       "upc": "0006414428243",
