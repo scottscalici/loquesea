@@ -1050,7 +1050,14 @@
     }
   },
   "garlic paste": {
-    "pantry": true
+    "pantry": true,
+    "kroger": {
+      "upc": "0001111012981",
+      "productId": "0001111012981",
+      "description": "Simple Truth® Garlic Paste Tube",
+      "size": "3.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111012981"
+    }
   },
   "grapes or apple slices": {
     "kroger": {
