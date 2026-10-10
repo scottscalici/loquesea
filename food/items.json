@@ -621,6 +621,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111085735"
     }
   },
+  "cole slaw": {
+    "kroger": {
+      "upc": "0007111719014",
+      "productId": "0007111719014",
+      "description": "Reser's® Chopped Cole Slaw",
+      "size": "15 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0007111719014"
+    }
+  },
   "coriander": {
     "pantry": true,
     "kroger": {
