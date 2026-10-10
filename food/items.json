@@ -120,6 +120,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0024239600000"
     }
   },
+  "frozen fries": {
+    "kroger": {
+      "upc": "0001111005578",
+      "productId": "0001111005578",
+      "description": "Kroger® Seasoned Crispy Frozen French Fries",
+      "size": "24 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111005578"
+    }
+  },
   "garam masala": {
     "pantry": true,
     "kroger": {
