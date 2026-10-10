@@ -78,34 +78,50 @@ const UNITS = ['lb', 'lbs', 'oz', 'pack', 'packs', 'pkg', 'can', 'cans', 'jar', 
     'box', 'boxes', 'bottle', 'bottles', 'bunch', 'bunches', 'head', 'heads', 'loaf', 'loaves',
     'cup', 'cups', 'tbsp', 'tsp', 'clove', 'cloves', 'dozen', 'pouch', 'pouches', 'block', 'blocks',
     'gallon', 'gallons', 'gal', 'quart', 'quarts', 'pint', 'pints', 'carton', 'cartons', 'container', 'containers',
-    'tub', 'tubs', 'package', 'packages', 'packet', 'packets', 'stick', 'sticks', 'ct'];
+    'tub', 'tubs', 'package', 'packages', 'packet', 'packets', 'stick', 'sticks', 'ct',
+    'tablespoon', 'tablespoons', 'teaspoon', 'teaspoons', 'ounce', 'ounces', 'pound', 'pounds',
+    'g', 'grams', 'kg', 'ml', 'l', 'liter', 'liters', 'pinch', 'pinches', 'dash', 'dashes',
+    'slice', 'slices', 'piece', 'pieces', 'sprig', 'sprigs', 'handful', 'handfuls', 'envelope', 'envelopes'];
+
+// Whole numbers, decimals, fractions, mixed numbers ("1 1/2", "1½") and ranges ("2-3").
+const QTY = String.raw`(?:\d+(?:\.\d+)?(?:\s*[½¼¾⅓⅔⅛]|\s+\d+\/\d+)?|\d+\/\d+|[½¼¾⅓⅔⅛])`;
+const QTY_RE = new RegExp(`^(${QTY}(?:\\s*(?:-|–|to)\\s*${QTY})?)\\s*(?:x\\s+)?`, 'i');
 
 // "2 cans black beans (rinsed)" -> { item: "black beans", amount: "2 cans", note: "rinsed" }
+// "1 (15 ounce) can corn, drained" -> { item: "corn", amount: "1 can (15 ounce)", note: "drained" }
 function parseIngredientLine(line) {
-    let text = line.trim().replace(/^[-*•]\s*/, '');
+    let text = line.trim().replace(/^[-*•▢□]\s*/, '');
     if (!text) return null;
-    const out = {};
-    const note = text.match(/\(([^)]*)\)\s*$/);
-    if (note) {
-        out.note = note[1].trim();
-        text = text.slice(0, note.index).trim();
+    const notes = [];
+    const trailing = text.match(/\(([^)]*)\)\s*$/);
+    if (trailing) {
+        notes.push(trailing[1].trim());
+        text = text.slice(0, trailing.index).trim();
     }
-    const qty = text.match(/^(\d+(?:[.\/]\d+)?|½|¼|¾)\s*(?:x\s+)?/i);
+    let amount = '';
+    const qty = text.match(QTY_RE);
     if (qty) {
-        let amount = qty[1];
         let rest = text.slice(qty[0].length);
-        const unit = rest.match(/^([a-z]+)\.?\s+/i);
-        if (unit && UNITS.includes(unit[1].toLowerCase())) {
-            amount += ' ' + unit[1];
-            rest = rest.slice(unit[0].length);
-        }
+        let size = '';
+        const paren = rest.match(/^\(([^)]*)\)\s*/);
+        if (paren) { size = ` (${paren[1].trim()})`; rest = rest.slice(paren[0].length); }
+        let unit = '';
+        const u = rest.match(/^([a-z]+)\.?\s+/i);
+        if (u && UNITS.includes(u[1].toLowerCase())) { unit = ' ' + u[1]; rest = rest.slice(u[0].length); }
         rest = rest.replace(/^of\s+/i, '');
         if (rest) {
-            out.amount = amount;
+            amount = (qty[1].replace(/\s+/g, ' ') + unit + size).trim();
             text = rest;
         }
     }
-    return { item: text.trim(), ...(out.amount && { amount: out.amount }), ...(out.note && { note: out.note }) };
+    // "garlic, minced" -> note "minced"
+    const comma = text.indexOf(', ');
+    if (comma > 0) {
+        notes.unshift(text.slice(comma + 2).trim());
+        text = text.slice(0, comma);
+    }
+    const note = notes.filter(Boolean).join('; ');
+    return { item: text.trim(), ...(amount && { amount }), ...(note && { note }) };
 }
 
 function ingredientLabel(ing) {

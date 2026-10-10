@@ -58,6 +58,22 @@
         #toast.error { background: #c0392b; }
         .open-link { padding: 11px 12px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px; }
         .hidden { display: none !important; }
+        /* Import from link */
+        .ipanel { position: fixed; inset: 0; background: #f4f7f6; z-index: 20; display: none; flex-direction: column; }
+        .ipanel.open { display: flex; }
+        .ipanel-head { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #2c3e50; color: white; }
+        .ipanel-head h3 { margin: 0; font-size: 1em; flex: 1; }
+        .ipanel-head button { background: none; color: white; font-size: 22px; padding: 2px 10px; }
+        .ipanel-body { flex: 1; overflow-y: auto; padding: 14px 12px 30px; max-width: 600px; width: 100%; margin: 0 auto; }
+        .ipanel-foot { padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid #ddd; background: white; }
+        .ipanel-foot button { display: block; width: 100%; max-width: 600px; margin: 0 auto; padding: 14px; font-size: 16px; }
+        .ipanel-foot button:disabled { opacity: .5; }
+        .import-line { display: flex; gap: 10px; align-items: center; background: white; padding: 11px 12px; margin: 0; border-bottom: 1px solid #f2f4f4; font-weight: normal; color: #333; font-size: 1em; }
+        .import-line input { width: 22px; height: 22px; flex: none; }
+        .import-caption { margin-top: 14px; font-size: 0.85em; color: #7f8c8d; }
+        .import-caption p { white-space: pre-wrap; background: white; padding: 10px; border-radius: 8px; }
+        .import-error { color: #c0392b; }
+        .btn-import { width: 100%; margin-top: 10px; font-size: 14px; padding: 9px; }
     </style>
 </head>
 <body>
@@ -73,6 +89,7 @@
     <section id="listView">
         <div class="row">
             <input type="search" id="search" placeholder="Search recipes or ingredients..." oninput="renderList()">
+            <button class="btn-light" style="flex:none" onclick="openImport('new')">⤓ Import</button>
             <button class="btn-primary" style="flex:none" onclick="openEditor(null)">+ New</button>
         </div>
         <div class="count" id="count">Loading...</div>
@@ -99,6 +116,7 @@
                 <input type="url" id="mealLink" placeholder="https://..." autocomplete="off">
                 <a class="open-link btn-light" data-for="mealLink" href="#" target="_blank">Open</a>
             </div>
+            <button class="btn-light btn-import" onclick="openImport('existing')">⤓ Get ingredients from a link</button>
 
             <label>Tags</label>
             <div class="tags" id="tagChips"></div>
@@ -131,6 +149,18 @@
     <option value="1 can"><option value="2 cans"><option value="1 bag"><option value="1 jar">
     <option value="1 box"><option value="1 bottle"><option value="1 lb"><option value="2 lb">
 </datalist>
+
+<div class="ipanel" id="importPanel">
+    <div class="ipanel-head"><button onclick="closeImport()" title="Back">←</button><h3 id="importTitle">Import a recipe</h3></div>
+    <div class="ipanel-body">
+        <div class="row">
+            <input type="url" id="importUrl" placeholder="Paste a link" autocomplete="off">
+            <button class="btn-primary" id="importGo" style="flex:none">Get</button>
+        </div>
+        <div id="importResult"></div>
+    </div>
+    <div class="ipanel-foot" id="importFoot" hidden></div>
+</div>
 
 <script src="common.js"></script>
 <script>
@@ -466,5 +496,6 @@
 
     init();
 </script>
+<script src="import.js"></script>
 </body>
 </html>
