@@ -841,6 +841,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111085126"
     }
   },
+  "egg rolls": {
+    "kroger": {
+      "upc": "0007218067775",
+      "productId": "0007218067775",
+      "description": "Pagoda Frozen Crunchy Vegetable Egg Rolls",
+      "size": "22.0 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0007218067775"
+    }
+  },
   "eggs": {
     "kroger": {
       "upc": "0001111013737",
