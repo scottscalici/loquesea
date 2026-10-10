@@ -424,6 +424,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111091613"
     }
   },
+  "smoked sausage": {
+    "kroger": {
+      "upc": "0001111096787",
+      "productId": "0001111096787",
+      "description": "Kroger® Harwood Smoked Sausage Pork and Beef Rope",
+      "size": "14 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111096787"
+    }
+  },
   "soy sauce": {
     "pantry": true
   },
