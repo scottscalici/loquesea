@@ -2501,6 +2501,46 @@
     ]
   },
   {
+    "name": "One Pot Chicken Orzo",
+    "video": "https://www.tiktok.com/t/ZTysHr8dv/",
+    "link": "",
+    "tags": [
+      "Chicken",
+      "One Pot"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "Orzo pasta"
+          },
+          {
+            "item": "Cream corn"
+          },
+          {
+            "item": "Cajun seasoning"
+          },
+          {
+            "item": "Chicken stock"
+          },
+          {
+            "item": "diced pimentos",
+            "amount": "2 jars",
+            "note": "drained"
+          },
+          {
+            "item": "Garden vegetable cream cheese"
+          },
+          {
+            "item": "Chicken"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "name": "Parmesan Garlic Chicken and Potatoes",
     "video": "https://www.tiktok.com/t/ZTrAHGXrm/",
     "link": "",
