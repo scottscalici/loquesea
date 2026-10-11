@@ -4010,6 +4010,35 @@
     ]
   },
   {
+    "name": "Staples",
+    "video": "",
+    "link": "",
+    "tags": [],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "Diet Mountain 2 2 liter bottles"
+          },
+          {
+            "item": "Skim milk"
+          },
+          {
+            "item": "Bananas"
+          },
+          {
+            "item": "Hazelnut creamer"
+          },
+          {
+            "item": "Whole Wheat Bread"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "name": "Steak Bites",
     "video": "https://www.tiktok.com/t/ZTNNPuLkR/",
     "link": "",
