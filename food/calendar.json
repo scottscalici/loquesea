@@ -617,5 +617,12 @@
       "Naan",
       "Rice"
     ]
+  },
+  {
+    "date": "2026-10-12",
+    "meal": "One Pot Chicken Orzo",
+    "sides_included": [
+      "Main Dish"
+    ]
   }
 ]
