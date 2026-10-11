@@ -1040,6 +1040,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0081000687205"
     }
   },
+  "garden vegetable cream cheese": {
+    "kroger": {
+      "upc": "0002100000730",
+      "productId": "0002100000730",
+      "description": "Philadelphia Garden Vegetable Cream Cheese Spread",
+      "size": "7.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0002100000730"
+    }
+  },
   "garlic": {
     "kroger": {
       "upc": "0007096900410",
