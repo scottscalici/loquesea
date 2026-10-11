@@ -147,6 +147,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0005410000845"
     }
   },
+  "bananas": {
+    "kroger": {
+      "upc": "0000000004011",
+      "productId": "0000000004011",
+      "description": "Fresh Bananas Fresh Bunch of Bananas – 5-7 Bananas",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0000000004011"
+    }
+  },
   "basil": {
     "kroger": {
       "upc": "0001111000296",
