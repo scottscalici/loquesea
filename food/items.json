@@ -1285,6 +1285,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0007343500004"
     }
   },
+  "hazelnut creamer": {
+    "kroger": {
+      "upc": "0001111015105",
+      "productId": "0001111015105",
+      "description": "Kroger® Hazelnut Coffee Creamer",
+      "size": "32 fl oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111015105"
+    }
+  },
   "heavy cream": {
     "kroger": {
       "upc": "0001111050315",
