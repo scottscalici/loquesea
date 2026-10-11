@@ -4020,10 +4020,12 @@
         "type": "main",
         "ingredients": [
           {
-            "item": "Diet Mountain 2 2 liter bottles"
+            "item": "Diet Mountain 2 liter bottles",
+            "amount": "2"
           },
           {
-            "item": "Skim milk"
+            "item": "Skim milk",
+            "amount": "1"
           },
           {
             "item": "Bananas"
