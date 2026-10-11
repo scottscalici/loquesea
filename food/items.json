@@ -538,6 +538,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111004968"
     }
   },
+  "chicken stock": {
+    "kroger": {
+      "upc": "0001111016669",
+      "productId": "0001111016669",
+      "description": "Kroger® 99% Fat Free Chicken Broth",
+      "size": "32 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111016669"
+    }
+  },
   "chicken thighs": {
     "kroger": {
       "upc": "0025313650000",
