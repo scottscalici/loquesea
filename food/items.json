@@ -722,6 +722,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111009090"
     }
   },
+  "cream corn": {
+    "kroger": {
+      "upc": "0001111011433",
+      "productId": "0001111011433",
+      "description": "Kroger® Golden Cream Style Corn",
+      "size": "14.75 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111011433"
+    }
+  },
   "cream of celery soup": {
     "kroger": {
       "upc": "0005100001161",
