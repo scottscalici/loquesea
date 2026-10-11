@@ -2344,6 +2344,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0020590550000"
     }
   },
+  "skim milk": {
+    "kroger": {
+      "upc": "0001111042315",
+      "productId": "0001111042315",
+      "description": "Kroger® Skim Milk Gallon",
+      "size": "1 gal",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111042315"
+    }
+  },
   "sliced cheese": {
     "kroger": {
       "upc": "0001111058287",
