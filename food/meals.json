@@ -2514,16 +2514,19 @@
         "type": "main",
         "ingredients": [
           {
-            "item": "Orzo pasta"
+            "item": "Orzo pasta",
+            "amount": "1 box"
           },
           {
-            "item": "Cream corn"
+            "item": "Cream corn",
+            "amount": "1 can"
           },
           {
             "item": "Cajun seasoning"
           },
           {
-            "item": "Chicken stock"
+            "item": "Chicken stock",
+            "amount": "2 cups"
           },
           {
             "item": "diced pimentos",
@@ -2531,10 +2534,12 @@
             "note": "drained"
           },
           {
-            "item": "Garden vegetable cream cheese"
+            "item": "Garden vegetable cream cheese",
+            "amount": "1 container"
           },
           {
-            "item": "Chicken"
+            "item": "Chicken",
+            "amount": "2 pounds"
           }
         ]
       }
