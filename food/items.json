@@ -804,6 +804,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111097035"
     }
   },
+  "diced pimentos": {
+    "kroger": {
+      "upc": "0001111087218",
+      "productId": "0001111087218",
+      "description": "Kroger® Diced Pimientos",
+      "size": "4 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111087218"
+    }
+  },
   "diced tomatoes": {
     "kroger": {
       "upc": "0001111011975",
