@@ -631,5 +631,14 @@
     "sides_included": [
       "Main Dish"
     ]
+  },
+  {
+    "date": "2026-10-13",
+    "meal": "Chicken Bacon Ranch Wraps",
+    "sides_included": [
+      "Main Dish",
+      "Fresh Fruit",
+      "Chips"
+    ]
   }
 ]
