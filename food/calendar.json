@@ -647,5 +647,15 @@
     "sides_included": [
       "Main Dish"
     ]
+  },
+  {
+    "date": "2026-10-14",
+    "meal": "Ropa vieja",
+    "sides_included": [
+      "Main Dish",
+      "Plantain Chips",
+      "Rice",
+      "Black beans"
+    ]
   }
 ]
