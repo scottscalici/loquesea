@@ -95,9 +95,8 @@ const CONFIG = {
     scheduleUrl: 'https://raw.githubusercontent.com/scottscalici/loquesea/main/planner/schedule.json',
     calendarUrl: 'https://raw.githubusercontent.com/scottscalici/imagenes/main/planes/calendario.json',
     placesUrl: 'https://raw.githubusercontent.com/scottscalici/loquesea/main/planner/places.json',
-    coziUrl: 'https://rest.cozi.com/api/ext/1103/f9f7020d-05c9-4720-b813-2155b4485be7/icalendar/feed/feed.ics',
-    calendlyToken: 'eyJraWQiOiIxY2UxZTEzNjE3ZGNmNzY2YjNjZWJjY2Y4ZGM1YmFmYThhNjVlNjg0MDIzZjdjMzJiZTgzNDliMjM4MDEzNWI0IiwidHlwIjoiUEFUIiwiYWxnIjoiRVMyNTYifQ.eyJpc3MiOiJodHRwczovL2F1dGguY2FsZW5kbHkuY29tIiwiaWF0IjoxNzY5MjMzNzU5LCJqdGkiOiJlODY1MTVlYS1hOGRiLTQ5YjMtYmI5Ny1lOWU5ZWIzYTI1NmQiLCJ1c2VyX3V1aWQiOiIzMGZkMzdhYS1kMGUyLTQxODYtOTVkNi04MjU2NTYxMDczMWIifQ.lF3v1MUuFxrttIsaDu5yNCWI0UTN9Z7NvQI78IPyxnR3D5scFL7iCIyormTQdu9_GHp_pnnTJ5lGPiXtGKLWtg',
-    proxy: 'https://corsproxy.io/?',
+    // The Cozi link is a Cloudflare secret; the site's Worker fetches it (lib/cozi-core.mjs).
+    coziUrl: '/api/cozi',
     pixelsPerMinute: 1.5,
     dayStartHour: 5
 };
@@ -139,13 +138,6 @@ function subtractMinutes(timeStr, minutes) {
   const d = new Date();
   d.setHours(h, m - minutes, 0, 0);
   return d.toTimeString().slice(0, 5);
-}
-
-function localDayToUTCWindow(dateStr) {
-  return {
-    min: new Date(dateStr + "T00:00:00").toISOString(),
-    max: new Date(dateStr + "T23:59:59").toISOString()
-  };
 }
 
 function format12Hour(timeStr) {
@@ -348,9 +340,31 @@ async function syncSchoolCycle(todayStr) {
    COZI CALENDAR
 ========================= */
 
+// The passphrase matches the DASHBOARD_KEY secret in Cloudflare; this browser
+// asks for it once. A wrong or changed one gets a 401: ask again and retry once.
+function getDashboardKey(message = 'Dashboard passphrase (for Cozi):') {
+    let key = localStorage.getItem('dashboard_key');
+    if (!key) {
+        key = prompt(message);
+        if (key) localStorage.setItem('dashboard_key', key.trim());
+    }
+    return key;
+}
+
+async function fetchCozi() {
+    const send = () => fetch(CONFIG.coziUrl, { headers: { 'X-Dashboard-Key': getDashboardKey() || '' } });
+    let res = await send();
+    if (res.status === 401) {
+        localStorage.removeItem('dashboard_key');
+        if (getDashboardKey('That passphrase didn\'t work. Dashboard passphrase:')) res = await send();
+    }
+    return res;
+}
+
 async function syncCozi(todayMatch, dow) {
     try {
-        const res = await fetch(CONFIG.proxy + encodeURIComponent(CONFIG.coziUrl));
+        const res = await fetchCozi();
+        if (!res.ok) throw new Error(`Cozi feed: ${res.status} ${await res.text()}`);
         let text = (await res.text()).replace(/\r\n /g, "");
 
         const vevents = text.split("BEGIN:VEVENT");
@@ -435,44 +449,9 @@ async function syncCozi(todayMatch, dow) {
     }
 }
 
-async function syncCalendly(todayStr) {
-    if (!CONFIG.calendlyToken || CONFIG.calendlyToken.includes('PASTE')) return;
-    try {
-        const userRes = await fetch(CONFIG.proxy + encodeURIComponent('https://api.calendly.com/users/me'), { 
-            headers: { Authorization: `Bearer ${CONFIG.calendlyToken}` } 
-        });
-        const userData = await userRes.json();
-        const { min, max } = localDayToUTCWindow(todayStr);
-        const eventsRes = await fetch(CONFIG.proxy + encodeURIComponent(`https://api.calendly.com/scheduled_events?user=${userData.resource.uri}&min_start_time=${min}&max_start_time=${max}`), { 
-            headers: { Authorization: `Bearer ${CONFIG.calendlyToken}` } 
-        });
-        const eventsData = await eventsRes.json();
-        eventsData.collection.forEach(ev => {
-            if (ev.status !== "active") return;
-            const start = new Date(ev.start_time);
-            const sTime = start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-            const eTime = new Date(ev.end_time).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-            renderBrick(sTime, eTime, `📅 ${ev.name}`, "blue-meeting", [], { nest: true });
-        });
-    } catch (e) { console.error("Calendly Error", e); }
-}
-
 /* =========================
    LAYOUT ENGINES
 ========================= */
-function nestCalendlyMeetings() {
-    const preps = renderedBricks.filter(b => b.el.classList.contains('prep'));
-    renderedBricks.filter(b => b.meta?.nest).forEach(meeting => {
-        const parent = preps.find(p => meeting.start >= p.start && meeting.end <= p.end);
-        if (!parent) return;
-        meeting.el.style.top = `${(meeting.start - parent.start) * CONFIG.pixelsPerMinute}px`;
-        meeting.el.style.left = '8px';
-        meeting.el.style.width = 'calc(100% - 16px)';
-        parent.el.appendChild(meeting.el);
-        meeting.nested = true;
-    });
-}
-
 function stackOverlappingBricks() {
     const stackable = renderedBricks.filter(b => !b.nested).sort((a,b) => a.start - b.start);
     stackable.forEach(b => {
@@ -500,9 +479,7 @@ async function updateUI() {
     renderedBricks = [];
     await syncSchoolCycle(todayStr);
     await syncCozi(todayMatch, dow);
-    await syncCalendly(todayStr);
 
-    nestCalendlyMeetings();
     stackOverlappingBricks();
     renderRedLine();
 }

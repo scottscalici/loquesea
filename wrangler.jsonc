@@ -9,7 +9,8 @@
   "assets": { "directory": ".", "binding": "ASSETS" },
   "workers_dev": true,
   "preview_urls": true,
-  // KROGER_CLIENT_ID / KROGER_CLIENT_SECRET are set in the Cloudflare dashboard;
+  // KROGER_CLIENT_ID / KROGER_CLIENT_SECRET, COZI_FEED_URL and DASHBOARD_KEY are
+  // set in the Cloudflare dashboard;
   // keep them on each deploy.
   "keep_vars": true
 }
