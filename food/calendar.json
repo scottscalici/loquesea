@@ -640,5 +640,12 @@
       "Fresh Fruit",
       "Chips"
     ]
+  },
+  {
+    "date": "2026-12-01",
+    "meal": "One Pot Chicken Orzo",
+    "sides_included": [
+      "Main Dish"
+    ]
   }
 ]
