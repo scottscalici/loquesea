@@ -671,5 +671,14 @@
     "sides_included": [
       "Main Dish"
     ]
+  },
+  {
+    "date": "2026-10-21",
+    "meal": "Coconut Curry chicken",
+    "sides_included": [
+      "Main Dish",
+      "Rice",
+      "Naan"
+    ]
   }
 ]
