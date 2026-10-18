@@ -877,6 +877,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0003967737730"
     }
   },
+  "dried oregano": {
+    "kroger": {
+      "upc": "0001111011752",
+      "productId": "0001111011752",
+      "description": "Smart Way™ Oregano Leaves",
+      "size": "0.63 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111011752"
+    }
+  },
   "dumplings": {
     "kroger": {
       "upc": "0080717654009",
