@@ -29,6 +29,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0002100060464"
     }
   },
+  "andouille sausage": {
+    "kroger": {
+      "upc": "0004450034167",
+      "productId": "0004450034167",
+      "description": "Hillshire Farm® Cajun Style Andouille Smoked Sausage",
+      "size": "13 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0004450034167"
+    }
+  },
   "apple slices": {
     "kroger": {
       "upc": "0000000003283",
