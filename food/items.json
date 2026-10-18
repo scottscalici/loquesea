@@ -138,6 +138,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111086908"
     }
   },
+  "balsamic vinegar": {
+    "kroger": {
+      "upc": "0001111000522",
+      "productId": "0001111000522",
+      "description": "Kroger® Balsamic Vinegar",
+      "size": "12.7 fl oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111000522"
+    }
+  },
   "banana peppers": {
     "kroger": {
       "upc": "0005410000845",
