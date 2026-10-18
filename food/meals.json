@@ -1578,6 +1578,23 @@
     ]
   },
   {
+    "name": "Dirty Spaghetti",
+    "video": "",
+    "link": "",
+    "tags": [
+      "Pasta",
+      "Spaghetti",
+      "One-pot"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": []
+      }
+    ]
+  },
+  {
     "name": "Dump-and-Go Taco Soup",
     "video": "",
     "link": "",
