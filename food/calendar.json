@@ -657,5 +657,12 @@
       "Rice",
       "Black beans"
     ]
+  },
+  {
+    "date": "2026-10-19",
+    "meal": "Crockpot Sausage and Peppers",
+    "sides_included": [
+      "Main Dish"
+    ]
   }
 ]
