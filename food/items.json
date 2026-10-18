@@ -876,6 +876,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001200000746"
     }
   },
+  "diet mountain 2 liter bottles": {
+    "kroger": {
+      "upc": "0001200000746",
+      "productId": "0001200000746",
+      "description": "Mountain Dew Diet Mountain Dew® Soda Bottle",
+      "size": "2 liter",
+      "image": "https://www.kroger.com/product/images/medium/front/0001200000746"
+    }
+  },
   "dijon mustard": {
     "pantry": true,
     "kroger": {
