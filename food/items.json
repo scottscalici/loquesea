@@ -2268,6 +2268,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111069979"
     }
   },
+  "sausage roll": {
+    "kroger": {
+      "upc": "0001111011534",
+      "productId": "0001111011534",
+      "description": "Kroger® Brat & Sausage Rolls White",
+      "size": "6 ct / 14.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111011534"
+    }
+  },
   "sazón": {
     "pantry": true,
     "kroger": {
