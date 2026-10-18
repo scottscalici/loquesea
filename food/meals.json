@@ -1532,6 +1532,52 @@
     ]
   },
   {
+    "name": "Crockpot Sausage and Peppers",
+    "video": "https://www.tiktok.com/t/ZTfFDhfcw/",
+    "link": "https://easyfamilyrecipes.com/slow-cooker-sausage-and-peppers/",
+    "tags": [
+      "Sausage",
+      "Crockpot"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "Peppers and onions",
+            "amount": "1"
+          },
+          {
+            "item": "mild Italian sausage links ((about 8))",
+            "amount": "2 pounds"
+          },
+          {
+            "item": "crushed tomatoes",
+            "amount": "28 ounces"
+          },
+          {
+            "item": "balsamic vinegar",
+            "amount": "1 tablespoon"
+          },
+          {
+            "item": "garlic",
+            "amount": "4 cloves",
+            "note": "minced"
+          },
+          {
+            "item": "Italian seasoning",
+            "amount": "1 tablespoon"
+          },
+          {
+            "item": "dried oregano",
+            "amount": "1 teaspoon"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "name": "Dump-and-Go Taco Soup",
     "video": "",
     "link": "",
