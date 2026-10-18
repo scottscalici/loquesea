@@ -680,5 +680,12 @@
       "Rice",
       "Naan"
     ]
+  },
+  {
+    "date": "2026-10-18",
+    "meal": "Staples",
+    "sides_included": [
+      "Main Dish"
+    ]
   }
 ]
