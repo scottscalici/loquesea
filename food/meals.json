@@ -1553,10 +1553,6 @@
             "amount": "2 pounds"
           },
           {
-            "item": "crushed tomatoes",
-            "amount": "28 ounces"
-          },
-          {
             "item": "balsamic vinegar",
             "amount": "1 tablespoon"
           },
@@ -1576,6 +1572,10 @@
           {
             "item": "Sausage Roll",
             "amount": "1 pack"
+          },
+          {
+            "item": "Crushed Tomatoes",
+            "amount": "1 28 oz can"
           }
         ]
       }
