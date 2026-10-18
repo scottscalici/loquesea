@@ -3,5 +3,6 @@
     "locationId": "01800716",
     "name": "Kroger - 26 Mile",
     "address": "16450 26 Mile Rd, Macomb, MI"
-  }
+  },
+  "krogerModality": "DELIVERY"
 }
