@@ -776,6 +776,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111013773"
     }
   },
+  "crushed tomatoes": {
+    "kroger": {
+      "upc": "0001111011618",
+      "productId": "0001111011618",
+      "description": "Kroger Crushed Tomatoes in Puree",
+      "size": "28 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111011618"
+    }
+  },
   "cubed chicken": {
     "kroger": {
       "upc": "0001111013619",
