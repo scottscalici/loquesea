@@ -2498,6 +2498,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111085004"
     }
   },
+  "spaghetti noodles": {
+    "kroger": {
+      "upc": "0001111084923",
+      "productId": "0001111084923",
+      "description": "Kroger® Pot Sized Spaghetti",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111084923"
+    }
+  },
   "spanish rice": {
     "kroger": {
       "upc": "0001111004409",
