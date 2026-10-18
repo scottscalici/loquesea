@@ -1590,7 +1590,44 @@
       {
         "name": "Main Dish",
         "type": "main",
-        "ingredients": []
+        "ingredients": [
+          {
+            "item": "Ground beef",
+            "amount": "1 lb"
+          },
+          {
+            "item": "Andouille sausage",
+            "amount": "1"
+          },
+          {
+            "item": "Spaghetti noodles",
+            "amount": "1"
+          },
+          {
+            "item": "Beef broth",
+            "amount": "4 cups"
+          },
+          {
+            "item": "Tomato paste",
+            "amount": "1 can"
+          },
+          {
+            "item": "All-purpose flour",
+            "amount": "4 Tbsp"
+          },
+          {
+            "item": "Bell peppers & onion",
+            "amount": "1 bag"
+          },
+          {
+            "item": "Cajun seasoning",
+            "amount": "2 tsp"
+          },
+          {
+            "item": "Worcestershire sauce",
+            "amount": "1 tbsp"
+          }
+        ]
       }
     ]
   },
