@@ -1587,6 +1587,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0005480042484"
     }
   },
+  "mild italian sausage links ((about 8))": {
+    "kroger": {
+      "upc": "0001111097260",
+      "productId": "0001111097260",
+      "description": "Kroger® Mild Italian Sausage",
+      "size": "18 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111097260"
+    }
+  },
   "mirin": {
     "pantry": true,
     "kroger": {
