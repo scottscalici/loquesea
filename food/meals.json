@@ -1632,6 +1632,15 @@
             "amount": "1 tbsp"
           }
         ]
+      },
+      {
+        "name": "Garlic Bread",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "garlic bread"
+          }
+        ]
       }
     ]
   },
