@@ -687,5 +687,14 @@
     "sides_included": [
       "Main Dish"
     ]
+  },
+  {
+    "date": "2026-10-26",
+    "meal": "Honey Garlic Chicken",
+    "sides_included": [
+      "Main Dish",
+      "Jasmine Rice",
+      "Egg rolls"
+    ]
   }
 ]
