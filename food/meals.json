@@ -2179,6 +2179,69 @@
     ]
   },
   {
+    "name": "Honey Garlic Chicken",
+    "video": "https://www.tiktok.com/t/ZTfkxHKKa/",
+    "link": "",
+    "tags": [],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "chicken breasts",
+            "amount": "1 pack"
+          },
+          {
+            "item": "Honey",
+            "amount": ".5 cup"
+          },
+          {
+            "item": "soy sauce",
+            "amount": ".5 cup"
+          },
+          {
+            "item": "sesame oil",
+            "amount": "Splash"
+          },
+          {
+            "item": "Rice vinegar",
+            "amount": "Splash"
+          },
+          {
+            "item": "Garlic",
+            "amount": "1 Tbsp"
+          },
+          {
+            "item": "Ginger",
+            "amount": "1 tsp"
+          },
+          {
+            "item": "red pepper flakes",
+            "amount": "Sprinkle"
+          },
+          {
+            "item": "Broccoli",
+            "amount": "1 bag"
+          },
+          {
+            "item": "cornstarch",
+            "amount": "1Tbsp"
+          }
+        ]
+      },
+      {
+        "name": "Jasmine Rice",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "jasmine rice"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "name": "Hot dogs",
     "video": "",
     "link": "",
