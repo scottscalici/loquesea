@@ -1394,6 +1394,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111085181"
     }
   },
+  "honey": {
+    "kroger": {
+      "upc": "0001111012316",
+      "productId": "0001111012316",
+      "description": "Smart Way™ Honey",
+      "size": "24 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111012316"
+    }
+  },
   "honey or fig jam": {
     "kroger": {
       "upc": "0001111003564",
