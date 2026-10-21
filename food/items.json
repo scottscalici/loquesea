@@ -2178,6 +2178,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111089875"
     }
   },
+  "rice vinegar": {
+    "kroger": {
+      "upc": "0001111004544",
+      "productId": "0001111004544",
+      "description": "Kroger® Seasoned Rice Vinegar",
+      "size": "12.7 fl oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111004544"
+    }
+  },
   "rolls": {
     "kroger": {
       "upc": "0001111013240",
