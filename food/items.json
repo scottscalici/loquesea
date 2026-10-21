@@ -11,6 +11,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111085100"
     }
   },
+  "all-purpose flour": {
+    "kroger": {
+      "upc": "0001111086116",
+      "productId": "0001111086116",
+      "description": "Kroger® Unbleached Enriched All Purpose Flour",
+      "size": "5 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111086116"
+    }
+  },
   "american and colby jack slices": {
     "kroger": {
       "upc": "0001111050526",
