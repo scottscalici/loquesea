@@ -2238,6 +2238,15 @@
             "item": "jasmine rice"
           }
         ]
+      },
+      {
+        "name": "Egg rolls",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "egg rolls"
+          }
+        ]
       }
     ]
   },
