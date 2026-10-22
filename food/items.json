@@ -1320,6 +1320,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0000000004068"
     }
   },
+  "green pepper": {
+    "kroger": {
+      "upc": "0001111087220",
+      "productId": "0001111087220",
+      "description": "Kroger® Frozen Green Peppers Chopped",
+      "size": "10 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111087220"
+    }
+  },
   "grilled chicken strips": {
     "kroger": {
       "upc": "0001111013618",
