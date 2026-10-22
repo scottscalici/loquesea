@@ -3378,15 +3378,6 @@
         "name": "Main Dish",
         "type": "main",
         "ingredients": []
-      },
-      {
-        "name": "Baked Beans",
-        "type": "side",
-        "ingredients": [
-          {
-            "item": "baked beans"
-          }
-        ]
       }
     ]
   },
