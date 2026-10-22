@@ -1030,6 +1030,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111088301"
     }
   },
+  "fat-free greek yogurt": {
+    "kroger": {
+      "upc": "0001111010717",
+      "productId": "0001111010717",
+      "description": "Kroger® Plain Nonfat Greek Yogurt Tub",
+      "size": "32 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111010717"
+    }
+  },
   "feta cheese": {
     "kroger": {
       "upc": "0001111062856",
