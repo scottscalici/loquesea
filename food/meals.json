@@ -3366,6 +3366,31 @@
     ]
   },
   {
+    "name": "Pulled Pork",
+    "video": "",
+    "link": "",
+    "tags": [
+      "Pork",
+      "precooked"
+    ],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": []
+      },
+      {
+        "name": "Baked Beans",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "baked beans"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "name": "Quesadillas",
     "video": "",
     "link": "",
