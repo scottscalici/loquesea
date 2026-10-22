@@ -1558,6 +1558,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0004100002802"
     }
   },
+  "kosher salt": {
+    "kroger": {
+      "upc": "0002460001707",
+      "productId": "0002460001707",
+      "description": "Morton Flakes Kosher Salt 16 oz",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0002460001707"
+    }
+  },
   "large flour tortillas": {
     "kroger": {
       "upc": "0002733110111",
