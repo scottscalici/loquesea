@@ -1466,6 +1466,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0005450019322"
     }
   },
+  "hot sauce": {
+    "kroger": {
+      "upc": "0004150080502",
+      "productId": "0004150080502",
+      "description": "Frank's RedHot Original Cayenne Pepper Hot Sauce",
+      "size": "12 fl oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0004150080502"
+    }
+  },
   "italian seasoning": {
     "pantry": true,
     "kroger": {
