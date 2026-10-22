@@ -592,6 +592,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0020094700000"
     }
   },
+  "chicken breast": {
+    "kroger": {
+      "upc": "0028334900000",
+      "productId": "0028334900000",
+      "description": "Heritage Farm® Boneless Skinless Chicken Breasts",
+      "size": "1 lb",
+      "image": "https://www.kroger.com/product/images/medium/front/0028334900000"
+    }
+  },
   "chicken breasts": {
     "kroger": {
       "upc": "0020094700000",
