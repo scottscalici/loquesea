@@ -3377,7 +3377,12 @@
       {
         "name": "Main Dish",
         "type": "main",
-        "ingredients": []
+        "ingredients": [
+          {
+            "item": "Pulled Pork",
+            "amount": "16 oz"
+          }
+        ]
       }
     ]
   },
