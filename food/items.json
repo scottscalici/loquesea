@@ -201,6 +201,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0004601517658"
     }
   },
+  "barbecue sauce": {
+    "kroger": {
+      "upc": "0001111015423",
+      "productId": "0001111015423",
+      "description": "Kroger® Honey Sweet BBQ Sauce",
+      "size": "18 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111015423"
+    }
+  },
   "basil": {
     "kroger": {
       "upc": "0001111000296",
