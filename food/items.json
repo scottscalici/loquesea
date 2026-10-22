@@ -2132,6 +2132,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111058716"
     }
   },
+  "pulled pork": {
+    "kroger": {
+      "upc": "0001111070497",
+      "productId": "0001111070497",
+      "description": "Private Selection® Pulled Pork",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111070497"
+    }
+  },
   "queso": {
     "kroger": {
       "upc": "0007287807151",
