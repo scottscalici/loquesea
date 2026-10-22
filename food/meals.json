@@ -1,5 +1,63 @@
 [
   {
+    "name": "Baked Beans (Sweet & Spicy)",
+    "video": "https://www.tiktok.com/t/ZTfAEwy9c/",
+    "link": "",
+    "tags": [],
+    "components": [
+      {
+        "name": "Main Dish",
+        "type": "main",
+        "ingredients": [
+          {
+            "item": "bulk hot sausage",
+            "amount": "1 pound"
+          },
+          {
+            "item": "onion",
+            "amount": "1"
+          },
+          {
+            "item": "red bell pepper",
+            "amount": "1"
+          },
+          {
+            "item": "kosher salt",
+            "amount": "1 tsp"
+          },
+          {
+            "item": "baked beans",
+            "amount": "2 cans"
+          },
+          {
+            "item": "apple pie filling",
+            "amount": "1 can"
+          },
+          {
+            "item": "barbecue sauce",
+            "amount": "1 cup"
+          },
+          {
+            "item": "yellow mustard",
+            "amount": "1 tablespoon"
+          },
+          {
+            "item": "Worcestershire sauce",
+            "amount": "1 tablespoon"
+          },
+          {
+            "item": "hot sauce",
+            "amount": "1 teaspoon"
+          },
+          {
+            "item": "barbecue rub seasoning",
+            "amount": "2 teaspoons"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "name": "Balsamic Glazed Chicken and Potatoes",
     "video": "",
     "link": "https://thedomesticgeek.com/balsamic-glazed-chicken-roast-potatoes/",
