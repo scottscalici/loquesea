@@ -2186,6 +2186,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111012401"
     }
   },
+  "red bell pepper": {
+    "kroger": {
+      "upc": "0001450050563",
+      "productId": "0001450050563",
+      "description": "Birds Eye® Tri-Colored Pepper & Onion Medley",
+      "size": "14.4 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001450050563"
+    }
+  },
   "red curry paste": {
     "kroger": {
       "upc": "0001111012988",
