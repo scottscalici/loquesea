@@ -2887,5 +2887,14 @@
       "size": "10 oz",
       "image": "https://www.kroger.com/product/images/medium/front/0001111066985"
     }
+  },
+  "yellow mustard": {
+    "kroger": {
+      "upc": "0001111081237",
+      "productId": "0001111081237",
+      "description": "Kroger Original Yellow Mustard",
+      "size": "8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111081237"
+    }
   }
 }
