@@ -2132,6 +2132,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0002840019914"
     }
   },
+  "potato gnocchi": {
+    "kroger": {
+      "upc": "0001111084948",
+      "productId": "0001111084948",
+      "description": "Private Selection® with Potato Italian Gnocchi",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111084948"
+    }
+  },
   "potatoes": {
     "kroger": {
       "upc": "0000000004072",
