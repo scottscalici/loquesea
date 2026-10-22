@@ -47,6 +47,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0004450034167"
     }
   },
+  "apple pie filling": {
+    "kroger": {
+      "upc": "0001111078390",
+      "productId": "0001111078390",
+      "description": "Kroger® Apple Pie Filling",
+      "size": "20 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111078390"
+    }
+  },
   "apple slices": {
     "kroger": {
       "upc": "0000000003283",
