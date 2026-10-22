@@ -3,7 +3,10 @@
     "name": "Baked Beans (Sweet & Spicy)",
     "video": "https://www.tiktok.com/t/ZTfAEwy9c/",
     "link": "",
-    "tags": [],
+    "tags": [
+      "Side",
+      "Beans"
+    ],
     "components": [
       {
         "name": "Main Dish",
