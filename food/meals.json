@@ -1381,7 +1381,71 @@
       {
         "name": "Main Dish",
         "type": "main",
-        "ingredients": []
+        "ingredients": [
+          {
+            "item": "potato gnocchi",
+            "amount": "400 g"
+          },
+          {
+            "item": "chicken breast",
+            "amount": "640 g"
+          },
+          {
+            "item": "diced"
+          },
+          {
+            "item": "reduced-fat green pesto",
+            "amount": "190 g"
+          },
+          {
+            "item": "red onion",
+            "amount": "1"
+          },
+          {
+            "item": "chopped"
+          },
+          {
+            "item": "green pepper",
+            "amount": "1"
+          },
+          {
+            "item": "chopped"
+          },
+          {
+            "item": "peas",
+            "amount": "100 g"
+          },
+          {
+            "item": "sundried tomatoes",
+            "amount": "100 g"
+          },
+          {
+            "item": "chopped"
+          },
+          {
+            "item": "baby spinach",
+            "amount": "100 g"
+          },
+          {
+            "item": "chicken stock",
+            "amount": "150 ml"
+          },
+          {
+            "item": "fat-free Greek yoghurt",
+            "amount": "150 g"
+          },
+          {
+            "item": "garlic",
+            "amount": "15 g"
+          },
+          {
+            "item": "minced"
+          },
+          {
+            "item": "light mozzarella",
+            "amount": "75 g"
+          }
+        ]
       }
     ]
   },
