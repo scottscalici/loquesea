@@ -1816,6 +1816,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111004415"
     }
   },
+  "onion": {
+    "kroger": {
+      "upc": "0063912388000",
+      "productId": "0063912388000",
+      "description": "Japanese Food Express Inc Fresh Cut In Store Diced Yellow Onions",
+      "size": "8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0063912388000"
+    }
+  },
   "onion soup mix": {
     "kroger": {
       "upc": "0004100000362",
