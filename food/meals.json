@@ -1435,6 +1435,24 @@
             "amount": "75 g"
           }
         ]
+      },
+      {
+        "name": "Salad",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "salad kit"
+          }
+        ]
+      },
+      {
+        "name": "Dinner Rolls",
+        "type": "side",
+        "ingredients": [
+          {
+            "item": "dinner rolls"
+          }
+        ]
       }
     ]
   },
