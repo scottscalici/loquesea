@@ -711,5 +711,14 @@
       "Main Dish",
       "Baked Beans"
     ]
+  },
+  {
+    "date": "2026-10-28",
+    "meal": "Chicken Pesto Bake",
+    "sides_included": [
+      "Main Dish",
+      "Salad",
+      "Dinner Rolls"
+    ]
   }
 ]
