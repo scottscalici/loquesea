@@ -1376,7 +1376,11 @@
     "name": "Chicken Pesto Bake",
     "video": "https://www.tiktok.com/t/ZTfDRo6A2/",
     "link": "",
-    "tags": [],
+    "tags": [
+      "Chicken",
+      "Healthy",
+      "One Pot"
+    ],
     "components": [
       {
         "name": "Main Dish",
