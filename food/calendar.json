@@ -696,5 +696,12 @@
       "Jasmine Rice",
       "Egg rolls"
     ]
+  },
+  {
+    "date": "2026-10-27",
+    "meal": "Baked Beans (Sweet & Spicy)",
+    "sides_included": [
+      "Main Dish"
+    ]
   }
 ]
