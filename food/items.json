@@ -2750,6 +2750,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0025551200000"
     }
   },
+  "sundried tomatoes": {
+    "kroger": {
+      "upc": "0073820310280",
+      "productId": "0073820310280",
+      "description": "California Sun Dry® Sun-Dried Julienne Tomatoes in Oil with Herbs",
+      "size": "8 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0073820310280"
+    }
+  },
   "sweet gherkins": {
     "kroger": {
       "upc": "0001111013172",
