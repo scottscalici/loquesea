@@ -419,6 +419,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111089725"
     }
   },
+  "bulk hot sausage": {
+    "kroger": {
+      "upc": "0001111097299",
+      "productId": "0001111097299",
+      "description": "Kroger® Hot Pork Sausage Roll",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111097299"
+    }
+  },
   "buns": {
     "kroger": {
       "upc": "0001111011457",
