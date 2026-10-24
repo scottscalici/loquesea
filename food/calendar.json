@@ -720,5 +720,12 @@
       "Salad",
       "Dinner Rolls"
     ]
+  },
+  {
+    "date": "2026-10-24",
+    "meal": "Staples",
+    "sides_included": [
+      "Main Dish"
+    ]
   }
 ]
