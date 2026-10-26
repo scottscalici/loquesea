@@ -2759,6 +2759,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0073820310280"
     }
   },
+  "sweet and sour sauce": {
+    "kroger": {
+      "upc": "0001111071422",
+      "productId": "0001111071422",
+      "description": "Kroger® Sweet and Sour Sauce",
+      "size": "10 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111071422"
+    }
+  },
   "sweet gherkins": {
     "kroger": {
       "upc": "0001111013172",
