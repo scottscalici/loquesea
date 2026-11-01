@@ -75,7 +75,13 @@
             if (params.get('date')) document.getElementById('planDate').value = params.get('date');
             populateTags();
             populateGlobalSides();
-            filterMeals(); 
+            filterMeals();
+            // Coming from a recipe's "Plan" button: that recipe is already picked.
+            const meal = params.get('meal');
+            if (meal && allMeals.some(m => m.name === meal)) {
+                document.getElementById('mealSelect').value = meal;
+                loadComponents();
+            }
         }
 
         function populateTags() {
@@ -170,8 +176,9 @@
                     return cal;
                 }, `Plan ${date}`);
                 statusDiv.innerHTML = '<span style="color:green">Success! Meal Added.</span>';
-                // Coming from the calendar's "+ Plan a meal", go back to it.
-                setTimeout(() => new URLSearchParams(location.search).has('date') ? location.href = 'view.html' : location.reload(), 1200);
+                // Coming from the calendar or a recipe's Plan button, go to the calendar.
+                const p = new URLSearchParams(location.search);
+                setTimeout(() => p.has('date') || p.has('meal') ? location.href = 'view.html' : location.reload(), 1200);
             } catch (err) {
                 statusDiv.innerHTML = `<span style="color:red">Error saving: ${escapeHtml(err.message)}</span>`;
             }
