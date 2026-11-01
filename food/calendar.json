@@ -752,5 +752,14 @@
       "Mashed Potatoes",
       "Noodles"
     ]
+  },
+  {
+    "date": "2026-11-04",
+    "meal": "Pork tenderloin (bake in bag)",
+    "sides_included": [
+      "Main Dish",
+      "Petite potatoes",
+      "Noodles"
+    ]
   }
 ]
