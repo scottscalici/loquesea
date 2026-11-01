@@ -743,5 +743,14 @@
     "sides_included": [
       "Main Dish"
     ]
+  },
+  {
+    "date": "2026-11-03",
+    "meal": "Pineapple Meatballs",
+    "sides_included": [
+      "Main Dish",
+      "Mashed Potatoes",
+      "Noodles"
+    ]
   }
 ]
