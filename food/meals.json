@@ -4623,15 +4623,6 @@
             "item": "Ranch"
           }
         ]
-      },
-      {
-        "name": "Nacho Chips",
-        "type": "side",
-        "ingredients": [
-          {
-            "item": "nachos"
-          }
-        ]
       }
     ]
   },
