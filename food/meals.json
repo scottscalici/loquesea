@@ -4576,7 +4576,7 @@
   },
   {
     "name": "Taco Salad",
-    "video": "",
+    "video": "https://www.tiktok.com/t/ZPLbqhBwH/",
     "link": "",
     "tags": [
       "Mexican"
@@ -4599,19 +4599,25 @@
             "item": "tomatoes"
           },
           {
-            "item": "cheese"
+            "item": "Cheddar cheese"
           },
           {
             "item": "avocado"
           },
           {
-            "item": "canned black beans"
+            "item": "canned kidney beans"
           },
           {
             "item": "salsa"
           },
           {
             "item": "sour cream"
+          },
+          {
+            "item": "Catalina dressing"
+          },
+          {
+            "item": "Nacho Doritos"
           }
         ]
       },
