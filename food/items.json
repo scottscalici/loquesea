@@ -1841,6 +1841,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0087668100454"
     }
   },
+  "nacho doritos": {
+    "kroger": {
+      "upc": "0002840051646",
+      "productId": "0002840051646",
+      "description": "Doritos Nacho Cheese Tortilla Chips",
+      "size": "9.25 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0002840051646"
+    }
+  },
   "nachos": {
     "kroger": {
       "upc": "0001111010996",
