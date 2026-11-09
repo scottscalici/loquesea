@@ -780,5 +780,14 @@
       "Caesar salad",
       "French Bread"
     ]
+  },
+  {
+    "date": "2026-11-11",
+    "meal": "Black Bean & Corn Quesadillas",
+    "sides_included": [
+      "Main Dish",
+      "Guacamole",
+      "Spanish Rice"
+    ]
   }
 ]
