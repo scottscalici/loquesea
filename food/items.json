@@ -2831,6 +2831,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0000000004816"
     }
   },
+  "taco sauce": {
+    "kroger": {
+      "upc": "0002100004720",
+      "productId": "0002100004720",
+      "description": "Taco Bell Mild Sauce, Bottle",
+      "size": "7.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0002100004720"
+    }
+  },
   "taco seasoning": {
     "kroger": {
       "upc": "0004600081566",
