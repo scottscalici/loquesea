@@ -771,5 +771,14 @@
       "Salad",
       "Asparagus"
     ]
+  },
+  {
+    "date": "2026-11-10",
+    "meal": "Swamp Potatoes",
+    "sides_included": [
+      "Main Dish",
+      "Caesar salad",
+      "French Bread"
+    ]
   }
 ]
