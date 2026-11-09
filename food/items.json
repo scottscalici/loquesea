@@ -2258,6 +2258,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0004178900231"
     }
   },
+  "ranch": {
+    "kroger": {
+      "upc": "0007110000668",
+      "productId": "0007110000668",
+      "description": "Hidden Valley Original Ranch Salad Dressing",
+      "size": "36 fl oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0007110000668"
+    }
+  },
   "ranch dressing": {
     "kroger": {
       "upc": "0007110000551",
