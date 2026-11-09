@@ -565,6 +565,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111091620"
     }
   },
+  "catalina dressing": {
+    "kroger": {
+      "upc": "0002100064469",
+      "productId": "0002100064469",
+      "description": "Kraft Classic Catalina French Salad Dressing",
+      "size": "16 fo",
+      "image": "https://www.kroger.com/product/images/medium/front/0002100064469"
+    }
+  },
   "celery": {
     "kroger": {
       "upc": "0001111060376",
