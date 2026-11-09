@@ -780,5 +780,13 @@
       "Caesar salad",
       "French Bread"
     ]
+  },
+  {
+    "date": "2026-11-11",
+    "meal": "Taco Salad",
+    "sides_included": [
+      "Main Dish",
+      "Nacho Chips"
+    ]
   }
 ]
