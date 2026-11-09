@@ -538,6 +538,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0001111011618"
     }
   },
+  "canned kidney beans": {
+    "kroger": {
+      "upc": "0001111071786",
+      "productId": "0001111071786",
+      "description": "Kroger® Light Red Kidney Beans",
+      "size": "15.5 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111071786"
+    }
+  },
   "canned tomato soup": {
     "kroger": {
       "upc": "0005100012939",
