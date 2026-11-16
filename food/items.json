@@ -2504,11 +2504,11 @@
   },
   "sausage": {
     "kroger": {
-      "upc": "0001111069979",
-      "productId": "0001111069979",
-      "description": "Private Selection® Original Pork and Beef Smoked Sausage",
-      "size": "4 ct / 13 oz",
-      "image": "https://www.kroger.com/product/images/medium/front/0001111069979"
+      "upc": "0007778200221",
+      "productId": "0007778200221",
+      "description": "Johnsonville Vermont Maple Syrup Breakfast Sausage Links",
+      "size": "12 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0007778200221"
     }
   },
   "sausage roll": {
