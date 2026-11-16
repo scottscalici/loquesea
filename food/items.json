@@ -765,6 +765,15 @@
       "image": "https://www.kroger.com/product/images/medium/front/0007111719014"
     }
   },
+  "cooked chicken": {
+    "kroger": {
+      "upc": "0001111020791",
+      "productId": "0001111020791",
+      "description": "Kroger® Unsauced Hardwood Smoked Pulled Chicken",
+      "size": "16 oz",
+      "image": "https://www.kroger.com/product/images/medium/front/0001111020791"
+    }
+  },
   "coriander": {
     "pantry": true,
     "kroger": {
