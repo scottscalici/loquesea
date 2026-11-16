@@ -817,5 +817,15 @@
       "Main Dish",
       "Fries"
     ]
+  },
+  {
+    "date": "2026-11-18",
+    "meal": "Breakfast: Pancakes",
+    "sides_included": [
+      "Main Dish",
+      "Pancakes",
+      "Bacon or Sausage",
+      "Eggs"
+    ]
   }
 ]
