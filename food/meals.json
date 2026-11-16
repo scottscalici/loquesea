@@ -4390,13 +4390,16 @@
             "amount": "1"
           },
           {
-            "item": "Bananas"
+            "item": "Bananas",
+            "amount": "1"
           },
           {
-            "item": "Hazelnut creamer"
+            "item": "Hazelnut creamer",
+            "amount": "1"
           },
           {
-            "item": "Whole Wheat Bread"
+            "item": "Whole Wheat Bread",
+            "amount": "1"
           }
         ]
       }
