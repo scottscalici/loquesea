@@ -38,7 +38,6 @@
         .plan-link { display: inline-block; color: #3498db; text-decoration: none; font-size: 0.9em; padding: 4px 0; }
         .add-another { font-size: 0.8em; margin-top: 6px; }
         .shop-link { display: block; text-align: center; background: #27ae60; color: white; text-decoration: none; font-weight: bold; padding: 13px; border-radius: 10px; margin-top: 14px; }
-        #moveDate { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; }
 
         #swap-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: flex-end; z-index: 1000; }
         .swap-modal { background: white; padding: 18px 16px calc(18px + env(safe-area-inset-bottom)); border-radius: 16px 16px 0 0; width: 100%; max-width: 600px; }
@@ -47,9 +46,21 @@
         .swap-modal select { width: 100%; padding: 11px; margin-top: 5px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; }
         .swap-actions { display: flex; gap: 8px; margin-top: 18px; }
         .swap-actions button { flex: 1; padding: 13px; font-size: 15px; }
+        .swap-actions button:disabled { opacity: .45; }
+        #move-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: flex-end; z-index: 1000; }
+        .move-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px; }
+        .move-day { background: #f4f6f6; color: #2c3e50; padding: 6px 0 5px; font-weight: normal; line-height: 1.15; position: relative; }
+        .move-day .dow { display: block; font-size: 0.68em; text-transform: uppercase; color: #7f8c8d; font-weight: 700; }
+        .move-day .num { display: block; font-size: 1.05em; font-weight: 700; }
+        .move-day.taken::after { content: ''; position: absolute; top: 5px; right: 6px; width: 6px; height: 6px; border-radius: 50%; background: #3498db; }
+        .move-day.current { outline: 2px dashed #bdc3c7; }
+        .move-day.on { background: #27ae60; color: white; }
+        .move-day.on .dow { color: #eafaf1; }
+        .move-hint { font-size: 0.78em; color: #95a5a6; margin-top: 6px; }
+        #move-date { width: 100%; padding: 11px; margin-top: 5px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; font-family: inherit; background: white; }
 
         @media print {
-            .nav-bar, .btn-nav, .jump, .meal-actions, .meal-links, .plan-link, .shop-link, #swap-overlay { display: none !important; }
+            .nav-bar, .btn-nav, .jump, .meal-actions, .meal-links, .plan-link, .shop-link, #swap-overlay, #move-overlay { display: none !important; }
             .day { box-shadow: none; border: 1px solid #000; break-inside: avoid; opacity: 1; }
         }
     </style>
@@ -74,7 +85,20 @@
     <a class="shop-link" href="shop.html">🛒 Shopping list</a>
 </div>
 
-<input type="date" id="moveDate">
+<div id="move-overlay" onclick="if (event.target === this) closeMove()">
+    <div class="swap-modal">
+        <h3>Move to another day</h3>
+        <div id="move-meal-name" style="color:#3498db; font-weight:600;"></div>
+        <div class="move-days" id="move-days"></div>
+        <div class="move-hint">Blue dot = already has a meal. Dashed = where it is now.</div>
+        <label>Or pick any date</label>
+        <input type="date" id="move-date">
+        <div class="swap-actions">
+            <button onclick="closeMove()" style="background:#ecf0f1; color:#2c3e50;">Cancel</button>
+            <button id="move-confirm" onclick="confirmMove()" style="background:#27ae60; color:white;">Move</button>
+        </div>
+    </div>
+</div>
 
 <div id="swap-overlay" onclick="if (event.target === this) closeSwap()">
     <div class="swap-modal">
@@ -197,23 +221,53 @@
         if (confirm(`Remove ${calendarDb[index].meal} from ${calendarDb[index].date}?`)) updateEntry(index, () => false, "Calendar Update");
     }
 
+    // Move: a panel with the next two weeks to tap, plus a date box for anything further out.
+    // (The phone's own date picker can't reliably be opened from a button, so it's shown here.)
+    let activeMoveIndex = null;
+
     function moveMeal(index) {
-        const picker = document.getElementById('moveDate');
-        picker.value = calendarDb[index].date;
-        picker.onchange = () => {
-            const newDate = picker.value;
-            if (newDate && newDate !== calendarDb[index].date) updateEntry(index, e => { e.date = newDate; }, "Calendar Update");
-        };
-        try {
-            picker.showPicker();
-        } catch (e) {
-            // Older browsers without showPicker() fall back to typing the date.
-            const typed = prompt("Enter new date (YYYY-MM-DD):", calendarDb[index].date);
-            if (!typed) return;
-            if (!/^\d{4}-\d{2}-\d{2}$/.test(typed.trim())) return alert("Use the format YYYY-MM-DD.");
-            picker.value = typed.trim();
-            picker.onchange();
+        activeMoveIndex = index;
+        const entry = calendarDb[index];
+        document.getElementById('move-meal-name').innerText = entry.meal;
+        const start = startOfToday();
+        let html = '';
+        for (let i = 0; i < 14; i++) {
+            const d = new Date(start);
+            d.setDate(start.getDate() + i);
+            const dateStr = d.toLocaleDateString('en-CA');
+            const others = calendarDb.filter((e, j) => j !== index && e.date === dateStr).map(e => e.meal);
+            html += `<button class="move-day ${others.length ? 'taken' : ''} ${dateStr === entry.date ? 'current' : ''}" data-date="${dateStr}"
+                title="${escapeHtml(others.join(', '))}">
+                <span class="dow">${d.toLocaleDateString(undefined, { weekday: 'short' })}</span>
+                <span class="num">${d.getDate()}</span></button>`;
         }
+        document.getElementById('move-days').innerHTML = html;
+        selectMoveDate(entry.date);
+        document.getElementById('move-overlay').style.display = 'flex';
+    }
+
+    function selectMoveDate(dateStr) {
+        document.getElementById('move-date').value = dateStr;
+        document.querySelectorAll('.move-day').forEach(b => b.classList.toggle('on', b.dataset.date === dateStr));
+        const btn = document.getElementById('move-confirm');
+        const same = !dateStr || dateStr === calendarDb[activeMoveIndex].date;
+        btn.disabled = same;
+        btn.innerText = same ? 'Move' : `Move to ${new Date(dateStr + 'T12:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}`;
+    }
+
+    document.getElementById('move-days').addEventListener('click', e => {
+        const b = e.target.closest('.move-day');
+        if (b) selectMoveDate(b.dataset.date);
+    });
+    document.getElementById('move-date').addEventListener('change', e => selectMoveDate(e.target.value));
+
+    function closeMove() { document.getElementById('move-overlay').style.display = 'none'; }
+
+    function confirmMove() {
+        const newDate = document.getElementById('move-date').value;
+        const index = activeMoveIndex;
+        closeMove();
+        if (newDate && newDate !== calendarDb[index].date) updateEntry(index, e => { e.date = newDate; }, "Calendar Update");
     }
 
     function allSideNames() {
