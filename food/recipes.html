@@ -22,7 +22,11 @@
         .row { display: flex; gap: 8px; align-items: center; }
 
         /* List view */
-        .recipe { display: block; width: 100%; text-align: left; background: white; padding: 12px 14px; margin-bottom: 8px; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); font-weight: normal; }
+        .recipe { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: white; padding: 12px 10px 12px 14px; margin-bottom: 8px; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); font-weight: normal; cursor: pointer; }
+        .recipe .text { flex: 1; min-width: 0; }
+        .plan-btn { flex: none; background: #eaf2fb; color: #1f6fb2; text-decoration: none; font-weight: bold; font-size: 0.85em; padding: 8px 10px; border-radius: 8px; white-space: nowrap; }
+        .edit-head { display: flex; align-items: center; gap: 10px; }
+        .edit-head h2 { flex: 1; }
         .recipe .name { font-weight: 600; font-size: 1.02em; color: #2c3e50; }
         .recipe .meta { font-size: 0.8em; color: #95a5a6; margin-top: 3px; }
         .badge { display: inline-block; background: #fdebd0; color: #b9770e; border-radius: 4px; padding: 0 5px; font-size: 0.9em; }
@@ -99,7 +103,10 @@
     <!-- Add / edit one recipe -->
     <section id="editView" class="hidden">
         <button class="btn-light" onclick="closeEditor()">← Recipes</button>
-        <h2 id="editTitle">New Recipe</h2>
+        <div class="edit-head">
+            <h2 id="editTitle">New Recipe</h2>
+            <button class="plan-btn" id="planThis" onclick="planThisMeal()" style="border:none">📅 Plan this meal</button>
+        </div>
 
         <div class="card">
             <label style="margin-top:0">Name</label>
@@ -212,17 +219,36 @@
             const ingCount = m.components.reduce((n, c) => n + c.ingredients.length, 0);
             const meta = [m.tags.join(', '), `${ingCount} ingredients`, sides ? `${sides} side${sides > 1 ? 's' : ''}` : '']
                 .filter(Boolean).map(escapeHtml).join(' · ');
-            return `<button class="recipe" data-name="${escapeHtml(m.name)}">
-                <div class="name">${escapeHtml(m.name)}</div>
-                <div class="meta">${m.video ? '🎬 ' : ''}${m.link ? '📄 ' : ''}${meta}${m.video || m.link ? '' : ' <span class="badge">no link</span>'}</div>
-            </button>`;
+            return `<div class="recipe" data-name="${escapeHtml(m.name)}" role="button" tabindex="0">
+                <div class="text">
+                    <div class="name">${escapeHtml(m.name)}</div>
+                    <div class="meta">${m.video ? '🎬 ' : ''}${m.link ? '📄 ' : ''}${meta}${m.video || m.link ? '' : ' <span class="badge">no link</span>'}</div>
+                </div>
+                <a class="plan-btn" href="${planUrl(m.name)}" title="Add to the calendar">📅 Plan</a>
+            </div>`;
         }).join('');
     }
 
     document.getElementById('recipeList').addEventListener('click', e => {
+        if (e.target.closest('.plan-btn')) return;   // follows its link to the planner
         const btn = e.target.closest('.recipe');
         if (btn) openEditor(btn.dataset.name);
     });
+
+    function planUrl(name) { return `planner.html?meal=${encodeURIComponent(name)}`; }
+
+    // From inside a recipe: go plan it, after checking nothing unsaved would be lost.
+    function planThisMeal() {
+        if (!editing) return;
+        if (editorSnapshot() !== editBaseline && !confirm('You have unsaved changes to this recipe. Leave without saving?')) return;
+        location.href = planUrl(editing);
+    }
+
+    // The editor's contents as the recipe that would be saved, to spot unsaved edits.
+    let editBaseline = '';
+    function editorSnapshot() {
+        try { return JSON.stringify(collectRecipe().meal); } catch (e) { return 'invalid:' + e.message; }
+    }
 
     // ---------- Editor ----------
     function openEditor(name) {
@@ -235,6 +261,7 @@
         document.getElementById('mealVideo').value = meal ? meal.video || '' : '';
         document.getElementById('mealLink').value = meal ? meal.link || '' : '';
         document.getElementById('deleteBtn').classList.toggle('hidden', !meal);
+        document.getElementById('planThis').classList.toggle('hidden', !meal);
         tags = meal ? [...meal.tags] : [];
         renderTags();
         updateOpenLinks();
@@ -246,6 +273,7 @@
         if (!meal) box.querySelector('.ing-list').appendChild(ingredientRow());
 
         show(true);
+        editBaseline = editorSnapshot();
         window.scrollTo(0, 0);
         if (!meal) document.getElementById('mealName').focus();
     }
