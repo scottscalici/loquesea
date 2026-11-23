@@ -836,5 +836,13 @@
       "Onion rings",
       "Corn"
     ]
+  },
+  {
+    "date": "2026-11-24",
+    "meal": "Cheesy Taco Rice",
+    "sides_included": [
+      "Main Dish",
+      "Nacho Chips"
+    ]
   }
 ]
