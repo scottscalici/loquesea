@@ -827,5 +827,14 @@
       "Bacon or Sausage",
       "Eggs"
     ]
+  },
+  {
+    "date": "2026-11-23",
+    "meal": "Hot dogs",
+    "sides_included": [
+      "Main Dish",
+      "Onion rings",
+      "Corn"
+    ]
   }
 ]
