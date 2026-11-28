@@ -6,7 +6,7 @@
 const CONFIG = {
     scheduleUrl: 'https://raw.githubusercontent.com/scottscalici/loquesea/main/planner/schedule.json',
     calendarUrl: 'https://raw.githubusercontent.com/scottscalici/imagenes/main/planes/calendario.json',
-    coziUrl: 'https://corsproxy.io/?' + encodeURIComponent('https://rest.cozi.com/api/ext/1103/f9f7020d-05c9-4720-b813-2155b4485be7/icalendar/feed/feed.ics'),
+    coziUrl: '', // private Cozi feed link removed (see index.html)
     pixelsPerMinute: 1.2, // Compactness
     dayStartHour: 5 // The "Zero" point (5:00 AM) at the very top of the timeline
 };
